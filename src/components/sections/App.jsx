@@ -1,18 +1,92 @@
 import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, useLocation, useParams } from "react-router-dom";
 import Lenis from "lenis";
-import Hero from "./Hero";
-import ShowcaseSection from "../../ShowcaseSection";
-import LogoSection from "./LogoSection";
-import CareerSection from "./CareerSection";
-import ContactSection from "./ContactSection";
-import RoleShowcase from "./RoleShowcase";
-import ProjectCarousel from "./ProjectCarousel";
-import PhotographySection from "./PhotographySection";
-import ServicesSection from "./ServicesSection";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Navbar from "../Navbar";
-import Footer from "../Footer";
 import IntroAnimation from "../IntroAnimation";
 import Cursor from "../Cursor";
+import ErrorBoundary from "../ErrorBoundary";
+
+// Pages
+import Home from "../pages/Home";
+import PhotographyPage from "../pages/PhotographyPage";
+import AlbumDisplay from "../pages/AlbumDisplay";
+
+// Store Lenis instance globally so components can access it
+let lenisInstance = null;
+export const getLenis = () => lenisInstance;
+export const setLenis = (lenis) => { lenisInstance = lenis; };
+
+// ScrollToTop component with scroll position memory for Photography page
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+  
+  useEffect(() => {
+    const lenis = getLenis();
+    
+    // Save scroll position when leaving photography page
+    const previousPath = sessionStorage.getItem('previousPath') || '';
+    
+    // If coming BACK to /photography from an album, restore scroll position
+    if (pathname === '/photography' && previousPath.startsWith('/photography/')) {
+      const savedPosition = sessionStorage.getItem('photographyScrollPosition');
+      if (savedPosition) {
+        const position = parseInt(savedPosition, 10);
+        // Small delay to ensure page is rendered
+        setTimeout(() => {
+          if (lenis) {
+            lenis.scrollTo(position, { immediate: true });
+          } else {
+            window.scrollTo(0, position);
+          }
+          ScrollTrigger.refresh();
+        }, 50);
+        return; // Don't scroll to top
+      }
+    }
+    
+    // For album pages, save the photography scroll position before navigating
+    if (pathname.startsWith('/photography/') && previousPath === '/photography') {
+      // Position was already saved by PhotographyPage
+    }
+    
+    // For other navigations, scroll to top
+    if (!pathname.startsWith('/photography/') || previousPath !== '/photography') {
+      if (lenis) {
+        lenis.scrollTo(0, { immediate: true });
+      } else {
+        window.scrollTo(0, 0);
+      }
+    }
+    
+    // Store current path for next navigation
+    sessionStorage.setItem('previousPath', pathname);
+    
+    // Refresh ScrollTrigger after scroll
+    setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 100);
+  }, [pathname]);
+  
+  return null;
+}
+
+// Wrapper to force remount AlbumDisplay when albumId changes
+const AlbumDisplayWrapper = () => {
+  const { albumId } = useParams();
+  
+  // Force scroll to top using Lenis
+  useEffect(() => {
+    const lenis = getLenis();
+    if (lenis) {
+      lenis.scrollTo(0, { immediate: true });
+    }
+    ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+  }, [albumId]);
+  
+  // The key prop forces a complete remount when albumId changes
+  return <AlbumDisplay key={albumId} />;
+}
 
 const App = () => {
   const [showIntro, setShowIntro] = useState(true);
@@ -29,6 +103,9 @@ const App = () => {
       touchMultiplier: 2,
     });
 
+    // Register Lenis instance globally
+    setLenis(lenis);
+
     function raf(time) {
       lenis.raf(time);
       requestAnimationFrame(raf);
@@ -37,6 +114,7 @@ const App = () => {
     requestAnimationFrame(raf);
 
     return () => {
+      setLenis(null);
       lenis.destroy();
     };
   }, []);
@@ -49,37 +127,22 @@ const App = () => {
     <>
       {showIntro && <IntroAnimation onComplete={handleIntroComplete} />}
       {!showIntro && (
-        <div className="bg-[#070707] min-h-screen cursor-none">
-          <Cursor />
-          <Navbar />
-          <Hero />
-          
-          <div id="work">
-             <ShowcaseSection />
-          </div>
+        <ErrorBoundary>
+          <Router>
+            <ScrollToTop />
+            <div className="bg-[#070707] min-h-screen cursor-none">
+              <Cursor />
+              <Navbar />
+              
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/photography" element={<PhotographyPage />} />
+                <Route path="/photography/:albumId" element={<AlbumDisplayWrapper />} />
+              </Routes>
 
-          <div id="roles">
-             <RoleShowcase />
-          </div>
-
-          <ProjectCarousel />
-
-          <PhotographySection />
-          
-          <ServicesSection />
-
-          <div id="about">
-             <CareerSection />
-          </div>
-
-          <LogoSection />
-
-          <div id="contact">
-             <ContactSection />
-          </div>
-
-          <Footer />
-        </div>
+            </div>
+          </Router>
+        </ErrorBoundary>
       )}
     </>
   );
