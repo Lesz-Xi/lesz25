@@ -97,12 +97,12 @@ const ProjectCarousel = () => {
         {projects.map((project, index) => (
           <div
             key={project.id}
-            className="project-card absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full md:w-[600px] h-[350px] md:h-auto md:aspect-[16/10] rounded-2xl md:rounded-3xl shadow-2xl flex flex-col md:flex-row bg-[#1C1C21] origin-top"
+            className="project-card absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full md:w-[600px] h-[420px] md:h-auto md:aspect-[16/10] rounded-2xl md:rounded-3xl shadow-2xl flex flex-col md:flex-row bg-[#1C1C21] origin-top"
             style={{ zIndex: index + 1 }}
           >
             {/* Image Section */}
             <div 
-              className="w-full md:w-2/3 h-[40%] md:h-full relative overflow-hidden rounded-t-2xl md:rounded-l-3xl md:rounded-tr-none px-4 py-4 md:px-0 md:py-0"
+              className="w-full md:w-2/3 h-[45%] md:h-full relative overflow-hidden rounded-t-2xl md:rounded-l-3xl md:rounded-tr-none px-4 py-4 md:px-0 md:py-0"
               style={{ backgroundColor: project.color }}
             >
                <img 
@@ -115,7 +115,7 @@ const ProjectCarousel = () => {
             </div>
 
             {/* Content Section */}
-            <div className="w-full md:w-1/3 h-[60%] md:h-full p-4 md:p-8 flex flex-col justify-between bg-[#1C1C21] border-t md:border-t-0 md:border-l border-neutral-800 rounded-b-2xl md:rounded-r-3xl md:rounded-bl-none">
+            <div className="w-full md:w-1/3 h-[55%] md:h-full p-4 md:p-8 flex flex-col justify-between bg-[#1C1C21] border-t md:border-t-0 md:border-l border-neutral-800 rounded-b-2xl md:rounded-r-3xl md:rounded-bl-none">
                <div>
                  <span className="text-[10px] font-bold tracking-widest text-[#8B7E66] uppercase mb-1 block">
                     {project.category}
