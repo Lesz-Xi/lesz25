@@ -1,6 +1,7 @@
 import React, { useRef, useLayoutEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Link } from "react-router-dom";
 
 const PhotographySection = () => {
   const containerRef = useRef(null);
@@ -9,8 +10,8 @@ const PhotographySection = () => {
     {
       id: 1,
       url: "/images/project1.png",
-      title: "Alpine Horizons",
-      location: "SWISS ALPS",
+      title: "Zug Horizons",
+      location: "ZUG, SWITZERLAND",
       year: "2023",
       category: "LANDSCAPE",
       className: "md:col-span-1 md:mt-0",
@@ -49,11 +50,11 @@ const PhotographySection = () => {
     {
       id: 5,
       url: "/images/projects/universe-splitter.png",
-      title: "Misty Peaks",
-      location: "VANCOUVER, CANADA",
+      title: "Islands & Icons",
+      location: "DAVAO CITY, PHILIPPINES",
       year: "2023",
       category: "TRAVEL",
-      className: "md:col-span-1 md:mt-12",
+      className: "md:col-span-2 md:justify-self-center md:w-[calc(50%-1.5rem)]",
       speed: 1.1
     }
   ];
@@ -123,7 +124,7 @@ const PhotographySection = () => {
           <h2 className="text-5xl md:text-7xl font-bold font-accent mb-6 tracking-normal text-[#8B7E66]">
             Photography
           </h2>
-          <p className="text-[#DBD5B5]/60 text-sm md:text-base leading-relaxed max-w-sm">
+          <p className="text-[#DBD5B5]/80 text-sm md:text-[15px] leading-relaxed max-w-sm font-geist-mono">
             Capturing moments, light, and composition. A visual journal of my perspective on the world.
           </p>
         </div>
@@ -179,10 +180,10 @@ const PhotographySection = () => {
           ))}
         </div>
 
-        {/* Bottom Actions */}
-        <div className="mt-16 flex justify-center items-center border-t border-white/10 pt-10">
+      {/* Bottom Actions */}
+        <div className="mt-16 flex justify-center items-center border-t border-white/10 pt-10 relative z-30">
           
-          <button data-hover className="group relative px-12 py-4 overflow-hidden rounded-full border border-[#8B7E66]/40 transition-all duration-500 hover:border-[#8B7E66]">
+          <Link to="/photography" className="group relative px-12 py-4 overflow-hidden rounded-full border border-[#8B7E66]/40 transition-all duration-500 hover:border-[#8B7E66]">
             {/* Animated Background Overlay */}
             <div className="absolute inset-0 bg-[#8B7E66] translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out"></div>
             
@@ -190,7 +191,7 @@ const PhotographySection = () => {
             <span className="relative z-10 text-xs font-bold tracking-[0.3em] uppercase text-[#8B7E66] group-hover:text-white transition-colors duration-500">
               See All
             </span>
-          </button>
+          </Link>
 
         </div>
 
