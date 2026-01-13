@@ -48,17 +48,26 @@ const ProjectCarousel = () => {
 
     // Animate cards
     cards.forEach((card, i) => {
-      // First card is already visible, we animate subsequent cards coming in
+      // First card is static initially. For each subsequent card:
       if (i > 0) {
+        // 1. Animate current card sliding up
         tl.fromTo(card, 
-          { yPercent: 100, opacity: 0 }, // Start below and invisible
-          { yPercent: 0, opacity: 1, ease: "power2.out", duration: 1 } // Slide up to cover
+          { yPercent: 100, opacity: 0 },
+          { yPercent: 0, opacity: 1, ease: "power2.out", duration: 1 }
         );
-      }
-      
-      // Optional: Scale down the PREVIOUS card slightly as the new one enters to create depth
-      if (i > 0) {
-         tl.to(cards[i-1], { scale: 0.95, filter: "blur(2px)", duration: 1 }, "<");
+
+        // 2. Animate ALL previous cards scaling down progressively
+        //    Card i-1 goes to 0.95, Card i-2 goes to 0.90, etc.
+        for (let j = 0; j < i; j++) {
+           const depth = i - j; // 1 for immediate prev, 2 for one before that
+           const scale = 1 - (depth * 0.05); 
+           
+           tl.to(cards[j], { 
+             scale: scale, 
+             filter: "blur(2px)", 
+             duration: 1 
+           }, "<"); // Sync with the slide-up
+        }
       }
     });
 
