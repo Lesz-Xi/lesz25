@@ -18,7 +18,7 @@ const AnimatedCounter = () => {
   const animationDuration = 1.5;
   const pauseBetweenAnimations = 0.5;
   const blurAmount = 3;
-  const borderColor = "#929292";
+  const borderColor = "var(--color-primary)";
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -43,8 +43,8 @@ const AnimatedCounter = () => {
   }, [currentIndex]);
 
   return (
-    <div id="counter" className="padding-x-lg xl:mt-0 mt-32 mb-1.5">
-      <div className="mx-auto max-w-7xl">
+    <section id="experience" className="xl:mt-0 mt-32 mb-1.5 py-10" style={{ backgroundColor: "#F0F4F8" }}>
+      <div className="mx-auto max-w-7xl px-5 md:px-10">
         <div
           className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6 xl:gap-8 relative"
           ref={containerRef}
@@ -55,16 +55,16 @@ const AnimatedCounter = () => {
               <div
                 key={`counter-${index}`}
                 ref={(el) => (itemRefs.current[index] = el)}
-                className="bg-[#000000] rounded-lg p-6 md:p-8 xl:p-10 flex flex-col justify-center items-center text-center"
+                className="bg-black rounded-lg p-6 md:p-8 xl:p-10 flex flex-col justify-center items-center text-center"
                 style={{
                   filter: isActive ? `blur(0px)` : `blur(${blurAmount}px)`,
                   transition: `filter ${animationDuration}s ease`,
                 }}
               >
-                <div className="counter-number text-[#FFFCE1] text-4xl md:text-5xl font-bold mb-2">
+                <div className="counter-number text-[#DBD5B5] text-4xl md:text-5xl font-bold mb-2">
                   <CountUp suffix={item.suffix} end={item.value} />
                 </div>
-                <div className="text-[#FFFCE1] text-base md:text-lg">
+                <div className="text-[#DBD5B5] text-base md:text-lg">
                   {item.label}
                 </div>
               </div>
@@ -116,7 +116,7 @@ const AnimatedCounter = () => {
           </motion.div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

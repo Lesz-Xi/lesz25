@@ -133,19 +133,18 @@ const ContactSection = () => {
   ];
 
   return (
-    <section id="contact" className="bg-[#0a0a0a] py-20 md:py-32">
+    <section id="contact" className="py-20 md:py-32" style={{ backgroundColor: "#070707" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center px-4 py-2 bg-neutral-800 rounded-full text-sm text-white mb-8">
-            <div className="w-2 h-2 bg-white rounded-full mr-3"></div>
+          <span className="text-xs font-bold tracking-[0.2em] text-white/40 uppercase mb-6 block">
             Contact
-          </div>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-            <span className="text-[#929292]">Let's Get in </span>
-            <span className="text-[#FFFCE1]">Touch</span>
+          </span>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white">
+            <span className="opacity-60">Let's Get in </span>
+            <span>Touch</span>
           </h2>
-          <p className="text-neutral-400 text-lg md:text-xl max-w-2xl mx-auto">
+          <p className="text-white/60 text-lg md:text-xl max-w-2xl mx-auto">
             Ready to bring your next project to life? Let's discuss how we can
             work together
           </p>
@@ -157,23 +156,23 @@ const ContactSection = () => {
           <div className="space-y-8">
             {contactInfo.map((contact, index) => (
               <div key={index} className="flex items-start space-x-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-neutral-800 rounded-full flex items-center justify-center text-neutral-400">
+                <div className="flex-shrink-0 w-12 h-12 bg-white/5 border border-white/10 rounded-full flex items-center justify-center text-white shadow-sm">
                   {contact.icon}
                 </div>
                 <div>
-                  <h3 className="text-[#FFFCE1] font-medium text-lg mb-1">
+                  <h3 className="text-white font-medium text-lg mb-1">
                     {contact.label}
                   </h3>
                   {contact.link ? (
                     <a
                       href={contact.link}
                       onMouseEnter={playHoverSound}
-                      className="text-neutral-400 hover:text-white transition-colors duration-200"
+                      className="text-white/60 hover:text-white transition-colors duration-200"
                     >
                       {contact.value}
                     </a>
                   ) : (
-                    <p className="text-neutral-400">{contact.value}</p>
+                    <p className="text-white/60">{contact.value}</p>
                   )}
                 </div>
               </div>
@@ -181,10 +180,14 @@ const ContactSection = () => {
           </div>
 
           {/* Right Side - Contact Form */}
-          <div className="bg-neutral-900 rounded-2xl p-8">
-            <form onSubmit={handleSubmit} className="space-y-6" ref={formRef}>
+          {/* Right Side - Contact Form */}
+          <div className="bg-white/[0.02] border border-white/5 backdrop-blur-2xl rounded-3xl p-8 md:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative overflow-hidden group">
+            {/* Decorative background accent */}
+            <div className="absolute -top-24 -right-24 w-48 h-48 bg-[#DBD5B5]/5 rounded-full blur-3xl group-hover:bg-[#DBD5B5]/10 transition-colors duration-700" />
+            
+            <form onSubmit={handleSubmit} className="space-y-6 relative z-10" ref={formRef}>
               {/* Name Field */}
-              <div>
+              <div className="group/input">
                 <input
                   type="text"
                   name="name"
@@ -192,12 +195,12 @@ const ContactSection = () => {
                   value={formData.name}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-4 bg-neutral-800 border border-neutral-700 rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:border-neutral-500 transition-colors duration-200"
+                  className="w-full px-6 py-4 bg-white/[0.03] border border-white/5 rounded-2xl text-white font-display uppercase tracking-[0.1em] text-xs placeholder:text-white/20 focus:outline-none focus:border-[#DBD5B5]/30 focus:bg-white/[0.05] transition-all duration-300"
                 />
               </div>
 
               {/* Email Field */}
-              <div>
+              <div className="group/input">
                 <input
                   type="email"
                   name="email"
@@ -205,20 +208,20 @@ const ContactSection = () => {
                   value={formData.email}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-4 bg-neutral-800 border border-neutral-700 rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:border-neutral-500 transition-colors duration-200"
+                  className="w-full px-6 py-4 bg-white/[0.03] border border-white/5 rounded-2xl text-white font-display uppercase tracking-[0.1em] text-xs placeholder:text-white/20 focus:outline-none focus:border-[#DBD5B5]/30 focus:bg-white/[0.05] transition-all duration-300"
                 />
               </div>
 
               {/* Message Field */}
-              <div>
+              <div className="group/input">
                 <textarea
                   name="message"
                   placeholder="Your Message"
                   value={formData.message}
                   onChange={handleInputChange}
                   required
-                  rows={6}
-                  className="w-full px-4 py-4 bg-neutral-800 border border-neutral-700 rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:border-neutral-500 transition-colors duration-200 resize-none"
+                  rows={5}
+                  className="w-full px-6 py-4 bg-white/[0.03] border border-white/5 rounded-2xl text-white font-display uppercase tracking-[0.1em] text-xs placeholder:text-white/20 focus:outline-none focus:border-[#DBD5B5]/30 focus:bg-white/[0.05] transition-all duration-300 resize-none"
                 />
               </div>
 
@@ -231,9 +234,9 @@ const ContactSection = () => {
                       : "opacity-0 translate-y-2"
                   } ${
                     status.includes("successfully")
-                      ? "text-[#FFFCE1]"
-                      : "text-[#929292]"
-                  } font-medium`}
+                      ? "text-[#DBD5B5]"
+                      : "text-red-400/60"
+                  } text-[10px] font-pixel uppercase tracking-[0.2em]`}
                 >
                   {status}
                 </div>
@@ -244,9 +247,18 @@ const ContactSection = () => {
                 type="submit"
                 disabled={loading}
                 onMouseEnter={playHoverSound}
-                className="w-full py-4 px-6 bg-gradient-to-tr from-[#a8a8a8] to-[#FFFCE1]-300 text-white font-medium rounded-xl hover:from-[#FFFCE1] hover:to-[#FFFCE1]-300 transition-all duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-[#FFFCE1] focus:ring-offset-2 focus:ring-offset-neutral-900"
+                className="w-full py-5 px-8 rounded-2xl relative overflow-hidden group/btn transition-all duration-500 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50"
               >
-                {loading ? "Sending..." : "Send Message"}
+                {/* Button Background & Border */}
+                <div className="absolute inset-0 bg-white/[0.03] backdrop-blur-md border border-white/10 rounded-2xl group-hover/btn:bg-[#DBD5B5]/[0.08] group-hover/btn:border-[#DBD5B5]/30 transition-all duration-500" />
+                
+                {/* Shimmer Effect */}
+                <div className="absolute inset-0 translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/[0.05] to-transparent pointer-events-none" />
+                
+                {/* Button Text */}
+                <span className="relative z-10 text-[11px] font-display uppercase tracking-[0.3em] text-white/80 group-hover/btn:text-white transition-colors duration-300">
+                  {loading ? "Transmitting..." : "Send Message"}
+                </span>
               </button>
             </form>
           </div>

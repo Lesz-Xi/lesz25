@@ -1,12 +1,49 @@
-# React + Vite
+# Rhine Tague's Personal Website and Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![Built with React + Vite](https://img.shields.io/badge/built%20with-React%20%2B%20Vite-bluish)
 
-Currently, two official plugins are available:
+Site is live on: [rhinetague.com](https://rhinetague.com)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+![Portfolio Preview](/public/images/readme.png)
 
-## Expanding the ESLint configuration
+## Usage Documentation
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+# Install dependencies
+npm install
+
+# Start the dev server
+npm run dev
+
+# Build for production
+npm run build
+```
+
+## Design
+
+**Color Palette:**
+
+*   **Primary Gold:** `#DBD5B5` (Text, Accents, Borders)
+*   **Secondary Gold:** `#C7B580` (Highlighted Text)
+*   **Background:** `#070707` (Deep Black)
+*   **Card Background:** `#1C1C21`
+*   **Text/Muted:** `#8B7E66`
+
+**Typography:**
+
+*   **Display:** Clash Display (Elegant, High-Contrast)
+*   **Body:** Inter / Sans-Serif
+*   **Mono:** SF Mono (Technical details)
+*   **Pixel:** Doto (Creative accents)
+
+## Image Auditing
+
+I utilize optimal compression for all 3D assets and portfolio images to ensure high performance without sacrificing visual fidelity. Images are stored in the `public/images` directory.
+
+## To Do
+
+- [x] Implement Glassmorphism UI for forms and buttons
+- [x] Refine "See My Work" button interaction and animation
+- [x] Optimize Mobile Responsiveness for Career and Role sections
+- [ ] Add more detailed case studies for Featured Projects
+- [ ] Integrate database for dynamic content management

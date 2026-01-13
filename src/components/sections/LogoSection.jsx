@@ -20,19 +20,22 @@ const LogoIcon = ({ icon }) => {
 
 const LogoSection = () => {
   return (
-    <div className="relative bg-[#0a0a0a] pt-24 pb-20 md:pt-32 md:pb-24">
+    <div className="relative pt-24 pb-20 md:pt-32 md:pb-24" style={{ backgroundColor: "#070707" }}>
       {/* Section Header */}
-      <div className="text-center mb-12">
-        <p className="text-[#FFFCE1] text-sm md:text-base mb-2">
-          Technologies I work with
-        </p>
+      <div className="text-center mb-16">
+        <span className="text-xs font-bold tracking-[0.2em] text-white/40 uppercase mb-6 block">
+          Stack
+        </span>
+        <h2 className="text-5xl md:text-6xl font-bold font-heading leading-tight text-white">
+          Technologies
+        </h2>
       </div>
 
-      {/* Container to center and limit width */}
+      {/* Container to center and Limit width */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         {/* Gradient edges for the contained area */}
-        <div className="absolute left-0 top-0 h-full w-32 bg-gradient-to-r from-[#0a0a0a] to-transparent z-20 pointer-events-none" />
-        <div className="absolute right-0 top-0 h-full w-32 bg-gradient-to-l from-[#0a0a0a] to-transparent z-20 pointer-events-none" />
+        <div className="absolute left-0 top-0 h-full w-32 bg-gradient-to-r from-[#070707] to-transparent z-20 pointer-events-none" />
+        <div className="absolute right-0 top-0 h-full w-32 bg-gradient-to-l from-[#070707] to-transparent z-20 pointer-events-none" />
 
         {/* Marquee container */}
         <div className="relative h-20 md:h-24 overflow-hidden">

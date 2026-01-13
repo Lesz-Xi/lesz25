@@ -50,7 +50,7 @@ class SoundManager {
 const soundManager = new SoundManager();
 
 // Load UI sounds
-soundManager.loadSound("uiHover", "/audio/uiupd.mp3.mov", 0.2);
+soundManager.loadSound("uiHover", "/audio/uiupd.mp3.mov", 1.0);
 
 // Export functions for components to use
 export const playHoverSound = () => soundManager.playSound("uiHover");

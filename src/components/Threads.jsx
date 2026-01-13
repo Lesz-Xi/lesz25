@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { Renderer, Program, Mesh, Triangle, Color } from "ogl";
 
 const vertexShader = `
@@ -23,9 +23,9 @@ uniform vec2 uMouse;
 
 #define PI 3.1415926538
 
-const int u_line_count = 40;
-const float u_line_width = 7.0;
-const float u_line_blur = 10.0;
+const int u_line_count = 50;
+const float u_line_width = 12.0;
+const float u_line_blur = 6.0;
 
 float Perlin2D(vec2 P) {
     vec2 Pi = floor(P);
@@ -56,14 +56,12 @@ float lineFn(vec2 st, float width, float perc, float offset, vec2 mouse, float t
     float split_offset = (perc * 0.4);
     float split_point = 0.2 + split_offset;
 
-    float amplitude_normal = smoothstep(split_point, 0.7, st.x);
-    float amplitude_strength = 0.5;
-    float minAmplitude = 0.3; // Minimum amplitude for left side motion
-    float finalAmplitude = (minAmplitude + amplitude_normal * (1.0 - minAmplitude)) * amplitude_strength
-                           * amplitude * (1.0 + (mouse.y - 0.5) * 0.2);
+    float amplitude_normal = 1.0; // Uniform amplitude
+    float amplitude_strength = 0.6;
+    float finalAmplitude = amplitude_strength * amplitude * (1.0 + (mouse.y - 0.5) * 0.2);
 
     float time_scaled = time / 10.0 + (mouse.x - 0.5) * 1.0;
-    float blur = smoothstep(split_point, split_point + 0.05, st.x) * perc;
+    float blur = 0.5 * perc; // More uniform blur dependency
 
     float xnoise = mix(
         Perlin2D(vec2(time_scaled, st.x + perc) * 2.5),
@@ -118,6 +116,12 @@ void main() {
     mainImage(gl_FragColor, gl_FragCoord.xy);
 }
 `;
+
+
+
+// ... (keep unused shaders and imports as they are used inside the component logic)
+
+// ...
 
 const Threads = ({
   color = [0.9, 0.9, 0.9],
@@ -226,4 +230,4 @@ const Threads = ({
   );
 };
 
-export default Threads;
+export default React.memo(Threads);

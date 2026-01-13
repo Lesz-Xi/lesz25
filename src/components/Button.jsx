@@ -6,7 +6,7 @@ const Button = ({ text, className }) => {
       onClick={(e) => {
         e.preventDefault();
 
-        const target = document.getElementById("work");
+        const target = document.getElementById("projects");
 
         if (target) {
           const offset = window.innerHeight * 0.1;
@@ -19,12 +19,24 @@ const Button = ({ text, className }) => {
       }}
       onMouseEnter={playHoverSound}
       className={`${className ?? ""} cta-wrapper`}
+      data-hover
     >
       <div className="cta-button group">
-        <div className="bg-circle" />
-        <p className="text">{text}</p>
-        <div className="arrow-wrapper">
-          <img src="/images/arrow-down.svg" alt="arrow" />
+        <p className="text mx-auto">{text}</p>
+        <div className="arrow-wrapper absolute right-8">
+          <svg 
+            width="24" 
+            height="24" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="currentColor" 
+            strokeWidth="3" 
+            strokeLinecap="round" 
+            strokeLinejoin="round"
+            className="text-white/80 group-hover:text-[#DBD5B5] transition-colors duration-300"
+          >
+            <path d="M7 13l5 5 5-5M12 6v12" />
+          </svg>
         </div>
       </div>
     </a>

@@ -1,81 +1,192 @@
+import React, { useRef } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
+
 const CareerSection = () => {
+  const containerRef = useRef(null);
+  const lineRef = useRef(null);
+  
   const careerData = [
     {
-      title: "Freelance Architect",
-      period: "2016 - 2020",
+      title: "ThesisLens",
+      period: "2025",
       description:
-        "As a freelance architect, I worked on a range of residential and commercial projects, balancing form and function. I collaborated with clients and contractors to transform concepts into reality, ensuring each design was both aesthetically pleasing and structurally sound.",
-      showDot: false,
+        "Founded an academic integrity platform tackling AI false positives. Developed forensic audit logging and defense algorithms to protect student work from erroneous AI detection.",
+      showDot: true,
     },
     {
-      title: "Product Designer at Spotify",
-      period: "2020 - 2022",
+      title: "SkillShift AI",
+      period: "In Progress",
       description:
-        "At Spotify, I helped shape innovative features for millions of users globally. My focus was on creating seamless music discovery experiences, enhancing user interfaces, and optimizing cross-platform navigation, which led to an improved product flow and increased user satisfaction.",
-      showDot: false,
+        "Architecting a professional-grade AI coaching platform for MLBB. Simulating Mythic-rank logic to provide role-specific, actionable feedback and adaptive training modules.",
+      showDot: true,
     },
     {
-      title: "Freelance Product Designer",
-      period: "2022 - Now",
+      title: "Universe Splitter",
+      period: "2025",
       description:
-        "Now I design user-centric products that align with client visions. As a freelance product designer, I collaborate with startups and established companies, crafting solutions that elevate user experiences and increase engagement across both digital and physical interfaces.",
-      showDot: false,
+        "Developed a quantum mechanics experiment interacting with the many-worlds interpretation. Created a visual system to represent quantum branching events.",
+      showDot: true,
+    },
+    {
+      title: "Independent Practice",
+      period: "Present",
+      description:
+        "Synthesizing creative technology and visual arts. Building bespoke digital experiences and curating a premium print collection, bridging the gap between functional code and aesthetic narrative.",
+      showDot: true,
     },
   ];
 
+  useGSAP(() => {
+    // Animate the vertical line drawing down
+    gsap.fromTo(lineRef.current, 
+      { scaleY: 0, transformOrigin: "top" },
+      {
+        scaleY: 1,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top 60%",
+          end: "bottom 80%",
+          scrub: 1,
+        }
+      }
+    );
+
+    // Animate list items
+    const items = gsap.utils.toArray(".timeline-item");
+    items.forEach((item, i) => {
+      // Fade in Content
+      gsap.fromTo(item,
+        { opacity: 0, y: 50 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: item,
+            start: "top 85%",
+            toggleActions: "play none none reverse"
+          }
+        }
+      );
+
+      // Pop the Dot
+      const dot = item.querySelector(".timeline-dot");
+      if (dot) {
+         gsap.fromTo(dot,
+            { scale: 0, opacity: 0 },
+            {
+               scale: 1,
+               opacity: 1,
+               duration: 0.4,
+               ease: "back.out(1.7)", // Bouncy pop
+               scrollTrigger: {
+                  trigger: item,
+                  start: "top 60%", // Activate when the item is well into view (approx where the line hits)
+                  toggleActions: "play none none reverse"
+               }
+            }
+         );
+      }
+    });
+
+  }, { scope: containerRef });
+
   return (
-    <section id="career" className="bg-[#0a0a0a] py-20 md:py-32">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="career" ref={containerRef} className="py-20 md:py-32 relative overflow-hidden" style={{ backgroundColor: "#070707" }}>
+        
+        {/* Background Decorative Line for Timeline */}
+        <div className="absolute left-[20px] md:left-1/2 top-0 bottom-0 w-px bg-neutral-200 transform md:-translate-x-1/2 h-full z-0"></div>
+        <div ref={lineRef} className="absolute left-[20px] md:left-1/2 top-0 bottom-0 w-1 bg-[#8B7E66] transform md:-translate-x-1/2 h-full z-0 origin-top"></div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
-        <div className="mb-16">
-          <div className="inline-flex items-center px-4 py-2 bg-neutral-800 rounded-full text-sm text-white mb-8">
-            <div className="w-2 h-2 bg-white rounded-full mr-3"></div>
-            Career
-          </div>
-          <h2 className="text-4xl md:text-6xl font-bold text-[#FFFCE1] mb-4">
-            My Career
+        <div className="mb-20 text-center md:text-left md:pl-8">
+          <span className="text-xs font-bold tracking-[0.2em] text-[#DBD5B5]/40 uppercase mb-6 block">
+            Timeline
+          </span>
+          <h2 className="text-5xl md:text-7xl font-bold font-accent text-[#8B7E66] mb-4">
+            The Journey
           </h2>
         </div>
 
         {/* Career Timeline */}
-        <div className="space-y-16 md:space-y-20">
+        <div className="space-y-16 md:space-y-32 relative">
           {careerData.map((item, index) => (
-            <div key={index} className="relative">
-              {/* Career Item */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-start">
-                {/* Left Side - Title & Period */}
-                <div className="space-y-4">
-                  <div className="flex items-center space-x-4">
-                    <h3 className="text-xl md:text-2xl font-semibold text-[#FFFCE1]">
-                      {item.title}
-                    </h3>
-                    {item.showDot && (
-                      <div className="w-3 h-3 bg-white rounded-full"></div>
+            <div key={index} className={`timeline-item relative flex flex-col md:flex-row gap-8 md:gap-0 items-center md:items-start w-full ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
+                
+                 {/* Half WIdth Container 1 */}
+                 <div className={`w-full md:w-1/2 pl-12 md:pl-0 ${index % 2 === 0 ? 'md:pr-12 md:text-right' : 'md:pl-12 md:text-left'}`}>
+                    {/* Content Logic: Even = Title/Date, Odd = Description */}
+                    {index % 2 === 0 ? (
+                        <div className="space-y-2">
+                             <h3 className="text-2xl md:text-3xl font-serif font-bold text-[#DBD5B5] group-hover:text-white transition-colors duration-300">
+                                {item.title}
+                              </h3>
+                              <p className="text-[#8B7E66] font-mono text-sm tracking-widest uppercase">
+                                {item.period}
+                              </p>
+                        </div>
+                    ) : (
+                        <p className="leading-relaxed text-base md:text-lg text-neutral-400 font-light">
+                             {item.description}
+                        </p>
                     )}
-                  </div>
-                  <p className="text-neutral-400 text-sm md:text-base">
-                    {item.period}
-                  </p>
-                </div>
+                 </div>
 
-                {/* Right Side - Description */}
-                <div className="md:pl-8">
-                  <p
-                    className={`leading-relaxed text-base md:text-lg ${
-                      item.title === "Freelance Architect"
-                        ? "text-[#929292]"
-                        : "text-[#929292]"
-                    }`}
-                  >
-                    {item.description}
-                  </p>
-                </div>
-              </div>
+                 {/* Center Dot */}
+                 <div className="absolute left-[20px] md:left-1/2 -ml-[6px] top-0 md:top-2 w-3 h-3 bg-[#070707] border border-[#8B7E66] rounded-full z-10 timeline-dot transform scale-0 md:scale-100 md:opacity-0"></div>
 
-              {/* Divider Line */}
-              {index < careerData.length - 1 && (
-                <div className="mt-16 md:mt-20 h-px bg-neutral-800"></div>
-              )}
+                 {/* Half Width Container 2 */}
+                 <div className={`w-full pl-12 md:pl-0 md:w-1/2 ${index % 2 === 0 ? 'md:pl-12 md:text-left' : 'md:pr-12 md:text-right'}`}>
+                      {/* Content Logic: Even = Description, Odd = Title/Date */}
+                      {index % 2 === 0 ? (
+                           <p className="leading-relaxed text-base md:text-lg text-neutral-400 font-light hidden md:block">
+                               {item.description}
+                           </p>
+                      ) : (
+                          <div className="space-y-2 hidden md:block">
+                               <h3 className="text-2xl md:text-3xl font-serif font-bold text-[#DBD5B5] group-hover:text-white transition-colors duration-300">
+                                  {item.title}
+                                </h3>
+                                <p className="text-[#8B7E66] font-mono text-sm tracking-widest uppercase">
+                                  {item.period}
+                                </p>
+                          </div>
+                      )}
+                       
+                       {/* Mobile Only Fallback for the "Other" side content */}
+                       {/* If index % 2 === 0, we showed Description on Desktop (Right). On Mobile, we need to show it below title (which was on Left/Top). 
+                           Actually, for mobile, we usually want: Title, Date, Description stacked.
+                           The Zig Zag is confusing on mobile. Let's simplify mobile: Always Title -> Description.
+                           This means the conditional logic above is mostly for DESKTOP.
+                       */}
+                       <div className="md:hidden block">
+                           {index % 2 === 0 ? (
+                               <p className="leading-relaxed text-base text-neutral-400 font-light mt-2">
+                                   {item.description}
+                               </p>
+                           ) : (
+                               <div className="space-y-2">
+                                   <h3 className="text-2xl font-serif font-bold text-[#DBD5B5]">
+                                       {item.title}
+                                   </h3>
+                                   <p className="text-[#8B7E66] font-mono text-sm tracking-widest uppercase">
+                                       {item.period}
+                                   </p>
+                                   <p className="leading-relaxed text-base text-neutral-400 font-light mt-2">
+                                       {item.description}
+                                   </p>
+                               </div>
+                           )}
+                       </div>
+                 </div>
+
             </div>
           ))}
         </div>
