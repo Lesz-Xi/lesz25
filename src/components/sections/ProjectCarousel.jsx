@@ -35,20 +35,19 @@ const ProjectCarousel = () => {
   useGSAP(() => {
     const cards = gsap.utils.toArray(".project-card");
     
-    // Create a timeline that pins the section
+    // Unified Timeline - Works for both Mobile & Desktop
+    // We are applying the "Mobile" style globaly as requested
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: containerRef.current,
         start: "top top",
-        end: `+=${projects.length * 100}%`, // Pin for length * viewport height
+        end: `+=${projects.length * 100}%`, 
         scrub: 1,
         pin: true,
       }
     });
 
-    // Animate cards
     cards.forEach((card, i) => {
-      // First card is static initially. For each subsequent card:
       if (i > 0) {
         // 1. Animate current card sliding up
         tl.fromTo(card, 
@@ -57,16 +56,17 @@ const ProjectCarousel = () => {
         );
 
         // 2. Animate ALL previous cards scaling down progressively
-        //    Card i-1 goes to 0.95, Card i-2 goes to 0.90, etc.
+        //    Using -35px offset and removing blur for clearer, "perfect" piling
         for (let j = 0; j < i; j++) {
-           const depth = i - j; // 1 for immediate prev, 2 for one before that
-           const scale = 1 - (depth * 0.05); 
-           
-           tl.to(cards[j], { 
-             scale: scale, 
-             filter: "blur(2px)", 
-             duration: 1 
-           }, "<"); // Sync with the slide-up
+            const depth = i - j;
+            const scale = 1 - (depth * 0.05); 
+            const yOffset = -depth * 35; 
+            
+            tl.to(cards[j], { 
+              scale: scale, 
+              y: yOffset,
+              duration: 1 
+            }, "<"); 
         }
       }
     });
@@ -110,7 +110,7 @@ const ProjectCarousel = () => {
             </div>
 
             {/* Content Section */}
-            <div className="w-full md:w-1/3 h-[50%] md:h-full p-6 md:p-8 flex flex-col justify-center bg-[#1C1C21] border-l border-neutral-800">
+            <div className="w-full md:w-1/3 h-[50%] md:h-full p-5 md:p-8 flex flex-col bg-[#1C1C21] border-l border-neutral-800">
                <span className="text-xs font-bold tracking-widest text-[#8B7E66] uppercase mb-2">
                   {project.category}
                </span>

@@ -23,11 +23,12 @@ export const Card = forwardRef(({ customClass, ...rest }, ref) => (
 ));
 Card.displayName = "Card";
 
-const makeSlot = (i, distX, distY, total) => ({
+const makeSlot = (i, distX, distY, total, scaleStep) => ({
   x: i * distX,
   y: -i * distY,
   z: -i * distX * 1.5,
   zIndex: total - i,
+  scale: 1 - i * scaleStep,
 });
 
 const placeNow = (el, slot, skew) =>
@@ -35,6 +36,7 @@ const placeNow = (el, slot, skew) =>
     x: slot.x,
     y: slot.y,
     z: slot.z,
+    scale: slot.scale,
     xPercent: -50,
     yPercent: -50,
     skewY: skew,
@@ -48,6 +50,7 @@ const CardSwap = ({
   height = 400,
   cardDistance = 60,
   verticalDistance = 70,
+  scaleStep = 0.05,
   delay = 6000,
   pauseOnHover = false,
   onCardClick,
@@ -107,7 +110,13 @@ const CardSwap = ({
     tl.addLabel("promote", `-=${config.durDrop * config.promoteOverlap}`);
     rest.forEach((idx, i) => {
       const el = refs[idx].current;
-      const slot = makeSlot(i, cardDistance, verticalDistance, refs.length);
+      const slot = makeSlot(
+        i,
+        cardDistance,
+        verticalDistance,
+        refs.length,
+        scaleStep
+      );
       tl.set(el, { zIndex: slot.zIndex }, "promote");
       tl.to(
         el,
@@ -115,6 +124,7 @@ const CardSwap = ({
           x: slot.x,
           y: slot.y,
           z: slot.z,
+          scale: slot.scale,
           duration: config.durMove,
           ease: config.ease,
         },
@@ -126,7 +136,8 @@ const CardSwap = ({
       refs.length - 1,
       cardDistance,
       verticalDistance,
-      refs.length
+      refs.length,
+      scaleStep
     );
     tl.addLabel("return", `promote+=${config.durMove * config.returnDelay}`);
     tl.call(
@@ -141,6 +152,7 @@ const CardSwap = ({
       elFront,
       {
         y: backSlot.y,
+        scale: backSlot.scale,
         duration: config.durReturn,
         ease: config.ease,
       },
@@ -150,7 +162,7 @@ const CardSwap = ({
     tl.call(() => {
       order.current = [...rest, front];
     });
-  }, [refs, config, cardDistance, verticalDistance]);
+  }, [refs, config, cardDistance, verticalDistance, scaleStep]);
 
   // Drag gesture binding
   const bind = useDrag(({ down, movement: [mx, my], velocity: [vx] }) => {
@@ -171,7 +183,7 @@ const CardSwap = ({
     refs.forEach((r, i) =>
       placeNow(
         r.current,
-        makeSlot(i, cardDistance, verticalDistance, total),
+        makeSlot(i, cardDistance, verticalDistance, total, scaleStep),
         skewAmount
       )
     );
@@ -201,6 +213,7 @@ const CardSwap = ({
   }, [
     cardDistance,
     verticalDistance,
+    scaleStep,
     delay,
     pauseOnHover,
     skewAmount,

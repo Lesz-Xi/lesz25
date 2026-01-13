@@ -73,7 +73,7 @@ const Hero = () => {
         <header
           className="flex flex-col md:w-full w-screen
           md:px-20
-          px-5 pt-24 md:pt-48 pb-20"
+          px-5 pt-16 md:pt-48 pb-20"
         >
           <div className="flex flex-col gap-7">
             <div className="hero-text min-h-[400px]"> {/* Min-height to prevent layout shift */}
@@ -103,7 +103,7 @@ const Hero = () => {
               </h1>
 
               {typingStep >= 2 && (
-                <p className="hero-line font-heading text-[#929292] text-lg md:text-xl lg:text-2xl mb-20 max-w-3xl tracking-[0.05em] leading-[2]">
+                <p className="hero-line font-heading text-[#929292] text-lg md:text-xl lg:text-2xl mb-10 md:mb-20 max-w-3xl tracking-[0.05em] leading-[2]">
                   <Typewriter text="I'm a " speed={50} cursor={false} onComplete={() => setTypingStep(3)} />
                   
                   {typingStep >= 3 && (
@@ -145,7 +145,7 @@ const Hero = () => {
             </div>
 
             <Button
-              className="md:w-80 md:h-16 w-60 h-12 mt-8"
+              className="md:w-80 md:h-16 w-60 h-12 mt-6 md:mt-8"
               id="button"
               text="See my Work"
             />
