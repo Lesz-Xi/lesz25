@@ -4,7 +4,7 @@
 
 Site is live on: [rhinetague.com](https://rhinetague.com)
 
-![Portfolio Preview](public/images/feature_preview.jpg)
+![Portfolio Preview](public/images/portfolio_preview_v2.jpg)
 
 ## Usage Documentation
 
