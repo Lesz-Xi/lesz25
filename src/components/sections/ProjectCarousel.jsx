@@ -87,7 +87,7 @@ const ProjectCarousel = () => {
         {projects.map((project, index) => (
           <div
             key={project.id}
-            className="project-card absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full md:w-[600px] aspect-[4/5] md:aspect-[16/10] rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row bg-[#1C1C21] origin-center"
+            className="project-card absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full md:w-[600px] aspect-[4/5] md:aspect-[16/10] rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row bg-[#1C1C21] origin-top"
             style={{ zIndex: index + 1 }}
           >
             {/* Image Section */}
