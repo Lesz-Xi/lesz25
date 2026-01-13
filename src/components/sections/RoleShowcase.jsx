@@ -202,21 +202,21 @@ const RoleShowcase = () => {
         {/* Role 1 */}
         {/* Role 1 */}
         <div className="role-item absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
-            <h2 className="text-[12vw] md:text-[12vw] leading-none font-bold font-pixel tracking-tighter uppercase text-[#DBD5B5] whitespace-nowrap">
+            <h2 className="text-[10vw] md:text-[12vw] leading-none font-bold font-pixel tracking-tighter uppercase text-[#DBD5B5] whitespace-nowrap">
                 Developer
             </h2>
         </div>
 
         {/* Role 2 */}
         <div className="role-item absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center opacity-0">
-            <h2 className="text-[10vw] md:text-[12vw] leading-none font-bold font-pixel tracking-tighter uppercase text-[#DBD5B5] whitespace-nowrap">
+            <h2 className="text-[8vw] md:text-[12vw] leading-none font-bold font-pixel tracking-tighter uppercase text-[#DBD5B5] whitespace-nowrap">
                 Photographer
             </h2>
         </div>
 
         {/* Role 3 */}
         <div className="role-item absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center opacity-0 flex flex-col items-center justify-center">
-            <h2 className="text-[12vw] md:text-[12vw] leading-none font-bold font-pixel tracking-tighter uppercase text-[#C7B580] whitespace-nowrap z-10 relative">
+            <h2 className="text-[11vw] md:text-[12vw] leading-none font-bold font-pixel tracking-tighter uppercase text-[#C7B580] whitespace-nowrap z-10 relative">
                 Designer
             </h2>
         </div>

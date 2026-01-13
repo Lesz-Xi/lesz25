@@ -76,7 +76,7 @@ const Navbar = () => {
         className={`md:hidden absolute top-full right-8 mt-4 w-64 transition-all duration-500 ease-in-out pointer-events-none
         ${isMobileMenuOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}
       >
-        <div className="bg-black/95 backdrop-blur-2xl border border-white/10 rounded-3xl p-6 flex flex-col gap-4 shadow-3xl overflow-hidden pointer-events-auto">
+        <div className={`bg-black/95 backdrop-blur-2xl border border-white/10 rounded-3xl p-6 flex flex-col gap-4 shadow-3xl overflow-hidden ${isMobileMenuOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}>
           {navLinks.map((link, index) => (
             <a
               key={link.name}

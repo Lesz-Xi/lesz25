@@ -105,7 +105,7 @@ const ProjectCarousel = () => {
                <span className="text-xs font-bold tracking-widest text-[#8B7E66] uppercase mb-2">
                   {project.category}
                </span>
-               <h3 className="text-3xl font-serif font-bold text-[#DBD5B5] mb-4 leading-tight">
+               <h3 className="text-2xl md:text-3xl font-serif font-bold text-[#DBD5B5] mb-4 leading-tight">
                   {project.title}
                </h3>
                 <a href="#" className="mt-auto md:mt-0 group/btn relative inline-flex items-center justify-center px-6 py-3 overflow-hidden font-display font-medium tracking-wide text-white transition-all duration-300 bg-white/5 border border-white/10 rounded-full hover:bg-white/10 hover:border-[#DBD5B5]/30 hover:scale-[1.02] focus:outline-none ring-offset-2 focus:ring-2 ring-[#DBD5B5]">

@@ -121,7 +121,7 @@ const CareerSection = () => {
             <div key={index} className={`timeline-item relative flex flex-col md:flex-row gap-8 md:gap-0 items-center md:items-start w-full ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
                 
                  {/* Half WIdth Container 1 */}
-                 <div className={`w-full md:w-1/2 pl-12 md:pl-0 ${index % 2 === 0 ? 'md:pr-12 md:text-right' : 'md:pl-12 md:text-left'}`}>
+                 <div className={`w-full md:w-1/2 pl-16 md:pl-0 text-left ${index % 2 === 0 ? 'md:pr-12 md:text-right' : 'md:pl-12 md:text-left'}`}>
                     {/* Content Logic: Even = Title/Date, Odd = Description */}
                     {index % 2 === 0 ? (
                         <div className="space-y-2">
@@ -143,7 +143,7 @@ const CareerSection = () => {
                  <div className="absolute left-[20px] md:left-1/2 -ml-[6px] top-0 md:top-2 w-3 h-3 bg-[#070707] border border-[#8B7E66] rounded-full z-10 timeline-dot transform scale-0 md:scale-100 md:opacity-0"></div>
 
                  {/* Half Width Container 2 */}
-                 <div className={`w-full pl-12 md:pl-0 md:w-1/2 ${index % 2 === 0 ? 'md:pl-12 md:text-left' : 'md:pr-12 md:text-right'}`}>
+                 <div className={`w-full pl-16 md:pl-0 md:w-1/2 text-left ${index % 2 === 0 ? 'md:pl-12 md:text-left' : 'md:pr-12 md:text-right'}`}>
                       {/* Content Logic: Even = Description, Odd = Title/Date */}
                       {index % 2 === 0 ? (
                            <p className="leading-relaxed text-base md:text-lg text-neutral-400 font-light hidden md:block">
