@@ -46,7 +46,7 @@ const IntroAnimation = ({ onComplete }) => {
               initial={{ y: 100, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-              className="text-4xl md:text-6xl font-bold font-pixel tracking-[0.5em] text-[#0D0C1D] uppercase"
+              className="text-3xl md:text-6xl font-bold font-pixel tracking-[0.2em] md:tracking-[0.5em] text-[#0D0C1D] uppercase text-center"
             >
               RHINE TAGUE
             </motion.h1>
