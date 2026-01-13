@@ -73,8 +73,6 @@ const Hero = () => {
         <header
           className="flex flex-col justify-center md:w-full w-screen
           md:px-20
-          className="flex flex-col justify-center md:w-full w-screen
-          md:px-20
           px-5 pt-32 md:pt-48 pb-20"
         >
           <div className="flex flex-col gap-7">
