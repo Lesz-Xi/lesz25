@@ -93,7 +93,7 @@ const ProjectCarousel = () => {
       </div>
 
       {/* Cards Container */}
-      <div className="relative w-full h-[65vh] md:h-[80vh] flex items-center justify-center max-w-[90vw] md:max-w-5xl mt-16 md:mt-20">
+      <div className="relative w-full h-[75vh] md:h-[80vh] flex items-center justify-center max-w-[90vw] md:max-w-5xl mt-8 md:mt-20">
         {projects.map((project, index) => (
           <div
             key={project.id}
