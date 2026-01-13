@@ -100,7 +100,7 @@ const ServicesSection = () => {
             </h2>
           </div>
           <div className="md:col-span-4">
-            <p className="text-[#0D0C1D]/60 text-lg leading-relaxed">
+            <p className="text-[#0D0C1D]/60 text-lg leading-relaxed font-general-sans">
               A convergence of technical precision and artistic intuition. Every project is approached as a bespoke architectural endeavor.
             </p>
           </div>
@@ -129,7 +129,7 @@ const ServicesSection = () => {
               </h3>
 
               {/* Description */}
-              <p className="text-[#0D0C1D]/60 mb-10 leading-relaxed min-h-[80px]">
+              <p className="text-[#0D0C1D]/60 mb-10 leading-relaxed min-h-[80px] font-general-sans">
                 {service.description}
               </p>
 

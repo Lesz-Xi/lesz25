@@ -10,6 +10,7 @@
   --font-accent: "Dancing Script", cursive;
   --font-mono: "SF Mono", "Monaco", "Inconsolata", "Fira Code", monospace;
   --font-geist-mono: "Geist Mono", monospace;
+  --font-general-sans: "General Sans", sans-serif;
   --color-white-50: #d9ecff;
   --color-black-50: #1c1c21;
   --color-black-100: #0e0e10;
@@ -36,6 +37,10 @@
 
 .font-geist-mono {
   font-family: var(--font-geist-mono) !important;
+}
+
+.font-general-sans {
+  font-family: var(--font-general-sans) !important;
 }
 
 html,

@@ -23,8 +23,8 @@ const Navbar = () => {
 
   return (
     <nav className="fixed top-5 left-0 w-full z-50 px-10 flex justify-between items-center pointer-events-none">
-      {/* Logo Area (Left) */}
-      <div className="flex-shrink-0 pointer-events-auto">
+      {/* Logo Area (Left - shifted slightly right) */}
+      <div className="flex-shrink-0 pointer-events-auto ml-4 md:ml-8">
         <Logo 
           className="w-10 h-10 transition-transform duration-300 hover:scale-110 drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]" 
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} 

@@ -150,8 +150,8 @@ const Hero = () => {
               text="See my Work"
             />
 
-            {/* Threads component below the button */}
-            <div className="w-full h-[400px] -mt-12 relative opacity-100 mix-blend-screen pointer-events-none">
+            {/* Threads component below the button - full width to left edge */}
+            <div className="w-screen h-[400px] -mt-12 -ml-5 md:-ml-20 relative opacity-100 mix-blend-screen pointer-events-none">
               <Threads
                 amplitude={2.5}
                 distance={1}

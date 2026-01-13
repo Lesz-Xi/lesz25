@@ -123,7 +123,7 @@ const PhotographySection = () => {
           <h2 className="text-5xl md:text-7xl font-bold font-accent mb-6 tracking-normal text-[#8B7E66]">
             Photography
           </h2>
-          <p className="text-[#DBD5B5]/60 text-sm md:text-base leading-relaxed max-w-sm font-geist-mono">
+          <p className="text-[#DBD5B5]/60 text-sm md:text-base leading-relaxed max-w-sm">
             Capturing moments, light, and composition. A visual journal of my perspective on the world.
           </p>
         </div>
