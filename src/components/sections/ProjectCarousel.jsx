@@ -97,12 +97,12 @@ const ProjectCarousel = () => {
         {projects.map((project, index) => (
           <div
             key={project.id}
-            className="project-card absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full md:w-[600px] h-[420px] md:h-auto md:aspect-[16/10] rounded-2xl md:rounded-3xl shadow-2xl flex flex-col md:flex-row bg-[#1C1C21] origin-top"
+            className="project-card absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full md:w-[600px] h-[480px] md:h-auto md:aspect-[16/10] rounded-2xl md:rounded-3xl shadow-2xl flex flex-col md:flex-row bg-[#1C1C21] origin-top overflow-hidden"
             style={{ zIndex: index + 1 }}
           >
             {/* Image Section */}
             <div 
-              className="w-full md:w-2/3 h-[45%] md:h-full relative overflow-hidden rounded-t-2xl md:rounded-l-3xl md:rounded-tr-none px-4 py-4 md:px-0 md:py-0"
+              className="w-full md:w-2/3 h-[35%] md:h-full relative overflow-hidden rounded-t-2xl md:rounded-l-3xl md:rounded-tr-none"
               style={{ backgroundColor: project.color }}
             >
                <img 
@@ -111,16 +111,15 @@ const ProjectCarousel = () => {
                  className="w-full h-full"
                  style={{ objectFit: project.fit || "contain" }}
                />
-               {/* Removed dark overlay to keep image bright and clear */}
             </div>
 
             {/* Content Section */}
-            <div className="w-full md:w-1/3 h-[55%] md:h-full p-4 md:p-8 flex flex-col justify-between bg-[#1C1C21] border-t md:border-t-0 md:border-l border-neutral-800 rounded-b-2xl md:rounded-r-3xl md:rounded-bl-none">
+            <div className="w-full md:w-1/3 h-[65%] md:h-full p-5 md:p-8 flex flex-col justify-start gap-4 bg-[#1C1C21] border-t md:border-t-0 md:border-l border-neutral-800 rounded-b-2xl md:rounded-r-3xl md:rounded-bl-none">
                <div>
                  <span className="text-[10px] font-bold tracking-widest text-[#8B7E66] uppercase mb-1 block">
                     {project.category}
                  </span>
-                 <h3 className="text-lg md:text-3xl font-serif font-bold text-[#DBD5B5] leading-tight">
+                 <h3 className="text-xl md:text-3xl font-serif font-bold text-[#DBD5B5] leading-tight">
                     {project.title}
                  </h3>
                </div>
@@ -128,11 +127,11 @@ const ProjectCarousel = () => {
                  href={project.link} 
                  target="_blank" 
                  rel="noopener noreferrer" 
-                 className="group/btn inline-flex items-center justify-center px-4 py-2 md:px-6 md:py-3 font-display font-medium text-white bg-white/5 border border-white/10 rounded-full hover:bg-white/10 hover:border-[#DBD5B5]/30 transition-all duration-300"
+                 className="group/btn inline-flex items-center justify-center px-5 py-3 md:px-6 md:py-3 font-display font-medium text-white bg-white/5 border border-white/10 rounded-full hover:bg-white/10 hover:border-[#DBD5B5]/30 transition-all duration-300 mt-auto"
                >
-                  <span className="flex items-center gap-2 text-[9px] md:text-[10px] uppercase tracking-[0.15em] text-[#DBD5B5] group-hover/btn:text-white transition-colors">
+                  <span className="flex items-center gap-2 text-[10px] md:text-[10px] uppercase tracking-[0.15em] text-[#DBD5B5] group-hover/btn:text-white transition-colors">
                     View Live Project
-                    <svg className="w-3 h-3 md:w-4 md:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                     </svg>
                   </span>
