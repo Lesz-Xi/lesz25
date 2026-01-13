@@ -91,7 +91,7 @@ const ProjectCarousel = () => {
             style={{ zIndex: index + 1 }}
           >
             {/* Image Section */}
-            <div className="w-full md:w-2/3 h-[55%] md:h-full relative overflow-hidden">
+            <div className="w-full md:w-2/3 h-[50%] md:h-full relative overflow-hidden">
                <img 
                  src={project.image} 
                  alt={project.title}
@@ -101,7 +101,7 @@ const ProjectCarousel = () => {
             </div>
 
             {/* Content Section */}
-            <div className="w-full md:w-1/3 h-[45%] md:h-full p-5 md:p-8 flex flex-col justify-center bg-[#1C1C21] border-l border-neutral-800">
+            <div className="w-full md:w-1/3 h-[50%] md:h-full p-6 md:p-8 flex flex-col justify-center bg-[#1C1C21] border-l border-neutral-800">
                <span className="text-xs font-bold tracking-widest text-[#8B7E66] uppercase mb-2">
                   {project.category}
                </span>

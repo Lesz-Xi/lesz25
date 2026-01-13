@@ -63,7 +63,7 @@ const Hero = () => {
   ];
 
   return (
-    <section id="hero" className="relative overflow-hidden min-h-screen flex items-center">
+    <section id="hero" className="relative overflow-hidden min-h-screen flex items-start">
 
 
       <div className="absolute top-0 left-0 z-10"></div>
@@ -73,7 +73,9 @@ const Hero = () => {
         <header
           className="flex flex-col justify-center md:w-full w-screen
           md:px-20
-          px-5 pt-16 md:pt-32 pb-20"
+          className="flex flex-col justify-center md:w-full w-screen
+          md:px-20
+          px-5 pt-32 md:pt-48 pb-20"
         >
           <div className="flex flex-col gap-7">
             <div className="hero-text min-h-[400px]"> {/* Min-height to prevent layout shift */}
