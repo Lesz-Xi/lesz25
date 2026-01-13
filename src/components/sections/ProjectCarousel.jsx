@@ -14,21 +14,27 @@ const ProjectCarousel = () => {
       title: "ThesisLens",
       category: "Academic Integrity",
       image: "/images/projects/thesislens-v2.png",
-      color: "#DFDFF2"
+      color: "#F4F1EA",
+      link: "https://thesislens.space/",
+      fit: "contain"
     },
     {
       id: 2,
-      title: "SkillShift AI",
+      title: "SkillShift",
       category: "Coaching Platform",
       image: "/images/projects/skillshift-v3.png",
-      color: "#E2E2D3"
+      color: "#111111",
+      link: "#",
+      fit: "contain"
     },
     {
       id: 3,
       title: "Universe Splitter",
       category: "Quantum Experiment",
       image: "/images/projects/universe-splitter.png",
-      color: "#D6D6D6"
+      color: "#000000",
+      link: "https://univ-spitter.vercel.app/",
+      fit: "cover"
     }
   ];
 
@@ -95,13 +101,17 @@ const ProjectCarousel = () => {
             style={{ zIndex: index + 1 }}
           >
             {/* Image Section */}
-            <div className="w-full md:w-2/3 h-[40%] md:h-full relative overflow-hidden rounded-t-2xl md:rounded-l-3xl md:rounded-tr-none">
+            <div 
+              className="w-full md:w-2/3 h-[40%] md:h-full relative overflow-hidden rounded-t-2xl md:rounded-l-3xl md:rounded-tr-none px-4 py-4 md:px-0 md:py-0"
+              style={{ backgroundColor: project.color }}
+            >
                <img 
                  src={project.image} 
                  alt={project.title}
-                 className="w-full h-full object-cover"
+                 className="w-full h-full"
+                 style={{ objectFit: project.fit || "contain" }}
                />
-               <div className="absolute inset-0 bg-black/10"></div>
+               {/* Removed dark overlay to keep image bright and clear */}
             </div>
 
             {/* Content Section */}
@@ -114,7 +124,12 @@ const ProjectCarousel = () => {
                     {project.title}
                  </h3>
                </div>
-               <a href="#" className="group/btn inline-flex items-center justify-center px-4 py-2 md:px-6 md:py-3 font-display font-medium text-white bg-white/5 border border-white/10 rounded-full hover:bg-white/10 hover:border-[#DBD5B5]/30 transition-all duration-300">
+               <a 
+                 href={project.link} 
+                 target="_blank" 
+                 rel="noopener noreferrer" 
+                 className="group/btn inline-flex items-center justify-center px-4 py-2 md:px-6 md:py-3 font-display font-medium text-white bg-white/5 border border-white/10 rounded-full hover:bg-white/10 hover:border-[#DBD5B5]/30 transition-all duration-300"
+               >
                   <span className="flex items-center gap-2 text-[9px] md:text-[10px] uppercase tracking-[0.15em] text-[#DBD5B5] group-hover/btn:text-white transition-colors">
                     View Live Project
                     <svg className="w-3 h-3 md:w-4 md:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

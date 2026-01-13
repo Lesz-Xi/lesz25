@@ -1,6 +1,5 @@
 import { useState, useRef } from "react";
 import emailjs from "@emailjs/browser";
-import { playHoverSound } from "../../utils/soundUtils";
 
 const ContactSection = () => {
   const formRef = useRef(null);
@@ -40,10 +39,7 @@ const ContactSection = () => {
     setShowStatus(false);
     setStatus("");
 
-    // Debug: Log environment variables
-    console.log("Service ID:", import.meta.env.VITE_APP_EMAILJS_SERVICE_ID);
-    console.log("Template ID:", import.meta.env.VITE_APP_EMAILJS_TEMPLATE_ID);
-    console.log("Public Key:", import.meta.env.VITE_APP_EMAILJS_PUBLIC_KEY);
+
 
     try {
       const result = await emailjs.sendForm(
@@ -81,8 +77,8 @@ const ContactSection = () => {
         </svg>
       ),
       label: "Email",
-      value: "leszatt@gmail.com",
-      link: "mailto:leszatt@gmail.com",
+      value: "rhinelesther@gmail.com",
+      link: "mailto:rhinelesther@gmail.com",
     },
     {
       icon: (
@@ -127,7 +123,7 @@ const ContactSection = () => {
         </svg>
       ),
       label: "Location",
-      value: "Davao City, Ph",
+      value: "Davao City, PH",
       link: null,
     },
   ];
@@ -140,8 +136,8 @@ const ContactSection = () => {
           <span className="text-xs font-bold tracking-[0.2em] text-white/40 uppercase mb-6 block">
             Contact
           </span>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white">
-            <span className="opacity-60">Let's Get in </span>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-[#DBD5B5]">
+            <span className="opacity-60 text-[#8B7E66]">Let's Get in </span>
             <span>Touch</span>
           </h2>
           <p className="text-white/60 text-lg md:text-xl max-w-2xl mx-auto font-general-sans">
@@ -156,23 +152,24 @@ const ContactSection = () => {
           <div className="space-y-8">
             {contactInfo.map((contact, index) => (
               <div key={index} className="flex items-start space-x-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-white/5 border border-white/10 rounded-full flex items-center justify-center text-white shadow-sm">
+                <div className="flex-shrink-0 w-12 h-12 bg-white/5 border border-[#8B7E66]/30 rounded-full flex items-center justify-center text-[#DBD5B5] shadow-sm">
                   {contact.icon}
                 </div>
                 <div>
-                  <h3 className="text-white font-medium text-lg mb-1">
+                  <h3 className="text-[#8B7E66] font-medium text-lg mb-1 uppercase tracking-wider text-xs font-display">
                     {contact.label}
                   </h3>
                   {contact.link ? (
                     <a
                       href={contact.link}
-                      onMouseEnter={playHoverSound}
-                      className="text-white/60 hover:text-white transition-colors duration-200"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[#DBD5B5] hover:text-white transition-colors duration-200 cursor-pointer font-medium"
                     >
                       {contact.value}
                     </a>
                   ) : (
-                    <p className="text-white/60">{contact.value}</p>
+                    <p className="text-[#DBD5B5] font-medium">{contact.value}</p>
                   )}
                 </div>
               </div>
@@ -195,7 +192,7 @@ const ContactSection = () => {
                   value={formData.name}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-6 py-4 bg-white/[0.03] border border-white/5 rounded-2xl text-white font-display uppercase tracking-[0.1em] text-xs placeholder:text-white/20 focus:outline-none focus:border-[#DBD5B5]/30 focus:bg-white/[0.05] transition-all duration-300"
+                  className="w-full px-6 py-4 bg-white/[0.03] border border-white/5 rounded-2xl text-white font-display tracking-[0.1em] text-xs placeholder:text-white/20 focus:outline-none focus:border-[#DBD5B5]/30 focus:bg-white/[0.05] transition-all duration-300"
                 />
               </div>
 
@@ -208,7 +205,7 @@ const ContactSection = () => {
                   value={formData.email}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-6 py-4 bg-white/[0.03] border border-white/5 rounded-2xl text-white font-display uppercase tracking-[0.1em] text-xs placeholder:text-white/20 focus:outline-none focus:border-[#DBD5B5]/30 focus:bg-white/[0.05] transition-all duration-300"
+                  className="w-full px-6 py-4 bg-white/[0.03] border border-white/5 rounded-2xl text-white font-display tracking-[0.1em] text-xs placeholder:text-white/20 focus:outline-none focus:border-[#DBD5B5]/30 focus:bg-white/[0.05] transition-all duration-300"
                 />
               </div>
 
@@ -221,7 +218,7 @@ const ContactSection = () => {
                   onChange={handleInputChange}
                   required
                   rows={5}
-                  className="w-full px-6 py-4 bg-white/[0.03] border border-white/5 rounded-2xl text-white font-display uppercase tracking-[0.1em] text-xs placeholder:text-white/20 focus:outline-none focus:border-[#DBD5B5]/30 focus:bg-white/[0.05] transition-all duration-300 resize-none"
+                  className="w-full px-6 py-4 bg-white/[0.03] border border-white/5 rounded-2xl text-white font-display tracking-[0.1em] text-xs placeholder:text-white/20 focus:outline-none focus:border-[#DBD5B5]/30 focus:bg-white/[0.05] transition-all duration-300 resize-none"
                 />
               </div>
 
@@ -246,7 +243,6 @@ const ContactSection = () => {
               <button
                 type="submit"
                 disabled={loading}
-                onMouseEnter={playHoverSound}
                 className="w-full py-5 px-8 rounded-2xl relative overflow-hidden group/btn transition-all duration-500 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50"
               >
                 {/* Button Background & Border */}

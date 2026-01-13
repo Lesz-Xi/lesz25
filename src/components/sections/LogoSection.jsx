@@ -1,12 +1,10 @@
 import { logoIconsList } from "../../constants/index.js";
-import { playHoverSound } from "../../utils/soundUtils";
 
 const LogoIcon = ({ icon }) => {
   return (
     <div className="flex-none flex-center px-8 md:px-12 group">
       <div
         className="w-12 h-12 md:w-12 md:h-12 flex items-center justify-center"
-        onMouseEnter={playHoverSound}
       >
         <img
           src={icon.imgPath}
@@ -26,7 +24,7 @@ const LogoSection = () => {
         <span className="text-xs font-bold tracking-[0.2em] text-white/40 uppercase mb-6 block">
           Stack
         </span>
-        <h2 className="text-5xl md:text-6xl font-bold font-heading leading-tight text-white">
+        <h2 className="text-5xl md:text-6xl font-bold font-accent leading-tight text-[#8B7E66]">
           Technologies
         </h2>
       </div>
