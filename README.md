@@ -1,6 +1,6 @@
 # Rhine Tague's Personal Website and Portfolio
 
-![Built with React + Vite](https://img.shields.io/badge/built%20with-React%20%2B%20Vite-bluish)
+![Built with Google Antigravity](https://img.shields.io/badge/built%20with-Google%20Antigravity-4285F4?logo=google&logoColor=white)
 
 Site is live on: [rhinetague.com](https://rhinetague.com)
 
