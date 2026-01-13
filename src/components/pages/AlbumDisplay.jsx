@@ -62,6 +62,9 @@ const AlbumDisplay = () => {
 
   // Gallery scroll animations using useGSAP
   useGSAP(() => {
+    // Refresh ScrollTrigger on mobile to ensure proper touch handling
+    ScrollTrigger.refresh();
+
     // Curtain Reveal for Landscape cards
     gsap.utils.toArray(".gallery-landscape").forEach((card) => {
       gsap.fromTo(card, 
@@ -72,8 +75,10 @@ const AlbumDisplay = () => {
           ease: "power3.out",
           scrollTrigger: {
             trigger: card,
-            start: "top 85%",
-            toggleActions: "play none none none"
+            start: "top 95%", // Start earlier for mobile visibility
+            end: "top 20%",
+            toggleActions: "play none none none",
+            markers: false // Set to true for debugging
           }
         }
       );
@@ -93,8 +98,10 @@ const AlbumDisplay = () => {
           ease: "power3.out",
           scrollTrigger: {
             trigger: row,
-            start: "top 85%",
-            toggleActions: "play none none none"
+            start: "top 95%", // Start earlier for mobile visibility
+            end: "top 20%",
+            toggleActions: "play none none none",
+            markers: false
           }
         }
       );
