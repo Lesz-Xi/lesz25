@@ -126,7 +126,7 @@ const AlbumDisplay = () => {
         heroTitle: "Paris",
         location: "Paris, France",
         year: "2024",
-        image: "/images/paris/optimized/IMG_3228.jpg",
+        image: "/images/paris/optimized/IMG_3228.JPG",
         description: "Exploring the romantic streets and hidden corners of Paris, chasing light and shadow across the historic architecture."
     },
     {
@@ -163,13 +163,13 @@ const AlbumDisplay = () => {
   // Gallery Data Configuration
   const galleryData = {
     paris: [
-        { type: "landscape", src: "/images/paris/optimized/IMG_3228.jpg", category: "Cityscape", title: "Eiffel Gold" },
-        { type: "portrait", src: "/images/paris/optimized/IMG_3153.jpg", category: "Street", title: "Montmartre Steps" },
-        { type: "portrait", src: "/images/paris/optimized/P1550735.jpg", category: "Architecture", title: "Louvre Geometry" },
-        { type: "landscape", src: "/images/paris/optimized/IMG_3323.jpg", category: "Urban", title: "Seine Sunset" },
-        { type: "portrait", src: "/images/paris/optimized/IMG_3359.jpg", category: "Detail", title: "Metro Life" },
-        { type: "portrait", src: "/images/paris/optimized/IMG_3359.jpg", category: "Detail", title: "Cafe Culture" },
-        { type: "landscape", src: "/images/paris/optimized/IMG_3323.jpg", category: "Panoramic", title: "Parisian Skyline" }
+        { type: "landscape", src: "/images/paris/optimized/IMG_3228.JPG", category: "Cityscape", title: "Eiffel Gold" },
+        { type: "portrait", src: "/images/paris/optimized/IMG_3153.JPG", category: "Street", title: "Montmartre Steps" },
+        { type: "portrait", src: "/images/paris/optimized/P1550735.JPG", category: "Architecture", title: "Louvre Geometry" },
+        { type: "landscape", src: "/images/paris/optimized/IMG_3323.JPG", category: "Urban", title: "Seine Sunset" },
+        { type: "portrait", src: "/images/paris/optimized/IMG_3359.JPG", category: "Detail", title: "Metro Life" },
+        { type: "portrait", src: "/images/paris/optimized/IMG_3359.JPG", category: "Detail", title: "Cafe Culture" },
+        { type: "landscape", src: "/images/paris/optimized/IMG_3323.JPG", category: "Panoramic", title: "Parisian Skyline" }
     ],
     switzerland: [
         { type: "landscape", src: "/images/project1.png", category: "Landscape", title: "Alpine Dawn" },
