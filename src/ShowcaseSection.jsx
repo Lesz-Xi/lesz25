@@ -37,7 +37,7 @@ const ShowcaseSection = () => {
           </div>
 
           {/* MAIN TEXT */}
-          <div className="space-y-6 text-[#0D0C1D]/80 text-lg leading-relaxed font-light max-w-lg">
+          <div className="space-y-6 text-[#0D0C1D]/80 text-[15px] md:text-lg leading-relaxed font-geist-mono max-w-lg">
             <p>
               I love the process of building simple, meaningful things. For me, great design is about 
               making sure every detail feels natural and easy to use.

@@ -9,6 +9,7 @@
   --font-pixel: "Doto", sans-serif;
   --font-accent: "Dancing Script", cursive;
   --font-mono: "SF Mono", "Monaco", "Inconsolata", "Fira Code", monospace;
+  --font-geist-mono: "Geist Mono", monospace;
   --color-white-50: #d9ecff;
   --color-black-50: #1c1c21;
   --color-black-100: #0e0e10;
@@ -31,6 +32,10 @@
 
 .font-accent {
   font-family: var(--font-accent) !important;
+}
+
+.font-geist-mono {
+  font-family: var(--font-geist-mono) !important;
 }
 
 html,

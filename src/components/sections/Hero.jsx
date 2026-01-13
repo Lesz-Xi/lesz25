@@ -73,10 +73,10 @@ const Hero = () => {
         <header
           className="flex flex-col md:w-full w-screen
           md:px-20
-          px-5 pt-16 md:pt-48 pb-20"
+          px-5 pt-10 md:pt-48 pb-16"
         >
-          <div className="flex flex-col gap-7">
-            <div className="hero-text min-h-[400px]"> {/* Min-height to prevent layout shift */}
+          <div className="flex flex-col gap-5">
+            <div className="hero-text min-h-[320px] md:min-h-[400px]"> {/* Reduced min-height on mobile */}
               <h1 className="hero-line text-3xl md:text-5xl lg:text-6xl font-medium mb-6">
                 <span className="text-[#929292] font-medium tracking-[0.05em] leading-[2]">
                   <AnimatedGreeting />
