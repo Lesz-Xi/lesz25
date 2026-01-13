@@ -71,9 +71,9 @@ const Hero = () => {
       <div className="hero-layout w-full">
         {/*LEFT: HERO CONTENT */}
         <header
-          className="flex flex-col justify-center md:w-full w-screen
+          className="flex flex-col md:w-full w-screen
           md:px-20
-          px-5 pt-32 md:pt-48 pb-20"
+          px-5 pt-24 md:pt-48 pb-20"
         >
           <div className="flex flex-col gap-7">
             <div className="hero-text min-h-[400px]"> {/* Min-height to prevent layout shift */}
