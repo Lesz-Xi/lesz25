@@ -60,52 +60,67 @@ const AlbumDisplay = () => {
 
   }, { scope: containerRef }); // Scope to container for proper cleanup
 
-  // Gallery scroll animations using useGSAP
+  // Gallery scroll animations using useGSAP - Mobile-first per responsive-mobile skill
   useGSAP(() => {
+    const isMobile = window.innerWidth < 768;
+    
     // Refresh ScrollTrigger on mobile to ensure proper touch handling
     ScrollTrigger.refresh();
 
-    // Curtain Reveal for Landscape cards
-    gsap.utils.toArray(".gallery-landscape").forEach((card) => {
-      gsap.fromTo(card, 
-        { clipPath: "inset(100% 0 0 0)" },
-        { 
-          clipPath: "inset(0% 0 0 0)", 
-          duration: 1.2,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: card,
-            start: "top 95%", // Start earlier for mobile visibility
-            end: "top 20%",
-            toggleActions: "play none none none",
-            markers: false // Set to true for debugging
+    if (isMobile) {
+      // MOBILE: Immediately show all cards (no complex ScrollTrigger)
+      // Per skill: "Complex parallax → Simplified for Performance"
+      gsap.set(".gallery-landscape", { 
+        clipPath: "inset(0% 0 0 0)",
+        opacity: 1 
+      });
+      gsap.set(".gallery-portrait", { 
+        opacity: 1, 
+        y: 0,
+        clipPath: "inset(0% 0 0 0)" 
+      });
+    } else {
+      // DESKTOP: Full ScrollTrigger animations
+      // Curtain Reveal for Landscape cards
+      gsap.utils.toArray(".gallery-landscape").forEach((card) => {
+        gsap.fromTo(card, 
+          { clipPath: "inset(100% 0 0 0)" },
+          { 
+            clipPath: "inset(0% 0 0 0)", 
+            duration: 1.2,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: card,
+              start: "top 85%",
+              end: "top 20%",
+              toggleActions: "play none none none"
+            }
           }
-        }
-      );
-    });
+        );
+      });
 
-    // Staggered Cascade for Portrait pairs
-    gsap.utils.toArray(".gallery-portrait-row").forEach((row) => {
-      const portraits = row.querySelectorAll(".gallery-portrait");
-      gsap.fromTo(portraits,
-        { y: 60, opacity: 0, clipPath: "inset(100% 0 0 0)" },
-        {
-          y: 0,
-          opacity: 1,
-          clipPath: "inset(0% 0 0 0)",
-          duration: 1,
-          stagger: 0.15,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: row,
-            start: "top 95%", // Start earlier for mobile visibility
-            end: "top 20%",
-            toggleActions: "play none none none",
-            markers: false
+      // Staggered Cascade for Portrait pairs
+      gsap.utils.toArray(".gallery-portrait-row").forEach((row) => {
+        const portraits = row.querySelectorAll(".gallery-portrait");
+        gsap.fromTo(portraits,
+          { y: 60, opacity: 0, clipPath: "inset(100% 0 0 0)" },
+          {
+            y: 0,
+            opacity: 1,
+            clipPath: "inset(0% 0 0 0)",
+            duration: 1,
+            stagger: 0.15,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: row,
+              start: "top 85%",
+              end: "top 20%",
+              toggleActions: "play none none none"
+            }
           }
-        }
-      );
-    });
+        );
+      });
+    }
 
   }, { scope: galleryRef }); // Scope to gallery for proper cleanup
 
@@ -199,7 +214,7 @@ const AlbumDisplay = () => {
       {/* Hero Section */}
       <div className="relative w-full h-[95vh]">
         {/* Full Screen Image */}
-        <div className="hero-image-container absolute inset-x-4 top-24 bottom-0 md:inset-x-12 md:top-24 rounded-3xl overflow-hidden" style={{ opacity: 0 }}>
+        <div className="hero-image-container absolute inset-x-4 top-24 bottom-0 md:inset-x-12 md:top-24 rounded-3xl overflow-hidden">
             <img 
                 src={album.image} 
                 alt={album.title} 
@@ -209,14 +224,14 @@ const AlbumDisplay = () => {
       </div>
 
       {/* Title Section - Below Hero */}
-      <div className="title-scroll relative z-10 w-full flex justify-center pt-16 pb-8" style={{ opacity: 0 }}>
+      <div className="title-scroll relative z-10 w-full flex justify-center pt-16 pb-8">
           <h1 className="font-accent text-[13vw] md:text-[10vw] max-w-[95vw] leading-none tracking-tighter text-[#DBD5B5] text-center whitespace-nowrap overflow-visible">
               {album.heroTitle}
           </h1>
       </div>
 
       {/* Description Section */}
-      <div className="description-scroll relative z-10 max-w-2xl mx-auto px-6 pt-8 pb-40 flex flex-col items-center text-center gap-8" style={{ opacity: 0 }}>
+      <div className="description-scroll relative z-10 max-w-2xl mx-auto px-6 pt-8 pb-40 flex flex-col items-center text-center gap-8">
         <p className="text-lg md:text-xl font-geist-mono text-[#DBD5B5]/80 leading-relaxed">
             {album.description || `A visual exploration of ${album.title}. Capturing the essence of ${album.location} through light, shadow, and composition.`}
         </p>
@@ -226,7 +241,7 @@ const AlbumDisplay = () => {
       <div ref={galleryRef} className="max-w-7xl mx-auto px-4 md:px-12 pt-20 pb-40 flex flex-col gap-40">
         
         {/* Row 1: Landscape */}
-        <div className="gallery-landscape group relative aspect-[21/9] rounded-2xl overflow-hidden" style={{ clipPath: 'inset(100% 0 0 0)' }}>
+        <div className="gallery-landscape group relative aspect-[21/9] rounded-2xl overflow-hidden">
             <img 
                 src={currentGallery[0]?.src || "/images/project1.png"} 
                 alt={currentGallery[0]?.title || "Gallery"} 
@@ -243,7 +258,7 @@ const AlbumDisplay = () => {
 
         {/* Row 2: Two Portraits (Aligned) */}
         <div className="gallery-portrait-row grid grid-cols-2 gap-16">
-            <div className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden" style={{ opacity: 0 }}>
+            <div className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden">
                 <img src={currentGallery[1]?.src || "/images/project1.png"} alt={currentGallery[1]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
                 <div className="absolute bottom-6 left-6 flex flex-col gap-1">
@@ -251,7 +266,7 @@ const AlbumDisplay = () => {
                     <span className="text-lg md:text-xl font-display text-white">{currentGallery[1]?.title || "Untitled"}</span>
                 </div>
             </div>
-            <div className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden" style={{ opacity: 0 }}>
+            <div className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden">
                 <img src={currentGallery[2]?.src || "/images/project1.png"} alt={currentGallery[2]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
                 <div className="absolute bottom-6 left-6 flex flex-col gap-1">
@@ -262,7 +277,7 @@ const AlbumDisplay = () => {
         </div>
 
         {/* Row 3: Landscape */}
-        <div className="gallery-landscape group relative aspect-[21/9] rounded-2xl overflow-hidden" style={{ clipPath: 'inset(100% 0 0 0)' }}>
+        <div className="gallery-landscape group relative aspect-[21/9] rounded-2xl overflow-hidden">
             <img src={currentGallery[3]?.src || "/images/project1.png"} alt={currentGallery[3]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
             <div className="absolute bottom-6 left-6 flex flex-col gap-1">
@@ -273,7 +288,7 @@ const AlbumDisplay = () => {
 
         {/* Row 4: Staggered Portraits (First Top, Second Bottom) */}
         <div className="gallery-portrait-row grid grid-cols-2 gap-16 items-start">
-            <div className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden" style={{ opacity: 0 }}>
+            <div className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden">
                 <img src={currentGallery[4]?.src || "/images/project1.png"} alt={currentGallery[4]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
                 <div className="absolute bottom-6 left-6 flex flex-col gap-1">
@@ -281,7 +296,7 @@ const AlbumDisplay = () => {
                     <span className="text-lg md:text-xl font-display text-white">{currentGallery[4]?.title || "Untitled"}</span>
                 </div>
             </div>
-            <div className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden mt-32" style={{ opacity: 0 }}>
+            <div className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden mt-32">
                 <img src={currentGallery[5]?.src || "/images/project1.png"} alt={currentGallery[5]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
                 <div className="absolute bottom-6 left-6 flex flex-col gap-1">
@@ -293,7 +308,7 @@ const AlbumDisplay = () => {
 
         {/* Row 5: Staggered Portraits (First Bottom, Second Top) */}
         <div className="gallery-portrait-row grid grid-cols-2 gap-16 items-start">
-            <div className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden mt-32" style={{ opacity: 0 }}>
+            <div className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden mt-32">
                 <img src={currentGallery[6]?.src || "/images/project1.png"} alt={currentGallery[6]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
                 <div className="absolute bottom-6 left-6 flex flex-col gap-1">
@@ -301,7 +316,7 @@ const AlbumDisplay = () => {
                     <span className="text-lg md:text-xl font-display text-white">{currentGallery[6]?.title || "Untitled"}</span>
                 </div>
             </div>
-            <div className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden" style={{ opacity: 0 }}>
+            <div className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden">
                 <img src={currentGallery[7]?.src || "/images/project1.png"} alt={currentGallery[7]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
                 <div className="absolute bottom-6 left-6 flex flex-col gap-1">
@@ -312,7 +327,7 @@ const AlbumDisplay = () => {
         </div>
 
         {/* Row 6: Landscape */}
-        <div className="gallery-landscape group relative aspect-[21/9] rounded-2xl overflow-hidden" style={{ clipPath: 'inset(100% 0 0 0)' }}>
+        <div className="gallery-landscape group relative aspect-[21/9] rounded-2xl overflow-hidden">
             <img src={currentGallery[8]?.src || "/images/project1.png"} alt={currentGallery[8]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
             <div className="absolute bottom-6 left-6 flex flex-col gap-1">
@@ -323,7 +338,7 @@ const AlbumDisplay = () => {
 
         {/* Row 7: Two Portraits (Aligned) */}
         <div className="gallery-portrait-row grid grid-cols-2 gap-16">
-            <div className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden" style={{ opacity: 0 }}>
+            <div className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden">
                 <img src={currentGallery[9]?.src || "/images/project1.png"} alt={currentGallery[9]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
                 <div className="absolute bottom-6 left-6 flex flex-col gap-1">
@@ -331,7 +346,7 @@ const AlbumDisplay = () => {
                     <span className="text-lg md:text-xl font-display text-white">{currentGallery[9]?.title || "Untitled"}</span>
                 </div>
             </div>
-            <div className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden" style={{ opacity: 0 }}>
+            <div className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden">
                 <img src={currentGallery[10]?.src || "/images/project1.png"} alt={currentGallery[10]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
                 <div className="absolute bottom-6 left-6 flex flex-col gap-1">
@@ -342,7 +357,7 @@ const AlbumDisplay = () => {
         </div>
 
         {/* Row 8: Landscape */}
-        <div className="gallery-landscape group relative aspect-[21/9] rounded-2xl overflow-hidden" style={{ clipPath: 'inset(100% 0 0 0)' }}>
+        <div className="gallery-landscape group relative aspect-[21/9] rounded-2xl overflow-hidden">
             <img src={currentGallery[11]?.src || "/images/project1.png"} alt={currentGallery[11]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
             <div className="absolute bottom-6 left-6 flex flex-col gap-1">
