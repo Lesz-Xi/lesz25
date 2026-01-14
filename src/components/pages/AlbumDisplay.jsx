@@ -81,43 +81,46 @@ const AlbumDisplay = () => {
       });
     } else {
       // DESKTOP: Full ScrollTrigger animations with curtain reveal effect
-      // Curtain Reveal for Landscape cards
+      // Per gsap-animation-pro skill: gsap.set() first, then gsap.to() with ScrollTrigger
+      
+      // Step 1: Set initial hidden state for all gallery elements
+      gsap.set(".gallery-landscape", { clipPath: "inset(100% 0 0 0)" });
+      gsap.set(".gallery-portrait", { y: 60, opacity: 0, clipPath: "inset(100% 0 0 0)" });
+      
+      // Step 2: Create ScrollTrigger animations using gsap.to()
       gsap.utils.toArray(".gallery-landscape").forEach((card) => {
-        gsap.fromTo(card, 
-          { clipPath: "inset(100% 0 0 0)" },
-          { 
-            clipPath: "inset(0% 0 0 0)", 
-            duration: 1.2,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: card,
-              start: "top 90%",
-              toggleActions: "play none none reverse"
-            }
+        gsap.to(card, { 
+          clipPath: "inset(0% 0 0 0)", 
+          duration: 1.2,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: card,
+            start: "top 90%",
+            toggleActions: "play none none reverse"
           }
-        );
+        });
       });
 
       // Staggered Cascade for Portrait pairs
       gsap.utils.toArray(".gallery-portrait-row").forEach((row) => {
         const portraits = row.querySelectorAll(".gallery-portrait");
-        gsap.fromTo(portraits,
-          { y: 60, opacity: 0, clipPath: "inset(100% 0 0 0)" },
-          {
-            y: 0,
-            opacity: 1,
-            clipPath: "inset(0% 0 0 0)",
-            duration: 1,
-            stagger: 0.15,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: row,
-              start: "top 90%",
-              toggleActions: "play none none reverse"
-            }
+        gsap.to(portraits, {
+          y: 0,
+          opacity: 1,
+          clipPath: "inset(0% 0 0 0)",
+          duration: 1,
+          stagger: 0.15,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: row,
+            start: "top 90%",
+            toggleActions: "play none none reverse"
           }
-        );
+        });
       });
+      
+      // Step 3: Refresh ScrollTrigger after setup for reliability
+      ScrollTrigger.refresh();
     }
 
   }, { scope: galleryRef }); // Scope to gallery for proper cleanup
