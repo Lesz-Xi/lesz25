@@ -94,7 +94,7 @@ const PhotographyPage = () => {
                     >
                         <div className="relative mb-8">
                             {/* Outside Corner Brackets (Framing the Image) */}
-                            <div className="absolute -inset-4 z-20 pointer-events-none opacity-0 group-hover:opacity-100 transition-all duration-700 ease-out translate-y-2 group-hover:translate-y-0">
+                            <div className="hidden md:block absolute -inset-4 z-20 pointer-events-none opacity-0 group-hover:opacity-100 transition-all duration-700 ease-out translate-y-2 group-hover:translate-y-0">
                                 <div className="absolute top-0 left-0 w-8 h-8 border-t border-l border-white" />
                                 <div className="absolute top-0 right-0 w-8 h-8 border-t border-r border-white" />
                                 <div className="absolute bottom-0 left-0 w-8 h-8 border-b border-l border-white" />
@@ -106,11 +106,11 @@ const PhotographyPage = () => {
                                 <img 
                                     src={album.image} 
                                     alt={album.title} 
-                                    className="absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-out brightness-90 group-hover:brightness-110 group-hover:scale-[1.05]"
+                                    className="absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-out brightness-100 md:brightness-90 group-hover:brightness-110 group-hover:scale-[1.05]"
                                 />
                                 
-                                {/* Backdrop Overlay (Dark by default, brightens on hover) */}
-                                <div className="absolute inset-0 bg-black/40 transition-opacity duration-500 z-10 group-hover:opacity-0" />
+                                {/* Backdrop Overlay (Dark by default on desktop, hidden on mobile) */}
+                                <div className="absolute inset-0 bg-black/0 md:bg-black/40 transition-opacity duration-500 z-10 group-hover:opacity-0" />
 
                                 {/* Center VIEW Indicator (Stays inside Focus) */}
                                 <div className="absolute inset-0 flex items-center justify-center z-30 opacity-0 group-hover:opacity-100 transition-all duration-500 transform scale-90 group-hover:scale-100">
@@ -127,7 +127,7 @@ const PhotographyPage = () => {
                         <div className="relative pl-4 pr-4 pb-2">
                              <div className="flex justify-between items-end">
                                 <div className="flex flex-col gap-1.5">
-                                    <h2 className="text-3xl md:text-4xl font-medium text-white/40 tracking-tight group-hover:text-white transition-colors duration-300">
+                                    <h2 className="text-3xl md:text-4xl font-medium text-white md:text-white/40 tracking-tight group-hover:text-white transition-colors duration-300">
                                         {album.title}
                                     </h2>
                                     <span className="text-[12px] tracking-[0.3em] font-display uppercase text-[#DBD5B5]/40 group-hover:text-[#DBD5B5]/70 transition-colors duration-300">
