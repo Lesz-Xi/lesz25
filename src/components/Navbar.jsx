@@ -109,14 +109,14 @@ const Navbar = () => {
         {/* Conditional Navigation Rendering */}
         {isPhotographyPage ? (
           /* Photography Page: Minimalist 2-line Hamburger - Hidden when menu is open */
-          <div className={`flex items-center absolute top-12 right-12 md:right-16 z-[70] transition-opacity duration-300 ${isMobileMenuOpen ? "opacity-0 pointer-events-none" : "opacity-100"}`}>
+          <div className={`flex items-center absolute top-4 right-4 md:right-8 z-[70] transition-opacity duration-300 ${isMobileMenuOpen ? "opacity-0 pointer-events-none" : "opacity-100"}`}>
             <button
-              className="group flex flex-col gap-[6px] p-2 transition-all duration-300"
+              className="group flex flex-col gap-[5px] p-2 transition-all duration-300"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label="Toggle Menu"
             >
-              <div className="w-6 h-px bg-white group-hover:bg-[#DBD5B5] transition-all duration-300" />
-              <div className="w-6 h-px bg-white group-hover:bg-[#DBD5B5] transition-all duration-300" />
+              <div className="w-5 h-px bg-white group-hover:bg-[#DBD5B5] transition-all duration-300" />
+              <div className="w-5 h-px bg-white group-hover:bg-[#DBD5B5] transition-all duration-300" />
             </button>
           </div>
         ) : (
@@ -147,13 +147,13 @@ const Navbar = () => {
             {/* Standard Mobile Menu Button - Hidden when menu is open */}
             <div className={`md:hidden flex items-center transition-opacity duration-300 ${isMobileMenuOpen ? "opacity-0 pointer-events-none" : "opacity-100"}`}>
               <button
-                className={`p-3 rounded-full border transition-all duration-500
+                className={`p-2 rounded-full border transition-all duration-500
                 ${isScrolled 
                   ? "bg-black/40 backdrop-blur-xl border-white/10 shadow-lg" 
                   : "bg-white/[0.05] backdrop-blur-md border-white/10"}`}
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               >
-                <div className="w-5 h-4 relative flex flex-col justify-between">
+                <div className="w-4 h-3 relative flex flex-col justify-between">
                   <span className="w-full h-px bg-white" />
                   <span className="w-full h-px bg-white" />
                   <span className="w-full h-px bg-white" />
@@ -174,17 +174,17 @@ const Navbar = () => {
           <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#DBD5B5]/5 blur-[100px] rounded-full" />
         </div>
 
-        {/* Close Button - iOS-optimized with touch-action and no backdrop-blur */}
+        {/* Close Button - FIXED positioning for guaranteed visibility on all sections */}
         <button 
             onClick={() => setIsMobileMenuOpen(false)}
             onTouchEnd={(e) => { e.preventDefault(); setIsMobileMenuOpen(false); }}
-            className="absolute top-6 right-6 z-[90] group w-14 h-14 flex items-center justify-center rounded-full bg-black/60 border border-white/20 active:bg-white/10 transition-all duration-200"
+            className="fixed top-4 right-4 z-[100] group w-11 h-11 flex items-center justify-center rounded-full bg-black/70 border border-white/20 active:bg-white/10 transition-all duration-200"
             style={{ touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
             aria-label="Close Menu"
         >
-            <div className="relative w-6 h-6 flex justify-center items-center">
-                <span className="absolute w-5 h-[2px] bg-white group-hover:bg-[#DBD5B5] transition-all duration-300 rotate-45" />
-                <span className="absolute w-5 h-[2px] bg-white group-hover:bg-[#DBD5B5] transition-all duration-300 -rotate-45" />
+            <div className="relative w-5 h-5 flex justify-center items-center">
+                <span className="absolute w-4 h-[1.5px] bg-white group-hover:bg-[#DBD5B5] transition-all duration-300 rotate-45" />
+                <span className="absolute w-4 h-[1.5px] bg-white group-hover:bg-[#DBD5B5] transition-all duration-300 -rotate-45" />
             </div>
         </button>
 
@@ -208,7 +208,7 @@ const Navbar = () => {
                   key={link.name}
                   href={link.href}
                   onClick={(e) => handleNavigation(e, link.href)}
-                  className={`text-5xl md:text-7xl font-display font-medium uppercase tracking-tighter transition-all duration-500 hover:tracking-wide hover:ml-4 ${isActive ? "text-[#DBD5B5]" : "text-white/40 hover:text-[#DBD5B5]"}`}
+                  className={`text-3xl md:text-5xl font-display font-medium uppercase tracking-tight transition-all duration-500 hover:tracking-wide hover:ml-2 ${isActive ? "text-[#DBD5B5]" : "text-white/40 hover:text-[#DBD5B5]"}`}
                   style={{ 
                     transitionDelay: isMobileMenuOpen ? `${index * 100}ms` : "0ms",
                     transform: isMobileMenuOpen ? "translateY(0)" : "translateY(40px)",
