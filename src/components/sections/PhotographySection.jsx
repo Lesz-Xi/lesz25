@@ -136,7 +136,7 @@ const PhotographySection = () => {
               
               {/* Image Container with Tilt */}
               <div 
-                className="relative mb-6 overflow-hidden rounded-lg cursor-pointer transform-gpu"
+                className="relative mb-6 overflow-hidden rounded-lg cursor-pointer transform-gpu border border-white/5"
                 onMouseMove={handleMouseMove}
                 onMouseLeave={handleMouseLeave}
               >
