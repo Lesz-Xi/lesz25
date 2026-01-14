@@ -60,69 +60,15 @@ const AlbumDisplay = () => {
 
   }, { scope: containerRef }); // Scope to container for proper cleanup
 
-  // Gallery scroll animations using useGSAP - Mobile-first per responsive-mobile skill
+  // Gallery animations - Show all cards immediately (removed ScrollTrigger for reliability)
   useGSAP(() => {
-    const isMobile = window.innerWidth < 768;
-    
-    // Refresh ScrollTrigger on mobile to ensure proper touch handling
-    ScrollTrigger.refresh();
-
-    if (isMobile) {
-      // MOBILE: Immediately show all cards (no complex ScrollTrigger)
-      // Per skill: "Complex parallax → Simplified for Performance"
-      gsap.set(".gallery-landscape", { 
-        clipPath: "inset(0% 0 0 0)",
-        opacity: 1 
-      });
-      gsap.set(".gallery-portrait", { 
-        opacity: 1, 
-        y: 0,
-        clipPath: "inset(0% 0 0 0)" 
-      });
-    } else {
-      // DESKTOP: Full ScrollTrigger animations with curtain reveal effect
-      // Per gsap-animation-pro skill: gsap.set() first, then gsap.to() with ScrollTrigger
-      
-      // Step 1: Set initial hidden state for all gallery elements
-      gsap.set(".gallery-landscape", { clipPath: "inset(100% 0 0 0)" });
-      gsap.set(".gallery-portrait", { y: 60, opacity: 0, clipPath: "inset(100% 0 0 0)" });
-      
-      // Step 2: Create ScrollTrigger animations using gsap.to()
-      gsap.utils.toArray(".gallery-landscape").forEach((card) => {
-        gsap.to(card, { 
-          clipPath: "inset(0% 0 0 0)", 
-          duration: 1.2,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: card,
-            start: "top 90%",
-            toggleActions: "play none none reverse"
-          }
-        });
-      });
-
-      // Staggered Cascade for Portrait pairs
-      gsap.utils.toArray(".gallery-portrait-row").forEach((row) => {
-        const portraits = row.querySelectorAll(".gallery-portrait");
-        gsap.to(portraits, {
-          y: 0,
-          opacity: 1,
-          clipPath: "inset(0% 0 0 0)",
-          duration: 1,
-          stagger: 0.15,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: row,
-            start: "top 90%",
-            toggleActions: "play none none reverse"
-          }
-        });
-      });
-      
-      // Step 3: Refresh ScrollTrigger after setup for reliability
-      ScrollTrigger.refresh();
-    }
-
+    // Immediately show all gallery cards on all devices
+    // This is the reliable approach after ScrollTrigger timing issues
+    gsap.set(".gallery-landscape, .gallery-portrait", { 
+      clipPath: "inset(0% 0 0 0)",
+      opacity: 1,
+      y: 0
+    });
   }, { scope: galleryRef }); // Scope to gallery for proper cleanup
 
   // Mock Data (Duplicated from PhotographyPage for now)
