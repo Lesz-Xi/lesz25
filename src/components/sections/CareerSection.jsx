@@ -133,7 +133,7 @@ const CareerSection = () => {
                               </p>
                         </div>
                     ) : (
-                        <p className="leading-relaxed text-sm md:text-[15px] text-neutral-400 font-geist-mono">
+                        <p className="leading-relaxed text-sm md:text-[15px] text-neutral-400 font-geist-mono hidden md:block">
                              {item.description}
                         </p>
                     )}
