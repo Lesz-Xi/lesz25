@@ -138,8 +138,8 @@ const Navbar = () => {
               ))}
             </div>
 
-            {/* Standard Mobile Menu Button */}
-            <div className="md:hidden flex items-center">
+            {/* Standard Mobile Menu Button - Hidden when menu is open */}
+            <div className={`md:hidden flex items-center transition-opacity duration-300 ${isMobileMenuOpen ? "opacity-0 pointer-events-none" : "opacity-100"}`}>
               <button
                 className={`p-3 rounded-full border transition-all duration-500
                 ${isScrolled 
@@ -148,9 +148,9 @@ const Navbar = () => {
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               >
                 <div className="w-5 h-4 relative flex flex-col justify-between">
-                  <span className={`w-full h-px bg-white transition-all duration-300 ${isMobileMenuOpen ? "rotate-45 translate-y-2" : ""}`} />
-                  <span className={`w-full h-px bg-white transition-all duration-300 ${isMobileMenuOpen ? "opacity-0" : ""}`} />
-                  <span className={`w-full h-px bg-white transition-all duration-300 ${isMobileMenuOpen ? "-rotate-45 -translate-y-2" : ""}`} />
+                  <span className="w-full h-px bg-white" />
+                  <span className="w-full h-px bg-white" />
+                  <span className="w-full h-px bg-white" />
                 </div>
               </button>
             </div>
@@ -168,15 +168,15 @@ const Navbar = () => {
           <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#DBD5B5]/5 blur-[100px] rounded-full" />
         </div>
 
-        {/* Close Button (Visible inside menu for easier closing) */}
+        {/* Modern Close Button */}
         <button 
             onClick={() => setIsMobileMenuOpen(false)}
-            className="absolute top-8 right-8 z-[60] group p-2"
+            className="absolute top-6 right-6 z-[60] group p-4 rounded-full bg-white/[0.03] backdrop-blur-md border border-white/10 hover:bg-white/[0.08] hover:border-[#DBD5B5]/30 transition-all duration-300"
             aria-label="Close Menu"
         >
-            <div className="relative w-8 h-8 flex flex-col justify-center items-center">
-                <span className={`absolute w-full h-[1px] bg-white group-hover:bg-[#DBD5B5] transition-all duration-300 rotate-45`} />
-                <span className={`absolute w-full h-[1px] bg-white group-hover:bg-[#DBD5B5] transition-all duration-300 -rotate-45`} />
+            <div className="relative w-5 h-5 flex justify-center items-center">
+                <span className="absolute w-[18px] h-[1.5px] bg-white/80 group-hover:bg-[#DBD5B5] transition-all duration-300 rotate-45" />
+                <span className="absolute w-[18px] h-[1.5px] bg-white/80 group-hover:bg-[#DBD5B5] transition-all duration-300 -rotate-45" />
             </div>
         </button>
 
