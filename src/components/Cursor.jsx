@@ -103,10 +103,10 @@ const Cursor = () => {
       <div
         ref={followerRef}
         className={`hidden md:block fixed top-0 left-0 rounded-full pointer-events-none z-[9998] transition-all duration-300 ease-out 
-        backdrop-brightness-125 border border-white/[0.05] shadow-[0_4px_30px_rgba(0,0,0,0.1)]
+        backdrop-brightness-150 border border-white/[0.05] shadow-[0_4px_30px_rgba(0,0,0,0.1)]
         ${
           isHovering
-            ? "w-20 h-20 bg-white/[0.03]"
+            ? "w-20 h-20 bg-white/[0.08]"
             : "w-8 h-8 bg-white/[0.01]"
         }`}
       />

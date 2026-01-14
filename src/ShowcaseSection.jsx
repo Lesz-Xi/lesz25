@@ -39,12 +39,12 @@ const ShowcaseSection = () => {
           {/* MAIN TEXT */}
           <div className="space-y-6 text-[#0D0C1D]/80 text-[15px] md:text-lg leading-relaxed font-geist-mono max-w-lg">
             <p>
-              I love the process of building simple, meaningful things. For me, great design is about 
-              making sure every detail feels natural and easy to use.
+              I see code and specific moments as two distinct tools for the same purpose: to frame reality 
+              in a way that moves people.
             </p>
             <p>
-              Whether I'm writing code or capturing a moment through my lens, I focus on creating 
-              work that is clean, effective, and tells a real story.
+              My work bridges the gap between technical precision and artistic intuition, ensuring that 
+              every interaction serves a greater narrative.
             </p>
           </div>
 
