@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("/"); // Track active section in state
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -15,15 +16,20 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Handle scroll to section after navigation
+  // Sync activeSection with location changes (for browser back/forward)
   useEffect(() => {
     if (location.pathname === "/" && location.hash) {
+      setActiveSection("/" + location.hash);
       const element = document.querySelector(location.hash);
       if (element) {
         setTimeout(() => {
            element.scrollIntoView({ behavior: "smooth" });
         }, 100);
       }
+    } else if (location.pathname === "/") {
+      setActiveSection("/");
+    } else {
+      setActiveSection(location.pathname);
     }
   }, [location]);
 
@@ -39,6 +45,9 @@ const Navbar = () => {
 
   const handleNavigation = (e, href) => {
     e.preventDefault();
+    
+    // Update active section IMMEDIATELY before closing menu
+    setActiveSection(href);
     setIsMobileMenuOpen(false);
 
     if (href.startsWith("/#")) {
@@ -48,7 +57,6 @@ const Navbar = () => {
           if (element) element.scrollIntoView({ behavior: "smooth" });
        } else {
           navigate(href.replace("#", "#")); // Navigate to /#section
-          // Determine if we need to force a scroll after nav if hash doesn't trigger automatically
           setTimeout(() => {
              const element = document.querySelector(targetId);
              if (element) element.scrollIntoView({ behavior: "smooth" });
@@ -166,15 +174,17 @@ const Navbar = () => {
           <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#DBD5B5]/5 blur-[100px] rounded-full" />
         </div>
 
-        {/* Modern Close Button - Higher z-index to always be visible */}
+        {/* Close Button - iOS-optimized with touch-action and no backdrop-blur */}
         <button 
             onClick={() => setIsMobileMenuOpen(false)}
-            className="absolute top-6 right-6 z-[70] group p-4 rounded-full bg-white/[0.05] backdrop-blur-md border border-white/10 hover:bg-white/[0.08] hover:border-[#DBD5B5]/30 transition-all duration-300"
+            onTouchEnd={(e) => { e.preventDefault(); setIsMobileMenuOpen(false); }}
+            className="absolute top-6 right-6 z-[90] group w-14 h-14 flex items-center justify-center rounded-full bg-black/60 border border-white/20 active:bg-white/10 transition-all duration-200"
+            style={{ touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
             aria-label="Close Menu"
         >
-            <div className="relative w-5 h-5 flex justify-center items-center">
-                <span className="absolute w-[18px] h-[1.5px] bg-white/80 group-hover:bg-[#DBD5B5] transition-all duration-300 rotate-45" />
-                <span className="absolute w-[18px] h-[1.5px] bg-white/80 group-hover:bg-[#DBD5B5] transition-all duration-300 -rotate-45" />
+            <div className="relative w-6 h-6 flex justify-center items-center">
+                <span className="absolute w-5 h-[2px] bg-white group-hover:bg-[#DBD5B5] transition-all duration-300 rotate-45" />
+                <span className="absolute w-5 h-[2px] bg-white group-hover:bg-[#DBD5B5] transition-all duration-300 -rotate-45" />
             </div>
         </button>
 
@@ -182,22 +192,15 @@ const Navbar = () => {
         <div className="relative h-full flex flex-col justify-start items-start px-8 md:px-32 pt-24 md:pt-32 pb-8 overflow-y-auto">
           <div className="flex flex-col gap-6 md:gap-8 items-start">
             {navLinks.map((link, index) => {
-              // Proper active state: Only ONE item should be highlighted at a time
+              // Use stored activeSection state for reliable highlighting
               let isActive = false;
               
               if (link.href === "/") {
-                // Home: Only active when on "/" with NO hash
-                isActive = location.pathname === "/" && !location.hash;
+                isActive = activeSection === "/";
               } else if (link.href === "/photography") {
-                // Photos: Active for any /photography/* path
-                isActive = location.pathname.startsWith("/photography");
-              } else if (link.href.startsWith("/#")) {
-                // Hash sections: Only active when on "/" AND hash matches exactly
-                const linkHash = "#" + link.href.split("#")[1];
-                isActive = location.pathname === "/" && location.hash === linkHash;
+                isActive = activeSection.startsWith("/photography");
               } else {
-                // Other routes: Exact match
-                isActive = location.pathname === link.href;
+                isActive = activeSection === link.href;
               }
               
               return (
