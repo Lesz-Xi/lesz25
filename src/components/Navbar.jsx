@@ -100,17 +100,15 @@ const Navbar = () => {
 
         {/* Conditional Navigation Rendering */}
         {isPhotographyPage ? (
-          /* Photography Page: Minimalist 2-line Hamburger / X */
-          /* Photography Page: Minimalist 2-line Hamburger / X */
-          /* Photography Page: Minimalist 2-line Hamburger / X */
-          <div className="flex items-center absolute top-12 right-12 md:right-16 z-[70]">
+          /* Photography Page: Minimalist 2-line Hamburger - Hidden when menu is open */
+          <div className={`flex items-center absolute top-12 right-12 md:right-16 z-[70] transition-opacity duration-300 ${isMobileMenuOpen ? "opacity-0 pointer-events-none" : "opacity-100"}`}>
             <button
               className="group flex flex-col gap-[6px] p-2 transition-all duration-300"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label="Toggle Menu"
             >
-              <div className={`w-6 h-px bg-white group-hover:bg-[#DBD5B5] transition-all duration-300 ${isMobileMenuOpen ? "rotate-45 translate-y-[3.5px]" : ""}`} />
-              <div className={`w-6 h-px bg-white group-hover:bg-[#DBD5B5] transition-all duration-300 ${isMobileMenuOpen ? "-rotate-45 -translate-y-[3.5px]" : ""}`} />
+              <div className="w-6 h-px bg-white group-hover:bg-[#DBD5B5] transition-all duration-300" />
+              <div className="w-6 h-px bg-white group-hover:bg-[#DBD5B5] transition-all duration-300" />
             </button>
           </div>
         ) : (
@@ -168,10 +166,10 @@ const Navbar = () => {
           <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#DBD5B5]/5 blur-[100px] rounded-full" />
         </div>
 
-        {/* Modern Close Button */}
+        {/* Modern Close Button - Higher z-index to always be visible */}
         <button 
             onClick={() => setIsMobileMenuOpen(false)}
-            className="absolute top-6 right-6 z-[60] group p-4 rounded-full bg-white/[0.03] backdrop-blur-md border border-white/10 hover:bg-white/[0.08] hover:border-[#DBD5B5]/30 transition-all duration-300"
+            className="absolute top-6 right-6 z-[70] group p-4 rounded-full bg-white/[0.05] backdrop-blur-md border border-white/10 hover:bg-white/[0.08] hover:border-[#DBD5B5]/30 transition-all duration-300"
             aria-label="Close Menu"
         >
             <div className="relative w-5 h-5 flex justify-center items-center">
@@ -180,8 +178,9 @@ const Navbar = () => {
             </div>
         </button>
 
-        <div className="relative h-full flex flex-col justify-center items-start px-8 md:px-32">
-          <div className="flex flex-col gap-8 items-start">
+        {/* Menu Content - Positioned from top with scroll for mobile */}
+        <div className="relative h-full flex flex-col justify-start items-start px-8 md:px-32 pt-24 md:pt-32 pb-8 overflow-y-auto">
+          <div className="flex flex-col gap-6 md:gap-8 items-start">
             {navLinks.map((link, index) => {
               const isActive = location.pathname === link.href || (link.href.includes("#") && location.hash === link.href.split("#")[1]);
               
