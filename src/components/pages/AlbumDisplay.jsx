@@ -6,7 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Logo from "../Logo";
 import { getLenis } from "../sections/App";
 
-gsap.registerPlugin(ScrollTrigger, useGSAP);
+gsap.registerPlugin(ScrollTrigger);
 
 const AlbumDisplay = () => {
   const { albumId } = useParams();
