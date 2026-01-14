@@ -164,6 +164,22 @@ const Navbar = () => {
         )}
       </nav>
 
+      {/* Close Button - OUTSIDE overlay to avoid iOS stacking context issues */}
+      {isMobileMenuOpen && (
+        <button 
+            onClick={() => setIsMobileMenuOpen(false)}
+            onTouchEnd={(e) => { e.preventDefault(); setIsMobileMenuOpen(false); }}
+            className="fixed top-4 right-4 z-[200] group w-11 h-11 flex items-center justify-center rounded-full bg-black/80 border border-white/30 active:scale-95 transition-transform duration-150"
+            style={{ touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
+            aria-label="Close Menu"
+        >
+            <div className="relative w-5 h-5 flex justify-center items-center">
+                <span className="absolute w-4 h-[2px] bg-white rotate-45" />
+                <span className="absolute w-4 h-[2px] bg-white -rotate-45" />
+            </div>
+        </button>
+      )}
+
       {/* Unified Cinematic Full-Screen Menu Overlay (All Pages) */}
       <div 
         className={`fixed inset-0 z-[80] bg-[#070707] transition-all duration-700 ease-in-out ${isMobileMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
@@ -173,20 +189,6 @@ const Navbar = () => {
           <div className="absolute top-[-10%] right-[-10%] w-[60%] h-[60%] bg-[#DBD5B5]/10 blur-[120px] rounded-full" />
           <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#DBD5B5]/5 blur-[100px] rounded-full" />
         </div>
-
-        {/* Close Button - FIXED positioning for guaranteed visibility on all sections */}
-        <button 
-            onClick={() => setIsMobileMenuOpen(false)}
-            onTouchEnd={(e) => { e.preventDefault(); setIsMobileMenuOpen(false); }}
-            className="fixed top-4 right-4 z-[100] group w-11 h-11 flex items-center justify-center rounded-full bg-black/70 border border-white/20 active:bg-white/10 transition-all duration-200"
-            style={{ touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
-            aria-label="Close Menu"
-        >
-            <div className="relative w-5 h-5 flex justify-center items-center">
-                <span className="absolute w-4 h-[1.5px] bg-white group-hover:bg-[#DBD5B5] transition-all duration-300 rotate-45" />
-                <span className="absolute w-4 h-[1.5px] bg-white group-hover:bg-[#DBD5B5] transition-all duration-300 -rotate-45" />
-            </div>
-        </button>
 
         {/* Menu Content - Positioned from top with scroll for mobile */}
         <div className="relative h-full flex flex-col justify-start items-start px-8 md:px-32 pt-24 md:pt-32 pb-8 overflow-y-auto">
