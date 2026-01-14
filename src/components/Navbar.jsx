@@ -158,7 +158,7 @@ const Navbar = () => {
 
       {/* Unified Cinematic Full-Screen Menu Overlay (All Pages) */}
       <div 
-        className={`fixed inset-0 z-[55] bg-[#070707] transition-all duration-700 ease-in-out ${isMobileMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
+        className={`fixed inset-0 z-[80] bg-[#070707] transition-all duration-700 ease-in-out ${isMobileMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
       >
         {/* Background Decorative Element */}
         <div className="absolute inset-0 opacity-20 pointer-events-none">
@@ -182,11 +182,23 @@ const Navbar = () => {
         <div className="relative h-full flex flex-col justify-start items-start px-8 md:px-32 pt-24 md:pt-32 pb-8 overflow-y-auto">
           <div className="flex flex-col gap-6 md:gap-8 items-start">
             {navLinks.map((link, index) => {
-              // Fix: location.hash includes '#', so compare properly
-              const linkHash = link.href.includes("#") ? "#" + link.href.split("#")[1] : null;
-              const isActive = location.pathname === link.href || 
-                              (linkHash && location.hash === linkHash) ||
-                              (link.href === "/photography" && location.pathname.startsWith("/photography"));
+              // Proper active state: Only ONE item should be highlighted at a time
+              let isActive = false;
+              
+              if (link.href === "/") {
+                // Home: Only active when on "/" with NO hash
+                isActive = location.pathname === "/" && !location.hash;
+              } else if (link.href === "/photography") {
+                // Photos: Active for any /photography/* path
+                isActive = location.pathname.startsWith("/photography");
+              } else if (link.href.startsWith("/#")) {
+                // Hash sections: Only active when on "/" AND hash matches exactly
+                const linkHash = "#" + link.href.split("#")[1];
+                isActive = location.pathname === "/" && location.hash === linkHash;
+              } else {
+                // Other routes: Exact match
+                isActive = location.pathname === link.href;
+              }
               
               return (
                 <a
