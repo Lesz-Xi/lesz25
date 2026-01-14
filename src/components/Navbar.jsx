@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { FaGithub, FaLinkedinIn, FaInstagram } from "react-icons/fa6";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -250,8 +251,33 @@ const Navbar = () => {
             
             {/* Social Links Row */}
             <div className="flex items-center gap-6 mt-4">
-                <a href="https://github.com/Lesz-Xi" target="_blank" rel="noopener noreferrer" className="text-white/30 hover:text-[#DBD5B5] transition-colors text-sm uppercase tracking-widest">Github</a>
-                <a href="https://www.linkedin.com/in/rhinelesther/" target="_blank" rel="noopener noreferrer" className="text-white/30 hover:text-[#DBD5B5] transition-colors text-sm uppercase tracking-widest">LinkedIn</a>
+                <a 
+                  href="https://github.com/Lesz-Xi" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="text-white/40 hover:text-[#DBD5B5] transition-all duration-300 hover:scale-110"
+                  aria-label="GitHub"
+                >
+                  <FaGithub size={20} />
+                </a>
+                <a 
+                  href="https://www.linkedin.com/in/rhine-lesther-tague-4b604a246" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="text-white/40 hover:text-[#DBD5B5] transition-all duration-300 hover:scale-110"
+                  aria-label="LinkedIn"
+                >
+                  <FaLinkedinIn size={20} />
+                </a>
+                <a 
+                  href="https://www.instagram.com/ichrhin3y?igsh=MXBwejdiYTEyODBlbg%3D%3D&utm_source=q" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="text-white/40 hover:text-[#DBD5B5] transition-all duration-300 hover:scale-110"
+                  aria-label="Instagram"
+                >
+                  <FaInstagram size={20} />
+                </a>
             </div>
           </div>
         </div>

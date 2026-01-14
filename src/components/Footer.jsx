@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import Logo from "./Logo";
+import { FaGithub, FaLinkedinIn, FaInstagram, FaXTwitter } from "react-icons/fa6";
 
 const Footer = () => {
   return (
@@ -103,16 +104,22 @@ const Footer = () => {
             <h4 className="text-[10px] font-bold tracking-[0.3em] font-pixel uppercase text-[#8B7E66]">
               Connection
             </h4>
-            <ul className="space-y-3">
+            <ul className="flex items-center gap-5 pt-2">
               {[
-                { name: "LinkedIn", href: "https://www.linkedin.com/in/rhine-lesther-tague-4b604a246" },
-                { name: "GitHub", href: "https://github.com/Lesz-Xi" },
-                { name: "Instagram", href: "#" },
-                { name: "X / Twitter", href: "https://x.com/codefar1" },
+                { name: "LinkedIn", href: "https://www.linkedin.com/in/rhine-lesther-tague-4b604a246", icon: <FaLinkedinIn size={20} /> },
+                { name: "GitHub", href: "https://github.com/Lesz-Xi", icon: <FaGithub size={20} /> },
+                { name: "Instagram", href: "https://www.instagram.com/ichrhin3y?igsh=MXBwejdiYTEyODBlbg%3D%3D&utm_source=q", icon: <FaInstagram size={20} /> },
+                { name: "X / Twitter", href: "https://x.com/codefar1", icon: <FaXTwitter size={18} /> },
               ].map((item) => (
                 <li key={item.name}>
-                  <a href={item.href} target="_blank" rel="noopener noreferrer" className="text-sm font-heading text-[#F5F2EB]/60 hover:text-[#F5F2EB] hover:translate-x-1 transition-all inline-block">
-                    {item.name}
+                  <a 
+                    href={item.href} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="text-[#F5F2EB]/40 hover:text-[#F5F2EB] hover:scale-110 transition-all duration-300 inline-block"
+                    aria-label={item.name}
+                  >
+                    {item.icon}
                   </a>
                 </li>
               ))}
