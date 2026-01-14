@@ -182,7 +182,11 @@ const Navbar = () => {
         <div className="relative h-full flex flex-col justify-start items-start px-8 md:px-32 pt-24 md:pt-32 pb-8 overflow-y-auto">
           <div className="flex flex-col gap-6 md:gap-8 items-start">
             {navLinks.map((link, index) => {
-              const isActive = location.pathname === link.href || (link.href.includes("#") && location.hash === link.href.split("#")[1]);
+              // Fix: location.hash includes '#', so compare properly
+              const linkHash = link.href.includes("#") ? "#" + link.href.split("#")[1] : null;
+              const isActive = location.pathname === link.href || 
+                              (linkHash && location.hash === linkHash) ||
+                              (link.href === "/photography" && location.pathname.startsWith("/photography"));
               
               return (
                 <a
