@@ -79,7 +79,7 @@ const Hero = () => {
             <div className="hero-text min-h-[320px] md:min-h-[400px]"> {/* Reduced min-height on mobile */}
               <h1 className="hero-line text-3xl md:text-5xl lg:text-6xl font-medium mb-6">
                 <span className="text-[#929292] font-medium tracking-[0.05em] leading-[2]">
-                  <AnimatedGreeting />
+                  <span className="text-[#FFFCE1]"><AnimatedGreeting /></span>
                   <br />
                   <Typewriter 
                     text="I'm" 

@@ -140,7 +140,7 @@ const ContactSection = () => {
             <span className="opacity-60 text-[#8B7E66]">Let's Get in </span>
             <span>Touch</span>
           </h2>
-          <p className="text-white/60 text-lg md:text-xl max-w-2xl mx-auto font-general-sans">
+          <p className="text-white/60 text-lg leading-relaxed max-w-2xl mx-auto font-general-sans">
             Ready to bring your next project to life? Let's discuss how we can
             work together
           </p>
