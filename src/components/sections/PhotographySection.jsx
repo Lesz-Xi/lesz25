@@ -140,12 +140,7 @@ const PhotographySection = () => {
                 onMouseMove={handleMouseMove}
                 onMouseLeave={handleMouseLeave}
               >
-                {/* Badge */}
-                <div className="absolute top-4 right-4 z-20 bg-black/50 backdrop-blur-sm px-3 py-1.5 rounded-md shadow-sm pointer-events-none">
-                  <span className="text-[10px] font-bold tracking-widest uppercase text-[#DBD5B5]">
-                    {photo.category}
-                  </span>
-                </div>
+
 
                 {/* Image */}
                 <div className="aspect-[4/3] overflow-hidden">
