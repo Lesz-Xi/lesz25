@@ -1,5 +1,7 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
+import { X } from "lucide-react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -12,6 +14,7 @@ const AlbumDisplay = () => {
   const { albumId } = useParams();
   const containerRef = useRef(null);
   const galleryRef = useRef(null);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   // Scroll to top on mount
   useEffect(() => {
@@ -193,7 +196,10 @@ const AlbumDisplay = () => {
       <div ref={galleryRef} className="max-w-7xl mx-auto px-4 md:px-12 pt-20 pb-40 flex flex-col gap-40">
         
         {/* Row 1: Landscape */}
-        <div className="gallery-landscape group relative aspect-[21/9] rounded-2xl overflow-hidden">
+        <div 
+            className="gallery-landscape group relative aspect-[21/9] rounded-2xl overflow-hidden cursor-pointer"
+            onClick={() => setSelectedImage(currentGallery[0]?.src || "/images/project1.png")}
+        >
             <img 
                 src={currentGallery[0]?.src || "/images/project1.png"} 
                 alt={currentGallery[0]?.title || "Gallery"} 
@@ -210,7 +216,10 @@ const AlbumDisplay = () => {
 
         {/* Row 2: Two Portraits (Aligned) */}
         <div className="gallery-portrait-row grid grid-cols-2 gap-16">
-            <div className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden">
+            <div 
+                className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer"
+                onClick={() => setSelectedImage(currentGallery[1]?.src || "/images/project1.png")}
+            >
                 <img src={currentGallery[1]?.src || "/images/project1.png"} alt={currentGallery[1]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
                 <div className="absolute bottom-6 left-6 flex flex-col gap-1">
@@ -218,7 +227,10 @@ const AlbumDisplay = () => {
                     <span className="text-lg md:text-xl font-display text-white">{currentGallery[1]?.title || "Untitled"}</span>
                 </div>
             </div>
-            <div className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden">
+            <div 
+                className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer"
+                onClick={() => setSelectedImage(currentGallery[2]?.src || "/images/project1.png")}
+            >
                 <img src={currentGallery[2]?.src || "/images/project1.png"} alt={currentGallery[2]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
                 <div className="absolute bottom-6 left-6 flex flex-col gap-1">
@@ -229,7 +241,10 @@ const AlbumDisplay = () => {
         </div>
 
         {/* Row 3: Landscape */}
-        <div className="gallery-landscape group relative aspect-[21/9] rounded-2xl overflow-hidden">
+        <div 
+            className="gallery-landscape group relative aspect-[21/9] rounded-2xl overflow-hidden cursor-pointer"
+            onClick={() => setSelectedImage(currentGallery[3]?.src || "/images/project1.png")}
+        >
             <img src={currentGallery[3]?.src || "/images/project1.png"} alt={currentGallery[3]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
             <div className="absolute bottom-6 left-6 flex flex-col gap-1">
@@ -240,7 +255,10 @@ const AlbumDisplay = () => {
 
         {/* Row 4: Staggered Portraits (First Top, Second Bottom) */}
         <div className="gallery-portrait-row grid grid-cols-2 gap-16 items-start">
-            <div className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden">
+            <div 
+                className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer"
+                onClick={() => setSelectedImage(currentGallery[4]?.src || "/images/project1.png")}
+            >
                 <img src={currentGallery[4]?.src || "/images/project1.png"} alt={currentGallery[4]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
                 <div className="absolute bottom-6 left-6 flex flex-col gap-1">
@@ -248,7 +266,10 @@ const AlbumDisplay = () => {
                     <span className="text-lg md:text-xl font-display text-white">{currentGallery[4]?.title || "Untitled"}</span>
                 </div>
             </div>
-            <div className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden mt-32">
+            <div 
+                className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden mt-32 cursor-pointer"
+                onClick={() => setSelectedImage(currentGallery[5]?.src || "/images/project1.png")}
+            >
                 <img src={currentGallery[5]?.src || "/images/project1.png"} alt={currentGallery[5]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
                 <div className="absolute bottom-6 left-6 flex flex-col gap-1">
@@ -260,7 +281,10 @@ const AlbumDisplay = () => {
 
         {/* Row 5: Staggered Portraits (First Bottom, Second Top) */}
         <div className="gallery-portrait-row grid grid-cols-2 gap-16 items-start">
-            <div className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden mt-32">
+            <div 
+                className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden mt-32 cursor-pointer"
+                onClick={() => setSelectedImage(currentGallery[6]?.src || "/images/project1.png")}
+            >
                 <img src={currentGallery[6]?.src || "/images/project1.png"} alt={currentGallery[6]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
                 <div className="absolute bottom-6 left-6 flex flex-col gap-1">
@@ -268,7 +292,10 @@ const AlbumDisplay = () => {
                     <span className="text-lg md:text-xl font-display text-white">{currentGallery[6]?.title || "Untitled"}</span>
                 </div>
             </div>
-            <div className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden">
+            <div 
+                className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer"
+                onClick={() => setSelectedImage(currentGallery[7]?.src || "/images/project1.png")}
+            >
                 <img src={currentGallery[7]?.src || "/images/project1.png"} alt={currentGallery[7]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
                 <div className="absolute bottom-6 left-6 flex flex-col gap-1">
@@ -279,7 +306,10 @@ const AlbumDisplay = () => {
         </div>
 
         {/* Row 6: Landscape */}
-        <div className="gallery-landscape group relative aspect-[21/9] rounded-2xl overflow-hidden">
+        <div 
+            className="gallery-landscape group relative aspect-[21/9] rounded-2xl overflow-hidden cursor-pointer"
+            onClick={() => setSelectedImage(currentGallery[8]?.src || "/images/project1.png")}
+        >
             <img src={currentGallery[8]?.src || "/images/project1.png"} alt={currentGallery[8]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
             <div className="absolute bottom-6 left-6 flex flex-col gap-1">
@@ -290,7 +320,10 @@ const AlbumDisplay = () => {
 
         {/* Row 7: Two Portraits (Aligned) */}
         <div className="gallery-portrait-row grid grid-cols-2 gap-16">
-            <div className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden">
+            <div 
+                className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer"
+                onClick={() => setSelectedImage(currentGallery[9]?.src || "/images/project1.png")}
+            >
                 <img src={currentGallery[9]?.src || "/images/project1.png"} alt={currentGallery[9]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
                 <div className="absolute bottom-6 left-6 flex flex-col gap-1">
@@ -298,7 +331,10 @@ const AlbumDisplay = () => {
                     <span className="text-lg md:text-xl font-display text-white">{currentGallery[9]?.title || "Untitled"}</span>
                 </div>
             </div>
-            <div className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden">
+            <div 
+                className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer"
+                onClick={() => setSelectedImage(currentGallery[10]?.src || "/images/project1.png")}
+            >
                 <img src={currentGallery[10]?.src || "/images/project1.png"} alt={currentGallery[10]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
                 <div className="absolute bottom-6 left-6 flex flex-col gap-1">
@@ -309,7 +345,10 @@ const AlbumDisplay = () => {
         </div>
 
         {/* Row 8: Landscape */}
-        <div className="gallery-landscape group relative aspect-[21/9] rounded-2xl overflow-hidden">
+        <div 
+            className="gallery-landscape group relative aspect-[21/9] rounded-2xl overflow-hidden cursor-pointer"
+            onClick={() => setSelectedImage(currentGallery[11]?.src || "/images/project1.png")}
+        >
             <img src={currentGallery[11]?.src || "/images/project1.png"} alt={currentGallery[11]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
             <div className="absolute bottom-6 left-6 flex flex-col gap-1">
@@ -319,6 +358,46 @@ const AlbumDisplay = () => {
         </div>
 
       </div>
+
+      {/* Lightbox Modal */}
+      <AnimatePresence>
+        {selectedImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-sm flex items-center justify-center p-4"
+            onClick={() => setSelectedImage(null)}
+          >
+            {/* Close Button - Top Right */}
+            <button
+                onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedImage(null);
+                }}
+                className="fixed top-6 right-6 z-[110] p-2 text-white/70 hover:text-white bg-black/50 hover:bg-black/70 rounded-full transition-colors cursor-pointer"
+            >
+                <X size={32} />
+            </button>
+
+            {/* Image Container */}
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="relative max-w-[95vw] max-h-[95vh]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <img
+                src={selectedImage}
+                alt="Fullscreen view"
+                className="max-w-full max-h-[95vh] object-contain rounded-lg shadow-2xl"
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

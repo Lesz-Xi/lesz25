@@ -1,12 +1,10 @@
-import React, { useRef, useLayoutEffect, useState } from "react";
+import React, { useRef, useLayoutEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Link } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
 
 const PhotographySection = () => {
   const containerRef = useRef(null);
-  const [selectedPhoto, setSelectedPhoto] = useState(null);
   
   const photos = [
     {
@@ -171,7 +169,6 @@ const PhotographySection = () => {
                 className="relative mb-6 overflow-hidden rounded-lg cursor-pointer transform-gpu border border-white/5"
                 onMouseMove={handleMouseMove}
                 onMouseLeave={handleMouseLeave}
-                onClick={() => setSelectedPhoto(photo)}
               >
 
 
@@ -225,54 +222,6 @@ const PhotographySection = () => {
 
 
       </div>
-
-      {/* Fullscreen Image Modal - AnimatePresence ensures exit animations play */}
-      <AnimatePresence>
-        {selectedPhoto && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-md p-4 md:p-10"
-            onClick={() => setSelectedPhoto(null)}
-          >
-            {/* Close Button */}
-            <button
-              className="absolute top-6 right-6 md:top-8 md:right-8 z-[110] group p-2"
-              onClick={(e) => {
-                e.stopPropagation();
-                setSelectedPhoto(null);
-              }}
-            >
-              <div className="relative w-8 h-8 md:w-10 md:h-10 flex justify-center items-center opacity-70 group-hover:opacity-100 transition-opacity">
-                <span className="absolute w-full h-[1.5px] bg-[#DBD5B5] rotate-45" />
-                <span className="absolute w-full h-[1.5px] bg-[#DBD5B5] -rotate-45" />
-              </div>
-            </button>
-
-            {/* Image Container */}
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="relative max-w-full max-h-full"
-              onClick={(e) => e.stopPropagation()} // Prevent closing when clicking image
-            >
-              <img
-                src={selectedPhoto.url}
-                alt={selectedPhoto.title}
-                className="max-h-[85vh] md:max-h-[90vh] w-auto max-w-full object-contain rounded-lg shadow-2xl"
-              />
-              <div className="mt-4 text-center">
-                 <h3 className="text-2xl font-bold text-[#DBD5B5] tracking-tight">{selectedPhoto.title}</h3>
-                 <p className="text-sm text-[#DBD5B5]/60 tracking-widest uppercase mt-1">{selectedPhoto.location}</p>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </section>
   );
 };
