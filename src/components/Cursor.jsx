@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import { playHoverSound } from "../utils/soundUtils";
 
 const Cursor = () => {
     // ... existing refs and state ...
@@ -77,20 +76,6 @@ const Cursor = () => {
       if (isTextTag || isInteractive || isTextDiv) {
         setIsHovering(true);
         hoverTarget = isInteractive || target; // prioritize interactive target if found, else just text target
-
-        // Sound Trigger Logic
-        // We only want sound for "interactive" things (Buttons, Links, Inputs, etc.)
-        // OR explicit data-hover elements.
-        // We do NOT want sound for every random paragraph or span, unless the user specifically asked for "universal" sound?
-        // User said: "apply these to our entire button, etc. thing". Implies interactive.
-        
-        const shouldPlaySound = isInteractive || (tagName === "A" || tagName === "BUTTON" || tagName === "INPUT" || tagName === "LABEL");
-
-        if (shouldPlaySound && hoverTarget !== lastPlayedTarget.current) {
-            playHoverSound();
-            lastPlayedTarget.current = hoverTarget;
-        }
-
       } else {
         setIsHovering(false);
         hoverTarget = null;
@@ -113,11 +98,11 @@ const Cursor = () => {
     <>
       <div
         ref={cursorRef}
-        className="fixed top-0 left-0 w-1.5 h-1.5 bg-[#DBD5B5] rounded-full pointer-events-none z-[9999]"
+        className="hidden md:block fixed top-0 left-0 w-1.5 h-1.5 bg-[#DBD5B5] rounded-full pointer-events-none z-[9999]"
       />
       <div
         ref={followerRef}
-        className={`fixed top-0 left-0 rounded-full pointer-events-none z-[9998] transition-all duration-300 ease-out 
+        className={`hidden md:block fixed top-0 left-0 rounded-full pointer-events-none z-[9998] transition-all duration-300 ease-out 
         backdrop-brightness-125 border border-white/[0.05] shadow-[0_4px_30px_rgba(0,0,0,0.1)]
         ${
           isHovering
