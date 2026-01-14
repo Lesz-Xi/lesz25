@@ -54,6 +54,26 @@ const PhotographySection = () => {
       location: "URBAN & CITY",
       year: "2023",
       category: "TRAVEL",
+      className: "md:col-span-1 md:-mt-32",
+      speed: 0.8
+    },
+    {
+      id: 6,
+      url: "/images/project1.png", // Placeholder
+      title: "Lights",
+      location: "Urban Geometry",
+      year: "2024",
+      category: "NIGHT",
+      className: "md:col-span-1 md:mt-0",
+      speed: 1.2
+    },
+    {
+      id: 7,
+      url: "/images/project2.png", // Placeholder
+      title: "Flowers",
+      location: "Botanical Garden",
+      year: "2023",
+      category: "NATURE",
       className: "md:col-span-2 md:justify-self-center md:w-[calc(50%-1.5rem)]",
       speed: 1.1
     }

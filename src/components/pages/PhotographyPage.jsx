@@ -40,6 +40,20 @@ const PhotographyPage = () => {
             location: "Davao City, Philippines",
             year: "2023",
             image: "/images/project1.png"
+        },
+        {
+            id: "lights",
+            title: "Lights",
+            location: "Urban Geometry",
+            year: "2024",
+            image: "/images/project1.png"
+        },
+        {
+            id: "flowers",
+            title: "Flowers",
+            location: "Botanical Garden",
+            year: "2023",
+            image: "/images/project1.png"
         }
     ];
 
