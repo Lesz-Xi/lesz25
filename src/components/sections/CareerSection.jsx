@@ -133,7 +133,7 @@ const CareerSection = () => {
                               </p>
                         </div>
                     ) : (
-                        <p className="leading-relaxed text-base md:text-lg text-neutral-400 font-general-sans">
+                        <p className="leading-relaxed text-sm md:text-[15px] text-neutral-400 font-geist-mono">
                              {item.description}
                         </p>
                     )}
@@ -146,7 +146,7 @@ const CareerSection = () => {
                  <div className={`w-full pl-16 md:pl-0 md:w-1/2 text-left ${index % 2 === 0 ? 'md:pl-12 md:text-left' : 'md:pr-12 md:text-right'}`}>
                       {/* Content Logic: Even = Description, Odd = Title/Date */}
                       {index % 2 === 0 ? (
-                           <p className="leading-relaxed text-base md:text-lg text-neutral-400 font-general-sans hidden md:block">
+                           <p className="leading-relaxed text-sm md:text-[15px] text-neutral-400 font-geist-mono hidden md:block">
                                {item.description}
                            </p>
                       ) : (
@@ -168,7 +168,7 @@ const CareerSection = () => {
                        */}
                        <div className="md:hidden block">
                            {index % 2 === 0 ? (
-                               <p className="leading-relaxed text-base text-neutral-400 font-general-sans mt-2">
+                               <p className="leading-relaxed text-sm text-neutral-400 font-geist-mono mt-2">
                                    {item.description}
                                </p>
                            ) : (
@@ -179,7 +179,7 @@ const CareerSection = () => {
                                    <p className="text-[#8B7E66] font-mono text-sm tracking-widest uppercase">
                                        {item.period}
                                    </p>
-                                   <p className="leading-relaxed text-base text-neutral-400 font-general-sans mt-2">
+                                   <p className="leading-relaxed text-sm text-neutral-400 font-geist-mono mt-2">
                                        {item.description}
                                    </p>
                                </div>

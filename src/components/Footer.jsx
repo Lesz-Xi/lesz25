@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import Logo from "./Logo";
 
 const Footer = () => {
@@ -28,9 +29,20 @@ const Footer = () => {
               Based in the Philippines, available worldwide.
             </p>
 
-            <div className="pt-4 flex items-center gap-6">
-              <a href="mailto:hello@rhinetague.com" className="text-xs font-bold font-pixel uppercase tracking-widest text-[#F5F2EB] hover:text-[#8B7E66] transition-colors border-b border-[#8B7E66]/30 pb-1">
+            <div className="pt-4 flex flex-col items-start gap-4">
+              <Link 
+                to="/#contact" 
+                className="text-xs font-bold font-pixel uppercase tracking-widest text-[#F5F2EB] hover:text-[#8B7E66] transition-colors border-b border-[#8B7E66]/30 pb-1"
+              >
                 Get in touch
+              </Link>
+              <a 
+                href="mailto:rhinelesther@gmail.com" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[10px] font-pixel text-[#8B7E66]/60 hover:text-[#F5F2EB] transition-colors uppercase tracking-[0.2em] cursor-pointer"
+              >
+                rhinelesther@gmail.com
               </a>
             </div>
           </div>
@@ -45,35 +57,42 @@ const Footer = () => {
             </h4>
             <ul className="space-y-3">
               {[
-                { name: "My Story", href: "#work" },
-                { name: "Roles", href: "#roles" },
-                { name: "Photography", href: "#photography" },
-                { name: "The Journey", href: "#about" },
+                { name: "My Story", href: "/#work" },
+                { name: "Roles", href: "/#roles" },
+                { name: "Photography", href: "/#photography" },
+                { name: "The Journey", href: "/#about" },
               ].map((link) => (
                 <li key={link.name}>
-                  <a href={link.href} className="text-sm font-heading text-[#F5F2EB]/60 hover:text-[#F5F2EB] hover:translate-x-1 transition-all inline-block">
-                    {link.name}
-                  </a>
+                  {link.href.startsWith('/') ? (
+                    <Link to={link.href} className="text-sm font-heading text-[#F5F2EB]/60 hover:text-[#F5F2EB] hover:translate-x-1 transition-all inline-block">
+                      {link.name}
+                    </Link>
+                  ) : (
+                    <a href={link.href} className="text-sm font-heading text-[#F5F2EB]/60 hover:text-[#F5F2EB] hover:translate-x-1 transition-all inline-block">
+                      {link.name}
+                    </a>
+                  )}
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Services/Resources */}
+          {/* Photography Links */}
           <div className="lg:col-span-2 space-y-6">
             <h4 className="text-[10px] font-bold tracking-[0.3em] font-pixel uppercase text-[#8B7E66]">
-              Resources
+              Photography
             </h4>
             <ul className="space-y-3">
               {[
-                "Visual Archive",
-                "Technical Stack",
-                "Curriculum Vitae",
+                { name: "Alpine Serenity", href: "/photography/switzerland" },
+                { name: "Quiet Whispers", href: "/photography/nature" },
+                { name: "Islands & Icons", href: "/photography/philippines" },
+                { name: "Browse Gallery", href: "/photography" },
               ].map((item) => (
-                <li key={item}>
-                  <a href="#" className="text-sm font-heading text-[#F5F2EB]/60 hover:text-[#F5F2EB] hover:translate-x-1 transition-all inline-block">
-                    {item}
-                  </a>
+                <li key={item.name}>
+                  <Link to={item.href} className="text-sm font-heading text-[#F5F2EB]/60 hover:text-[#F5F2EB] hover:translate-x-1 transition-all inline-block">
+                    {item.name}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -86,14 +105,14 @@ const Footer = () => {
             </h4>
             <ul className="space-y-3">
               {[
-                "LinkedIn",
-                "GitHub",
-                "Instagram",
-                "X / Twitter",
+                { name: "LinkedIn", href: "https://www.linkedin.com/in/rhine-lesther-tague-4b604a246" },
+                { name: "GitHub", href: "https://github.com/Lesz-Xi" },
+                { name: "Instagram", href: "#" },
+                { name: "X / Twitter", href: "https://x.com/codefar1" },
               ].map((item) => (
-                <li key={item}>
-                  <a href="#" className="text-sm font-heading text-[#F5F2EB]/60 hover:text-[#F5F2EB] hover:translate-x-1 transition-all inline-block">
-                    {item}
+                <li key={item.name}>
+                  <a href={item.href} target="_blank" rel="noopener noreferrer" className="text-sm font-heading text-[#F5F2EB]/60 hover:text-[#F5F2EB] hover:translate-x-1 transition-all inline-block">
+                    {item.name}
                   </a>
                 </li>
               ))}

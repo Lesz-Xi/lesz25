@@ -1,4 +1,3 @@
-import { playHoverSound } from "../utils/soundUtils";
 
 const Button = ({ text, className }) => {
   return (
@@ -17,7 +16,6 @@ const Button = ({ text, className }) => {
           window.scrollTo({ top, behavior: "smooth" });
         }
       }}
-      onMouseEnter={playHoverSound}
       className={`${className ?? ""} cta-wrapper`}
       data-hover
     >

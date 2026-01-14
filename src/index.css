@@ -139,7 +139,7 @@ section {
   }
 
   .hero-3d-layout {
-    @apply xl:w-[70%] w-full h-full min-h-[50vh] absolute xl:-top-20 top-96 xl:-right-20 right-0 hidden md:block;
+    @apply xl:w-[70%] w-full h-full min-h-[50vh] absolute xl:-top-20 top-96 xl:-right-20 right-0;
   }
 
   .cta-wrapper {

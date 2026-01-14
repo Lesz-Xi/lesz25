@@ -93,11 +93,11 @@ const ProjectCarousel = () => {
       </div>
 
       {/* Cards Container */}
-      <div className="relative w-full h-[75vh] md:h-[80vh] flex items-center justify-center max-w-[90vw] md:max-w-5xl mt-8 md:mt-20">
+      <div className="relative w-full h-[65vh] md:h-[80vh] flex items-center justify-center max-w-[90vw] md:max-w-5xl mt-16 md:mt-20">
         {projects.map((project, index) => (
           <div
             key={project.id}
-            className="project-card absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full md:w-[600px] h-[55vh] md:h-auto md:aspect-[16/10] rounded-2xl md:rounded-3xl shadow-2xl flex flex-col md:flex-row bg-[#1C1C21] origin-top"
+            className="project-card absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full md:w-[600px] h-[350px] md:h-auto md:aspect-[16/10] rounded-2xl md:rounded-3xl shadow-2xl flex flex-col md:flex-row bg-[#1C1C21] origin-top"
             style={{ zIndex: index + 1 }}
           >
             {/* Image Section */}
