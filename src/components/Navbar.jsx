@@ -158,87 +158,84 @@ const Navbar = () => {
         )}
       </nav>
 
-      {/* Cinematic Full-Screen Menu Overlay (Photography Page Only) */}
-      {isPhotographyPage ? (
-        <div 
-          className={`fixed inset-0 z-[55] bg-[#070707] transition-all duration-700 ease-in-out ${isMobileMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
-        >
-          {/* Background Decorative Element */}
-          <div className="absolute inset-0 opacity-20 pointer-events-none">
-            <div className="absolute top-[-10%] right-[-10%] w-[60%] h-[60%] bg-[#DBD5B5]/10 blur-[120px] rounded-full" />
-            <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#DBD5B5]/5 blur-[100px] rounded-full" />
-          </div>
+      {/* Unified Cinematic Full-Screen Menu Overlay (All Pages) */}
+      <div 
+        className={`fixed inset-0 z-[55] bg-[#070707] transition-all duration-700 ease-in-out ${isMobileMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
+      >
+        {/* Background Decorative Element */}
+        <div className="absolute inset-0 opacity-20 pointer-events-none">
+          <div className="absolute top-[-10%] right-[-10%] w-[60%] h-[60%] bg-[#DBD5B5]/10 blur-[120px] rounded-full" />
+          <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#DBD5B5]/5 blur-[100px] rounded-full" />
+        </div>
 
-          <div className="relative h-full flex flex-col justify-center items-start px-12 md:px-32">
-            <div className="flex flex-col gap-6 md:gap-8 items-start">
-              {navLinks.map((link, index) => {
-                const isActive = location.pathname === link.href || (link.href.includes("#") && location.hash === link.href.split("#")[1]);
-                
-                return (
-                  <a
-                    key={link.name}
-                    href={link.href}
-                    onClick={(e) => handleNavigation(e, link.href)}
-                    className={`text-4xl md:text-6xl font-display font-bold uppercase tracking-tighter transition-all duration-500 hover:tracking-widest ${isActive ? "text-[#DBD5B5]" : "text-white/40 hover:text-[#DBD5B5]"}`}
-                    style={{ 
-                      transitionDelay: isMobileMenuOpen ? `${index * 100}ms` : "0ms",
-                      transform: isMobileMenuOpen ? "translateY(0)" : "translateY(20px)",
-                      opacity: isMobileMenuOpen ? 1 : 0
-                    }}
-                  >
-                    {link.name}
-                  </a>
-                );
-              })}
+        {/* Close Button (Visible inside menu for easier closing) */}
+        <button 
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="absolute top-8 right-8 z-[60] group p-2"
+            aria-label="Close Menu"
+        >
+            <div className="relative w-8 h-8 flex flex-col justify-center items-center">
+                <span className={`absolute w-full h-[1px] bg-white group-hover:bg-[#DBD5B5] transition-all duration-300 rotate-45`} />
+                <span className={`absolute w-full h-[1px] bg-white group-hover:bg-[#DBD5B5] transition-all duration-300 -rotate-45`} />
             </div>
+        </button>
 
-            {/* Contact Info in Menu */}
-            <div 
-              className="mt-16 flex flex-col gap-2 items-start transition-all duration-700 delay-500"
-              style={{ 
-                opacity: isMobileMenuOpen ? 1 : 0,
-                transform: isMobileMenuOpen ? "translateY(0)" : "translateY(20px)"
-              }}
+        <div className="relative h-full flex flex-col justify-center items-start px-8 md:px-32">
+          <div className="flex flex-col gap-8 items-start">
+            {navLinks.map((link, index) => {
+              const isActive = location.pathname === link.href || (link.href.includes("#") && location.hash === link.href.split("#")[1]);
+              
+              return (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  onClick={(e) => handleNavigation(e, link.href)}
+                  className={`text-5xl md:text-7xl font-display font-medium uppercase tracking-tighter transition-all duration-500 hover:tracking-wide hover:ml-4 ${isActive ? "text-[#DBD5B5]" : "text-white/40 hover:text-[#DBD5B5]"}`}
+                  style={{ 
+                    transitionDelay: isMobileMenuOpen ? `${index * 100}ms` : "0ms",
+                    transform: isMobileMenuOpen ? "translateY(0)" : "translateY(40px)",
+                    opacity: isMobileMenuOpen ? 1 : 0
+                  }}
+                >
+                  {link.name}
+                </a>
+              );
+            })}
+          </div>
+
+          {/* Contact Info in Menu */}
+          <div 
+            className="mt-20 flex flex-col gap-4 items-start transition-all duration-700 delay-500"
+            style={{ 
+              opacity: isMobileMenuOpen ? 1 : 0,
+              transform: isMobileMenuOpen ? "translateY(0)" : "translateY(20px)"
+            }}
+          >
+            <div className="w-12 h-[1px] bg-[#DBD5B5]/30 mb-4" />
+            <a 
+              href="/#contact" 
+              onClick={(e) => handleNavigation(e, "/#contact")}
+              className="text-[#DBD5B5] text-xs uppercase tracking-[0.3em] font-medium hover:text-white transition-colors"
             >
-              <a 
-                href="/#contact" 
-                onClick={(e) => handleNavigation(e, "/#contact")}
-                className="text-[#DBD5B5] text-xs uppercase tracking-[0.3em] font-medium hover:text-white transition-colors"
-                data-hover
-              >
-                Get in Touch
-              </a>
-              <a 
-                href="mailto:rhinelesther@gmail.com" 
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-white/40 hover:text-white transition-colors text-lg italic cursor-pointer"
-              >
-                rhinelesther@gmail.com
-              </a>            </div>
+              Get in Touch
+            </a>
+            <a 
+              href="mailto:rhinelesther@gmail.com" 
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white/40 hover:text-white transition-colors text-lg font-light tracking-wide cursor-pointer"
+            >
+              rhinelesther@gmail.com
+            </a>
+            
+            {/* Social Links Row */}
+            <div className="flex items-center gap-6 mt-4">
+                <a href="https://github.com/Lesz-Xi" target="_blank" rel="noopener noreferrer" className="text-white/30 hover:text-[#DBD5B5] transition-colors text-sm uppercase tracking-widest">Github</a>
+                <a href="https://www.linkedin.com/in/rhinelesther/" target="_blank" rel="noopener noreferrer" className="text-white/30 hover:text-[#DBD5B5] transition-colors text-sm uppercase tracking-widest">LinkedIn</a>
+            </div>
           </div>
         </div>
-      ) : (
-        /* Standard Mobile Menu Overlay (Other Pages) */
-        <div 
-          className={`md:hidden fixed top-20 right-6 w-48 transition-all duration-500 ease-in-out z-[55]
-          ${isMobileMenuOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4 pointer-events-none"}`}
-        >
-          <div className={`bg-black/95 backdrop-blur-2xl border border-white/10 rounded-3xl p-4 flex flex-col gap-4 shadow-[0_32px_64px_rgba(0,0,0,0.5)] overflow-hidden`}>
-            {navLinks.map((link, index) => (
-              <a
-                key={link.name}
-                href={link.href}
-                onClick={(e) => handleNavigation(e, link.href)}
-                className="text-[#DBD5B5]/70 hover:text-[#DBD5B5] text-xs font-display uppercase tracking-widest py-2 border-b border-white/5 last:border-0 transition-all duration-300"
-                style={{ transitionDelay: `${index * 50}ms` }}
-              >
-                {link.name}
-              </a>
-            ))}
-          </div>
-        </div>
-      )}
+      </div>
     </>
   );
 };
