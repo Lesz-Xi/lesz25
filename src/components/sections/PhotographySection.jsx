@@ -10,7 +10,7 @@ const PhotographySection = () => {
     {
       id: 1,
       url: "/images/project1.png",
-      title: "Zug Horizons",
+      title: "Alps",
       location: "ZUG, SWITZERLAND",
       year: "2023",
       category: "LANDSCAPE",
@@ -20,8 +20,8 @@ const PhotographySection = () => {
     {
       id: 2,
       url: "/images/project2.png",
-      title: "Urban Geometry",
-      location: "TOKYO, JAPAN",
+      title: "City of Lights",
+      location: "PARIS, FRANCE",
       year: "2024",
       category: "ARCHITECTURE",
       className: "md:col-span-1 md:mt-32",
@@ -30,8 +30,8 @@ const PhotographySection = () => {
     {
       id: 3,
       url: "/images/project3.png",
-      title: "Serene Waters",
-      location: "KYOTO, JAPAN",
+      title: "Nature",
+      location: "JAS, PHILIPPINES",
       year: "2023",
       category: "NATURE",
       className: "md:col-span-1 md:-mt-32",
@@ -40,8 +40,8 @@ const PhotographySection = () => {
     {
       id: 4,
       url: "/images/projects/thesislens-v2.png",
-      title: "Neon Nights",
-      location: "OSAKA, JAPAN",
+      title: "Beach",
+      location: "PHILIPPINES",
       year: "2024",
       category: "STREET",
       className: "md:col-span-1 md:mt-0",
@@ -50,8 +50,8 @@ const PhotographySection = () => {
     {
       id: 5,
       url: "/images/projects/universe-splitter.png",
-      title: "Islands & Icons",
-      location: "DAVAO CITY, PHILIPPINES",
+      title: "Streets",
+      location: "URBAN & CITY",
       year: "2023",
       category: "TRAVEL",
       className: "md:col-span-2 md:justify-self-center md:w-[calc(50%-1.5rem)]",
