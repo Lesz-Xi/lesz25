@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from "framer-motion";
 
-const greetings = ["Hi", "Hallo", "Bonjour"];
+const greetings = ["Hi", "Hallo", "Bonjour", "Annyeong", "Kumusta"];
 
 const AnimatedGreeting = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
