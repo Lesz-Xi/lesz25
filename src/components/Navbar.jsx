@@ -116,9 +116,9 @@ const Navbar = () => {
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label="Toggle Menu"
             >
-              <div className="w-5 h-px bg-white group-hover:bg-[#DBD5B5] transition-all duration-300" />
-              <div className="w-5 h-px bg-white group-hover:bg-[#DBD5B5] transition-all duration-300" />
-              <div className="w-5 h-px bg-white group-hover:bg-[#DBD5B5] transition-all duration-300" />
+              <div className="w-5 h-px bg-[#DBD5B5] group-hover:bg-white transition-all duration-300" />
+              <div className="w-5 h-px bg-[#DBD5B5] group-hover:bg-white transition-all duration-300" />
+              <div className="w-5 h-px bg-[#DBD5B5] group-hover:bg-white transition-all duration-300" />
             </button>
           </div>
         ) : (
@@ -156,9 +156,9 @@ const Navbar = () => {
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               >
                 <div className="w-4 h-3 relative flex flex-col justify-between">
-                  <span className="w-full h-px bg-white" />
-                  <span className="w-full h-px bg-white" />
-                  <span className="w-full h-px bg-white" />
+                  <span className="w-full h-px bg-[#DBD5B5]" />
+                  <span className="w-full h-px bg-[#DBD5B5]" />
+                  <span className="w-full h-px bg-[#DBD5B5]" />
                 </div>
               </button>
             </div>
