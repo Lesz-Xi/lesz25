@@ -60,14 +60,19 @@ const AlbumDisplay = () => {
 
   }, { scope: containerRef }); // Scope to container for proper cleanup
 
-  // Gallery animations - Show all cards immediately (removed ScrollTrigger for reliability)
+  // Gallery animations using useGSAP
+  // UNIFIED: Show all cards immediately for both mobile and desktop
+  // ScrollTrigger removed for reliability after multiple fix attempts
   useGSAP(() => {
-    // Immediately show all gallery cards on all devices
-    // This is the reliable approach after ScrollTrigger timing issues
-    gsap.set(".gallery-landscape, .gallery-portrait", { 
+    // Immediately show all gallery cards - no ScrollTrigger complexity
+    gsap.set(".gallery-landscape", { 
       clipPath: "inset(0% 0 0 0)",
-      opacity: 1,
-      y: 0
+      opacity: 1 
+    });
+    gsap.set(".gallery-portrait", { 
+      opacity: 1, 
+      y: 0,
+      clipPath: "inset(0% 0 0 0)" 
     });
   }, { scope: galleryRef }); // Scope to gallery for proper cleanup
 
