@@ -89,11 +89,11 @@ const AlbumDisplay = () => {
             clipPath: "inset(0% 0 0 0)", 
             duration: 1.2,
             ease: "power3.out",
+            immediateRender: false, // Prevent flash of hidden state
             scrollTrigger: {
               trigger: card,
-              start: "top 85%",
-              end: "top 20%",
-              toggleActions: "play none none none"
+              start: "top 90%", // Earlier trigger
+              toggleActions: "play none none reverse" // Reverse on scroll back up
             }
           }
         );
@@ -111,11 +111,11 @@ const AlbumDisplay = () => {
             duration: 1,
             stagger: 0.15,
             ease: "power3.out",
+            immediateRender: false, // Prevent flash of hidden state
             scrollTrigger: {
               trigger: row,
-              start: "top 85%",
-              end: "top 20%",
-              toggleActions: "play none none none"
+              start: "top 90%", // Earlier trigger
+              toggleActions: "play none none reverse" // Reverse on scroll back up
             }
           }
         );
