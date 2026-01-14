@@ -80,7 +80,7 @@ const AlbumDisplay = () => {
         clipPath: "inset(0% 0 0 0)" 
       });
     } else {
-      // DESKTOP: Full ScrollTrigger animations
+      // DESKTOP: Full ScrollTrigger animations with curtain reveal effect
       // Curtain Reveal for Landscape cards
       gsap.utils.toArray(".gallery-landscape").forEach((card) => {
         gsap.fromTo(card, 
@@ -89,11 +89,10 @@ const AlbumDisplay = () => {
             clipPath: "inset(0% 0 0 0)", 
             duration: 1.2,
             ease: "power3.out",
-            immediateRender: false, // Prevent flash of hidden state
             scrollTrigger: {
               trigger: card,
-              start: "top 90%", // Earlier trigger
-              toggleActions: "play none none reverse" // Reverse on scroll back up
+              start: "top 90%",
+              toggleActions: "play none none reverse"
             }
           }
         );
@@ -111,11 +110,10 @@ const AlbumDisplay = () => {
             duration: 1,
             stagger: 0.15,
             ease: "power3.out",
-            immediateRender: false, // Prevent flash of hidden state
             scrollTrigger: {
               trigger: row,
-              start: "top 90%", // Earlier trigger
-              toggleActions: "play none none reverse" // Reverse on scroll back up
+              start: "top 90%",
+              toggleActions: "play none none reverse"
             }
           }
         );
