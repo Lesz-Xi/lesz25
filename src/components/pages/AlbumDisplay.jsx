@@ -375,9 +375,9 @@ const AlbumDisplay = () => {
                     e.stopPropagation();
                     setSelectedImage(null);
                 }}
-                className="fixed top-6 right-6 z-[110] p-2 text-white/70 hover:text-white bg-black/50 hover:bg-black/70 rounded-full transition-colors cursor-pointer"
+                className="fixed top-6 right-6 z-[110] p-2 bg-black/50 hover:bg-black/70 rounded-full transition-colors cursor-pointer group"
             >
-                <X size={32} />
+                <X size={24} color="#DBD5B5" />
             </button>
 
             {/* Image Container */}
