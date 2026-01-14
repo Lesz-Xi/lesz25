@@ -39,7 +39,7 @@ const Navbar = () => {
   const navLinks = [
     { name: "Home", href: "/" },
     { name: "My Story", href: "/#work" },
-    { name: "Photos", href: "/photography" },
+    { name: "Photography", href: "/#photography" },
     { name: "Journey", href: "/#about" },
     { name: "Contact", href: "/#contact" },
   ];
@@ -200,8 +200,6 @@ const Navbar = () => {
               
               if (link.href === "/") {
                 isActive = activeSection === "/";
-              } else if (link.href === "/photography") {
-                isActive = activeSection.startsWith("/photography");
               } else {
                 isActive = activeSection === link.href;
               }
