@@ -118,6 +118,7 @@ const Navbar = () => {
             >
               <div className="w-5 h-px bg-white group-hover:bg-[#DBD5B5] transition-all duration-300" />
               <div className="w-5 h-px bg-white group-hover:bg-[#DBD5B5] transition-all duration-300" />
+              <div className="w-5 h-px bg-white group-hover:bg-[#DBD5B5] transition-all duration-300" />
             </button>
           </div>
         ) : (
@@ -170,13 +171,13 @@ const Navbar = () => {
         <button 
             onClick={() => setIsMobileMenuOpen(false)}
             onTouchEnd={(e) => { e.preventDefault(); setIsMobileMenuOpen(false); }}
-            className="fixed top-4 right-4 z-[200] group w-11 h-11 flex items-center justify-center rounded-full bg-black/80 border border-white/30 active:scale-95 transition-transform duration-150"
+            className="fixed top-4 right-4 z-[200] group w-11 h-11 md:w-9 md:h-9 flex items-center justify-center rounded-full bg-black/80 border border-[#DBD5B5]/30 active:scale-95 transition-transform duration-150"
             style={{ touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
             aria-label="Close Menu"
         >
             <div className="relative w-5 h-5 flex justify-center items-center">
-                <span className="absolute w-4 h-[2px] bg-white rotate-45" />
-                <span className="absolute w-4 h-[2px] bg-white -rotate-45" />
+                <span className="absolute w-4 h-[2px] bg-[#DBD5B5] rotate-45" />
+                <span className="absolute w-4 h-[2px] bg-[#DBD5B5] -rotate-45" />
             </div>
         </button>
       )}
