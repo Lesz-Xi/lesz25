@@ -78,7 +78,7 @@ const AlbumDisplay = () => {
     {
         id: "switzerland",
         title: "Alpine Serenity",
-        heroTitle: "In the silence of the Alps, I found a rhythm faster than light but stiller than time. A mirror reflecting peace.",
+        heroTitle: "Up there, everything slows down. It's not dramatic—it's just quiet. And that quiet felt like peace.",
         location: "Zug, Switzerland",
         year: "2023",
         image: "/images/switz-feat.jpg",
@@ -87,7 +87,7 @@ const AlbumDisplay = () => {
     {
         id: "paris",
         title: "City of Light",
-        heroTitle: "Whispers in stone and shadow. Wandering these streets was less about seeing a city and more about feeling a heartbeat.",
+        heroTitle: "I walked until my feet hurt and my camera ran out of storage. That's when Paris really started to make sense.",
         location: "Paris, France",
         year: "2024",
         image: "/images/feat-paris.jpg",
@@ -96,7 +96,7 @@ const AlbumDisplay = () => {
     {
         id: "nature",
         title: "Quiet Whispers",
-        heroTitle: "Silent conversations with the earth. Documenting the raw, unscripted elegance of the world when it thinks no one is watching.",
+        heroTitle: "No Wi-Fi, no notifications. Just trees doing their thing and me trying to keep up.",
         location: "Nature",
         year: "2023",
         image: "/images/nature-feat.jpg",
@@ -105,7 +105,7 @@ const AlbumDisplay = () => {
     {
         id: "beach",
         title: "Sunrise & Sunset",
-        heroTitle: "The horizon is where the day makes its dramatic exit and humble entry. A reminder that endings are just beginnings in disguise.",
+        heroTitle: "Woke up too early, stayed out too late. Somewhere in between, the sky did something I'll never forget.",
         location: "Davao City, Philippines",
         year: "2025",
         image: "/images/sunset-feat.jpg",
@@ -114,7 +114,7 @@ const AlbumDisplay = () => {
     {
         id: "philippines",
         title: "Islands & Icons",
-        heroTitle: "Home is a tapestry woven from chaotic joy and serene shores. Capturing not just the streets, but the soulful resilience of a people living in full color.",
+        heroTitle: "Home isn't just a place. It's the noise, the heat, the chaos—and somehow, I wouldn't have it any other way.",
         location: "Davao City, Philippines",
         year: "2023",
         image: "/images/ph-feat.jpg",
@@ -123,7 +123,7 @@ const AlbumDisplay = () => {
     {
         id: "flowers",
         title: "Flowers",
-        heroTitle: "Nature's quietest fireworks. In the delicate fold of a petal, I see profound strength in fragility.",
+        heroTitle: "Stopped to actually look at a flower for once. Turns out, they've been putting on a show this whole time.",
         location: "Botanical Garden",
         year: "2023",
         image: "/images/flowers-feat.jpg",
