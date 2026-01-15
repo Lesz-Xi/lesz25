@@ -5,6 +5,7 @@ import { FaGithub, FaLinkedinIn, FaInstagram } from "react-icons/fa6";
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isPhotographySubmenuOpen, setIsPhotographySubmenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("/"); // Track active section in state
   const location = useLocation();
   const navigate = useNavigate();
@@ -241,6 +242,52 @@ const Navbar = () => {
                 isActive = activeSection === link.href;
               }
               
+              // Special handling for Photography in Mobile Menu (Accordion)
+              if (link.name === "Photography") {
+                  return (
+                    <div 
+                        key={link.name} 
+                        className="flex flex-col items-start w-full"
+                        style={{ 
+                            transitionDelay: isMobileMenuOpen ? `${index * 100}ms` : "0ms",
+                            transform: isMobileMenuOpen ? "translateY(0)" : "translateY(40px)",
+                            opacity: isMobileMenuOpen ? 1 : 0
+                        }}
+                    >
+                        <button
+                          onClick={(e) => {
+                              e.preventDefault();
+                              setIsPhotographySubmenuOpen(!isPhotographySubmenuOpen);
+                          }}
+                          className={`text-3xl md:text-5xl font-display font-medium uppercase tracking-tight transition-all duration-500 hover:tracking-wide hover:ml-2 text-left flex items-center gap-4 ${isActive || isPhotographySubmenuOpen ? "text-[#DBD5B5]" : "text-white/40 hover:text-[#DBD5B5]"}`}
+                        >
+                          {link.name}
+                          <span className={`text-lg transition-transform duration-300 ${isPhotographySubmenuOpen ? "rotate-180" : ""}`}>↓</span>
+                        </button>
+                        
+                        {/* Mobile Submenu Accordion */}
+                        <div className={`overflow-hidden transition-all duration-500 ease-in-out w-full ${isPhotographySubmenuOpen ? "max-h-40 opacity-100 mt-4" : "max-h-0 opacity-0 mt-0"}`}>
+                            <div className="flex flex-col gap-4 pl-6 border-l border-[#DBD5B5]/20 ml-2">
+                                <a 
+                                    href="/#photography"
+                                    onClick={(e) => handleNavigation(e, "/#photography")}
+                                    className="text-xl font-display uppercase tracking-widest text-white/60 hover:text-[#DBD5B5] transition-colors"
+                                >
+                                    Portfolio
+                                </a>
+                                <a 
+                                    href="/photography"
+                                    onClick={(e) => handleNavigation(e, "/photography")}
+                                    className="text-xl font-display uppercase tracking-widest text-white/60 hover:text-[#DBD5B5] transition-colors"
+                                >
+                                    Albums
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                  );
+              }
+
               return (
                 <a
                   key={link.name}
