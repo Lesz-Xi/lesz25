@@ -214,7 +214,7 @@ const AlbumDisplay = () => {
         <div 
             className={`gallery-feature group relative rounded-2xl overflow-hidden cursor-pointer ${
                 currentGallery[0]?.type === 'portrait' 
-                ? 'aspect-[3/4] max-w-2xl mx-auto' 
+                ? 'aspect-[2/3] max-w-2xl mx-auto' 
                 : 'aspect-[21/9]'
             }`}
             onClick={() => setSelectedImage(currentGallery[0]?.src || "/images/project1.png")}
