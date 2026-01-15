@@ -8,6 +8,7 @@
   --font-display: "Clash Display", sans-serif;
   --font-pixel: "Doto", sans-serif;
   --font-accent: "Dancing Script", cursive;
+  --font-description: "Square Peg", cursive;
   --font-mono: "SF Mono", "Monaco", "Inconsolata", "Fira Code", monospace;
   --font-geist-mono: "Geist Mono", monospace;
   --font-general-sans: "General Sans", sans-serif;
@@ -33,6 +34,10 @@
 
 .font-accent {
   font-family: var(--font-accent) !important;
+}
+
+.font-description {
+  font-family: var(--font-description) !important;
 }
 
 .font-geist-mono {

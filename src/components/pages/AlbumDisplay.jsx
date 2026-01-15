@@ -73,7 +73,7 @@ const AlbumDisplay = () => {
         title: "Alpine Serenity",
         heroTitle: "Up there, everything slows down. It's not dramatic—it's just quiet. And that quiet felt like peace.",
         location: "Zug, Switzerland",
-        year: "2023",
+        year: "2025",
         image: "/images/switz-feat.jpg",
         description: "Capturing the vibrant life, culture, and diversity of the alpine landscape through a collaborative travel photography project. The aim was to document the silent majesty of the peaks."
     },
@@ -82,7 +82,7 @@ const AlbumDisplay = () => {
         title: "City of Light",
         heroTitle: "I walked until my feet hurt and my camera ran out of storage. That's when Paris really started to make sense.",
         location: "Paris, France",
-        year: "2024",
+        year: "2025",
         image: "/images/feat-paris.jpg",
         description: "Exploring the romantic streets and hidden corners of Paris, chasing light and shadow across the historic architecture."
     },
@@ -91,7 +91,7 @@ const AlbumDisplay = () => {
         title: "Quiet Whispers",
         heroTitle: "No Wi-Fi, no notifications. Just trees doing their thing and me trying to keep up.",
         location: "Nature",
-        year: "2023",
+        year: "2023 – 2025",
         image: "/images/nature-feat.jpg",
         description: "A deep dive into the untouched wilderness, listening to the stories told by the ancient trees and misty mornings."
     },
@@ -109,7 +109,7 @@ const AlbumDisplay = () => {
         title: "Islands & Icons",
         heroTitle: "Home isn't just a place. It's the noise, the heat, the chaos—and somehow, I wouldn't have it any other way.",
         location: "Davao City, Philippines",
-        year: "2023",
+        year: "2025",
         image: "/images/ph-feat.jpg",
         description: "A visual tapestry of Davao: from the pulse of the night markets and urban geometry to the serene breath of the coast. Documenting the soul of the city through its people and architecture."
     },
@@ -118,7 +118,7 @@ const AlbumDisplay = () => {
         title: "Flowers",
         heroTitle: "Stopped to actually look at a flower for once. Turns out, they've been putting on a show this whole time.",
         location: "Botanical Garden",
-        year: "2023",
+        year: "2023 – 2025",
         image: "/images/flowers-feat.jpg",
         description: "A showcase of floral elegance, capturing the delicate textures and vibrant colors of nature's finest details."
     }
@@ -190,7 +190,7 @@ const AlbumDisplay = () => {
 
       {/* Introspective Statement - Cinematic Spacing */}
       <div className="title-scroll min-h-[35vh] md:min-h-[45vh] flex items-center justify-center px-6 md:px-20 py-24 md:py-32">
-        <h1 className="font-quote text-xl md:text-2xl lg:text-3xl text-center leading-relaxed text-[#DBD5B5]/85 max-w-3xl">
+        <h1 className="font-description text-3xl md:text-4xl lg:text-5xl text-center leading-relaxed text-[#DBD5B5]/85 max-w-4xl">
           "{album.heroTitle}"
         </h1>
       </div>
@@ -210,11 +210,7 @@ const AlbumDisplay = () => {
                 decoding="async"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 will-change-transform" 
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
-            <div className="absolute bottom-6 left-6 flex flex-col gap-1">
-                <span className="text-[10px] tracking-[0.3em] uppercase text-white/50">{currentGallery[0]?.category || "Landscape"}</span>
-                <span className="text-xl md:text-2xl font-display text-white">{currentGallery[0]?.title || "Untitled"}</span>
-            </div>
+
         </div>
 
         {/* Row 2: Two Portraits (Aligned) */}
@@ -224,22 +220,14 @@ const AlbumDisplay = () => {
                 onClick={() => setSelectedImage(currentGallery[1]?.src || "/images/project1.png")}
             >
                 <img src={currentGallery[1]?.src || "/images/project1.png"} alt={currentGallery[1]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
-                <div className="absolute bottom-6 left-6 flex flex-col gap-1">
-                    <span className="text-[10px] tracking-[0.3em] uppercase text-white/50 font-geist-mono">{currentGallery[1]?.category || "Portrait"}</span>
-                    <span className="text-lg md:text-xl font-display text-white">{currentGallery[1]?.title || "Untitled"}</span>
-                </div>
+
             </div>
             <div 
                 className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer"
                 onClick={() => setSelectedImage(currentGallery[2]?.src || "/images/project1.png")}
             >
                 <img src={currentGallery[2]?.src || "/images/project1.png"} alt={currentGallery[2]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
-                <div className="absolute bottom-6 left-6 flex flex-col gap-1">
-                    <span className="text-[10px] tracking-[0.3em] uppercase text-white/50 font-geist-mono">{currentGallery[2]?.category || "Portrait"}</span>
-                    <span className="text-lg md:text-xl font-display text-white">{currentGallery[2]?.title || "Untitled"}</span>
-                </div>
+
             </div>
         </div>
 
@@ -249,11 +237,7 @@ const AlbumDisplay = () => {
             onClick={() => setSelectedImage(currentGallery[3]?.src || "/images/project1.png")}
         >
             <img src={currentGallery[3]?.src || "/images/project1.png"} alt={currentGallery[3]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
-            <div className="absolute bottom-6 left-6 flex flex-col gap-1">
-                <span className="text-[10px] tracking-[0.3em] uppercase text-white/50 font-geist-mono">{currentGallery[3]?.category || "Landscape"}</span>
-                <span className="text-xl md:text-2xl font-display text-white">{currentGallery[3]?.title || "Untitled"}</span>
-            </div>
+
         </div>
 
         {/* Row 4: Staggered Portraits (First Top, Second Bottom) */}
@@ -263,22 +247,14 @@ const AlbumDisplay = () => {
                 onClick={() => setSelectedImage(currentGallery[4]?.src || "/images/project1.png")}
             >
                 <img src={currentGallery[4]?.src || "/images/project1.png"} alt={currentGallery[4]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
-                <div className="absolute bottom-6 left-6 flex flex-col gap-1">
-                    <span className="text-[10px] tracking-[0.3em] uppercase text-white/50 font-geist-mono">{currentGallery[4]?.category || "Portrait"}</span>
-                    <span className="text-lg md:text-xl font-display text-white">{currentGallery[4]?.title || "Untitled"}</span>
-                </div>
+
             </div>
             <div 
                 className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden mt-32 cursor-pointer"
                 onClick={() => setSelectedImage(currentGallery[5]?.src || "/images/project1.png")}
             >
                 <img src={currentGallery[5]?.src || "/images/project1.png"} alt={currentGallery[5]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
-                <div className="absolute bottom-6 left-6 flex flex-col gap-1">
-                    <span className="text-[10px] tracking-[0.3em] uppercase text-white/50 font-geist-mono">{currentGallery[5]?.category || "Portrait"}</span>
-                    <span className="text-lg md:text-xl font-display text-white">{currentGallery[5]?.title || "Untitled"}</span>
-                </div>
+
             </div>
         </div>
 
@@ -289,22 +265,14 @@ const AlbumDisplay = () => {
                 onClick={() => setSelectedImage(currentGallery[6]?.src || "/images/project1.png")}
             >
                 <img src={currentGallery[6]?.src || "/images/project1.png"} alt={currentGallery[6]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
-                <div className="absolute bottom-6 left-6 flex flex-col gap-1">
-                    <span className="text-[10px] tracking-[0.3em] uppercase text-white/50 font-geist-mono">{currentGallery[6]?.category || "Portrait"}</span>
-                    <span className="text-lg md:text-xl font-display text-white">{currentGallery[6]?.title || "Untitled"}</span>
-                </div>
+
             </div>
             <div 
                 className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer"
                 onClick={() => setSelectedImage(currentGallery[7]?.src || "/images/project1.png")}
             >
                 <img src={currentGallery[7]?.src || "/images/project1.png"} alt={currentGallery[7]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
-                <div className="absolute bottom-6 left-6 flex flex-col gap-1">
-                    <span className="text-[10px] tracking-[0.3em] uppercase text-white/50 font-geist-mono">{currentGallery[7]?.category || "Portrait"}</span>
-                    <span className="text-lg md:text-xl font-display text-white">{currentGallery[7]?.title || "Untitled"}</span>
-                </div>
+
             </div>
         </div>
 
@@ -314,11 +282,7 @@ const AlbumDisplay = () => {
             onClick={() => setSelectedImage(currentGallery[8]?.src || "/images/project1.png")}
         >
             <img src={currentGallery[8]?.src || "/images/project1.png"} alt={currentGallery[8]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
-            <div className="absolute bottom-6 left-6 flex flex-col gap-1">
-                <span className="text-[10px] tracking-[0.3em] uppercase text-white/50 font-geist-mono">{currentGallery[8]?.category || "Landscape"}</span>
-                <span className="text-xl md:text-2xl font-display text-white">{currentGallery[8]?.title || "Untitled"}</span>
-            </div>
+
         </div>
 
         {/* Row 7: Two Portraits (Aligned) */}
@@ -328,22 +292,14 @@ const AlbumDisplay = () => {
                 onClick={() => setSelectedImage(currentGallery[9]?.src || "/images/project1.png")}
             >
                 <img src={currentGallery[9]?.src || "/images/project1.png"} alt={currentGallery[9]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
-                <div className="absolute bottom-6 left-6 flex flex-col gap-1">
-                    <span className="text-[10px] tracking-[0.3em] uppercase text-white/50 font-geist-mono">{currentGallery[9]?.category || "Portrait"}</span>
-                    <span className="text-lg md:text-xl font-display text-white">{currentGallery[9]?.title || "Untitled"}</span>
-                </div>
+
             </div>
             <div 
                 className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer"
                 onClick={() => setSelectedImage(currentGallery[10]?.src || "/images/project1.png")}
             >
                 <img src={currentGallery[10]?.src || "/images/project1.png"} alt={currentGallery[10]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
-                <div className="absolute bottom-6 left-6 flex flex-col gap-1">
-                    <span className="text-[10px] tracking-[0.3em] uppercase text-white/50 font-geist-mono">{currentGallery[10]?.category || "Portrait"}</span>
-                    <span className="text-lg md:text-xl font-display text-white">{currentGallery[10]?.title || "Untitled"}</span>
-                </div>
+
             </div>
         </div>
 
@@ -353,11 +309,7 @@ const AlbumDisplay = () => {
             onClick={() => setSelectedImage(currentGallery[11]?.src || "/images/project1.png")}
         >
             <img src={currentGallery[11]?.src || "/images/project1.png"} alt={currentGallery[11]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
-            <div className="absolute bottom-6 left-6 flex flex-col gap-1">
-                <span className="text-[10px] tracking-[0.3em] uppercase text-white/50 font-geist-mono">{currentGallery[11]?.category || "Landscape"}</span>
-                <span className="text-xl md:text-2xl font-display text-white">{currentGallery[11]?.title || "Untitled"}</span>
-            </div>
+
         </div>
 
       </div>
