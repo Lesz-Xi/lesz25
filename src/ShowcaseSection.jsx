@@ -16,6 +16,8 @@ const ShowcaseSection = () => {
                src="/images/leszport.jpg" 
                alt="Rhine Tague Portrait" 
                className="w-full h-full object-cover grayscale contrast-110"
+               loading="eager"
+               fetchpriority="high"
              />
           </div>
         </div>

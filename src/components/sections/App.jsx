@@ -11,6 +11,7 @@ import ErrorBoundary from "../ErrorBoundary";
 import Home from "../pages/Home";
 import PhotographyPage from "../pages/PhotographyPage";
 import AlbumDisplay from "../pages/AlbumDisplay";
+import NotFound from "../pages/NotFound";
 
 // Store Lenis instance globally so components can access it
 let lenisInstance = null;
@@ -138,6 +139,7 @@ const App = () => {
                 <Route path="/" element={<Home />} />
                 <Route path="/photography" element={<PhotographyPage />} />
                 <Route path="/photography/:albumId" element={<AlbumDisplayWrapper />} />
+                <Route path="*" element={<NotFound />} />
               </Routes>
 
             </div>

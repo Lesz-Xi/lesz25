@@ -36,7 +36,7 @@ const IntroAnimation = ({ onComplete }) => {
           initial={{ opacity: 1 }}
           exit={{ 
             opacity: 0,
-            transition: { duration: 1, ease: [0.22, 1, 0.36, 1] }
+            transition: { duration: 1.2, ease: [0.76, 0, 0.24, 1] } // Cinematic easeInOutQuart-like curve
           }}
           className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#F5F2EB]"
         >
