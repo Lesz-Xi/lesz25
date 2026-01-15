@@ -28,6 +28,12 @@ const ScrollToTop = () => {
     // Save scroll position when leaving photography page
     const previousPath = sessionStorage.getItem('previousPath') || '';
     
+    // ALBUM PAGES: Let AlbumDisplayWrapper handle scroll reset
+    if (pathname.startsWith('/photography/')) {
+      sessionStorage.setItem('previousPath', pathname);
+      return; // Exit early - AlbumDisplayWrapper handles this
+    }
+    
     // If coming BACK to /photography from an album, restore scroll position
     if (pathname === '/photography' && previousPath.startsWith('/photography/')) {
       const savedPosition = sessionStorage.getItem('photographyScrollPosition');
@@ -42,22 +48,16 @@ const ScrollToTop = () => {
           }
           ScrollTrigger.refresh();
         }, 50);
+        sessionStorage.setItem('previousPath', pathname);
         return; // Don't scroll to top
       }
     }
     
-    // For album pages, save the photography scroll position before navigating
-    if (pathname.startsWith('/photography/') && previousPath === '/photography') {
-      // Position was already saved by PhotographyPage
-    }
-    
     // For other navigations, scroll to top
-    if (!pathname.startsWith('/photography/') || previousPath !== '/photography') {
-      if (lenis) {
-        lenis.scrollTo(0, { immediate: true });
-      } else {
-        window.scrollTo(0, 0);
-      }
+    if (lenis) {
+      lenis.scrollTo(0, { immediate: true });
+    } else {
+      window.scrollTo(0, 0);
     }
     
     // Store current path for next navigation
@@ -76,13 +76,23 @@ const ScrollToTop = () => {
 const AlbumDisplayWrapper = () => {
   const { albumId } = useParams();
   
-  // Force scroll to top using Lenis
+  // Force scroll to top IMMEDIATELY when albumId changes
   useEffect(() => {
+    // Kill all existing ScrollTriggers first
+    ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    
+    // Force scroll to top using both Lenis and native scroll
     const lenis = getLenis();
     if (lenis) {
-      lenis.scrollTo(0, { immediate: true });
+      lenis.scrollTo(0, { immediate: true, force: true });
     }
-    ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    // Also use native scroll as fallback
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    
+    // Refresh ScrollTrigger after a small delay
+    setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 50);
   }, [albumId]);
   
   // The key prop forces a complete remount when albumId changes
@@ -93,6 +103,11 @@ const App = () => {
   const [showIntro, setShowIntro] = useState(true);
 
   useEffect(() => {
+    // Disable browser's native scroll restoration
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+    
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
