@@ -86,14 +86,14 @@ const PhotographyPage = () => {
             {/* 2-Column Grid - Simple Staggered Layout */}
             <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-32">
                 {albums.map((album, index) => {
-                    // Last item (5th) should be centered
-                    const isLastOdd = index === albums.length - 1 && albums.length % 2 === 1;
+                    // Last item (Flowers) should be centered
+                    const isLast = index === albums.length - 1;
                     
                     return (
                     <Link 
                         to={`/photography/${album.id}`} 
                         key={album.id} 
-                        className={`album-card group block ${index % 2 === 1 ? 'lg:mt-32' : ''} ${isLastOdd ? 'lg:col-span-2 lg:justify-self-center lg:w-[calc(50%-2rem)]' : ''}`}
+                        className={`album-card group block ${index % 2 === 1 ? 'lg:mt-32' : ''} ${isLast ? 'lg:col-span-2 lg:justify-self-center lg:w-[calc(50%-2rem)]' : ''}`}
                         onClick={() => {
                             // Save scroll position before navigating
                             sessionStorage.setItem('photographyScrollPosition', window.scrollY.toString());

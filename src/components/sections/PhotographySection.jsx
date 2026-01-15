@@ -54,7 +54,7 @@ const PhotographySection = () => {
       location: "Botanical Garden",
       year: "2023",
       category: "NATURE",
-      className: "md:col-span-1 md:col-start-1 md:mx-auto md:-mt-32",
+      className: "md:col-span-2 md:w-1/2 md:mx-auto md:-mt-32",
       speed: 0.8
     }
   ];
