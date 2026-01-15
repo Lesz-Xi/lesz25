@@ -93,7 +93,7 @@ const PhotographyPage = () => {
                     <Link 
                         to={`/photography/${album.id}`} 
                         key={album.id} 
-                        className={`album-card group block ${index % 2 === 1 ? 'lg:mt-32' : ''} ${isLast ? 'lg:col-span-2 lg:justify-self-center lg:w-[calc(50%-2rem)]' : ''}`}
+                        className={`album-card group block ${index % 2 === 1 ? 'lg:mt-32' : ''}`}
                         onClick={() => {
                             // Save scroll position before navigating
                             sessionStorage.setItem('photographyScrollPosition', window.scrollY.toString());
