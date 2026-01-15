@@ -16,15 +16,8 @@ const AlbumDisplay = () => {
   const galleryRef = useRef(null);
   const [selectedImage, setSelectedImage] = useState(null);
 
-  // Scroll to top on mount and when albumId changes
-  useEffect(() => {
-    const lenis = getLenis();
-    if (lenis) {
-      lenis.scrollTo(0, { immediate: true });
-    } else {
-      window.scrollTo(0, 0);
-    }
-  }, [albumId]);
+  // NOTE: Scroll-to-top is handled by ScrollToTop component in App.jsx
+  // Removed duplicate handler to prevent race condition with Lenis/ScrollTrigger
 
   // Page entry animations using official useGSAP hook
   // This automatically cleans up when component unmounts

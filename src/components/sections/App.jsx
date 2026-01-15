@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useLayoutEffect, Suspense } from "react";
+import React, { useState, useEffect, useLayoutEffect, Suspense, useRef } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation, useParams } from "react-router-dom";
 import Lenis from "lenis";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Navbar from "../Navbar";
 import IntroAnimation from "../IntroAnimation";
 import Cursor from "../Cursor";
-import ErrorBoundary from "../ErrorBoundary";
+import ErrorBoundary from "../ErrorBoundary"; 
 
 // Pages - Lazy loaded for code splitting
 import Home from "../pages/Home";
@@ -13,99 +13,96 @@ const PhotographyPage = React.lazy(() => import("../pages/PhotographyPage"));
 const AlbumDisplay = React.lazy(() => import("../pages/AlbumDisplay"));
 const NotFound = React.lazy(() => import("../pages/NotFound"));
 
+// Disable browser's native scroll restoration IMMEDIATELY (before any navigation)
+if (typeof window !== 'undefined' && 'scrollRestoration' in history) {
+  history.scrollRestoration = 'manual';
+}
+
 // Store Lenis instance globally so components can access it
 let lenisInstance = null;
 export const getLenis = () => lenisInstance;
 export const setLenis = (lenis) => { lenisInstance = lenis; };
 
 // ScrollToTop component with scroll position memory for Photography page
+// Uses useLayoutEffect for synchronous pre-paint scroll reset
+// FIX: Properly clears ScrollTrigger memory and syncs Lenis internal state
 const ScrollToTop = () => {
   const { pathname } = useLocation();
+  const previousPathRef = useRef(sessionStorage.getItem('previousPath') || '');
   
-  useEffect(() => {
+  // SYNCHRONOUS scroll reset - runs before paint
+  useLayoutEffect(() => {
+    const previousPath = previousPathRef.current;
     const lenis = getLenis();
     
-    // Save scroll position when leaving photography page
-    const previousPath = sessionStorage.getItem('previousPath') || '';
+    // 1. CLEAR all scroll memory FIRST - prevents stale position bugs
+    ScrollTrigger.clearScrollMemory();
+    ScrollTrigger.getAll().forEach(st => st.kill());
     
-    // ALBUM PAGES: Let AlbumDisplayWrapper handle scroll reset
-    if (pathname.startsWith('/photography/')) {
-      sessionStorage.setItem('previousPath', pathname);
-      return; // Exit early - AlbumDisplayWrapper handles this
-    }
-    
-    // If coming BACK to /photography from an album, restore scroll position
+    // 2. Check for /photography return navigation (restore saved position)
     if (pathname === '/photography' && previousPath.startsWith('/photography/')) {
       const savedPosition = sessionStorage.getItem('photographyScrollPosition');
       if (savedPosition) {
         const position = parseInt(savedPosition, 10);
-        // Small delay to ensure page is rendered
-        setTimeout(() => {
-          if (lenis) {
-            lenis.scrollTo(position, { immediate: true });
-          } else {
-            window.scrollTo(0, position);
-          }
-          ScrollTrigger.refresh();
-        }, 50);
+        
+        if (lenis) {
+          lenis.stop();
+          // Force Lenis internal state to target position
+          lenis.scroll = position;
+          lenis.targetScroll = position;
+          window.scrollTo(0, position);
+          lenis.scrollTo(position, { immediate: true, force: true });
+          lenis.start();
+        } else {
+          window.scrollTo(0, position);
+        }
+        
+        // Update refs and storage
+        previousPathRef.current = pathname;
         sessionStorage.setItem('previousPath', pathname);
-        return; // Don't scroll to top
+        
+        // Refresh ScrollTrigger after layout settles (safe mode)
+        requestAnimationFrame(() => ScrollTrigger.refresh(true));
+        return;
       }
     }
     
-    // For other navigations, scroll to top
+    // 3. For ALL other navigations: scroll to TOP
     if (lenis) {
-      lenis.scrollTo(0, { immediate: true });
+      lenis.stop();
+      // Force Lenis internal state to 0 BEFORE scrolling
+      lenis.scroll = 0;
+      lenis.targetScroll = 0;
+      // Reset all scroll sources
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      lenis.scrollTo(0, { immediate: true, force: true });
+      lenis.start();
     } else {
       window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
     }
     
-    // Store current path for next navigation
+    // Update refs and storage
+    previousPathRef.current = pathname;
     sessionStorage.setItem('previousPath', pathname);
     
-    // Refresh ScrollTrigger after scroll
-    setTimeout(() => {
-      ScrollTrigger.refresh();
-    }, 100);
+    // Refresh ScrollTrigger after layout settles (safe mode)
+    requestAnimationFrame(() => ScrollTrigger.refresh(true));
   }, [pathname]);
   
   return null;
 }
 
 // Wrapper to force remount AlbumDisplay when albumId changes
+// ScrollToTop now handles scroll reset, this just forces component remount
 const AlbumDisplayWrapper = () => {
   const { albumId } = useParams();
   
-  // Force scroll to top SYNCHRONOUSLY before paint
-  useLayoutEffect(() => {
-    // Kill all existing ScrollTriggers first
-    ScrollTrigger.getAll().forEach(trigger => trigger.kill());
-    
-    // Stop Lenis temporarily to prevent interference
-    const lenis = getLenis();
-    if (lenis) {
-      lenis.stop();
-    }
-    
-    // Force scroll to top using native scroll (most reliable)
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0; // For Safari
-    window.scrollTo(0, 0);
-    
-    // Resume Lenis and sync its internal state
-    if (lenis) {
-      lenis.start();
-      // Reset Lenis internal scroll value
-      lenis.scrollTo(0, { immediate: true, force: true });
-    }
-    
-    // Refresh ScrollTrigger after a small delay
-    setTimeout(() => {
-      ScrollTrigger.refresh();
-    }, 100);
-  }, [albumId]);
-  
   // The key prop forces a complete remount when albumId changes
+  // Scroll reset is handled by ScrollToTop's useLayoutEffect
   return <AlbumDisplay key={albumId} />;
 }
 
@@ -113,10 +110,7 @@ const App = () => {
   const [showIntro, setShowIntro] = useState(true);
 
   useEffect(() => {
-    // Disable browser's native scroll restoration
-    if ('scrollRestoration' in history) {
-      history.scrollRestoration = 'manual';
-    }
+    // Note: scrollRestoration is set at module scope for immediate effect
     
     const lenis = new Lenis({
       duration: 1.2,
