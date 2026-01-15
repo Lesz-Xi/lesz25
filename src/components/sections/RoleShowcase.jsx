@@ -128,17 +128,20 @@ const RoleShowcase = () => {
                 const flowerCenterX = flowerRect.left + flowerRect.width / 2;
                 
                 // Check each character's horizontal position
-                chars.forEach((char, index) => {
-                    if (litChars.has(index)) return; // Already lit, skip
-                    
+                chars.forEach((char) => {
                     const charRect = char.getBoundingClientRect();
                     const charCenterX = charRect.left + charRect.width / 2;
                     
-                    // Threshold: light up when flower is within 50px horizontally
-                    const threshold = 50;
-                    if (Math.abs(flowerCenterX - charCenterX) < threshold) {
-                        litChars.add(index);
-                        gsap.to(char, { opacity: 1, duration: 0.2, ease: "power2.out" });
+                    // Logic: If flower is to the right of the character (with small threshold), it is "lit"
+                    // -20px threshold means it lights up slightly before the flower center hits the char center
+                    const isPassed = flowerCenterX > (charCenterX - 20);
+                    
+                    if (isPassed && !char._isLit) {
+                        char._isLit = true;
+                        gsap.to(char, { opacity: 1, duration: 0.3, ease: "power2.out", overwrite: true });
+                    } else if (!isPassed && char._isLit) {
+                        char._isLit = false;
+                        gsap.to(char, { opacity: 0.3, duration: 0.3, ease: "power2.out", overwrite: true });
                     }
                 });
             }
