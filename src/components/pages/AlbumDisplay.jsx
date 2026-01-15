@@ -51,15 +51,16 @@ const AlbumDisplay = () => {
     masterTl.to(".title-scroll", {
       y: 0,
       opacity: 1,
-      duration: 1
+      duration: 1.5,
+      ease: "power2.out"
     }, "-=0.6");
 
     // Animate description
     masterTl.to(".description-scroll", {
       y: 0,
       opacity: 1,
-      duration: 0.8
-    }, "-=0.4");
+      duration: 1
+    }, "-=0.8");
 
   }, { scope: containerRef }); // Scope to container for proper cleanup
 
@@ -84,7 +85,7 @@ const AlbumDisplay = () => {
     {
         id: "switzerland",
         title: "Alpine Serenity",
-        heroTitle: "Zug",
+        heroTitle: "In the silence of the Alps, I found a rhythm faster than light but stiller than time. A mirror reflecting peace.",
         location: "Zug, Switzerland",
         year: "2023",
         image: "/images/switz-feat.jpg",
@@ -93,7 +94,7 @@ const AlbumDisplay = () => {
     {
         id: "paris",
         title: "City of Light",
-        heroTitle: "Paris",
+        heroTitle: "Whispers in stone and shadow. Wandering these streets was less about seeing a city and more about feeling a heartbeat.",
         location: "Paris, France",
         year: "2024",
         image: "/images/feat-paris.jpg",
@@ -102,7 +103,7 @@ const AlbumDisplay = () => {
     {
         id: "nature",
         title: "Quiet Whispers",
-        heroTitle: "Nature",
+        heroTitle: "Silent conversations with the earth. Documenting the raw, unscripted elegance of the world when it thinks no one is watching.",
         location: "Nature",
         year: "2023",
         image: "/images/nature-feat.jpg",
@@ -111,7 +112,7 @@ const AlbumDisplay = () => {
     {
         id: "beach",
         title: "Sunrise & Sunset",
-        heroTitle: "Into the Light",
+        heroTitle: "The horizon is where the day makes its dramatic exit and humble entry. A reminder that endings are just beginnings in disguise.",
         location: "Davao City, Philippines",
         year: "2025",
         image: "/images/sunset-feat.jpg",
@@ -120,7 +121,7 @@ const AlbumDisplay = () => {
     {
         id: "philippines",
         title: "Islands & Icons",
-        heroTitle: "Davao City",
+        heroTitle: "Home is a tapestry woven from chaotic joy and serene shores. Capturing not just the streets, but the soulful resilience of a people living in full color.",
         location: "Davao City, Philippines",
         year: "2023",
         image: "/images/ph-feat.jpg",
@@ -129,7 +130,7 @@ const AlbumDisplay = () => {
     {
         id: "flowers",
         title: "Flowers",
-        heroTitle: "Botanical",
+        heroTitle: "Nature's quietest fireworks. In the delicate fold of a petal, I see profound strength in fragility.",
         location: "Botanical Garden",
         year: "2023",
         image: "/images/flowers-feat.jpg",
@@ -201,12 +202,12 @@ const AlbumDisplay = () => {
         </div>
       </div>
 
-      {/* Title Section - Below Hero */}
-      <div className="title-scroll relative z-10 w-full flex justify-center pt-16 pb-8">
-          <h1 className="font-accent text-[13vw] md:text-[10vw] max-w-[95vw] leading-none tracking-tighter text-[#DBD5B5] text-center whitespace-nowrap overflow-visible">
-              {album.heroTitle}
-          </h1>
-      </div>
+      {/* Introspective Statement (formerly Title) */}
+          <div className="title-scroll overflow-hidden md:px-20 px-5 relative z-20 mix-blend-difference">
+               <h1 className="font-quote text-2xl md:text-3xl lg:text-4xl text-center leading-relaxed text-[#DBD5B5]/90 max-w-4xl mx-auto">
+                "{album.heroTitle}"
+              </h1>
+          </div>
 
       {/* Description Section */}
       <div className="description-scroll relative z-10 max-w-2xl mx-auto px-6 pt-8 pb-40 flex flex-col items-center text-center gap-8">
