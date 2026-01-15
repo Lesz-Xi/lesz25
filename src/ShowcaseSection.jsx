@@ -2,7 +2,7 @@ import React from "react";
 
 const ShowcaseSection = () => {
   return (
-    <section id="work" className="relative bg-[#F5F2EB] text-[#0D0C1D] py-24 md:py-32 overflow-hidden">
+    <section id="work" className="relative bg-[#F5F2EB] text-[#0D0C1D] py-24 md:py-32 overflow-hidden" data-theme="light">
       <div className="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
         
         {/* LEFT: IMAGE / PORTRAIT (Style of the reference) */}

@@ -7,6 +7,7 @@ const Cursor = () => {
     const cursorRef = useRef(null);
     const followerRef = useRef(null);
     const [isHovering, setIsHovering] = useState(false);
+    const [isLightTheme, setIsLightTheme] = useState(false);
     
     // Track the last played target to prevent spamming
     const lastPlayedTarget = useRef(null);
@@ -62,24 +63,34 @@ const Cursor = () => {
         };
 
 
+
+    
+    // ... existing refs ...
+
+    // ... inside useGSAP ...
+    
     const handleMouseOver = (e) => {
       const target = e.target;
       const tagName = target.tagName;
       
+      // Check for light theme context
+      const lightThemeSection = target.closest('[data-theme="light"]');
+      setIsLightTheme(!!lightThemeSection);
+
       const textTags = ["P", "SPAN", "H1", "H2", "H3", "H4", "H5", "H6", "LI", "A", "BUTTON", "LABEL", "INPUT", "TEXTAREA", "STRONG", "EM", "B", "I", "BLOCKQUOTE", "TH", "TD"];
       const isTextTag = textTags.includes(tagName);
-      const isInteractive = target.closest("[data-hover]") || tagName === "BUTTON" || tagName === "A" || tagName === "INPUT" || tagName === "TEXTAREA" || tagName === "ACRONYM"; // Added generic interactive tags check
+      const isInteractive = target.closest("[data-hover]") || tagName === "BUTTON" || tagName === "A" || tagName === "INPUT" || tagName === "TEXTAREA" || tagName === "ACRONYM"; 
       
       // Check for plain text divs
       const isTextDiv = tagName === 'DIV' && target.childNodes.length === 1 && target.childNodes[0].nodeType === 3 && target.textContent.trim().length > 0;
 
       if (isTextTag || isInteractive || isTextDiv) {
         setIsHovering(true);
-        hoverTarget = isInteractive || target; // prioritize interactive target if found, else just text target
+        hoverTarget = isInteractive || target; 
       } else {
         setIsHovering(false);
         hoverTarget = null;
-        lastPlayedTarget.current = null; // Reset when leaving interactive area
+        lastPlayedTarget.current = null;
       }
     };
 
@@ -98,16 +109,23 @@ const Cursor = () => {
     <>
       <div
         ref={cursorRef}
-        className="hidden md:block fixed top-0 left-0 w-1.5 h-1.5 bg-[#DBD5B5] rounded-full pointer-events-none z-[9999]"
+        className={`hidden md:block fixed top-0 left-0 w-1.5 h-1.5 rounded-full pointer-events-none z-[9999] transition-colors duration-300 ${
+            isLightTheme ? "bg-[#0D0C1D]" : "bg-[#DBD5B5]"
+        }`}
       />
       <div
         ref={followerRef}
         className={`hidden md:block fixed top-0 left-0 rounded-full pointer-events-none z-[9998] transition-all duration-300 ease-out 
-        backdrop-brightness-150 border border-white/[0.05] shadow-[0_4px_30px_rgba(0,0,0,0.1)]
+        shadow-[0_4px_30px_rgba(0,0,0,0.1)]
+        ${
+          isLightTheme 
+            ? "border-[#0D0C1D]/20 bg-[#0D0C1D]/5" // Light Theme Styles: Dark faint circle matching brand color
+            : "backdrop-brightness-150 border-white/[0.05] bg-white/[0.01]" // Dark Theme Styles: Brightness boost
+        }
         ${
           isHovering
-            ? "w-20 h-20 bg-white/[0.08]"
-            : "w-8 h-8 bg-white/[0.01]"
+            ? "w-20 h-20 " + (isLightTheme ? "bg-[#0D0C1D]/10" : "bg-white/[0.08]")
+            : "w-8 h-8"
         }`}
       />
     </>
