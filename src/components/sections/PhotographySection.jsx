@@ -48,13 +48,23 @@ const PhotographySection = () => {
       speed: 1.2
     },
     {
+      id: 5,
+      url: "/images/project1.png",
+      title: "Philippines",
+      location: "DAVAO CITY",
+      year: "2023",
+      category: "CULTURE",
+      className: "md:col-span-1 md:mt-32",
+      speed: 1.1
+    },
+    {
       id: 7,
       url: "/images/flowers-feat.jpg",
       title: "Flowers",
       location: "COLLECTIONS",
       year: "2023",
       category: "NATURE",
-      className: "md:col-span-2 md:w-1/2 md:mx-auto",
+      className: "md:col-span-1 md:-mt-32",
       speed: 0.8
     }
   ];
