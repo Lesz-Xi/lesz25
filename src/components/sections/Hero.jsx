@@ -1,9 +1,8 @@
-import React, { useState, Suspense } from "react";
+import React, { useState, Suspense, useEffect } from "react";
 import Button from "../Button";
-const HeroExperience = React.lazy(() => import("../HeroModels/HeroExperience"));
+import HeroExperience from "../HeroModels/HeroExperience";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import Typewriter from "../Typewriter";
 import AnimatedGreeting from "../AnimatedGreeting";
 
 import {
@@ -18,10 +17,18 @@ import Threads from "../Threads";
 const threadsColor = [0.96, 0.949, 0.921];
 
 const Hero = () => {
-  const [typingStep, setTypingStep] = useState(0);
+  const [isDesktop, setIsDesktop] = useState(false);
   
-  // Removed GSAP text animation to let Typewriter handle entry
-
+  // Check for desktop viewport - prevents 3D model from loading on mobile
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(min-width: 768px)");
+    setIsDesktop(mediaQuery.matches);
+    
+    const handler = (e) => setIsDesktop(e.matches);
+    mediaQuery.addEventListener("change", handler);
+    return () => mediaQuery.removeEventListener("change", handler);
+  }, []);
+  
   const navItems = [
     {
       icon: <FaHome size={18} />,
@@ -81,67 +88,16 @@ const Hero = () => {
                 <span className="text-[#929292] font-medium tracking-[0.05em] leading-[2]">
                   <span className="text-[#FFFCE1]"><AnimatedGreeting /></span>
                   <br />
-                  <Typewriter 
-                    text="I'm" 
-                    delay={1000} 
-                    speed={100} 
-                    cursor={false} 
-                    onComplete={() => setTypingStep(1)}
-                  />
+                  I'm
                 </span>{" "}
-                {typingStep >= 1 && (
-                  <span className="text-[#FFFCE1] font-display tracking-[0.02em] leading-[1.2]">
-                    <Typewriter 
-                      text="Rhine Tague." 
-                      speed={100} 
-                      cursor={true}
-                      hideCursorOnComplete={true}
-                      onComplete={() => setTypingStep(2)}
-                    />
-                  </span>
-                )}
+                <span className="text-[#FFFCE1] font-display tracking-[0.02em] leading-[1.2]">
+                  Rhine Tague.
+                </span>
               </h1>
 
-              {typingStep >= 2 && (
-                <p className="hero-line font-heading text-[#929292] text-lg md:text-xl lg:text-2xl mb-10 md:mb-20 max-w-3xl tracking-[0.05em] leading-[2]">
-                  <Typewriter text="I'm a " speed={50} cursor={false} onComplete={() => setTypingStep(3)} />
-                  
-                  {typingStep >= 3 && (
-                    <span className="text-[#FFFCE1]">
-                      <Typewriter text="developer" speed={50} cursor={false} onComplete={() => setTypingStep(4)} />
-                    </span>
-                  )}
-                  
-                  {typingStep >= 4 && (
-                    <Typewriter text=" and " speed={50} cursor={false} onComplete={() => setTypingStep(5)} />
-                  )}
-
-                  {typingStep >= 5 && (
-                    <span className="text-[#FFFCE1]">
-                      <Typewriter text="photographer" speed={50} cursor={false} onComplete={() => setTypingStep(6)} />
-                    </span>
-                  )}
-                  
-                  {typingStep >= 6 && (
-                    <Typewriter text=" based in the " speed={50} cursor={false} onComplete={() => setTypingStep(7)} />
-                  )}
-
-                  {typingStep >= 7 && (
-                    <span className="text-[#FFFCE1]">
-                      <Typewriter text="Philippines" speed={50} cursor={false} onComplete={() => setTypingStep(8)} />
-                    </span>
-                  )}
-                  
-                  {typingStep >= 8 && (
-                    <Typewriter 
-                      text=". I focus on building clean, user-friendly experiences that make complex ideas simple, effective, and meaningful." 
-                      speed={30} 
-                      cursor={true}
-                      hideCursorOnComplete={true}
-                    />
-                  )}
-                </p>
-              )}
+              <p className="hero-line font-heading text-[#929292] text-lg md:text-xl lg:text-2xl mb-10 md:mb-20 max-w-3xl tracking-[0.05em] leading-[2]">
+                I'm a <span className="text-[#FFFCE1]">developer</span> and <span className="text-[#FFFCE1]">photographer</span> based in the <span className="text-[#FFFCE1]">Philippines</span>. I focus on building clean, user-friendly experiences that make complex ideas simple, effective, and meaningful.
+              </p>
             </div>
 
             <Button
@@ -162,13 +118,13 @@ const Hero = () => {
           </div>
         </header>
         {/*RIGHT: 3D MODEL */}
-        <figure className="hidden md:block">
-          <div className="hero-3d-layout">
-            <Suspense fallback={null}>
+        {isDesktop && (
+          <figure className="hidden md:block">
+            <div className="hero-3d-layout">
               <HeroExperience />
-            </Suspense>
-          </div>
-        </figure>
+            </div>
+          </figure>
+        )}
       </div>
     </section>
   );
