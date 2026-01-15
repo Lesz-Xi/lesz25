@@ -101,15 +101,6 @@ const Hero = () => {
               </p>
             </div>
 
-            <div className="mt-4 md:mt-6">
-              <ScrollIndicator onClick={() => {
-                const workSection = document.getElementById("work");
-                if (workSection) {
-                  workSection.scrollIntoView({ behavior: "smooth" });
-                }
-              }} />
-            </div>
-
             {/* Threads component below the button - full width to left edge */}
             <div className="w-screen h-[400px] -mt-12 -ml-5 md:-ml-20 relative opacity-100 mix-blend-screen pointer-events-none">
               <Threads
@@ -121,6 +112,16 @@ const Hero = () => {
             </div>
           </div>
         </header>
+
+        {/* Scroll Indicator - Absolute Bottom Center */}
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20">
+          <ScrollIndicator onClick={() => {
+            const workSection = document.getElementById("work");
+            if (workSection) {
+              workSection.scrollIntoView({ behavior: "smooth" });
+            }
+          }} />
+        </div>
         {/*RIGHT: 3D MODEL */}
         {isDesktop && (
           <figure className="hidden md:block">

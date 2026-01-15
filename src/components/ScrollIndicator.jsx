@@ -5,7 +5,7 @@ const ScrollIndicator = ({ onClick }) => {
   return (
     <motion.div
       onClick={onClick}
-      className="flex flex-col items-start justify-center cursor-pointer mt-8 group"
+      className="flex flex-col items-center justify-center cursor-pointer mt-8 group"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: 1, duration: 1 }}
