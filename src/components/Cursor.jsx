@@ -119,12 +119,12 @@ const Cursor = () => {
         shadow-[0_4px_30px_rgba(0,0,0,0.1)]
         ${
           isLightTheme 
-            ? "border-[#0D0C1D]/10 bg-[#FFFCE1]/20" // Light Theme: Cream fill (matches Intro), dark border for visibility
+            ? "mix-blend-difference bg-[#FFFCE1]" // Light Theme: Difference mode inverts colors (Cream cursor -> Dark on BG, Light on Text)
             : "backdrop-brightness-150 border-white/[0.05] bg-white/[0.01]" // Dark Theme: Brightness
         }
         ${
           isHovering
-            ? "w-20 h-20 " + (isLightTheme ? "bg-[#FFFCE1]/30" : "bg-white/[0.08]")
+            ? "w-20 h-20 " + (isLightTheme ? "" : "bg-white/[0.08]")
             : "w-8 h-8"
         }`}
       />
