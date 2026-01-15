@@ -23,14 +23,14 @@ const PhotographyPage = () => {
         {
             id: "nature",
             title: "Quiet Whispers",
-            location: "Nature",
+            location: "Collections",
             year: "2023",
             image: "/images/nature-feat.jpg"
         },
         {
             id: "beach",
             title: "Sunrise & Sunset",
-            location: "Philippines",
+            location: "Collections",
             year: "2022",
             image: "/images/sunrise-feat.jpg"
         },
@@ -44,7 +44,7 @@ const PhotographyPage = () => {
         {
             id: "flowers",
             title: "Flowers",
-            location: "Botanical Garden",
+            location: "Collections",
             year: "2023",
             image: "/images/flowers-feat.jpg"
         }

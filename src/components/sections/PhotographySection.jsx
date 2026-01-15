@@ -31,7 +31,7 @@ const PhotographySection = () => {
       id: 3,
       url: "/images/nature-feat.jpg",
       title: "Nature",
-      location: "JAS, PHILIPPINES",
+      location: "COLLECTIONS",
       year: "2023",
       category: "NATURE",
       className: "md:col-span-1 md:-mt-32",
@@ -41,7 +41,7 @@ const PhotographySection = () => {
       id: 4,
       url: "/images/sunrise-feat.jpg",
       title: "Sunrise & Sunset",
-      location: "PHILIPPINES",
+      location: "COLLECTIONS",
       year: "2024",
       category: "STREET",
       className: "md:col-span-1 md:mt-0",
@@ -51,10 +51,10 @@ const PhotographySection = () => {
       id: 7,
       url: "/images/flowers-feat.jpg",
       title: "Flowers",
-      location: "Botanical Garden",
+      location: "COLLECTIONS",
       year: "2023",
       category: "NATURE",
-      className: "md:col-span-2 md:w-1/2 md:mx-auto md:-mt-32",
+      className: "md:col-span-2 md:w-1/2 md:mx-auto",
       speed: 0.8
     }
   ];
