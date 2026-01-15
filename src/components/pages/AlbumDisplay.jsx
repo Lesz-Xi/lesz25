@@ -214,7 +214,7 @@ const AlbumDisplay = () => {
         <div 
             className={`gallery-feature group relative rounded-2xl overflow-hidden cursor-pointer ${
                 currentGallery[0]?.type === 'portrait' 
-                ? 'max-w-2xl mx-auto bg-black/50' 
+                ? 'aspect-[3/4] max-w-2xl mx-auto' 
                 : 'aspect-[21/9]'
             }`}
             onClick={() => setSelectedImage(currentGallery[0]?.src || "/images/project1.png")}
@@ -224,10 +224,10 @@ const AlbumDisplay = () => {
                 alt={currentGallery[0]?.title || "Gallery"} 
                 loading="lazy"
                 decoding="async"
-                className={`w-full transition-transform duration-700 group-hover:scale-105 will-change-transform ${
+                className={`w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 will-change-transform ${
                     currentGallery[0]?.type === 'portrait' 
-                    ? 'h-auto object-contain' 
-                    : 'h-full object-cover'
+                    ? 'object-bottom' 
+                    : ''
                 }`} 
             />
         </div>
