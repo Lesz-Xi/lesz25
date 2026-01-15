@@ -119,6 +119,19 @@ const RoleShowcase = () => {
             duration: 1.5, 
             ease: "power3.inOut"
         }, 0); 
+        
+        // Light up letters in sync with flower
+        const chars = containerRef.current.querySelectorAll(".designer-char");
+        if (chars.length > 0) {
+             designerTl.to(chars, {
+                opacity: 1,
+                duration: 0.2, // Short fade for crisp effect
+                stagger: {
+                    amount: 1.5, // Matches total duration of flower motion
+                    ease: "power3.inOut" // Matches motion casing
+                }
+            }, 0);
+        }
     }
     
     // 5.5->6.0: Designer Exit
@@ -217,7 +230,11 @@ const RoleShowcase = () => {
         {/* Role 3 */}
         <div className="role-item absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center opacity-0 flex flex-col items-center justify-center">
             <h2 className="text-[11vw] md:text-[12vw] leading-none font-bold font-pixel tracking-tighter uppercase text-[#C7B580] whitespace-nowrap z-10 relative">
-                Designer
+                {"DESIGNER".split("").map((char, index) => (
+                    <span key={index} className="designer-char inline-block opacity-30">
+                        {char}
+                    </span>
+                ))}
             </h2>
         </div>
       </div>
