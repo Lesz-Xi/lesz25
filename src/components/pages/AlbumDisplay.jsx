@@ -87,7 +87,7 @@ const AlbumDisplay = () => {
         heroTitle: "Zug",
         location: "Zug, Switzerland",
         year: "2023",
-        image: "/images/project1.png",
+        image: "/images/switz-feat.jpg",
         description: "Capturing the vibrant life, culture, and diversity of the alpine landscape through a collaborative travel photography project. The aim was to document the silent majesty of the peaks."
     },
     {
@@ -96,7 +96,7 @@ const AlbumDisplay = () => {
         heroTitle: "Paris",
         location: "Paris, France",
         year: "2024",
-        image: "/images/paris/optimized/IMG_3228.jpg",
+        image: "/images/feat-paris.jpg",
         description: "Exploring the romantic streets and hidden corners of Paris, chasing light and shadow across the historic architecture."
     },
     {
@@ -105,16 +105,16 @@ const AlbumDisplay = () => {
         heroTitle: "Nature",
         location: "Nature",
         year: "2023",
-        image: "/images/project1.png",
+        image: "/images/nature-feat.jpg",
         description: "A deep dive into the untouched wilderness, listening to the stories told by the ancient trees and misty mornings."
     },
     {
         id: "beach",
-        title: "Beach",
-        heroTitle: "Davao",
-        location: "Davao City, Philippines",
+        title: "Sunrise & Sunset",
+        heroTitle: "Golden Hour",
+        location: "Philippines",
         year: "2022",
-        image: "/images/project1.png",
+        image: "/images/sunrise-feat.jpg",
         description: "Capturing the rhythmic dance of the ocean, the serene blues, and the isolation of island life."
     },
     {
@@ -125,6 +125,15 @@ const AlbumDisplay = () => {
         year: "2023",
         image: "/images/project1.png",
         description: "A visual tapestry of Davao: from the pulse of the night markets and urban geometry to the serene breath of the coast. Documenting the soul of the city through its people and architecture."
+    },
+    {
+        id: "flowers",
+        title: "Flowers",
+        heroTitle: "Botanical",
+        location: "Botanical Garden",
+        year: "2023",
+        image: "/images/flowers-feat.jpg",
+        description: "A showcase of floral elegance, capturing the delicate textures and vibrant colors of nature's finest details."
     }
   ];
 

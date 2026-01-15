@@ -9,7 +9,7 @@ const PhotographySection = () => {
   const photos = [
     {
       id: 1,
-      url: "/images/project1.png",
+      url: "/images/switz-feat.jpg",
       title: "Alps",
       location: "ZUG, SWITZERLAND",
       year: "2023",
@@ -29,7 +29,7 @@ const PhotographySection = () => {
     },
     {
       id: 3,
-      url: "/images/project3.png",
+      url: "/images/nature-feat.jpg",
       title: "Nature",
       location: "JAS, PHILIPPINES",
       year: "2023",
@@ -39,8 +39,8 @@ const PhotographySection = () => {
     },
     {
       id: 4,
-      url: "/images/projects/thesislens-v2.png",
-      title: "Beach",
+      url: "/images/sunrise-feat.jpg",
+      title: "Sunrise & Sunset",
       location: "PHILIPPINES",
       year: "2024",
       category: "STREET",
@@ -49,7 +49,7 @@ const PhotographySection = () => {
     },
     {
       id: 7,
-      url: "/images/project2.png", // Placeholder
+      url: "/images/flowers-feat.jpg",
       title: "Flowers",
       location: "Botanical Garden",
       year: "2023",

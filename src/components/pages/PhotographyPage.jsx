@@ -11,28 +11,28 @@ const PhotographyPage = () => {
             title: "Alpine Serenity",
             location: "Zug, Switzerland",
             year: "2023",
-            image: "/images/project1.png"
+            image: "/images/switz-feat.jpg"
         },
         {
             id: "paris",
             title: "City of Light",
             location: "Paris, France",
             year: "2024",
-            image: "/images/project1.png"
+            image: "/images/feat-paris.jpg"
         },
         {
             id: "nature",
             title: "Quiet Whispers",
             location: "Nature",
             year: "2023",
-            image: "/images/project1.png"
+            image: "/images/nature-feat.jpg"
         },
         {
             id: "beach",
-            title: "Beach",
-            location: "Davao City, Philippines",
+            title: "Sunrise & Sunset",
+            location: "Philippines",
             year: "2022",
-            image: "/images/project1.png"
+            image: "/images/sunrise-feat.jpg"
         },
         {
             id: "philippines",
@@ -46,7 +46,7 @@ const PhotographyPage = () => {
             title: "Flowers",
             location: "Botanical Garden",
             year: "2023",
-            image: "/images/project1.png"
+            image: "/images/flowers-feat.jpg"
         }
     ];
 
