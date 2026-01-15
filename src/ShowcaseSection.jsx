@@ -63,12 +63,7 @@ const ShowcaseSection = () => {
           </div>
 
           {/* BUTTON / LINK */}
-          <div className="pt-4">
-            <a href="#about" className="inline-flex items-center gap-3 text-[#0D0C1D] text-xs font-bold tracking-[0.2em] uppercase hover:text-[#C7B580] transition-colors">
 
-              <span className="text-lg">→</span>
-            </a>
-          </div>
 
         </div>
 
