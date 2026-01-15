@@ -133,16 +133,52 @@ const Navbar = () => {
               }`}
             >
               {navLinks.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  onClick={(e) => handleNavigation(e, link.href)}
-                  className="text-[11px] font-display uppercase tracking-[0.2em] text-white/60 hover:text-[#DBD5B5] transition-all duration-300 relative group cursor-pointer"
-                  data-hover
-                >
-                  {link.name}
-                  <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-[#DBD5B5] transition-all duration-300 group-hover:w-full opacity-40" />
-                </a>
+                <div key={link.name} className="relative group/nav-item">
+                  {link.name === "Photography" ? (
+                    <>
+                      <a
+                        href={link.href}
+                        onClick={(e) => handleNavigation(e, link.href)}
+                        className="text-[11px] font-display uppercase tracking-[0.2em] text-white/60 hover:text-[#DBD5B5] transition-all duration-300 relative block py-2 cursor-pointer"
+                        data-hover
+                      >
+                        {link.name}
+                        <span className="absolute bottom-1 left-0 w-0 h-[1px] bg-[#DBD5B5] transition-all duration-300 group-hover/nav-item:w-full opacity-40" />
+                      </a>
+                      
+                      {/* Dropdown Menu */}
+                      <div className="absolute top-full left-1/2 -translate-x-1/2 pt-4 opacity-0 translate-y-2 pointer-events-none group-hover/nav-item:opacity-100 group-hover/nav-item:translate-y-0 group-hover/nav-item:pointer-events-auto transition-all duration-300 ease-out">
+                        <div className="bg-[#070707]/90 backdrop-blur-md border border-white/10 rounded-xl overflow-hidden shadow-2xl py-2 min-w-[140px] flex flex-col gap-1">
+                          <a 
+                            href="/#photography"
+                            onClick={(e) => handleNavigation(e, "/#photography")}
+                            className="text-[10px] uppercase tracking-[0.15em] text-white/70 hover:text-[#DBD5B5] hover:bg-white/5 px-4 py-2 text-center transition-colors duration-200"
+                          >
+                            Portfolio
+                          </a>
+                          <div className="w-8 h-px bg-white/10 mx-auto" />
+                          <a 
+                            href="/photography"
+                            onClick={(e) => handleNavigation(e, "/photography")}
+                            className="text-[10px] uppercase tracking-[0.15em] text-white/70 hover:text-[#DBD5B5] hover:bg-white/5 px-4 py-2 text-center transition-colors duration-200"
+                          >
+                            Albums
+                          </a>
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <a
+                      href={link.href}
+                      onClick={(e) => handleNavigation(e, link.href)}
+                      className="text-[11px] font-display uppercase tracking-[0.2em] text-white/60 hover:text-[#DBD5B5] transition-all duration-300 relative block py-2 group cursor-pointer"
+                      data-hover
+                    >
+                      {link.name}
+                      <span className="absolute bottom-1 left-0 w-0 h-[1px] bg-[#DBD5B5] transition-all duration-300 group-hover:w-full opacity-40" />
+                    </a>
+                  )}
+                </div>
               ))}
             </div>
 

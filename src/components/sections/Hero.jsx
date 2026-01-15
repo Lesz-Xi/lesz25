@@ -4,6 +4,7 @@ import HeroExperience from "../HeroModels/HeroExperience";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import AnimatedGreeting from "../AnimatedGreeting";
+import ScrollIndicator from "../ScrollIndicator";
 
 import {
   FaHome,
@@ -100,11 +101,14 @@ const Hero = () => {
               </p>
             </div>
 
-            <Button
-              className="md:w-80 md:h-16 w-60 h-12 mt-6 md:mt-8"
-              id="button"
-              text="See my Work"
-            />
+            <div className="mt-4 md:mt-6">
+              <ScrollIndicator onClick={() => {
+                const workSection = document.getElementById("work");
+                if (workSection) {
+                  workSection.scrollIntoView({ behavior: "smooth" });
+                }
+              }} />
+            </div>
 
             {/* Threads component below the button - full width to left edge */}
             <div className="w-screen h-[400px] -mt-12 -ml-5 md:-ml-20 relative opacity-100 mix-blend-screen pointer-events-none">
