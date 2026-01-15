@@ -106,7 +106,11 @@ const RoleShowcase = () => {
             0
         );
         
-        // Star Motion
+        // Get character elements for position-based lighting
+        const chars = containerRef.current.querySelectorAll(".designer-char");
+        const litChars = new Set(); // Track which chars have been lit
+        
+        // Star Motion with onUpdate for position-based lighting
         designerTl.to(star, {
             motionPath: {
                 path: "#curly-line",
@@ -117,21 +121,28 @@ const RoleShowcase = () => {
                 end: 1
             },
             duration: 1.5, 
-            ease: "power3.inOut"
+            ease: "power3.inOut",
+            onUpdate: function() {
+                // Get flower's current X position (screen coordinates)
+                const flowerRect = star.getBoundingClientRect();
+                const flowerCenterX = flowerRect.left + flowerRect.width / 2;
+                
+                // Check each character's horizontal position
+                chars.forEach((char, index) => {
+                    if (litChars.has(index)) return; // Already lit, skip
+                    
+                    const charRect = char.getBoundingClientRect();
+                    const charCenterX = charRect.left + charRect.width / 2;
+                    
+                    // Threshold: light up when flower is within 50px horizontally
+                    const threshold = 50;
+                    if (Math.abs(flowerCenterX - charCenterX) < threshold) {
+                        litChars.add(index);
+                        gsap.to(char, { opacity: 1, duration: 0.2, ease: "power2.out" });
+                    }
+                });
+            }
         }, 0); 
-        
-        // Light up letters in sync with flower
-        const chars = containerRef.current.querySelectorAll(".designer-char");
-        if (chars.length > 0) {
-             designerTl.to(chars, {
-                opacity: 1,
-                duration: 0.2, // Short fade for crisp effect
-                stagger: {
-                    amount: 1.5, // Matches total duration of flower motion
-                    ease: "power3.inOut" // Matches motion casing
-                }
-            }, 0);
-        }
     }
     
     // 5.5->6.0: Designer Exit
