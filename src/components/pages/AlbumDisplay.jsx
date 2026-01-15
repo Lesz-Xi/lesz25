@@ -111,10 +111,10 @@ const AlbumDisplay = () => {
     {
         id: "beach",
         title: "Sunrise & Sunset",
-        heroTitle: "Golden Hour",
-        location: "Philippines",
-        year: "2022",
-        image: "/images/sunrise-feat.jpg",
+        heroTitle: "Into the Light",
+        location: "Davao City, Philippines",
+        year: "2025",
+        image: "/images/sunset-feat.jpg",
         description: "Capturing the rhythmic dance of the ocean, the serene blues, and the isolation of island life."
     },
     {
@@ -155,9 +155,9 @@ const AlbumDisplay = () => {
         { type: "portrait", src: "/images/project1.png", category: "Portrait", title: "Glacial Stillness" },
         { type: "portrait", src: "/images/project1.png", category: "Nature", title: "Mountain Shadows" },
         { type: "landscape", src: "/images/project1.png", category: "Cinematic", title: "Valley of Silence" },
-        { type: "portrait", src: "/images/project1.png", category: "Abstract", title: "Icy Veins" },
-        { type: "portrait", src: "/images/project1.png", category: "Wildlife", title: "Chamois Watch" },
-        { type: "landscape", src: "/images/project1.png", category: "Sunset", title: "Golden Matterhorn" }
+        { type: "landscape", src: "/images/sunset-feat.jpg", category: "Sunset", title: "Golden Peak" },
+        { type: "portrait", src: "/images/sunset-feat.jpg", category: "Color", title: "Alpine Glow" },
+        { type: "landscape", src: "/images/sunset-feat.jpg", category: "Sunset", title: "Golden Matterhorn" }
     ],
     philippines: [
         { type: "landscape", src: "/images/ph-feat.jpg", category: "Urban", title: "Urban Pulse" },
