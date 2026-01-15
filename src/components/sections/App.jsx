@@ -47,10 +47,10 @@ const ScrollToTop = () => {
         
         if (lenis) {
           lenis.stop();
-          // Force Lenis internal state to target position
-          lenis.scroll = position;
-          lenis.targetScroll = position;
+          // Reset browser scroll first, then let Lenis sync
           window.scrollTo(0, position);
+          document.documentElement.scrollTop = position;
+          document.body.scrollTop = position;
           lenis.scrollTo(position, { immediate: true, force: true });
           lenis.start();
         } else {
@@ -70,10 +70,7 @@ const ScrollToTop = () => {
     // 3. For ALL other navigations: scroll to TOP
     if (lenis) {
       lenis.stop();
-      // Force Lenis internal state to 0 BEFORE scrolling
-      lenis.scroll = 0;
-      lenis.targetScroll = 0;
-      // Reset all scroll sources
+      // Reset browser scroll first, then let Lenis sync via scrollTo
       window.scrollTo(0, 0);
       document.documentElement.scrollTop = 0;
       document.body.scrollTop = 0;
