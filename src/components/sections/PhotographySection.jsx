@@ -19,7 +19,7 @@ const PhotographySection = () => {
     },
     {
       id: 2,
-      url: "/images/project2.png",
+      url: "/images/feat-paris.jpg",
       title: "City of Lights",
       location: "PARIS, FRANCE",
       year: "2024",
