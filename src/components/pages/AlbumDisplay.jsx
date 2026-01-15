@@ -55,13 +55,6 @@ const AlbumDisplay = () => {
       ease: "power2.out"
     }, "-=0.6");
 
-    // Animate description
-    masterTl.to(".description-scroll", {
-      y: 0,
-      opacity: 1,
-      duration: 1
-    }, "-=0.8");
-
   }, { scope: containerRef }); // Scope to container for proper cleanup
 
   // Gallery animations using useGSAP
@@ -202,18 +195,11 @@ const AlbumDisplay = () => {
         </div>
       </div>
 
-      {/* Introspective Statement (formerly Title) */}
-          <div className="title-scroll overflow-hidden md:px-20 px-5 relative z-20 mix-blend-difference">
-               <h1 className="font-quote text-2xl md:text-3xl lg:text-4xl text-center leading-relaxed text-[#DBD5B5]/90 max-w-4xl mx-auto">
-                "{album.heroTitle}"
-              </h1>
-          </div>
-
-      {/* Description Section */}
-      <div className="description-scroll relative z-10 max-w-2xl mx-auto px-6 pt-8 pb-40 flex flex-col items-center text-center gap-8">
-        <p className="text-lg md:text-xl font-geist-mono text-[#DBD5B5]/80 leading-relaxed">
-            {album.description || `A visual exploration of ${album.title}. Capturing the essence of ${album.location} through light, shadow, and composition.`}
-        </p>
+      {/* Introspective Statement - Cinematic Spacing */}
+      <div className="title-scroll min-h-[35vh] md:min-h-[45vh] flex items-center justify-center px-6 md:px-20 py-24 md:py-32">
+        <h1 className="font-quote text-xl md:text-2xl lg:text-3xl text-center leading-relaxed text-[#DBD5B5]/85 max-w-3xl">
+          "{album.heroTitle}"
+        </h1>
       </div>
 
       {/* Gallery Grid */}
