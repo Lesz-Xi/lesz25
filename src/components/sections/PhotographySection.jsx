@@ -48,26 +48,6 @@ const PhotographySection = () => {
       speed: 1.2
     },
     {
-      id: 5,
-      url: "/images/projects/universe-splitter.png",
-      title: "Streets",
-      location: "URBAN & CITY",
-      year: "2023",
-      category: "TRAVEL",
-      className: "md:col-span-1 md:-mt-32",
-      speed: 0.8
-    },
-    {
-      id: 6,
-      url: "/images/project1.png", // Placeholder
-      title: "Lights",
-      location: "Urban Geometry",
-      year: "2024",
-      category: "NIGHT",
-      className: "md:col-span-1 md:mt-0",
-      speed: 1.2
-    },
-    {
       id: 7,
       url: "/images/project2.png", // Placeholder
       title: "Flowers",
@@ -76,16 +56,6 @@ const PhotographySection = () => {
       category: "NATURE",
       className: "md:col-span-1 md:-mt-32",
       speed: 0.8
-    },
-    {
-      id: 8,
-      url: "/images/project3.png", // Placeholder
-      title: "Surfing",
-      location: "La Union, Philippines", // Example location, user can update
-      year: "2024",
-      category: "ACTION",
-      className: "md:col-span-1 md:mt-0",
-      speed: 1.2
     }
   ];
 
