@@ -16,7 +16,7 @@ const AlbumDisplay = () => {
   const galleryRef = useRef(null);
   const [selectedImage, setSelectedImage] = useState(null);
 
-  // Scroll to top on mount
+  // Scroll to top on mount and when albumId changes
   useEffect(() => {
     const lenis = getLenis();
     if (lenis) {
@@ -24,7 +24,7 @@ const AlbumDisplay = () => {
     } else {
       window.scrollTo(0, 0);
     }
-  }, []);
+  }, [albumId]);
 
   // Page entry animations using official useGSAP hook
   // This automatically cleans up when component unmounts
