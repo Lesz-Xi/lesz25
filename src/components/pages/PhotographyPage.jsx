@@ -32,7 +32,7 @@ const PhotographyPage = () => {
             title: "Sunrise & Sunset",
             location: "Collections",
             year: "2025",
-            image: "/images/sunset-feat.jpg"
+            image: "/images/sunset-new-feat.jpg"
         },
         {
             id: "philippines",
