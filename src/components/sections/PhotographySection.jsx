@@ -49,7 +49,7 @@ const PhotographySection = () => {
     },
     {
       id: 5,
-      url: "/images/project1.png",
+      url: "/images/philippines-feat.jpg",
       title: "Philippines",
       location: "DAVAO CITY",
       year: "2023",
