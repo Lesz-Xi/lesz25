@@ -9,7 +9,7 @@ const LogoIcon = ({ icon }) => {
         <img
           src={icon.imgPath}
           alt={icon.name}
-          className="w-full h-full object-contain filter grayscale brightness-75 hover:grayscale-0 hover:brightness-100 transition-all duration-300"
+          className="w-full h-full object-contain filter grayscale-0 brightness-100 md:grayscale md:brightness-75 md:hover:grayscale-0 md:hover:brightness-100 transition-all duration-300"
         />
       </div>
     </div>
