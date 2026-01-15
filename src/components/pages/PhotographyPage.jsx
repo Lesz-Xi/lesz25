@@ -39,7 +39,7 @@ const PhotographyPage = () => {
             title: "Islands & Icons",
             location: "Davao City, Philippines",
             year: "2023",
-            image: "/images/project1.png"
+            image: "/images/ph-feat.jpg"
         },
         {
             id: "flowers",
