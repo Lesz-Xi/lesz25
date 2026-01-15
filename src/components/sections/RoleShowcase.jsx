@@ -56,6 +56,19 @@ const RoleShowcase = () => {
         { autoAlpha: 1, scale: 1, duration: 0.5, ease: "back.out(1.7)" }, 
         0
     );
+
+    // Light up DEVELOPER text from edges inwards (matching brackets)
+    const devChars = containerRef.current.querySelectorAll(".developer-char");
+    if (devChars.length > 0) {
+        devTl.to(devChars, {
+            opacity: 1,
+            duration: 0.1,
+            stagger: {
+                from: "edges",
+                amount: 0.3
+            }
+        }, 0.1); // Start slightly after brackets appear
+    }
     
     // 1.0->1.5: Dev Exit (Text + SVG together)
     // Use autoAlpha: 0 to ensure display:none after fade
@@ -230,7 +243,11 @@ const RoleShowcase = () => {
         {/* Role 1 */}
         <div className="role-item absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
             <h2 className="text-[10vw] md:text-[12vw] leading-none font-bold font-pixel tracking-tighter uppercase text-[#DBD5B5] whitespace-nowrap">
-                Developer
+                {"DEVELOPER".split("").map((char, index) => (
+                    <span key={index} className="developer-char inline-block opacity-30">
+                        {char}
+                    </span>
+                ))}
             </h2>
         </div>
 
