@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense } from "react";
+import React, { useState, useEffect, useLayoutEffect, Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation, useParams } from "react-router-dom";
 import Lenis from "lenis";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -76,23 +76,33 @@ const ScrollToTop = () => {
 const AlbumDisplayWrapper = () => {
   const { albumId } = useParams();
   
-  // Force scroll to top IMMEDIATELY when albumId changes
-  useEffect(() => {
+  // Force scroll to top SYNCHRONOUSLY before paint
+  useLayoutEffect(() => {
     // Kill all existing ScrollTriggers first
     ScrollTrigger.getAll().forEach(trigger => trigger.kill());
     
-    // Force scroll to top using both Lenis and native scroll
+    // Stop Lenis temporarily to prevent interference
     const lenis = getLenis();
     if (lenis) {
+      lenis.stop();
+    }
+    
+    // Force scroll to top using native scroll (most reliable)
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0; // For Safari
+    window.scrollTo(0, 0);
+    
+    // Resume Lenis and sync its internal state
+    if (lenis) {
+      lenis.start();
+      // Reset Lenis internal scroll value
       lenis.scrollTo(0, { immediate: true, force: true });
     }
-    // Also use native scroll as fallback
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
     
     // Refresh ScrollTrigger after a small delay
     setTimeout(() => {
       ScrollTrigger.refresh();
-    }, 50);
+    }, 100);
   }, [albumId]);
   
   // The key prop forces a complete remount when albumId changes
