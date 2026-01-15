@@ -51,11 +51,11 @@ const IntroAnimation = ({ onComplete }) => {
               RHINE TAGUE
             </motion.h1>
             
-            {/* Subtle Subtitle Rotation */}
+            {/* Subtitle - Synced with name */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 1, delay: 1 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
               className="mt-6 flex justify-between items-center w-full px-1"
             >
               <div className="relative h-4 overflow-hidden flex-1">
