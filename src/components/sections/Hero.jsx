@@ -164,7 +164,7 @@ const Hero = () => {
         {/*RIGHT: 3D MODEL */}
         <figure className="hidden md:block">
           <div className="hero-3d-layout">
-            <Suspense fallback={<div className="w-full h-full bg-black/50 animate-pulse" />}>
+            <Suspense fallback={null}>
               <HeroExperience />
             </Suspense>
           </div>
