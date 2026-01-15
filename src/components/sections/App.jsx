@@ -125,30 +125,28 @@ const App = () => {
   };
 
   return (
-    <>
-      {showIntro && <IntroAnimation onComplete={handleIntroComplete} />}
-      {!showIntro && (
-        <ErrorBoundary>
-          <Router>
-            <ScrollToTop />
-            <div className="bg-[#070707] min-h-screen cursor-none">
-              <Cursor />
-              <Navbar />
-              
-              <Suspense fallback={<div className="min-h-screen bg-[#070707]" />}>
-                <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/photography" element={<PhotographyPage />} />
-                  <Route path="/photography/:albumId" element={<AlbumDisplayWrapper />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </Suspense>
+    <ErrorBoundary>
+      <Router>
+        {showIntro && <IntroAnimation onComplete={handleIntroComplete} />}
+        
+        {/* Main Application Content - Rendered immediately but covered by Intro */}
+        <ScrollToTop />
+        <div className="bg-[#070707] min-h-screen cursor-none">
+          <Cursor />
+          <Navbar />
+          
+          <Suspense fallback={<div className="min-h-screen bg-[#070707]" />}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/photography" element={<PhotographyPage />} />
+              <Route path="/photography/:albumId" element={<AlbumDisplayWrapper />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
 
-            </div>
-          </Router>
-        </ErrorBoundary>
-      )}
-    </>
+        </div>
+      </Router>
+    </ErrorBoundary>
   );
 };
 
