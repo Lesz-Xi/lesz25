@@ -110,7 +110,7 @@ const Cursor = () => {
       <div
         ref={cursorRef}
         className={`hidden md:block fixed top-0 left-0 w-1.5 h-1.5 rounded-full pointer-events-none z-[9999] transition-colors duration-300 ${
-            isLightTheme ? "bg-[#0D0C1D]" : "bg-[#DBD5B5]"
+            isLightTheme ? "bg-[#FFFCE1]" : "bg-[#DBD5B5]"
         }`}
       />
       <div
@@ -119,12 +119,12 @@ const Cursor = () => {
         shadow-[0_4px_30px_rgba(0,0,0,0.1)]
         ${
           isLightTheme 
-            ? "border-[#0D0C1D]/20 bg-[#0D0C1D]/5" // Light Theme Styles: Dark faint circle matching brand color
-            : "backdrop-brightness-150 border-white/[0.05] bg-white/[0.01]" // Dark Theme Styles: Brightness boost
+            ? "border-[#0D0C1D]/10 bg-[#FFFCE1]/20" // Light Theme: Cream fill (matches Intro), dark border for visibility
+            : "backdrop-brightness-150 border-white/[0.05] bg-white/[0.01]" // Dark Theme: Brightness
         }
         ${
           isHovering
-            ? "w-20 h-20 " + (isLightTheme ? "bg-[#0D0C1D]/10" : "bg-white/[0.08]")
+            ? "w-20 h-20 " + (isLightTheme ? "bg-[#FFFCE1]/30" : "bg-white/[0.08]")
             : "w-8 h-8"
         }`}
       />
