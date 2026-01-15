@@ -78,7 +78,7 @@ const PhotographyPage = () => {
                 <h1 className="text-5xl md:text-7xl font-bold font-accent text-[#DBD5B5] mb-4">
                     Albums
                 </h1>
-                <p className="max-w-md text-[#DBD5B5]/70 text-sm md:text-[14px] font-geist-mono leading-relaxed border-l border-[#DBD5B5]/10 pl-4 py-1">
+                <p className="max-w-xl text-[#DBD5B5]/85 text-2xl md:text-3xl font-description leading-relaxed pl-1 py-1">
                     Photography is my escape—a way to find beauty in the ordinary. Capturing what's often overlooked has shaped how I see the world, both as an artist and as a person.
                 </p>
             </div>
