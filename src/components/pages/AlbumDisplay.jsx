@@ -146,6 +146,18 @@ const AlbumDisplay = () => {
         { type: "portrait", src: "/images/sunset-feat.jpg", category: "Color", title: "Alpine Glow" },
         { type: "landscape", src: "/images/sunset-feat.jpg", category: "Sunset", title: "Golden Matterhorn" }
     ],
+    beach: [
+        { type: "portrait", src: "/images/sunset/feat-portrait.jpeg", category: "Sunset", title: "Golden Horizon" },
+        { type: "portrait", src: "/images/sunset-feat.jpg", category: "Nature", title: "Ocean Breath" },
+        { type: "portrait", src: "/images/sunset-feat.jpg", category: "Detail", title: "Light Dance" },
+        { type: "landscape", src: "/images/sunset-feat.jpg", category: "Wide", title: "Infinite Sky" }
+    ],
+    flowers: [
+        { type: "portrait", src: "/images/flowers/feat-portrait.jpg", category: "Nature", title: "Floral Focus" },
+        { type: "portrait", src: "/images/flowers-feat.jpg", category: "Macro", title: "Petal Detail" },
+        { type: "portrait", src: "/images/flowers-feat.jpg", category: "Boutique", title: "Bloom" },
+        { type: "landscape", src: "/images/flowers-feat.jpg", category: "Garden", title: "Botanical Serenity" }
+    ],
     philippines: [
         { type: "landscape", src: "/images/ph-feat.jpg", category: "Urban", title: "Urban Pulse" },
         { type: "portrait", src: "/images/ph-portrait.jpg", category: "Culture", title: "Island Soul" },
@@ -198,9 +210,13 @@ const AlbumDisplay = () => {
       {/* Gallery Grid */}
       <div ref={galleryRef} className="max-w-7xl mx-auto px-4 md:px-12 pt-20 pb-40 flex flex-col gap-40">
         
-        {/* Row 1: Landscape */}
+        {/* Row 1: Feature Card (Dynamic Layout) */}
         <div 
-            className="gallery-landscape group relative aspect-[21/9] rounded-2xl overflow-hidden cursor-pointer"
+            className={`gallery-feature group relative rounded-2xl overflow-hidden cursor-pointer ${
+                currentGallery[0]?.type === 'portrait' 
+                ? 'aspect-[3/4] max-w-2xl mx-auto' 
+                : 'aspect-[21/9]'
+            }`}
             onClick={() => setSelectedImage(currentGallery[0]?.src || "/images/project1.png")}
         >
             <img 
@@ -210,7 +226,6 @@ const AlbumDisplay = () => {
                 decoding="async"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 will-change-transform" 
             />
-
         </div>
 
         {/* Row 2: Two Portraits (Aligned) */}
