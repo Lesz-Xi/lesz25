@@ -101,7 +101,7 @@ const AlbumDisplay = () => {
         heroTitle: "Woke up too early, stayed out too late. Somewhere in between, the sky did something I'll never forget.",
         location: "Davao City, Philippines",
         year: "2025",
-        image: "/images/sunset-feat.jpg",
+        image: "/images/sunset-new-feat.jpg",
         description: "Capturing the rhythmic dance of the ocean, the serene blues, and the isolation of island life."
     },
     {
