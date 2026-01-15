@@ -123,7 +123,7 @@ const AlbumDisplay = () => {
         heroTitle: "Davao City",
         location: "Davao City, Philippines",
         year: "2023",
-        image: "/images/project1.png",
+        image: "/images/ph-feat.jpg",
         description: "A visual tapestry of Davao: from the pulse of the night markets and urban geometry to the serene breath of the coast. Documenting the soul of the city through its people and architecture."
     },
     {
@@ -158,6 +158,20 @@ const AlbumDisplay = () => {
         { type: "portrait", src: "/images/project1.png", category: "Abstract", title: "Icy Veins" },
         { type: "portrait", src: "/images/project1.png", category: "Wildlife", title: "Chamois Watch" },
         { type: "landscape", src: "/images/project1.png", category: "Sunset", title: "Golden Matterhorn" }
+    ],
+    philippines: [
+        { type: "landscape", src: "/images/ph-feat.jpg", category: "Urban", title: "Urban Pulse" },
+        { type: "portrait", src: "/images/ph-portrait.jpg", category: "Culture", title: "Island Soul" },
+        { type: "portrait", src: "/images/ph-portrait.jpg", category: "Architecture", title: "Davao Geometry" },
+        { type: "landscape", src: "/images/ph-feat.jpg", category: "Street", title: "Night Market" },
+        { type: "portrait", src: "/images/ph-portrait.jpg", category: "Nature", title: "Coastal Breath" },
+        { type: "portrait", src: "/images/ph-portrait.jpg", category: "Detail", title: "Local Life" },
+        { type: "landscape", src: "/images/ph-feat.jpg", category: "Candid", title: "City Spirit" },
+        { type: "portrait", src: "/images/ph-portrait.jpg", category: "Portrait", title: "Local Faces" },
+        { type: "portrait", src: "/images/ph-portrait.jpg", category: "Architecture", title: "Modern Davao" },
+        { type: "landscape", src: "/images/ph-feat.jpg", category: "Landscape", title: "Horizon" },
+        { type: "portrait", src: "/images/ph-portrait.jpg", category: "Detail", title: "Hidden Gems" },
+        { type: "portrait", src: "/images/ph-portrait.jpg", category: "Culture", title: "Tradition" }
     ],
     // Defaults for others
     default: [
