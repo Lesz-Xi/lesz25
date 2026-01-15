@@ -147,7 +147,7 @@ const AlbumDisplay = () => {
         { type: "landscape", src: "/images/sunset-feat.jpg", category: "Sunset", title: "Golden Matterhorn" }
     ],
     beach: [
-        { type: "portrait", src: "/images/sunset/feat-portrait.jpeg", category: "Sunset", title: "Golden Horizon" },
+        { type: "landscape", src: "/images/sunset/feat-landscape.jpg", category: "Sunset", title: "Golden Horizon" },
         { type: "portrait", src: "/images/sunset-feat.jpg", category: "Nature", title: "Ocean Breath" },
         { type: "portrait", src: "/images/sunset-feat.jpg", category: "Detail", title: "Light Dance" },
         { type: "landscape", src: "/images/sunset-feat.jpg", category: "Wide", title: "Infinite Sky" }
