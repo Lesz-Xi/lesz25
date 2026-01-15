@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation, useParams } from "react-router-dom";
 import Lenis from "lenis";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -7,11 +7,11 @@ import IntroAnimation from "../IntroAnimation";
 import Cursor from "../Cursor";
 import ErrorBoundary from "../ErrorBoundary";
 
-// Pages
+// Pages - Lazy loaded for code splitting
 import Home from "../pages/Home";
-import PhotographyPage from "../pages/PhotographyPage";
-import AlbumDisplay from "../pages/AlbumDisplay";
-import NotFound from "../pages/NotFound";
+const PhotographyPage = React.lazy(() => import("../pages/PhotographyPage"));
+const AlbumDisplay = React.lazy(() => import("../pages/AlbumDisplay"));
+const NotFound = React.lazy(() => import("../pages/NotFound"));
 
 // Store Lenis instance globally so components can access it
 let lenisInstance = null;
@@ -135,12 +135,14 @@ const App = () => {
               <Cursor />
               <Navbar />
               
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/photography" element={<PhotographyPage />} />
-                <Route path="/photography/:albumId" element={<AlbumDisplayWrapper />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
+              <Suspense fallback={<div className="min-h-screen bg-[#070707]" />}>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/photography" element={<PhotographyPage />} />
+                  <Route path="/photography/:albumId" element={<AlbumDisplayWrapper />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </Suspense>
 
             </div>
           </Router>

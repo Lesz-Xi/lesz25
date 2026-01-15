@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import Button from "../Button";
-import HeroExperience from "../HeroModels/HeroExperience";
+const HeroExperience = React.lazy(() => import("../HeroModels/HeroExperience"));
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import Typewriter from "../Typewriter";
@@ -164,7 +164,9 @@ const Hero = () => {
         {/*RIGHT: 3D MODEL */}
         <figure className="hidden md:block">
           <div className="hero-3d-layout">
-            <HeroExperience />
+            <Suspense fallback={<div className="w-full h-full bg-black/50 animate-pulse" />}>
+              <HeroExperience />
+            </Suspense>
           </div>
         </figure>
       </div>
