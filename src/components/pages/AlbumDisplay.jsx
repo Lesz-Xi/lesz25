@@ -203,7 +203,7 @@ const AlbumDisplay = () => {
       { type: "portrait", src: "/images/philippines/ph-port-1.webp", category: "Culture", title: "Festival" },
       { type: "portrait", src: "/images/philippines/ph-port-2.webp", category: "Street", title: "Jeepney" },
       { type: "landscape", src: "/images/philippines/ph-landscape-2.jpeg", category: "Island", title: "Sunset View" },
-      { type: "portrait", src: "/images/philippines/ph-port-3.webp", category: "Culture", title: "Local Market" },
+
       { type: "portrait", src: "/images/philippines/ph-port-4.webp", category: "Nature", title: "Palm Tree" },
       { type: "portrait", src: "/images/philippines/ph-port-5.webp", category: "Street", title: "City Life" },
       { type: "portrait", src: "/images/philippines/ph-port-6.webp", category: "Culture", title: "Tradition" },
