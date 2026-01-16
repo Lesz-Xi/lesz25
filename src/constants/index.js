@@ -36,15 +36,15 @@ const counterItems = [
 ];
 
 const logoIconsList = [
-  { name: "React.js", imgPath: "/images/logos/react.png" },
-  { name: "Aws", imgPath: "/images/logos/framework-logo-1.png" },
-  { name: "CSS", imgPath: "/images/logos/framework-logo-2.png" },
-  { name: "GSAP", imgPath: "/images/logos/framework-logo-3.png" },
-  { name: "Node.js", imgPath: "/images/logos/node.png" },
-  { name: "Three.js", imgPath: "/images/logos/three.png" },
-  { name: "JavaScript", imgPath: "/images/logos/framework-logo-6.png" },
-  { name: "Supabase", imgPath: "/images/logos/framework-logo-7.png" },
-  { name: "Supabase", imgPath: "/images/logos/framework-logo-8.png" },
+  { name: "React.js", imgPath: "/images/logos/react.webp" },
+  { name: "Aws", imgPath: "/images/logos/framework-logo-1.webp" },
+  { name: "CSS", imgPath: "/images/logos/framework-logo-2.webp" },
+  { name: "GSAP", imgPath: "/images/logos/framework-logo-3.webp" },
+  { name: "Node.js", imgPath: "/images/logos/node.webp" },
+  { name: "Three.js", imgPath: "/images/logos/three.webp" },
+  { name: "JavaScript", imgPath: "/images/logos/framework-logo-6.webp" },
+  { name: "Supabase", imgPath: "/images/logos/framework-logo-7.webp" },
+  { name: "Supabase", imgPath: "/images/logos/framework-logo-8.webp" },
 ];
 
 const abilities = [
@@ -68,7 +68,7 @@ const abilities = [
 const techStackImgs = [
   {
     name: "React Developer",
-    imgPath: "/images/logos/react.png",
+    imgPath: "/images/logos/react.webp",
   },
   {
     name: "Python Developer",
@@ -76,11 +76,11 @@ const techStackImgs = [
   },
   {
     name: "Backend Developer",
-    imgPath: "/images/logos/node.png",
+    imgPath: "/images/logos/node.webp",
   },
   {
     name: "Interactive Developer",
-    imgPath: "/images/logos/three.png",
+    imgPath: "/images/logos/three.webp",
   },
   {
     name: "Project Manager",

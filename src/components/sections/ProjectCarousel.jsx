@@ -13,7 +13,7 @@ const ProjectCarousel = () => {
       id: 1,
       title: "ThesisLens",
       category: "Academic Integrity",
-      image: "/images/projects/thesislens-v2.png",
+      image: "/images/projects/thesislens-v2.webp",
       color: "#F4F1EA",
       link: "https://thesislens.space/",
       fit: "contain"
@@ -22,16 +22,16 @@ const ProjectCarousel = () => {
       id: 2,
       title: "SkillShift",
       category: "Coaching Platform",
-      image: "/images/projects/skillshift-v3.png",
+      image: "/images/projects/skillshift-v3.webp",
       color: "#111111",
-      link: "#",
+      link: "https://skillshift.vercel.app/",
       fit: "contain"
     },
     {
       id: 3,
       title: "Universe Splitter",
       category: "Quantum Experiment",
-      image: "/images/projects/universe-splitter.png",
+      image: "/images/projects/universe-splitter.webp",
       color: "#000000",
       link: "https://univ-spitter.vercel.app/",
       fit: "cover"
@@ -107,9 +107,13 @@ const ProjectCarousel = () => {
             >
                <img 
                  src={project.image} 
+                 srcSet={`${project.image.replace('.webp', '-mobile.webp')} 600w, ${project.image} 1200w`}
+                 sizes="(max-width: 768px) 100vw, 600px"
                  alt={project.title}
                  className="w-full h-full"
                  style={{ objectFit: project.fit || "contain" }}
+                 decoding="async"
+                 loading="lazy"
                />
                {/* Removed dark overlay to keep image bright and clear */}
             </div>

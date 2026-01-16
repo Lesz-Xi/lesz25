@@ -5,6 +5,11 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   assetsInclude: ["**/*.glb"],
   build: {
+    modulePreload: {
+      resolveDependencies: (url, deps, context) => {
+        return deps.filter((dep) => !dep.includes("three-vendor"));
+      },
+    },
     rollupOptions: {
       output: {
         manualChunks: {

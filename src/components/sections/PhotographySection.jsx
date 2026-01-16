@@ -156,9 +156,13 @@ const PhotographySection = () => {
                 <div className="aspect-[4/3] overflow-hidden">
                   <img
                     src={photo.url}
+                    srcSet={`${photo.url.replace('.webp', '-mobile.webp')} 600w, ${photo.url} 1200w`}
+                    sizes="(max-width: 768px) 100vw, 50vw"
                     alt={photo.title}
                     className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                     style={{ willChange: "transform" }}
+                    decoding="async"
+                    loading="lazy"
                   />
                 </div>
                 

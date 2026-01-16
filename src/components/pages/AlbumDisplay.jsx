@@ -224,8 +224,12 @@ const AlbumDisplay = () => {
         <div className="hero-image-container absolute inset-x-4 top-24 bottom-0 md:inset-x-12 md:top-24 rounded-3xl overflow-hidden">
             <img 
                 src={album.image} 
+                srcSet={`${album.image.replace('.webp', '-mobile.webp')} 600w, ${album.image} 1200w`}
+                sizes="100vw"
                 alt={album.title} 
                 className="w-full h-full object-cover"
+                decoding="async"
+                loading="eager"
             />
         </div>
       </div>
