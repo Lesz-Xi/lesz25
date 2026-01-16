@@ -7,6 +7,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const ProjectCarousel = () => {
   const containerRef = useRef(null);
+  const wrapperRef = useRef(null);
   
   const projects = [
     {
@@ -39,42 +40,34 @@ const ProjectCarousel = () => {
   ];
 
   useGSAP(() => {
+    // Only run on desktop/larger screens where sticky effects make sense
+    // On mobile, native scrolling is usually better UX
     let mm = gsap.matchMedia();
     
-    // Desktop Animation Only
     mm.add("(min-width: 769px)", () => {
       const cards = gsap.utils.toArray(".project-card");
       
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top top",
-          end: `+=${projects.length * 100}%`, 
-          scrub: 1,
-          pin: true,
-        }
-      });
-
+      // We don't strictly need a timeline for basic sticky stacking, 
+      // but if we want the "scaling down" effect, we link it to scroll.
+      
       cards.forEach((card, i) => {
-        if (i > 0) {
-          // Card slides up from bottom
-          tl.fromTo(card, 
-            { yPercent: 100, opacity: 0 },
-            { yPercent: 0, opacity: 1, ease: "power2.out", duration: 1 }
-          );
-
-          // Previous cards scale down and move up to create stack
-          for (let j = 0; j < i; j++) {
-              const depth = i - j;
-              const scale = 1 - (depth * 0.03); // Subtle scale
-              const yOffset = -depth * 60; // Large offset for visible strips
-              
-              tl.to(cards[j], { 
-                scale: scale, 
-                y: yOffset,
-                duration: 1 
-              }, "<"); 
-          }
+        // The scale logic:
+        // When Card (i+1) enters view, Card (i) should scale down.
+        if (i !== cards.length - 1) {
+          const nextCard = cards[i + 1];
+          
+          ScrollTrigger.create({
+            trigger: nextCard,
+            start: "top bottom", // When top of next card hits bottom of viewport
+            end: "top top",      // When top of next card hits top of viewport
+            scrub: true,
+            animation: gsap.to(card, {
+              scale: 0.9,
+              filter: "brightness(0.5)",
+              ease: "none",
+              duration: 1
+            })
+          });
         }
       });
     });
@@ -85,10 +78,10 @@ const ProjectCarousel = () => {
     <section 
       id="projects" 
       ref={containerRef} 
-      className="min-h-screen h-auto md:h-screen w-full relative overflow-visible md:overflow-hidden flex flex-col items-center justify-start md:justify-center bg-[#070707] py-20 md:py-0"
+      className="relative w-full bg-[#070707] py-20"
     >
       {/* Header */}
-      <div className="absolute top-6 md:top-24 z-10 text-center w-full px-4">
+      <div className="text-center w-full px-4 mb-20 md:mb-32">
          <span className="text-xs font-bold tracking-[0.2em] text-[#DBD5B5]/40 uppercase mb-2 block">
             Selected Work
           </span>
@@ -97,55 +90,62 @@ const ProjectCarousel = () => {
           </h2>
       </div>
 
-      {/* Cards Container */}
-      <div className="relative w-full flex flex-col items-center md:block md:h-[80vh] max-w-[90vw] md:max-w-5xl mt-32 md:mt-20 gap-8 md:gap-0">
+      {/* Cards Scroll Container */}
+      <div ref={wrapperRef} className="w-full flex flex-col items-center gap-10 md:gap-0 pb-40">
         {projects.map((project, index) => (
           <div
             key={project.id}
-            className="project-card relative md:absolute md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 w-full md:w-[600px] h-auto aspect-[16/10] rounded-2xl md:rounded-3xl shadow-2xl flex flex-col md:flex-row bg-[#1C1C21] origin-top"
-            style={{ zIndex: index + 1 }}
+            className="project-card relative md:sticky md:top-32 w-[90vw] md:w-[1000px] h-auto md:h-[600px] flex flex-col md:flex-row rounded-3xl overflow-hidden shadow-2xl origin-top will-change-transform"
+            style={{ 
+              zIndex: index + 1, 
+            }}
           >
             {/* Image Section */}
             <div 
-              className="w-full md:w-2/3 h-[40%] md:h-full relative overflow-hidden rounded-t-2xl md:rounded-l-3xl md:rounded-tr-none px-4 py-4 md:px-0 md:py-0"
+              className="w-full md:w-2/3 h-[50%] md:h-full relative overflow-hidden"
               style={{ backgroundColor: project.color }}
             >
                <img 
                  src={project.image} 
                  srcSet={`${project.image.replace('.webp', '-mobile.webp')} 600w, ${project.image} 1200w`}
-                 sizes="(max-width: 768px) 100vw, 600px"
+                 sizes="(max-width: 768px) 100vw, 800px"
                  alt={project.title}
-                 className="w-full h-full"
+                 className="w-full h-full object-center transition-transform duration-700 hover:scale-105"
                  style={{ objectFit: project.fit || "contain" }}
                  decoding="async"
                  loading="lazy"
                />
-               {/* Removed dark overlay to keep image bright and clear */}
             </div>
 
             {/* Content Section */}
-            <div className="w-full md:w-1/3 h-[60%] md:h-full p-4 md:p-8 flex flex-col justify-center gap-4 md:justify-between bg-[#1C1C21] border-t md:border-t-0 md:border-l border-neutral-800 rounded-b-2xl md:rounded-r-3xl md:rounded-bl-none">
-               <div>
-                 <span className="text-[10px] font-bold tracking-widest text-[#8B7E66] uppercase mb-1 block">
+            <div className="w-full md:w-1/3 h-[50%] md:h-full p-6 md:p-12 flex flex-col justify-between bg-[#1C1C21] border-l border-white/5">
+               <div className="flex flex-col gap-2">
+                 <span className="text-[10px] md:text-xs font-bold tracking-widest text-[#8B7E66] uppercase">
                     {project.category}
                  </span>
-                 <h3 className="text-lg md:text-3xl font-serif font-bold text-[#DBD5B5] leading-tight">
+                 <h3 className="text-2xl md:text-4xl font-serif font-bold text-[#DBD5B5] leading-tight">
                     {project.title}
                  </h3>
+                 <p className="text-white/60 text-sm md:text-base mt-2 line-clamp-3">
+                   A premium digital experience crafted with precision and attention to detail.
+                 </p>
                </div>
-               <a 
-                 href={project.link} 
-                 target="_blank" 
-                 rel="noopener noreferrer" 
-                 className="group/btn inline-flex items-center justify-center px-4 py-2 md:px-6 md:py-3 font-display font-medium text-white bg-white/5 border border-white/10 rounded-full hover:bg-white/10 hover:border-[#DBD5B5]/30 transition-all duration-300"
-               >
-                  <span className="flex items-center gap-2 text-[9px] md:text-[10px] uppercase tracking-[0.15em] text-[#DBD5B5] group-hover/btn:text-white transition-colors">
-                    View Live Project
-                    <svg className="w-3 h-3 md:w-4 md:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                    </svg>
-                  </span>
-               </a>
+               
+               <div className="flex items-center justify-between mt-auto pt-6 border-t border-white/5">
+                 <a 
+                   href={project.link} 
+                   target="_blank" 
+                   rel="noopener noreferrer" 
+                   className="group/btn inline-flex items-center gap-3 text-sm font-display font-medium text-white hover:text-[#DBD5B5] transition-colors"
+                 >
+                    <span className="uppercase tracking-widest">View Project</span>
+                    <span className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center group-hover/btn:border-[#DBD5B5] group-hover/btn:bg-[#DBD5B5]/10 transition-all">
+                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                      </svg>
+                    </span>
+                 </a>
+               </div>
             </div>
           </div>
         ))}
