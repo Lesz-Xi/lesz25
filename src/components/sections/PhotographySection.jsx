@@ -13,7 +13,7 @@ const PhotographySection = () => {
       title: "Alps",
       location: "ZUG, SWITZERLAND",
       year: "2022",
-      category: "CITYSCAPE",
+      category: "LANDSCAPE",
       className: "md:col-span-1 md:mt-0",
       speed: 1 // Baseline
     },
@@ -22,7 +22,7 @@ const PhotographySection = () => {
       url: "/images/feat-paris.jpg",
       title: "City of Lights",
       location: "PARIS, FRANCE",
-      year: "2025",
+      year: "2022",
       category: "ARCHITECTURE",
       className: "md:col-span-1 md:mt-32",
       speed: 1.5 // Moves faster
@@ -32,7 +32,7 @@ const PhotographySection = () => {
       url: "/images/nature-feat.jpg",
       title: "Nature",
       location: "COLLECTIONS",
-      year: "2023 – 2025",
+      year: "2022",
       category: "NATURE",
       className: "md:col-span-1 md:-mt-32",
       speed: 0.8 // Moves slower (drag)
@@ -62,7 +62,7 @@ const PhotographySection = () => {
       url: "/images/flowers-feat.jpg",
       title: "Flowers",
       location: "COLLECTIONS",
-      year: "2023 – 2025",
+      year: "2025",
       category: "NATURE",
       className: "md:col-span-1 md:-mt-32",
       speed: 0.8

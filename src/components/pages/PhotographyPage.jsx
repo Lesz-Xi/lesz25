@@ -22,9 +22,9 @@ const PhotographyPage = () => {
         },
         {
             id: "nature",
-            title: "Quiet Whispers",
+            title: "Nature",
             location: "Collections",
-            year: "2023 – 2025",
+            year: "2022",
             image: "/images/nature-feat.jpg"
         },
         {
@@ -43,9 +43,9 @@ const PhotographyPage = () => {
         },
         {
             id: "flowers",
-            title: "Nature",
-            location: "Collections",
-            year: "2022",
+            title: "Flowers",
+            location: "Botanical Garden",
+            year: "2025",
             image: "/images/flowers-feat.jpg"
         }
     ];
