@@ -12,8 +12,8 @@ const PhotographySection = () => {
       url: "/images/switz-feat.jpg",
       title: "Alps",
       location: "ZUG, SWITZERLAND",
-      year: "2025",
-      category: "LANDSCAPE",
+      year: "2022",
+      category: "CITYSCAPE",
       className: "md:col-span-1 md:mt-0",
       speed: 1 // Baseline
     },

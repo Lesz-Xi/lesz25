@@ -73,25 +73,25 @@ const AlbumDisplay = () => {
         title: "Alpine Serenity",
         heroTitle: "Up there, everything slows down. It's not dramatic—it's just quiet. And that quiet felt like peace.",
         location: "Zug, Switzerland",
-        year: "2025",
+        year: "2022",
         image: "/images/switz-feat.jpg",
         description: "Capturing the vibrant life, culture, and diversity of the alpine landscape through a collaborative travel photography project. The aim was to document the silent majesty of the peaks."
     },
     {
         id: "paris",
-        title: "City of Light",
-        heroTitle: "I walked until my feet hurt and my camera ran out of storage. That's when Paris really started to make sense.",
+        title: "City of Lights",
+        heroTitle: "The streets felt alive, like the city was telling me its story. I was just there to listen and take pictures.",
         location: "Paris, France",
-        year: "2025",
+        year: "2022",
         image: "/images/feat-paris.jpg",
         description: "Exploring the romantic streets and hidden corners of Paris, chasing light and shadow across the historic architecture."
     },
     {
         id: "nature",
-        title: "Quiet Whispers",
-        heroTitle: "No Wi-Fi, no notifications. Just trees doing their thing and me trying to keep up.",
-        location: "Nature",
-        year: "2023 – 2025",
+        title: "Nature",
+        heroTitle: "There's something humbling about standing in front of a tree that's been here longer than you'll ever be.",
+        location: "Collections",
+        year: "2022",
         image: "/images/nature-feat.jpg",
         description: "A deep dive into the untouched wilderness, listening to the stories told by the ancient trees and misty mornings."
     },
@@ -118,7 +118,7 @@ const AlbumDisplay = () => {
         title: "Flowers",
         heroTitle: "Stopped to actually look at a flower for once. Turns out, they've been putting on a show this whole time.",
         location: "Botanical Garden",
-        year: "2023 – 2025",
+        year: "2025",
         image: "/images/flowers-feat.jpg",
         description: "A showcase of floral elegance, capturing the delicate textures and vibrant colors of nature's finest details."
     }

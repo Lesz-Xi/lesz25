@@ -10,14 +10,14 @@ const PhotographyPage = () => {
             id: "switzerland",
             title: "Alpine Serenity",
             location: "Zug, Switzerland",
-            year: "2025",
+            year: "2022",
             image: "/images/switz-feat.jpg"
         },
         {
             id: "paris",
             title: "City of Light",
             location: "Paris, France",
-            year: "2025",
+            year: "2022",
             image: "/images/feat-paris.jpg"
         },
         {
@@ -43,9 +43,9 @@ const PhotographyPage = () => {
         },
         {
             id: "flowers",
-            title: "Flowers",
+            title: "Nature",
             location: "Collections",
-            year: "2023 – 2025",
+            year: "2022",
             image: "/images/flowers-feat.jpg"
         }
     ];
