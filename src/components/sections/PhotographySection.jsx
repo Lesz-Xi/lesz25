@@ -39,7 +39,7 @@ const PhotographySection = () => {
     },
     {
       id: 4,
-      url: "/images/sunset-feat.jpg",
+      url: "/images/sunset-new-feat.jpg",
       title: "Sunrise & Sunset",
       location: "COLLECTIONS",
       year: "2025",
