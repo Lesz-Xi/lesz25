@@ -3,31 +3,6 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const UplinkCookie = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const [displayText, setDisplayText] = useState("");
-  const fullText = "INCOMING SECURE TRANSMISSION // DAEMON_V4";
-
-  // Text Scramble Effect
-  useEffect(() => {
-    if (!isVisible) return;
-    
-    let iteration = 0;
-    const interval = setInterval(() => {
-      setDisplayText(
-        fullText
-          .split("")
-          .map((letter, index) => {
-            if (index < iteration) return fullText[index];
-            return "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()"[Math.floor(Math.random() * 26)];
-          })
-          .join("")
-      );
-
-      if (iteration >= fullText.length) clearInterval(interval);
-      iteration += 1 / 2; // Scramble speed
-    }, 30);
-
-    return () => clearInterval(interval);
-  }, [isVisible]);
 
   useEffect(() => {
     const consent = localStorage.getItem("uplink_status");
@@ -39,11 +14,6 @@ const UplinkCookie = () => {
 
   const handleInitialize = () => {
     localStorage.setItem("uplink_status", "established");
-    setIsVisible(false);
-  };
-
-  const handleAbort = () => {
-    localStorage.setItem("uplink_status", "aborted");
     setIsVisible(false);
   };
 
@@ -78,16 +48,19 @@ const UplinkCookie = () => {
                           <span className="relative inline-flex rounded-full h-2 w-2 bg-[#C7B580]"></span>
                         </span>
                         <span className="font-geist-mono text-[9px] tracking-[0.2em] text-[#C7B580]/60 uppercase">
-                            {displayText}
+                            PRIVACY_PROTOCOL_V4
                         </span>
                     </div>
                     <h3 className="font-display font-medium text-xl text-white tracking-wide">
-                        Establish Uplink?
+                        Privacy & Cookies
                     </h3>
                 </div>
 
                 <p className="font-sans text-sm text-neutral-400 leading-relaxed font-light">
-                    Initiate secure telemetry feedback loop. This data optimizes the neural interface for your session.
+                    This website uses cookies to ensure you get the best experience on our website.{" "}
+                    <a href="#" className="text-[#C7B580] hover:underline underline-offset-4 decoration-[#C7B580]/50 transition-all">
+                        Cookies Policy
+                    </a>
                 </p>
 
                 {/* 2041 Controls - Minimal, High Contrast */}
@@ -98,16 +71,7 @@ const UplinkCookie = () => {
                     >
                         <div className="absolute inset-0 w-full h-[1px] top-0 bg-gradient-to-r from-transparent via-[#C7B580]/50 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
                         <span className="font-geist-mono text-[10px] uppercase tracking-[0.2em] text-[#C7B580] group-hover:text-white transition-colors">
-                            [ Initialize ]
-                        </span>
-                    </button>
-                    
-                    <button 
-                        onClick={handleAbort}
-                        className="px-4 py-3 text-neutral-500 hover:text-white transition-colors duration-300"
-                    >
-                        <span className="font-geist-mono text-[10px] uppercase tracking-widest relative after:content-[''] after:absolute after:bottom-[-2px] after:left-0 after:w-0 after:h-[1px] after:bg-white/30 hover:after:w-full after:transition-all after:duration-300">
-                            Deny
+                            GOT IT
                         </span>
                     </button>
                 </div>
