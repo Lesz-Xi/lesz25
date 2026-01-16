@@ -1,6 +1,9 @@
-import React, { useState, Suspense, useEffect } from "react";
+import React, { useState, Suspense, useEffect, lazy } from "react";
 import Button from "../Button";
-import HeroExperience from "../HeroModels/HeroExperience";
+
+// Lazy load HeroExperience - only loads Three.js bundle when needed (desktop only)
+const HeroExperience = lazy(() => import("../HeroModels/HeroExperience"));
+
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import AnimatedGreeting from "../AnimatedGreeting";
@@ -126,7 +129,9 @@ const Hero = () => {
         {isDesktop && (
           <figure className="hidden md:block">
             <div className="hero-3d-layout">
-              <HeroExperience />
+              <Suspense fallback={null}>
+                <HeroExperience />
+              </Suspense>
             </div>
           </figure>
         )}
