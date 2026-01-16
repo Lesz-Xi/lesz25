@@ -6,17 +6,23 @@ const IntroAnimation = ({ onComplete }) => {
   const [isExiting, setIsExiting] = useState(false);
 
   useEffect(() => {
+    // Faster loading on mobile to reduce TBT (Total Blocking Time)
+    const isMobile = window.innerWidth < 768;
+    const increment = isMobile ? 5 : 1;
+    const intervalTime = 30;
+
     // Simulate loading progress
     const interval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
-          setTimeout(() => setIsExiting(true), 1000);
+          setTimeout(() => setIsExiting(true), isMobile ? 500 : 1000); // Faster exit on mobile
           return 100;
         }
-        return prev + 1;
+        // Ensure we don't overshoot 100 oddly if we change step
+        return Math.min(prev + increment, 100);
       });
-    }, 30);
+    }, intervalTime);
 
     return () => clearInterval(interval);
   }, []);

@@ -39,48 +39,53 @@ const ProjectCarousel = () => {
   ];
 
   useGSAP(() => {
-    const cards = gsap.utils.toArray(".project-card");
+    let mm = gsap.matchMedia();
     
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top top",
-        end: `+=${projects.length * 100}%`, 
-        scrub: 1,
-        pin: true,
-      }
-    });
-
-    cards.forEach((card, i) => {
-      if (i > 0) {
-        // Card slides up from bottom
-        tl.fromTo(card, 
-          { yPercent: 100, opacity: 0 },
-          { yPercent: 0, opacity: 1, ease: "power2.out", duration: 1 }
-        );
-
-        // Previous cards scale down and move up to create stack
-        for (let j = 0; j < i; j++) {
-            const depth = i - j;
-            const scale = 1 - (depth * 0.03); // Subtle scale
-            const yOffset = -depth * 60; // Large offset for visible strips
-            
-            tl.to(cards[j], { 
-              scale: scale, 
-              y: yOffset,
-              duration: 1 
-            }, "<"); 
+    // Desktop Animation Only
+    mm.add("(min-width: 769px)", () => {
+      const cards = gsap.utils.toArray(".project-card");
+      
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: `+=${projects.length * 100}%`, 
+          scrub: 1,
+          pin: true,
         }
-      }
-    });
+      });
 
+      cards.forEach((card, i) => {
+        if (i > 0) {
+          // Card slides up from bottom
+          tl.fromTo(card, 
+            { yPercent: 100, opacity: 0 },
+            { yPercent: 0, opacity: 1, ease: "power2.out", duration: 1 }
+          );
+
+          // Previous cards scale down and move up to create stack
+          for (let j = 0; j < i; j++) {
+              const depth = i - j;
+              const scale = 1 - (depth * 0.03); // Subtle scale
+              const yOffset = -depth * 60; // Large offset for visible strips
+              
+              tl.to(cards[j], { 
+                scale: scale, 
+                y: yOffset,
+                duration: 1 
+              }, "<"); 
+          }
+        }
+      });
+    });
+    
   }, { scope: containerRef });
 
   return (
     <section 
       id="projects" 
       ref={containerRef} 
-      className="h-screen w-full relative overflow-hidden flex flex-col items-center justify-center bg-[#070707]"
+      className="min-h-screen h-auto md:h-screen w-full relative overflow-visible md:overflow-hidden flex flex-col items-center justify-start md:justify-center bg-[#070707] py-20 md:py-0"
     >
       {/* Header */}
       <div className="absolute top-6 md:top-24 z-10 text-center w-full px-4">
@@ -93,11 +98,11 @@ const ProjectCarousel = () => {
       </div>
 
       {/* Cards Container */}
-      <div className="relative w-full h-[65vh] md:h-[80vh] flex items-center justify-center max-w-[90vw] md:max-w-5xl mt-16 md:mt-20">
+      <div className="relative w-full flex flex-col items-center md:block md:h-[80vh] max-w-[90vw] md:max-w-5xl mt-32 md:mt-20 gap-8 md:gap-0">
         {projects.map((project, index) => (
           <div
             key={project.id}
-            className="project-card absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full md:w-[600px] h-[350px] md:h-auto md:aspect-[16/10] rounded-2xl md:rounded-3xl shadow-2xl flex flex-col md:flex-row bg-[#1C1C21] origin-top"
+            className="project-card relative md:absolute md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 w-full md:w-[600px] h-auto aspect-[16/10] rounded-2xl md:rounded-3xl shadow-2xl flex flex-col md:flex-row bg-[#1C1C21] origin-top"
             style={{ zIndex: index + 1 }}
           >
             {/* Image Section */}

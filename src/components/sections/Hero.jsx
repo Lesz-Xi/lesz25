@@ -1,11 +1,10 @@
 import React, { useState, Suspense, useEffect, lazy, useCallback } from "react";
 import Button from "../Button";
 
-// Lazy load HeroExperience - only loads Three.js bundle when needed (desktop only)
+// Lazy load components
 const HeroExperience = lazy(() => import("../HeroModels/HeroExperience"));
+const Threads = lazy(() => import("../Threads"));
 
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
 import AnimatedGreeting from "../AnimatedGreeting";
 import ScrollIndicator from "../ScrollIndicator";
 
@@ -15,7 +14,6 @@ import {
   FaBriefcase,
   FaEnvelope,
 } from "react-icons/fa";
-import Threads from "../Threads";
 
 // Define constant outside component to prevent re-renders
 const threadsColor = [0.96, 0.949, 0.921];
@@ -107,12 +105,14 @@ const Hero = () => {
             {/* Threads component - fixed height prevents CLS, deferred load */}
             <div className="w-screen h-[400px] min-h-[400px] -mt-12 -ml-5 md:-ml-20 relative mix-blend-screen pointer-events-none">
               {isDesktop && (
-                <Threads
-                  amplitude={2.5}
-                  distance={1}
-                  enableMouseInteraction={false}
-                  color={threadsColor}
-                />
+                <Suspense fallback={null}>
+                  <Threads
+                    amplitude={2.5}
+                    distance={1}
+                    enableMouseInteraction={false}
+                    color={threadsColor}
+                  />
+                </Suspense>
               )}
             </div>
           </div>
