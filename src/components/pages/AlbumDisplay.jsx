@@ -208,9 +208,6 @@ const AlbumDisplay = () => {
       { type: "portrait", src: "/images/philippines/ph-port-5.webp", category: "Street", title: "City Life" },
       { type: "portrait", src: "/images/philippines/ph-port-6.webp", category: "Culture", title: "Tradition" },
       { type: "portrait", src: "/images/philippines/ph-port-7.webp", category: "Nature", title: "Island Life" },
-      { type: "portrait", src: "/images/philippines/ph-port-1.webp", category: "Culture", title: "Davao" },
-      { type: "portrait", src: "/images/philippines/ph-port-2.webp", category: "Street", title: "Market" },
-      { type: "portrait", src: "/images/philippines/ph-port-3.webp", category: "Culture", title: "Community" },
     ]
   };
 
@@ -329,41 +326,43 @@ const AlbumDisplay = () => {
             </div>
         </div>
 
-        {/* Row 6: Landscape */}
+      {/* Row 6: Landscape */}
+      {currentGallery[8] && (
         <div 
             className="gallery-landscape group relative aspect-[2/3] md:aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer max-w-2xl mx-auto"
             onClick={() => setSelectedImage(currentGallery[8]?.src || "/images/project1.webp")}
         >
             <img src={currentGallery[8]?.src || "/images/project1.webp"} alt={currentGallery[8]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-
         </div>
+      )}
 
-        {/* Row 7: Two Portraits (Aligned) */}
+      {/* Row 7: Two Portraits (Aligned) - Conditionally Rendered */}
+      {currentGallery[9] && currentGallery[10] && (
         <div className="gallery-portrait-row grid grid-cols-2 gap-16">
             <div 
                 className="gallery-portrait group relative aspect-[2/3] md:aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer"
                 onClick={() => setSelectedImage(currentGallery[9]?.src || "/images/project1.webp")}
             >
                 <img src={currentGallery[9]?.src || "/images/project1.webp"} alt={currentGallery[9]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-
             </div>
             <div 
                 className="gallery-portrait group relative aspect-[2/3] md:aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer"
                 onClick={() => setSelectedImage(currentGallery[10]?.src || "/images/project1.webp")}
             >
                 <img src={currentGallery[10]?.src || "/images/project1.webp"} alt={currentGallery[10]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-
             </div>
         </div>
+      )}
 
-        {/* Row 8: Landscape */}
+      {/* Row 8: Landscape - Conditionally Rendered */}
+      {currentGallery[11] && (
         <div 
             className="gallery-landscape group relative aspect-[2/3] md:aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer max-w-2xl mx-auto"
             onClick={() => setSelectedImage(currentGallery[11]?.src || "/images/project1.webp")}
         >
             <img src={currentGallery[11]?.src || "/images/project1.webp"} alt={currentGallery[11]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-
         </div>
+      )}
 
       </div>
 
