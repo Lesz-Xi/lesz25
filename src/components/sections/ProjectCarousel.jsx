@@ -91,61 +91,65 @@ const ProjectCarousel = () => {
       </div>
 
       {/* Cards Scroll Container */}
-      <div ref={wrapperRef} className="w-full flex flex-col items-center gap-10 md:gap-0 pb-40">
+      <div ref={wrapperRef} className="w-full flex flex-col items-center pb-40">
         {projects.map((project, index) => (
-          <div
+          <div 
             key={project.id}
-            className="project-card relative md:sticky md:top-32 w-[90vw] md:w-[1000px] h-auto md:h-[600px] flex flex-col md:flex-row rounded-3xl overflow-hidden shadow-2xl origin-top will-change-transform"
-            style={{ 
-              zIndex: index + 1, 
-            }}
+            className="w-full min-h-[400px] md:min-h-[90vh] flex items-center md:items-start justify-center"
           >
-            {/* Image Section */}
-            <div 
-              className="w-full md:w-2/3 h-[50%] md:h-full relative overflow-hidden"
-              style={{ backgroundColor: project.color }}
+            <div
+              className="project-card relative md:sticky md:top-32 w-[90vw] md:w-[1000px] h-auto md:h-[600px] flex flex-col md:flex-row rounded-3xl overflow-hidden shadow-2xl origin-top will-change-transform"
+              style={{ 
+                zIndex: index + 1, 
+              }}
             >
-               <img 
-                 src={project.image} 
-                 srcSet={`${project.image.replace('.webp', '-mobile.webp')} 600w, ${project.image} 1200w`}
-                 sizes="(max-width: 768px) 100vw, 800px"
-                 alt={project.title}
-                 className="w-full h-full object-center transition-transform duration-700 hover:scale-105"
-                 style={{ objectFit: project.fit || "contain" }}
-                 decoding="async"
-                 loading="lazy"
-               />
-            </div>
+              {/* Image Section */}
+              <div 
+                className="w-full md:w-2/3 h-[50%] md:h-full relative overflow-hidden"
+                style={{ backgroundColor: project.color }}
+              >
+                 <img 
+                   src={project.image} 
+                   srcSet={`${project.image.replace('.webp', '-mobile.webp')} 600w, ${project.image} 1200w`}
+                   sizes="(max-width: 768px) 100vw, 800px"
+                   alt={project.title}
+                   className="w-full h-full object-center transition-transform duration-700 hover:scale-105"
+                   style={{ objectFit: project.fit || "contain" }}
+                   decoding="async"
+                   loading="lazy"
+                 />
+              </div>
 
-            {/* Content Section */}
-            <div className="w-full md:w-1/3 h-[50%] md:h-full p-6 md:p-12 flex flex-col justify-between bg-[#1C1C21] border-l border-white/5">
-               <div className="flex flex-col gap-2">
-                 <span className="text-[10px] md:text-xs font-bold tracking-widest text-[#8B7E66] uppercase">
-                    {project.category}
-                 </span>
-                 <h3 className="text-2xl md:text-4xl font-serif font-bold text-[#DBD5B5] leading-tight">
-                    {project.title}
-                 </h3>
-                 <p className="text-white/60 text-sm md:text-base mt-2 line-clamp-3">
-                   A premium digital experience crafted with precision and attention to detail.
-                 </p>
-               </div>
-               
-               <div className="flex items-center justify-between mt-auto pt-6 border-t border-white/5">
-                 <a 
-                   href={project.link} 
-                   target="_blank" 
-                   rel="noopener noreferrer" 
-                   className="group/btn inline-flex items-center gap-3 text-sm font-display font-medium text-white hover:text-[#DBD5B5] transition-colors"
-                 >
-                    <span className="uppercase tracking-widest">View Project</span>
-                    <span className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center group-hover/btn:border-[#DBD5B5] group-hover/btn:bg-[#DBD5B5]/10 transition-all">
-                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                      </svg>
-                    </span>
-                 </a>
-               </div>
+              {/* Content Section */}
+              <div className="w-full md:w-1/3 h-[50%] md:h-full p-6 md:p-12 flex flex-col justify-between bg-[#1C1C21] border-l border-white/5">
+                 <div className="flex flex-col gap-2">
+                   <span className="text-[10px] md:text-xs font-bold tracking-widest text-[#8B7E66] uppercase">
+                      {project.category}
+                   </span>
+                   <h3 className="text-2xl md:text-4xl font-serif font-bold text-[#DBD5B5] leading-tight">
+                      {project.title}
+                   </h3>
+                   <p className="text-white/60 text-sm md:text-base mt-2 line-clamp-3">
+                     A premium digital experience crafted with precision and attention to detail.
+                   </p>
+                 </div>
+                 
+                 <div className="flex items-center justify-between mt-auto pt-6 border-t border-white/5">
+                   <a 
+                     href={project.link} 
+                     target="_blank" 
+                     rel="noopener noreferrer" 
+                     className="group/btn inline-flex items-center gap-3 text-sm font-display font-medium text-white hover:text-[#DBD5B5] transition-colors"
+                   >
+                      <span className="uppercase tracking-widest">View Project</span>
+                      <span className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center group-hover/btn:border-[#DBD5B5] group-hover/btn:bg-[#DBD5B5]/10 transition-all">
+                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
+                      </span>
+                   </a>
+                 </div>
+              </div>
             </div>
           </div>
         ))}
