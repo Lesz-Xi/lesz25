@@ -16,6 +16,8 @@ const ShowcaseSection = () => {
                src="/images/leszport.webp" 
                alt="Rhine Tague Portrait" 
                className="w-full h-full object-cover grayscale contrast-110"
+               width="800"
+               height="1000"
                loading="eager"
                fetchpriority="high"
              />

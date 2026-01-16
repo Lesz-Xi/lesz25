@@ -30,16 +30,18 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
     
-    <!-- Critical fonts loaded synchronously -->
-    <link href="https://api.fontshare.com/v2/css?f[]=clash-display@200,300,400,500,600,700&f[]=general-sans@200,300,400,500,600,700&display=swap" rel="stylesheet">
-    
-    <!-- All Google Fonts loaded ASYNC (non-blocking) using media=print technique -->
+    <!-- ALL fonts loaded ASYNC (non-blocking) using media=print technique -->
     <link rel="stylesheet" 
-          href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700&family=Inter:wght@400;500;600&family=Doto:wght@100..900&family=Square+Peg&display=swap" 
+          href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&f[]=general-sans@400,500,600&display=swap" 
+          media="print" 
+          onload="this.media='all'">
+    <link rel="stylesheet" 
+          href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Playfair+Display:wght@400;600;700&family=Outfit:wght@400;500;600&family=Inter:wght@400;500&family=Doto:wght@400;700&family=Square+Peg&display=swap" 
           media="print" 
           onload="this.media='all'">
     <noscript>
-      <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700&family=Inter:wght@400;500;600&family=Doto:wght@100..900&family=Square+Peg&display=swap" rel="stylesheet">
+      <link href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&f[]=general-sans@400,500,600&display=swap" rel="stylesheet">
+      <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Playfair+Display:wght@400;600;700&family=Outfit:wght@400;500;600&family=Inter:wght@400;500&family=Doto:wght@400;700&family=Square+Peg&display=swap" rel="stylesheet">
     </noscript>
   </head>
   <body>
