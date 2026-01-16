@@ -13,7 +13,9 @@ const ShowcaseSection = () => {
           {/* Main Image Container */}
           <div className="relative z-10 w-full aspect-[4/5] bg-gray-200 overflow-hidden shadow-2xl">
              <img 
-               src="/images/leszport.webp" 
+               src="/images/leszport.webp"
+               srcSet="/images/leszport-mobile.webp 600w, /images/leszport.webp 1200w"
+               sizes="(max-width: 768px) 100vw, 50vw"
                alt="Rhine Tague Portrait" 
                className="w-full h-full object-cover grayscale contrast-110"
                width="800"

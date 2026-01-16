@@ -7,7 +7,7 @@ export default defineConfig({
   build: {
     modulePreload: {
       resolveDependencies: (url, deps, context) => {
-        return deps.filter((dep) => !dep.includes("three-vendor"));
+        return deps.filter((dep) => !dep.includes("three") && !dep.includes("three-vendor"));
       },
     },
     rollupOptions: {
