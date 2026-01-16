@@ -138,13 +138,26 @@ const AlbumDisplay = () => {
         { type: "landscape", src: "/images/paris/optimized/IMG_3323.jpg", category: "Panoramic", title: "Parisian Skyline" }
     ],
     switzerland: [
-        { type: "landscape", src: "/images/project1.png", category: "Landscape", title: "Alpine Dawn" },
-        { type: "portrait", src: "/images/project1.png", category: "Portrait", title: "Glacial Stillness" },
-        { type: "portrait", src: "/images/project1.png", category: "Nature", title: "Mountain Shadows" },
-        { type: "landscape", src: "/images/project1.png", category: "Cinematic", title: "Valley of Silence" },
-        { type: "landscape", src: "/images/sunset-feat.jpg", category: "Sunset", title: "Golden Peak" },
-        { type: "portrait", src: "/images/sunset-feat.jpg", category: "Color", title: "Alpine Glow" },
-        { type: "landscape", src: "/images/sunset-feat.jpg", category: "Sunset", title: "Golden Matterhorn" }
+      { type: "landscape", src: "/images/switzerland/switz-landsc-1.jpg", category: "Alpine", title: "Scale" },
+      { type: "portrait", src: "/images/switzerland/switz-port-1.jpg", category: "Detail", title: "Texture" },
+      { type: "portrait", src: "/images/switzerland/switz-port-2.jpg", category: "Detail", title: "Form" },
+      { type: "landscape", src: "/images/switzerland/switz-landsc-2.jpg", category: "Alpine", title: "Vista" },
+      { type: "portrait", src: "/images/switzerland/switz-port-3.jpg", category: "Detail", title: "Shadow" },
+      { type: "portrait", src: "/images/switzerland/switz-port-4.jpg", category: "Detail", title: "Light" },
+      { type: "landscape", src: "/images/switzerland/switz-landsc-3.jpg", category: "Alpine", title: "Horizon" },
+      { type: "portrait", src: "/images/switzerland/switz-port-5.jpg", category: "Detail", title: "Focus" },
+      { type: "portrait", src: "/images/switzerland/switz-port-6.jpg", category: "Detail", title: "Contrast" },
+      { type: "landscape", src: "/images/switzerland/switz-landsc-4.jpg", category: "Alpine", title: "Range" },
+      { type: "portrait", src: "/images/switzerland/switz-port-7.jpg", category: "Detail", title: "Pattern" },
+      { type: "portrait", src: "/images/switzerland/switz-port-8.jpg", category: "Detail", title: "Rhythm" },
+      { type: "landscape", src: "/images/switzerland/switz-landsc-5.jpg", category: "Alpine", title: "Peak" },
+      { type: "landscape", src: "/images/switzerland/switz-landsc-6.jpg", category: "Alpine", title: "Valley" },
+      { type: "landscape", src: "/images/switzerland/switz-landsc-7.jpg", category: "Alpine", title: "Slope" },
+      { type: "landscape", src: "/images/switzerland/switz-landsc-8.jpg", category: "Alpine", title: "Summit" },
+      { type: "landscape", src: "/images/switzerland/switz-landsc-9.jpg", category: "Alpine", title: "Ridge" },
+      { type: "landscape", src: "/images/switzerland/switz-landsc-10.jpg", category: "Alpine", title: "Glacier" },
+      { type: "landscape", src: "/images/switzerland/switz-landsc-11.jpg", category: "Alpine", title: "Mist" },
+      { type: "landscape", src: "/images/switzerland/switz-landsc-12.jpg", category: "Alpine", title: "Snow" }
     ],
     beach: [
         { type: "landscape", src: "/images/sunset-new-feat.jpg", category: "Sunset", title: "Golden Horizon" },
