@@ -114,7 +114,8 @@ const IntroAnimation = ({ onComplete }) => {
           </motion.div>
 
           {/* Background Texture Overlay */}
-          <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/asfalt-dark.png')]"></div>
+          {/* CSS-only noise texture - no external request */}
+          <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-noise-pattern z-10"></div>
         </motion.div>
       )}
     </AnimatePresence>

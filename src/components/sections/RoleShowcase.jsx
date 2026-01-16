@@ -271,7 +271,7 @@ const RoleShowcase = () => {
       </div>
 
       {/* Subtle Texture Overlay */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.05] bg-[url('https://www.transparenttextures.com/patterns/asfalt-dark.png')]"></div>
+      <div className="absolute inset-0 pointer-events-none opacity-[0.05] bg-noise-pattern"></div>
     </section>
   );
 };
