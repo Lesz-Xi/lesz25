@@ -1,4 +1,4 @@
-import React, { useState, Suspense, useEffect, lazy } from "react";
+import React, { useState, Suspense, useEffect, lazy, useCallback } from "react";
 import Button from "../Button";
 
 // Lazy load HeroExperience - only loads Three.js bundle when needed (desktop only)
@@ -104,14 +104,16 @@ const Hero = () => {
               </p>
             </div>
 
-            {/* Threads component below the button - full width to left edge */}
-            <div className="w-screen h-[400px] -mt-12 -ml-5 md:-ml-20 relative opacity-100 mix-blend-screen pointer-events-none">
-              <Threads
-                amplitude={2.5}
-                distance={1}
-                enableMouseInteraction={false}
-                color={threadsColor}
-              />
+            {/* Threads component - fixed height prevents CLS, deferred load */}
+            <div className="w-screen h-[400px] min-h-[400px] -mt-12 -ml-5 md:-ml-20 relative mix-blend-screen pointer-events-none">
+              {isDesktop && (
+                <Threads
+                  amplitude={2.5}
+                  distance={1}
+                  enableMouseInteraction={false}
+                  color={threadsColor}
+                />
+              )}
             </div>
           </div>
         </header>
