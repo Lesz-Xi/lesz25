@@ -1,21 +1,12 @@
-import { useRef } from "react";
-import { useFrame } from "@react-three/fiber";
 import CameraModel from "./CameraModel";
 
-export default function Scene({ isPaused }) {
-  const groupRef = useRef(null);
-
-  useFrame((_, delta) => {
-    if (groupRef.current && !isPaused) {
-      // Simple rotation animation - no physics needed
-      groupRef.current.rotation.x += delta * 0.5;
-      groupRef.current.rotation.y += delta * 0.3;
-    }
-  });
-
+export default function Scene() {
+  // Static camera position - angled as if "taking a picture" of the Introduction text
+  // No animation for better performance and visual clarity
   return (
-    <group ref={groupRef}>
+    <group rotation={[-0.15, 0.2, 0.05]}>
       <CameraModel />
     </group>
   );
 }
+
