@@ -227,7 +227,7 @@ const AlbumDisplay = () => {
         <div 
             className={`gallery-feature group relative rounded-2xl overflow-hidden cursor-pointer ${
                 currentGallery[0]?.type === 'portrait' 
-                ? 'aspect-[3/4] max-w-2xl mx-auto' 
+                ? 'aspect-[2/3] md:aspect-[3/4] max-w-2xl mx-auto' 
                 : 'aspect-[3/2] md:aspect-[21/9]'
             }`}
             onClick={() => setSelectedImage(currentGallery[0]?.src || "/images/project1.png")}
@@ -248,14 +248,14 @@ const AlbumDisplay = () => {
         {/* Row 2: Two Portraits (Aligned) */}
         <div className="gallery-portrait-row grid grid-cols-2 gap-16">
             <div 
-                className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer"
+                className="gallery-portrait group relative aspect-[2/3] md:aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer"
                 onClick={() => setSelectedImage(currentGallery[1]?.src || "/images/project1.png")}
             >
                 <img src={currentGallery[1]?.src || "/images/project1.png"} alt={currentGallery[1]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
 
             </div>
             <div 
-                className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer"
+                className="gallery-portrait group relative aspect-[2/3] md:aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer"
                 onClick={() => setSelectedImage(currentGallery[2]?.src || "/images/project1.png")}
             >
                 <img src={currentGallery[2]?.src || "/images/project1.png"} alt={currentGallery[2]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
@@ -275,14 +275,14 @@ const AlbumDisplay = () => {
         {/* Row 4: Staggered Portraits (First Top, Second Bottom) */}
         <div className="gallery-portrait-row grid grid-cols-2 gap-16 items-start">
             <div 
-                className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer"
+                className="gallery-portrait group relative aspect-[2/3] md:aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer"
                 onClick={() => setSelectedImage(currentGallery[4]?.src || "/images/project1.png")}
             >
                 <img src={currentGallery[4]?.src || "/images/project1.png"} alt={currentGallery[4]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
 
             </div>
             <div 
-                className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden mt-32 cursor-pointer"
+                className="gallery-portrait group relative aspect-[2/3] md:aspect-[3/4] rounded-2xl overflow-hidden mt-32 cursor-pointer"
                 onClick={() => setSelectedImage(currentGallery[5]?.src || "/images/project1.png")}
             >
                 <img src={currentGallery[5]?.src || "/images/project1.png"} alt={currentGallery[5]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
@@ -293,14 +293,14 @@ const AlbumDisplay = () => {
         {/* Row 5: Staggered Portraits (First Bottom, Second Top) */}
         <div className="gallery-portrait-row grid grid-cols-2 gap-16 items-start">
             <div 
-                className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden mt-32 cursor-pointer"
+                className="gallery-portrait group relative aspect-[2/3] md:aspect-[3/4] rounded-2xl overflow-hidden mt-32 cursor-pointer"
                 onClick={() => setSelectedImage(currentGallery[6]?.src || "/images/project1.png")}
             >
                 <img src={currentGallery[6]?.src || "/images/project1.png"} alt={currentGallery[6]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
 
             </div>
             <div 
-                className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer"
+                className="gallery-portrait group relative aspect-[2/3] md:aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer"
                 onClick={() => setSelectedImage(currentGallery[7]?.src || "/images/project1.png")}
             >
                 <img src={currentGallery[7]?.src || "/images/project1.png"} alt={currentGallery[7]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
@@ -320,14 +320,14 @@ const AlbumDisplay = () => {
         {/* Row 7: Two Portraits (Aligned) */}
         <div className="gallery-portrait-row grid grid-cols-2 gap-16">
             <div 
-                className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer"
+                className="gallery-portrait group relative aspect-[2/3] md:aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer"
                 onClick={() => setSelectedImage(currentGallery[9]?.src || "/images/project1.png")}
             >
                 <img src={currentGallery[9]?.src || "/images/project1.png"} alt={currentGallery[9]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
 
             </div>
             <div 
-                className="gallery-portrait group relative aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer"
+                className="gallery-portrait group relative aspect-[2/3] md:aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer"
                 onClick={() => setSelectedImage(currentGallery[10]?.src || "/images/project1.png")}
             >
                 <img src={currentGallery[10]?.src || "/images/project1.png"} alt={currentGallery[10]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
