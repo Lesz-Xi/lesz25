@@ -138,7 +138,7 @@ const AlbumDisplay = () => {
         { type: "landscape", src: "/images/paris/optimized/IMG_3323.jpg", category: "Panoramic", title: "Parisian Skyline" }
     ],
     switzerland: [
-        { type: "landscape", src: "/images/switz-new-feat.jpg", category: "Landscape", title: "Alpine Dawn" },
+        { type: "landscape", src: "/images/project1.png", category: "Landscape", title: "Alpine Dawn" },
         { type: "portrait", src: "/images/project1.png", category: "Portrait", title: "Glacial Stillness" },
         { type: "portrait", src: "/images/project1.png", category: "Nature", title: "Mountain Shadows" },
         { type: "landscape", src: "/images/project1.png", category: "Cinematic", title: "Valley of Silence" },
