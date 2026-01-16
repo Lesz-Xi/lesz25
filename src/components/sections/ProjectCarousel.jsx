@@ -35,7 +35,7 @@ const ProjectCarousel = () => {
       image: "/images/projects/universe-splitter.webp",
       color: "#000000",
       link: "https://univ-spitter.vercel.app/",
-      fit: "cover"
+      fit: "contain"
     }
   ];
 
@@ -98,14 +98,13 @@ const ProjectCarousel = () => {
             className="w-full md:min-h-[90vh] last:md:min-h-0 flex items-center md:items-start justify-center"
           >
             <div
-              className="project-card relative md:sticky md:top-32 w-[90vw] md:w-[1000px] h-auto md:h-[600px] flex flex-col md:flex-row rounded-3xl overflow-hidden shadow-2xl origin-top will-change-transform"
+              className="project-card relative md:sticky md:top-32 w-[85vw] md:w-[1000px] h-auto md:h-[600px] flex flex-col md:flex-row rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl origin-top will-change-transform"
               style={{ 
                 zIndex: index + 1, 
               }}
             >
-              {/* Image Section */}
               <div 
-                className="w-full md:w-2/3 h-[50%] md:h-full relative overflow-hidden"
+                className="w-full md:w-2/3 aspect-[4/3] md:aspect-auto md:h-full relative overflow-hidden"
                 style={{ backgroundColor: project.color }}
               >
                  <img 
@@ -121,7 +120,7 @@ const ProjectCarousel = () => {
               </div>
 
               {/* Content Section */}
-              <div className="w-full md:w-1/3 h-[50%] md:h-full p-6 md:p-12 flex flex-col justify-between bg-[#1C1C21] border-l border-white/5">
+              <div className="w-full md:w-1/3 md:h-full p-4 md:p-12 flex flex-col justify-between bg-[#1C1C21] border-l border-white/5">
                  <div className="flex flex-col gap-2">
                    <span className="text-[10px] md:text-xs font-bold tracking-widest text-[#8B7E66] uppercase">
                       {project.category}
