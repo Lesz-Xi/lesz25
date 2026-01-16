@@ -6,6 +6,7 @@ import Navbar from "../Navbar";
 import IntroAnimation from "../IntroAnimation";
 import Cursor from "../Cursor";
 import ErrorBoundary from "../ErrorBoundary"; 
+import UplinkCookie from "../UplinkCookie"; 
 
 // Pages - Lazy loaded for code splitting
 import Home from "../pages/Home";
@@ -149,6 +150,7 @@ const App = () => {
         <ScrollToTop />
         <div className="bg-[#070707] min-h-screen cursor-none">
           <Cursor />
+          <UplinkCookie />
           <Navbar />
           
           <Suspense fallback={<div className="min-h-screen bg-[#070707]" />}>
