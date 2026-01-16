@@ -129,51 +129,6 @@ const AlbumDisplay = () => {
   // Gallery Data Configuration
   const galleryData = {
     paris: [
-        { type: "landscape", src: "/images/paris/optimized/IMG_3228.jpg", category: "Cityscape", title: "Eiffel Gold" },
-        { type: "portrait", src: "/images/paris/optimized/IMG_3153.jpg", category: "Street", title: "Montmartre Steps" },
-        { type: "portrait", src: "/images/paris/optimized/P1550735.jpg", category: "Architecture", title: "Louvre Geometry" },
-        { type: "landscape", src: "/images/paris/optimized/IMG_3323.jpg", category: "Urban", title: "Seine Sunset" },
-        { type: "portrait", src: "/images/paris/optimized/IMG_3359.jpg", category: "Detail", title: "Metro Life" },
-        { type: "portrait", src: "/images/paris/optimized/IMG_3359.jpg", category: "Detail", title: "Cafe Culture" },
-        { type: "landscape", src: "/images/paris/optimized/IMG_3323.jpg", category: "Panoramic", title: "Parisian Skyline" }
-    ],
-    switzerland: [
-      { type: "landscape", src: "/images/switzerland/switz-landsc-1.jpg", category: "Alpine", title: "Scale" },
-      { type: "portrait", src: "/images/switzerland/switz-port-1.jpg", category: "Detail", title: "Texture" },
-      { type: "portrait", src: "/images/switzerland/switz-port-2.jpg", category: "Detail", title: "Form" },
-      { type: "landscape", src: "/images/switzerland/switz-landsc-2.jpg", category: "Alpine", title: "Vista" },
-      { type: "portrait", src: "/images/switzerland/switz-port-3.jpg", category: "Detail", title: "Shadow" },
-      { type: "portrait", src: "/images/switzerland/switz-port-4.jpg", category: "Detail", title: "Light" },
-      { type: "landscape", src: "/images/switzerland/switz-landsc-3.jpg", category: "Alpine", title: "Horizon" },
-      { type: "portrait", src: "/images/switzerland/switz-port-5.jpg", category: "Detail", title: "Focus" },
-      { type: "portrait", src: "/images/switzerland/switz-port-6.jpg", category: "Detail", title: "Contrast" },
-      { type: "landscape", src: "/images/switzerland/switz-landsc-4.jpg", category: "Alpine", title: "Range" },
-      { type: "portrait", src: "/images/switzerland/switz-port-7.jpg", category: "Detail", title: "Pattern" },
-      { type: "portrait", src: "/images/switzerland/switz-port-8.jpg", category: "Detail", title: "Rhythm" },
-      { type: "landscape", src: "/images/switzerland/switz-landsc-5.jpg", category: "Alpine", title: "Peak" },
-      { type: "landscape", src: "/images/switzerland/switz-landsc-6.jpg", category: "Alpine", title: "Valley" },
-      { type: "landscape", src: "/images/switzerland/switz-landsc-7.jpg", category: "Alpine", title: "Slope" },
-      { type: "landscape", src: "/images/switzerland/switz-landsc-8.jpg", category: "Alpine", title: "Summit" },
-      { type: "landscape", src: "/images/switzerland/switz-landsc-9.jpg", category: "Alpine", title: "Ridge" },
-      { type: "landscape", src: "/images/switzerland/switz-landsc-10.jpg", category: "Alpine", title: "Glacier" },
-      { type: "landscape", src: "/images/switzerland/switz-landsc-11.jpg", category: "Alpine", title: "Mist" },
-      { type: "landscape", src: "/images/switzerland/switz-landsc-12.jpg", category: "Alpine", title: "Snow" }
-    ],
-    beach: [
-        { type: "landscape", src: "/images/sunset-new-feat.jpg", category: "Sunset", title: "Golden Horizon" },
-        { type: "portrait", src: "/images/sunset-feat.jpg", category: "Nature", title: "Ocean Breath" },
-        { type: "portrait", src: "/images/sunset-feat.jpg", category: "Detail", title: "Light Dance" },
-        { type: "landscape", src: "/images/sunset-feat.jpg", category: "Wide", title: "Infinite Sky" }
-    ],
-    flowers: [
-        { type: "portrait", src: "/images/flowers/feat-portrait.jpg", category: "Nature", title: "Floral Focus" },
-        { type: "portrait", src: "/images/flowers-feat.jpg", category: "Macro", title: "Petal Detail" },
-        { type: "portrait", src: "/images/flowers-feat.jpg", category: "Boutique", title: "Bloom" },
-        { type: "landscape", src: "/images/flowers-feat.jpg", category: "Garden", title: "Botanical Serenity" }
-    ],
-    philippines: [
-        { type: "landscape", src: "/images/ph-feat.jpg", category: "Urban", title: "Urban Pulse" },
-        { type: "portrait", src: "/images/ph-portrait.jpg", category: "Culture", title: "Island Soul" },
         { type: "portrait", src: "/images/ph-portrait.jpg", category: "Architecture", title: "Davao Geometry" },
         { type: "landscape", src: "/images/ph-feat.jpg", category: "Street", title: "Night Market" },
         { type: "portrait", src: "/images/ph-portrait.jpg", category: "Nature", title: "Coastal Breath" },
