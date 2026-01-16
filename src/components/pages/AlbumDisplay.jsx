@@ -74,7 +74,7 @@ const AlbumDisplay = () => {
         heroTitle: "Up there, everything slows down. It's not dramatic—it's just quiet. And that quiet felt like peace.",
         location: "Zug, Switzerland",
         year: "2022",
-        image: "/images/switz-feat.jpg",
+        image: "/images/switz-new-feat.jpg",
         description: "Capturing the vibrant life, culture, and diversity of the alpine landscape through a collaborative travel photography project. The aim was to document the silent majesty of the peaks."
     },
     {
@@ -138,7 +138,7 @@ const AlbumDisplay = () => {
         { type: "landscape", src: "/images/paris/optimized/IMG_3323.jpg", category: "Panoramic", title: "Parisian Skyline" }
     ],
     switzerland: [
-        { type: "landscape", src: "/images/project1.png", category: "Landscape", title: "Alpine Dawn" },
+        { type: "landscape", src: "/images/switz-new-feat.jpg", category: "Landscape", title: "Alpine Dawn" },
         { type: "portrait", src: "/images/project1.png", category: "Portrait", title: "Glacial Stillness" },
         { type: "portrait", src: "/images/project1.png", category: "Nature", title: "Mountain Shadows" },
         { type: "landscape", src: "/images/project1.png", category: "Cinematic", title: "Valley of Silence" },

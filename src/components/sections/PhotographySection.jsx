@@ -9,7 +9,7 @@ const PhotographySection = () => {
   const photos = [
     {
       id: 1,
-      url: "/images/switz-feat.jpg",
+      url: "/images/switz-new-feat.jpg",
       title: "Alps",
       location: "ZUG, SWITZERLAND",
       year: "2022",

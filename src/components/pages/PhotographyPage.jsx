@@ -11,7 +11,7 @@ const PhotographyPage = () => {
             title: "Alpine Serenity",
             location: "Zug, Switzerland",
             year: "2022",
-            image: "/images/switz-feat.jpg"
+            image: "/images/switz-new-feat.jpg"
         },
         {
             id: "paris",
