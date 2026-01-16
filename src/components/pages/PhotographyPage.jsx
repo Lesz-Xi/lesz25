@@ -11,42 +11,42 @@ const PhotographyPage = () => {
             title: "Alpine Serenity",
             location: "Zug, Switzerland",
             year: "2022",
-            image: "/images/switz-new-feat.jpg"
+            image: "/images/switz-new-feat.webp"
         },
         {
             id: "paris",
             title: "City of Light",
             location: "Paris, France",
             year: "2022",
-            image: "/images/feat-paris.jpg"
+            image: "/images/feat-paris.webp"
         },
         {
             id: "nature",
             title: "Nature",
             location: "Collections",
             year: "2022",
-            image: "/images/nature-feat.jpg"
+            image: "/images/nature-feat.webp"
         },
         {
             id: "beach",
             title: "Sunrise & Sunset",
             location: "Collections",
             year: "2025",
-            image: "/images/sunset-new-feat.jpg"
+            image: "/images/sunset-new-feat.webp"
         },
         {
             id: "philippines",
             title: "Islands & Icons",
             location: "Davao City, Philippines",
             year: "2025",
-            image: "/images/ph-feat.jpg"
+            image: "/images/ph-feat.webp"
         },
         {
             id: "flowers",
             title: "Flowers",
             location: "Botanical Garden",
             year: "2025",
-            image: "/images/flowers-feat.jpg"
+            image: "/images/flowers-feat.webp"
         }
     ];
 

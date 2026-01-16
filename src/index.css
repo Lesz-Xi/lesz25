@@ -1,11 +1,30 @@
 @import "tailwindcss";
 
+/* Font fallbacks with size-adjust to prevent CLS (Flash of Unstyled Text) */
+@font-face {
+  font-family: 'Outfit Fallback';
+  src: local('Arial');
+  size-adjust: 100%;
+  ascent-override: 95%;
+  descent-override: 25%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Clash Display Fallback';
+  src: local('Arial Black');
+  size-adjust: 105%;
+  ascent-override: 90%;
+  descent-override: 25%;
+  line-gap-override: 0%;
+}
+
 @theme {
   --color-background: #141412;
   --color-primary: #DBD5B5;
   --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
-  --font-heading: "Outfit", sans-serif;
-  --font-display: "Clash Display", sans-serif;
+  --font-heading: "Outfit", 'Outfit Fallback', sans-serif;
+  --font-display: "Clash Display", 'Clash Display Fallback', sans-serif;
   --font-pixel: "Doto", sans-serif;
   --font-accent: "Dancing Script", cursive;
   --font-description: "Square Peg", cursive;

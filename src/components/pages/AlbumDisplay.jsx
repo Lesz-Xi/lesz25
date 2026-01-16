@@ -74,7 +74,7 @@ const AlbumDisplay = () => {
         heroTitle: "Up there, everything slows down. It's not dramatic—it's just quiet. And that quiet felt like peace.",
         location: "Zug, Switzerland",
         year: "2022",
-        image: "/images/switz-new-feat.jpg",
+        image: "/images/switz-new-feat.webp",
         description: "Capturing the vibrant life, culture, and diversity of the alpine landscape through a collaborative travel photography project. The aim was to document the silent majesty of the peaks."
     },
     {
@@ -83,7 +83,7 @@ const AlbumDisplay = () => {
         heroTitle: "The streets felt alive, like the city was telling me its story. I was just there to listen and take pictures.",
         location: "Paris, France",
         year: "2022",
-        image: "/images/feat-paris.jpg",
+        image: "/images/feat-paris.webp",
         description: "Exploring the romantic streets and hidden corners of Paris, chasing light and shadow across the historic architecture."
     },
     {
@@ -92,7 +92,7 @@ const AlbumDisplay = () => {
         heroTitle: "There's something humbling about standing in front of a tree that's been here longer than you'll ever be.",
         location: "Collections",
         year: "2022",
-        image: "/images/nature-feat.jpg",
+        image: "/images/nature-feat.webp",
         description: "A deep dive into the untouched wilderness, listening to the stories told by the ancient trees and misty mornings."
     },
     {
@@ -101,7 +101,7 @@ const AlbumDisplay = () => {
         heroTitle: "Woke up too early, stayed out too late. Somewhere in between, the sky did something I'll never forget.",
         location: "Davao City, Philippines",
         year: "2025",
-        image: "/images/sunset-new-feat.jpg",
+        image: "/images/sunset-new-feat.webp",
         description: "Capturing the rhythmic dance of the ocean, the serene blues, and the isolation of island life."
     },
     {
@@ -110,7 +110,7 @@ const AlbumDisplay = () => {
         heroTitle: "Home isn't just a place. It's the noise, the heat, the chaos—and somehow, I wouldn't have it any other way.",
         location: "Davao City, Philippines",
         year: "2025",
-        image: "/images/ph-feat.jpg",
+        image: "/images/ph-feat.webp",
         description: "A visual tapestry of Davao: from the pulse of the night markets and urban geometry to the serene breath of the coast. Documenting the soul of the city through its people and architecture."
     },
     {
@@ -119,7 +119,7 @@ const AlbumDisplay = () => {
         heroTitle: "Stopped to actually look at a flower for once. Turns out, they've been putting on a show this whole time.",
         location: "Botanical Garden",
         year: "2025",
-        image: "/images/flowers-feat.jpg",
+        image: "/images/flowers-feat.webp",
         description: "A showcase of floral elegance, capturing the delicate textures and vibrant colors of nature's finest details."
     }
   ];
@@ -247,10 +247,10 @@ const AlbumDisplay = () => {
                 ? 'aspect-[2/3] md:aspect-[3/4] max-w-2xl mx-auto' 
                 : 'aspect-[5/4]'
             }`}
-            onClick={() => setSelectedImage(currentGallery[0]?.src || "/images/project1.png")}
+            onClick={() => setSelectedImage(currentGallery[0]?.src || "/images/project1.webp")}
         >
             <img 
-                src={currentGallery[0]?.src || "/images/project1.png"} 
+                src={currentGallery[0]?.src || "/images/project1.webp"} 
                 alt={currentGallery[0]?.title || "Gallery"} 
                 loading="lazy"
                 decoding="async"
@@ -266,16 +266,16 @@ const AlbumDisplay = () => {
         <div className="gallery-portrait-row grid grid-cols-2 gap-16">
             <div 
                 className="gallery-portrait group relative aspect-[2/3] md:aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer"
-                onClick={() => setSelectedImage(currentGallery[1]?.src || "/images/project1.png")}
+                onClick={() => setSelectedImage(currentGallery[1]?.src || "/images/project1.webp")}
             >
-                <img src={currentGallery[1]?.src || "/images/project1.png"} alt={currentGallery[1]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                <img src={currentGallery[1]?.src || "/images/project1.webp"} alt={currentGallery[1]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
 
             </div>
             <div 
                 className="gallery-portrait group relative aspect-[2/3] md:aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer"
-                onClick={() => setSelectedImage(currentGallery[2]?.src || "/images/project1.png")}
+                onClick={() => setSelectedImage(currentGallery[2]?.src || "/images/project1.webp")}
             >
-                <img src={currentGallery[2]?.src || "/images/project1.png"} alt={currentGallery[2]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                <img src={currentGallery[2]?.src || "/images/project1.webp"} alt={currentGallery[2]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
 
             </div>
         </div>
@@ -283,9 +283,9 @@ const AlbumDisplay = () => {
         {/* Row 3: Landscape */}
         <div 
             className="gallery-landscape group relative aspect-[5/4] rounded-2xl overflow-hidden cursor-pointer"
-            onClick={() => setSelectedImage(currentGallery[3]?.src || "/images/project1.png")}
+            onClick={() => setSelectedImage(currentGallery[3]?.src || "/images/project1.webp")}
         >
-            <img src={currentGallery[3]?.src || "/images/project1.png"} alt={currentGallery[3]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+            <img src={currentGallery[3]?.src || "/images/project1.webp"} alt={currentGallery[3]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
 
         </div>
 
@@ -293,16 +293,16 @@ const AlbumDisplay = () => {
         <div className="gallery-portrait-row grid grid-cols-2 gap-16 items-start">
             <div 
                 className="gallery-portrait group relative aspect-[2/3] md:aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer"
-                onClick={() => setSelectedImage(currentGallery[4]?.src || "/images/project1.png")}
+                onClick={() => setSelectedImage(currentGallery[4]?.src || "/images/project1.webp")}
             >
-                <img src={currentGallery[4]?.src || "/images/project1.png"} alt={currentGallery[4]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                <img src={currentGallery[4]?.src || "/images/project1.webp"} alt={currentGallery[4]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
 
             </div>
             <div 
                 className="gallery-portrait group relative aspect-[2/3] md:aspect-[3/4] rounded-2xl overflow-hidden mt-32 cursor-pointer"
-                onClick={() => setSelectedImage(currentGallery[5]?.src || "/images/project1.png")}
+                onClick={() => setSelectedImage(currentGallery[5]?.src || "/images/project1.webp")}
             >
-                <img src={currentGallery[5]?.src || "/images/project1.png"} alt={currentGallery[5]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                <img src={currentGallery[5]?.src || "/images/project1.webp"} alt={currentGallery[5]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
 
             </div>
         </div>
@@ -311,16 +311,16 @@ const AlbumDisplay = () => {
         <div className="gallery-portrait-row grid grid-cols-2 gap-16 items-start">
             <div 
                 className="gallery-portrait group relative aspect-[2/3] md:aspect-[3/4] rounded-2xl overflow-hidden mt-32 cursor-pointer"
-                onClick={() => setSelectedImage(currentGallery[6]?.src || "/images/project1.png")}
+                onClick={() => setSelectedImage(currentGallery[6]?.src || "/images/project1.webp")}
             >
-                <img src={currentGallery[6]?.src || "/images/project1.png"} alt={currentGallery[6]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                <img src={currentGallery[6]?.src || "/images/project1.webp"} alt={currentGallery[6]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
 
             </div>
             <div 
                 className="gallery-portrait group relative aspect-[2/3] md:aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer"
-                onClick={() => setSelectedImage(currentGallery[7]?.src || "/images/project1.png")}
+                onClick={() => setSelectedImage(currentGallery[7]?.src || "/images/project1.webp")}
             >
-                <img src={currentGallery[7]?.src || "/images/project1.png"} alt={currentGallery[7]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                <img src={currentGallery[7]?.src || "/images/project1.webp"} alt={currentGallery[7]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
 
             </div>
         </div>
@@ -328,9 +328,9 @@ const AlbumDisplay = () => {
         {/* Row 6: Landscape */}
         <div 
             className="gallery-landscape group relative aspect-[2/3] md:aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer max-w-2xl mx-auto"
-            onClick={() => setSelectedImage(currentGallery[8]?.src || "/images/project1.png")}
+            onClick={() => setSelectedImage(currentGallery[8]?.src || "/images/project1.webp")}
         >
-            <img src={currentGallery[8]?.src || "/images/project1.png"} alt={currentGallery[8]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+            <img src={currentGallery[8]?.src || "/images/project1.webp"} alt={currentGallery[8]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
 
         </div>
 
@@ -338,16 +338,16 @@ const AlbumDisplay = () => {
         <div className="gallery-portrait-row grid grid-cols-2 gap-16">
             <div 
                 className="gallery-portrait group relative aspect-[2/3] md:aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer"
-                onClick={() => setSelectedImage(currentGallery[9]?.src || "/images/project1.png")}
+                onClick={() => setSelectedImage(currentGallery[9]?.src || "/images/project1.webp")}
             >
-                <img src={currentGallery[9]?.src || "/images/project1.png"} alt={currentGallery[9]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                <img src={currentGallery[9]?.src || "/images/project1.webp"} alt={currentGallery[9]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
 
             </div>
             <div 
                 className="gallery-portrait group relative aspect-[2/3] md:aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer"
-                onClick={() => setSelectedImage(currentGallery[10]?.src || "/images/project1.png")}
+                onClick={() => setSelectedImage(currentGallery[10]?.src || "/images/project1.webp")}
             >
-                <img src={currentGallery[10]?.src || "/images/project1.png"} alt={currentGallery[10]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                <img src={currentGallery[10]?.src || "/images/project1.webp"} alt={currentGallery[10]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
 
             </div>
         </div>
@@ -355,9 +355,9 @@ const AlbumDisplay = () => {
         {/* Row 8: Landscape */}
         <div 
             className="gallery-landscape group relative aspect-[2/3] md:aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer max-w-2xl mx-auto"
-            onClick={() => setSelectedImage(currentGallery[11]?.src || "/images/project1.png")}
+            onClick={() => setSelectedImage(currentGallery[11]?.src || "/images/project1.webp")}
         >
-            <img src={currentGallery[11]?.src || "/images/project1.png"} alt={currentGallery[11]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+            <img src={currentGallery[11]?.src || "/images/project1.webp"} alt={currentGallery[11]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
 
         </div>
 

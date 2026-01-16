@@ -9,7 +9,7 @@ const PhotographySection = () => {
   const photos = [
     {
       id: 1,
-      url: "/images/switz-new-feat.jpg",
+      url: "/images/switz-new-feat.webp",
       title: "Alps",
       location: "ZUG, SWITZERLAND",
       year: "2022",
@@ -19,7 +19,7 @@ const PhotographySection = () => {
     },
     {
       id: 2,
-      url: "/images/feat-paris.jpg",
+      url: "/images/feat-paris.webp",
       title: "City of Lights",
       location: "PARIS, FRANCE",
       year: "2022",
@@ -29,7 +29,7 @@ const PhotographySection = () => {
     },
     {
       id: 3,
-      url: "/images/nature-feat.jpg",
+      url: "/images/nature-feat.webp",
       title: "Nature",
       location: "COLLECTIONS",
       year: "2022",
@@ -39,7 +39,7 @@ const PhotographySection = () => {
     },
     {
       id: 4,
-      url: "/images/sunset-new-feat.jpg",
+      url: "/images/sunset-new-feat.webp",
       title: "Sunrise & Sunset",
       location: "COLLECTIONS",
       year: "2025",
@@ -49,7 +49,7 @@ const PhotographySection = () => {
     },
     {
       id: 5,
-      url: "/images/ph-feat.jpg",
+      url: "/images/ph-feat.webp",
       title: "Philippines",
       location: "DAVAO CITY",
       year: "2025",
@@ -59,7 +59,7 @@ const PhotographySection = () => {
     },
     {
       id: 7,
-      url: "/images/flowers-feat.jpg",
+      url: "/images/flowers-feat.webp",
       title: "Flowers",
       location: "COLLECTIONS",
       year: "2025",
