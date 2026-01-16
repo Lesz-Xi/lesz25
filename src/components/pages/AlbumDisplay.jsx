@@ -282,7 +282,7 @@ const AlbumDisplay = () => {
 
         {/* Row 3: Landscape */}
         <div 
-            className="gallery-landscape group relative aspect-[3/2] md:aspect-[21/9] rounded-2xl overflow-hidden cursor-pointer"
+            className="gallery-landscape group relative aspect-[5/4] rounded-2xl overflow-hidden cursor-pointer"
             onClick={() => setSelectedImage(currentGallery[3]?.src || "/images/project1.png")}
         >
             <img src={currentGallery[3]?.src || "/images/project1.png"} alt={currentGallery[3]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
