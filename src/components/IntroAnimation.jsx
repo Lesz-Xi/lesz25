@@ -6,9 +6,9 @@ const IntroAnimation = ({ onComplete }) => {
   const [isExiting, setIsExiting] = useState(false);
 
   useEffect(() => {
-    // Faster loading on mobile to reduce TBT (Total Blocking Time)
-    const isMobile = window.innerWidth < 768;
-    const increment = isMobile ? 5 : 1;
+    // Unified timing for consistent UX across devices
+    // Duration: 100/2 * 30ms = 1500ms loading time
+    const increment = 2; 
     const intervalTime = 30;
 
     // Simulate loading progress
@@ -16,10 +16,10 @@ const IntroAnimation = ({ onComplete }) => {
       setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
-          setTimeout(() => setIsExiting(true), isMobile ? 500 : 1000); // Faster exit on mobile
+          setTimeout(() => setIsExiting(true), 500); // Reduced delay to strictly meet LCP < 2.5s
           return 100;
         }
-        // Ensure we don't overshoot 100 oddly if we change step
+        // Ensure we don't overshoot 100
         return Math.min(prev + increment, 100);
       });
     }, intervalTime);
