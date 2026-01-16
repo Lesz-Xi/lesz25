@@ -1,9 +1,11 @@
-import React, { useState, Suspense, useEffect, lazy, useCallback } from "react";
+import React, { useState, Suspense, useEffect, useCallback } from "react";
 import Button from "../Button";
+import { lazyWithRetry } from "../../utils/lazyWithRetry";
+import ErrorBoundary from "../ErrorBoundary";
 
-// Lazy load components
-const HeroExperience = lazy(() => import("../HeroModels/HeroExperience"));
-const Threads = lazy(() => import("../Threads"));
+// Lazy load components with retry logic
+const HeroExperience = lazyWithRetry(() => import("../HeroModels/HeroExperience"));
+const Threads = lazyWithRetry(() => import("../Threads"));
 
 import AnimatedGreeting from "../AnimatedGreeting";
 import ScrollIndicator from "../ScrollIndicator";
@@ -105,14 +107,16 @@ const Hero = () => {
             {/* Threads component - fixed height prevents CLS, deferred load */}
             <div className="w-screen h-[400px] min-h-[400px] -mt-12 -ml-5 md:-ml-20 relative mix-blend-screen pointer-events-none">
               {isDesktop && (
-                <Suspense fallback={null}>
-                  <Threads
-                    amplitude={2.5}
-                    distance={1}
-                    enableMouseInteraction={false}
-                    color={threadsColor}
-                  />
-                </Suspense>
+                <ErrorBoundary>
+                  <Suspense fallback={null}>
+                    <Threads
+                      amplitude={2.5}
+                      distance={1}
+                      enableMouseInteraction={false}
+                      color={threadsColor}
+                    />
+                  </Suspense>
+                </ErrorBoundary>
               )}
             </div>
           </div>
@@ -131,9 +135,11 @@ const Hero = () => {
         {isDesktop && (
           <figure className="hidden md:block">
             <div className="hero-3d-layout">
-              <Suspense fallback={null}>
-                <HeroExperience />
-              </Suspense>
+              <ErrorBoundary>
+                <Suspense fallback={null}>
+                  <HeroExperience />
+                </Suspense>
+              </ErrorBoundary>
             </div>
           </figure>
         )}
