@@ -123,7 +123,7 @@ const PhotographySection = () => {
   };
 
   return (
-    <section id="photography" ref={containerRef} className="py-32 text-[#DBD5B5]" style={{ backgroundColor: "#070707" }}>
+    <section id="photography" ref={containerRef} className="py-16 md:py-32 text-[#DBD5B5]" style={{ backgroundColor: "#070707" }}>
       <div className="max-w-[1400px] mx-auto px-6 md:px-12">
         
         {/* Header */}

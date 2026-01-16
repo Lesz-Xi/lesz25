@@ -78,7 +78,7 @@ const ProjectCarousel = () => {
     <section 
       id="projects" 
       ref={containerRef} 
-      className="relative w-full bg-[#070707] py-20"
+      className="relative w-full bg-[#070707] py-12 md:py-20"
     >
       {/* Header */}
       <div className="text-center w-full px-4 mb-20 md:mb-32">
@@ -91,7 +91,7 @@ const ProjectCarousel = () => {
       </div>
 
       {/* Cards Scroll Container */}
-      <div ref={wrapperRef} className="w-full flex flex-col items-center gap-12 md:gap-0 pb-20">
+      <div ref={wrapperRef} className="w-full flex flex-col items-center gap-8 md:gap-0 pb-0 md:pb-20">
         {projects.map((project, index) => (
           <div 
             key={project.id}
