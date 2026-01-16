@@ -245,7 +245,7 @@ const AlbumDisplay = () => {
             className={`gallery-feature group relative rounded-2xl overflow-hidden cursor-pointer ${
                 currentGallery[0]?.type === 'portrait' 
                 ? 'aspect-[2/3] md:aspect-[3/4] max-w-2xl mx-auto' 
-                : 'aspect-[3/2] md:aspect-[21/9]'
+                : 'aspect-[5/4]'
             }`}
             onClick={() => setSelectedImage(currentGallery[0]?.src || "/images/project1.png")}
         >
@@ -327,7 +327,7 @@ const AlbumDisplay = () => {
 
         {/* Row 6: Landscape */}
         <div 
-            className="gallery-landscape group relative aspect-[3/2] md:aspect-[21/9] rounded-2xl overflow-hidden cursor-pointer"
+            className="gallery-landscape group relative aspect-[2/3] md:aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer max-w-2xl mx-auto"
             onClick={() => setSelectedImage(currentGallery[8]?.src || "/images/project1.png")}
         >
             <img src={currentGallery[8]?.src || "/images/project1.png"} alt={currentGallery[8]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
@@ -354,7 +354,7 @@ const AlbumDisplay = () => {
 
         {/* Row 8: Landscape */}
         <div 
-            className="gallery-landscape group relative aspect-[3/2] md:aspect-[21/9] rounded-2xl overflow-hidden cursor-pointer"
+            className="gallery-landscape group relative aspect-[2/3] md:aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer max-w-2xl mx-auto"
             onClick={() => setSelectedImage(currentGallery[11]?.src || "/images/project1.png")}
         >
             <img src={currentGallery[11]?.src || "/images/project1.png"} alt={currentGallery[11]?.title || "Gallery"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
