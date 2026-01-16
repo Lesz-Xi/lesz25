@@ -100,6 +100,9 @@ const CareerSection = () => {
   return (
     <section id="career" ref={containerRef} className="py-20 md:py-32 relative overflow-hidden" style={{ backgroundColor: "#070707" }}>
         
+        {/* Noise Pattern Overlay */}
+        <div className="absolute inset-0 pointer-events-none opacity-[0.04] bg-noise-pattern z-0"></div>
+
         {/* Background Decorative Line for Timeline */}
         <div className="absolute left-[20px] md:left-1/2 top-0 bottom-0 w-px bg-neutral-200 transform md:-translate-x-1/2 h-full z-0"></div>
         <div ref={lineRef} className="absolute left-[20px] md:left-1/2 top-0 bottom-0 w-1 bg-[#8B7E66] transform md:-translate-x-1/2 h-full z-0 origin-top"></div>
@@ -139,8 +142,10 @@ const CareerSection = () => {
                     )}
                  </div>
 
-                 {/* Center Dot */}
-                 <div className="absolute left-[20px] md:left-1/2 -ml-[6px] top-0 md:top-2 w-3 h-3 bg-[#070707] border border-[#8B7E66] rounded-full z-10 timeline-dot transform scale-0 md:scale-100 md:opacity-0"></div>
+                 {/* Center Dot with Magnetic Effect */}
+                 <div className="absolute left-[20px] md:left-1/2 -ml-[15px] top-0 md:top-2 z-10 timeline-dot transform scale-0 md:scale-100 md:opacity-0 flex items-center justify-center w-[30px] h-[30px] cursor-none">
+                    <div className="magnet-target w-3 h-3 bg-[#070707] border border-[#8B7E66] rounded-full transition-transform duration-300 ease-out hover:scale-150 hover:bg-[#8B7E66]"></div>
+                 </div>
 
                  {/* Half Width Container 2 */}
                  <div className={`w-full pl-16 md:pl-0 md:w-1/2 text-left ${index % 2 === 0 ? 'md:pl-12 md:text-left' : 'md:pr-12 md:text-right'}`}>
