@@ -91,11 +91,11 @@ const ProjectCarousel = () => {
       </div>
 
       {/* Cards Scroll Container */}
-      <div ref={wrapperRef} className="w-full flex flex-col items-center pb-40">
+      <div ref={wrapperRef} className="w-full flex flex-col items-center gap-12 md:gap-0 pb-40">
         {projects.map((project, index) => (
           <div 
             key={project.id}
-            className="w-full min-h-[400px] md:min-h-[90vh] flex items-center md:items-start justify-center"
+            className="w-full md:min-h-[90vh] flex items-center md:items-start justify-center"
           >
             <div
               className="project-card relative md:sticky md:top-32 w-[90vw] md:w-[1000px] h-auto md:h-[600px] flex flex-col md:flex-row rounded-3xl overflow-hidden shadow-2xl origin-top will-change-transform"
