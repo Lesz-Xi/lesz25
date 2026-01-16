@@ -13,7 +13,7 @@ const ShowcaseSection = () => {
           {/* Main Image Container */}
           <div className="relative z-10 w-full aspect-[4/5] bg-gray-200 overflow-hidden shadow-2xl">
              <img 
-               src="/images/leszport.jpg" 
+               src="/images/leszport.webp" 
                alt="Rhine Tague Portrait" 
                className="w-full h-full object-cover grayscale contrast-110"
                loading="eager"
