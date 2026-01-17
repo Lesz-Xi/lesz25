@@ -25,7 +25,7 @@ const RoleShowcase = () => {
       scrollTrigger: {
         trigger: containerRef.current,
         start: "top top",
-        end: "+=400%", // Reduced from 500% to fix "scrolling thrice" issue
+        end: "+=300%", // Reduced to 300% to aggressively fix "scrolling thrice"
         scrub: 0.5,    // Reduced from 1.5 for snappier response
         pin: true,
       }
