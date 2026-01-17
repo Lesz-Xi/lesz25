@@ -32,6 +32,13 @@ const CareerSection = () => {
       showDot: true,
     },
     {
+      title: "HIV Research Publication",
+      period: "2025",
+      description:
+        "Published 'The Entropic Vise' on Zenodo—an interdisciplinary exploration of HIV/AIDS through thermodynamic and information-theoretic perspectives, proposing dual-mechanism therapeutic strategies.",
+      showDot: true,
+    },
+    {
       title: "Independent Practice",
       period: "Present",
       description:

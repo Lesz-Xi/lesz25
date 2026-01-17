@@ -138,14 +138,12 @@ const ProjectCarousel = () => {
                      href={project.link} 
                      target="_blank" 
                      rel="noopener noreferrer" 
-                     className="group/btn inline-flex items-center gap-3 text-sm font-display font-medium text-white hover:text-[#DBD5B5] transition-colors"
+                     className="group/btn inline-flex items-center gap-3 px-7 py-3.5 rounded-full bg-gradient-to-r from-[#8B7E66] to-[#9d8f75] text-white text-sm font-display tracking-wide hover:shadow-lg hover:shadow-[#8B7E66]/20 hover:scale-[1.02] transition-all duration-300 transform origin-left"
                    >
-                      <span className="uppercase tracking-widest">View Project</span>
-                      <span className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center group-hover/btn:border-[#DBD5B5] group-hover/btn:bg-[#DBD5B5]/10 transition-all">
-                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                        </svg>
-                      </span>
+                      <span>View Project</span>
+                      <svg className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                      </svg>
                    </a>
                  </div>
               </div>
