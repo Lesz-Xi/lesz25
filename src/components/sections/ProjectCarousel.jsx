@@ -29,7 +29,7 @@ const ProjectCarousel = () => {
       title: "SkillShift",
       category: "Coaching Platform",
       image: "/images/projects/skillshift-v3.webp",
-      link: "https://skillshift.vercel.app/",
+      link: null,
       description: "Professional coaching marketplace and scheduling platform."
     }
   ];
