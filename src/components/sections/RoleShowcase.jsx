@@ -183,6 +183,12 @@ const RoleShowcase = () => {
 
     // Fade in SVG container
     researcherTl.fromTo(researcherSvg, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3 }, 0);
+    
+    // Zoom into DNA structure - tunnel entry effect (flying through the helix)
+    researcherTl.fromTo(researcherSvg, 
+        { scale: 1 }, 
+        { scale: 2.5, transformOrigin: "center center", duration: 2, ease: "power1.in" }, 
+    0);
 
     // 6.5->7.5: Molecular Network Assembly
     // 6.5->7.5: DNA Helix 3D Rotation
