@@ -7,6 +7,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const ProjectCarousel = () => {
   const containerRef = useRef(null);
+  const wrapperRef = useRef(null);
   
   const projects = [
     {
@@ -19,15 +20,6 @@ const ProjectCarousel = () => {
       fit: "contain"
     },
     {
-      id: 3,
-      title: "Universe Splitter",
-      category: "Quantum Experiment",
-      image: "/images/projects/universe-splitter.webp",
-      color: "#000000",
-      link: "https://univ-spitter.vercel.app/",
-      fit: "contain"
-    },
-    {
       id: 2,
       title: "SkillShift",
       category: "Coaching Platform",
@@ -35,24 +27,37 @@ const ProjectCarousel = () => {
       color: "#111111",
       link: "https://skillshift.vercel.app/",
       fit: "contain"
+    },
+    {
+      id: 3,
+      title: "Universe Splitter",
+      category: "Quantum Experiment",
+      image: "/images/projects/universe-splitter.webp",
+      color: "#000000",
+      link: "https://univ-spitter.vercel.app/",
+      fit: "contain"
     }
   ];
 
   useGSAP(() => {
+    // Only run on desktop/larger screens where sticky effects make sense
+    // On mobile, native scrolling is usually better UX
     let mm = gsap.matchMedia();
     
-    // DESKTOP: Fan Deck Interaction (Cinematic Spacing)
+    // DESKTOP: Fan Deck Interaction (Symmetric Glass Fan)
     mm.add("(min-width: 769px)", () => {
       const cards = gsap.utils.toArray(".project-card");
       
-      // 1. Initial State - "Cinematic" Panorama
-      // Wide horizontal distribution with subtle arc
-      // Heavy overlap (50%) but distinct separation
+      // 1. Initial State - "Symmetric Fan" with Glass Style
+      // Layout: \ | / (Victory Fan)
+      // Left: Rotated Left (-12deg)
+      // Center: Straight (0deg)
+      // Right: Rotated Right (12deg)
       
       const layouts = [
-        { rotation: -5, xPercent: -85, yPercent: -45, zIndex: 1 },  // Left
-        { rotation: 0, xPercent: -50, yPercent: -45, zIndex: 2 },   // Center
-        { rotation: 5, xPercent: -15, yPercent: -45, zIndex: 1 }    // Right
+        { rotation: -12, xPercent: -85, yPercent: -45, zIndex: 1 },  // Left (\)
+        { rotation: 0, xPercent: -50, yPercent: -45, zIndex: 2 },    // Center (|)
+        { rotation: 12, xPercent: -15, yPercent: -45, zIndex: 1 }    // Right (/)
       ];
 
       gsap.set(cards, {
@@ -72,61 +77,47 @@ const ProjectCarousel = () => {
           yPercent: layout.yPercent,
           scale: 0.9,
           zIndex: layout.zIndex,
-          filter: "brightness(0.5)",
+          filter: "brightness(0.5) contrast(1.1)", // High contrast for glass look
           duration: 1.2,
           ease: "power3.out"
         });
 
-        // Hover Interaction - Stable & Subtle
+        // Hover Interaction - Straighten & Lift (Stable Position)
         card.addEventListener("mouseenter", () => {
           gsap.to(card, {
-            scale: 1.05,            // Subtle lift
+            rotation: 0,            // Straighten the card to read
+            scale: 1.05,            // Lift
             zIndex: 100,            // Bring to front
-            filter: "brightness(1)",// Highlight
-            duration: 0.4,
-            ease: "power2.out"
+            filter: "brightness(1) contrast(1)", // Full visibility
+            duration: 0.5,
+            ease: "back.out(1.2)"
           });
 
-          // Siblings: Fade slightly
+          // Siblings: Fade background
           cards.filter(c => c !== card).forEach(sibling => {
             gsap.to(sibling, {
-              scale: 0.9,
-              filter: "brightness(0.3)",
+              scale: 0.85,
+              filter: "brightness(0.3) blur(2px)", // Blur siblings for focus
               duration: 0.4
             });
           });
         });
 
         card.addEventListener("mouseleave", () => {
-          // Reset to Cinematic Layout
+          // Reset to Fan Layout
           cards.forEach((c, index) => {
              const l = layouts[index];
              
              gsap.to(c, {
+                rotation: l.rotation, // Rotate back
                 scale: 0.9,
                 zIndex: l.zIndex,
-                filter: "brightness(0.5)", // Back to cinematic dark
-                duration: 0.6,
-                ease: "power2.out"
+                filter: "brightness(0.5) contrast(1.1)", 
+                duration: 0.8,
+                ease: "power3.out"
              });
           });
         });
-      });
-    });
-
-    // MOBILE: Reset to standard flow
-    mm.add("(max-width: 768px)", () => {
-      gsap.set(".project-card", {
-        position: "relative",
-        top: "auto",
-        left: "auto",
-        xPercent: 0,
-        yPercent: 0,
-        rotation: 0,
-        scale: 1,
-        filter: "brightness(1)",
-        zIndex: "auto",
-        transformOrigin: "center center"
       });
     });
     
@@ -136,15 +127,11 @@ const ProjectCarousel = () => {
     <section 
       id="projects" 
       ref={containerRef} 
-      className="relative w-full py-12 md:py-20 md:h-screen md:overflow-hidden flex flex-col"
-      style={{ backgroundColor: "#070707" }}
+      className="relative w-full bg-[#070707] py-12 md:py-20"
     >
-      {/* Noise Pattern Overlay */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.04] bg-noise-pattern z-0"></div>
-
       {/* Header */}
-      <div className="text-center w-full px-4 mb-16 md:mb-12 z-10 relative">
-         <span className="text-xs font-bold tracking-[0.25em] text-[#DBD5B5]/40 uppercase mb-2 block">
+      <div className="text-center w-full px-4 mb-20 md:mb-32">
+         <span className="text-xs font-bold tracking-[0.2em] text-[#DBD5B5]/40 uppercase mb-2 block">
             Selected Work
           </span>
           <h2 className="text-2xl md:text-6xl font-bold font-accent text-[#8B7E66]">
@@ -152,17 +139,21 @@ const ProjectCarousel = () => {
           </h2>
       </div>
 
-      {/* Cards Container */}
-      {/* Mobile: Vertical Flex | Desktop: Center Stage */}
-      <div className="w-full flex-1 flex flex-col md:block relative px-4 md:px-0 gap-8 md:gap-0">
+      {/* Cards Scroll Container */}
+      <div ref={wrapperRef} className="w-full flex flex-col items-center gap-8 md:gap-0 pb-0 md:pb-20">
         {projects.map((project, index) => (
+          <div 
+            key={project.id}
+            className="w-full md:min-h-[90vh] last:md:min-h-0 flex items-center md:items-start justify-center"
+          >
             <div
-              key={project.id}
-              className="project-card w-full md:w-[55vw] md:max-w-[800px] aspect-[4/5] md:aspect-video flex flex-col md:flex-row rounded-2xl md:rounded-3xl overflow-hidden border-2 border-white/5 shadow-[0_8px_32px_rgba(0,0,0,0.4),0_0_0_1px_rgba(139,126,102,0.1)] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4),0_0_40px_rgba(139,126,102,0.3)] transition-shadow duration-500 bg-[#1C1C21]"
+              className="project-card w-full md:w-[55vw] md:max-w-[800px] aspect-[4/5] md:aspect-video flex flex-col md:flex-row rounded-2xl md:rounded-3xl overflow-hidden border-2 border-white/5 hover:border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4),0_0_0_1px_rgba(139,126,102,0.1)] transition-shadow duration-500 bg-transparent backdrop-blur-sm"
+              style={{ 
+                zIndex: index + 1, 
+              }}
             >
-              {/* Image Section */}
               <div 
-                className="w-full md:w-2/3 h-1/2 md:h-full relative overflow-hidden bg-black"
+                className="w-full md:w-2/3 aspect-[4/3] md:aspect-auto md:h-full relative overflow-hidden"
                 style={{ backgroundColor: project.color }}
               >
                  <img 
@@ -170,45 +161,45 @@ const ProjectCarousel = () => {
                    srcSet={`${project.image.replace('.webp', '-mobile.webp')} 600w, ${project.image} 1200w`}
                    sizes="(max-width: 768px) 100vw, 800px"
                    alt={project.title}
-                   className="w-full h-full object-center transition-transform duration-700 md:group-hover:scale-105"
+                   className="w-full h-full object-center transition-transform duration-700 hover:scale-105"
                    style={{ objectFit: project.fit || "contain" }}
                    decoding="async"
                    loading="lazy"
                  />
               </div>
 
-              {/* Content Section */}
+              {/* Content Section (Glassmorphic) */}
               <div 
-                className="w-full md:w-1/3 h-1/2 md:h-full p-6 md:p-10 flex flex-col justify-between border-l border-white/5 relative z-20"
-                style={{ background: "linear-gradient(135deg, #1C1C21 0%, #151519 100%)" }}
+                className="w-full md:w-1/3 h-1/2 md:h-full p-6 md:p-10 flex flex-col justify-between border-l border-white/5 relative z-20 bg-white/5 backdrop-blur-2xl"
               >
-                 <div className="flex flex-col gap-3">
-                   <span className="text-[10px] md:text-xs font-bold tracking-[0.25em] text-[#8B7E66] uppercase">
+                 <div className="flex flex-col gap-2">
+                   <span className="text-[10px] md:text-xs font-bold tracking-widest text-[#8B7E66] uppercase">
                       {project.category}
                    </span>
-                   <h3 className="text-2xl md:text-3xl font-serif font-bold text-[#DBD5B5] leading-tight" style={{ letterSpacing: "-0.02em" }}>
+                   <h3 className="text-2xl md:text-4xl font-serif font-bold text-[#DBD5B5] leading-tight">
                       {project.title}
                    </h3>
-                   <p className="text-white/60 text-sm mt-2 leading-loose">
+                   <p className="text-white/60 text-sm md:text-base mt-2 line-clamp-3">
                      A premium digital experience crafted with precision and attention to detail.
                    </p>
                  </div>
                  
-                 <div className="flex items-center justify-between mt-auto pt-6 border-t border-white/10">
+                 <div className="flex items-center justify-between mt-auto pt-6 border-t border-white/5">
                    <a 
                      href={project.link} 
                      target="_blank" 
                      rel="noopener noreferrer" 
-                     className="group/btn inline-flex items-center gap-3 px-6 py-3 rounded-full bg-gradient-to-r from-[#8B7E66] to-[#9d8f75] text-white text-xs md:text-sm font-display tracking-wide hover:shadow-lg hover:shadow-[#8B7E66]/30 hover:scale-[1.02] transition-all duration-300 transform origin-left pointer-events-auto"
+                     className="group/btn inline-flex items-center gap-3 px-7 py-3.5 rounded-full bg-gradient-to-r from-[#8B7E66] to-[#9d8f75] text-white text-sm font-display tracking-wide hover:shadow-lg hover:shadow-[#8B7E66]/20 hover:scale-[1.02] transition-all duration-300 transform origin-left"
                    >
                       <span>View Project</span>
-                      <svg className="w-3 h-3 md:w-4 md:h-4 transition-transform group-hover/btn:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <svg className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                       </svg>
                    </a>
                  </div>
               </div>
             </div>
+          </div>
         ))}
       </div>
     </section>
