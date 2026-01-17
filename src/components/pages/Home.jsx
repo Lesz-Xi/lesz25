@@ -6,6 +6,7 @@ import CareerSection from "../sections/CareerSection";
 import ContactSection from "../sections/ContactSection";
 import RoleShowcase from "../sections/RoleShowcase";
 import ProjectCarousel from "../sections/ProjectCarousel";
+import ResearchSection from "../sections/ResearchSection";
 import PhotographySection from "../sections/PhotographySection";
 import ServicesSection from "../sections/ServicesSection";
 import Footer from "../Footer";
@@ -24,6 +25,8 @@ const Home = () => {
       </div>
 
       <ProjectCarousel />
+
+      <ResearchSection />
 
       <PhotographySection />
       
