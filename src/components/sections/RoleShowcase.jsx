@@ -407,12 +407,11 @@ const RoleShowcase = () => {
              </svg>
         </div>
 
-      <div ref={contentRef} className="relative z-10 w-full h-full flex items-center justify-center transform-gpu will-change-transform">
+      <div ref={contentRef} className="relative z-10 w-full h-full grid place-items-center transform-gpu will-change-transform">
         
-        {/* Roles positioned absolutely in center */}
+        {/* Roles positioned via Grid Stacking (Row 1 / Col 1) */}
         {/* Role 1 */}
-        {/* Role 1 */}
-        <div className="role-item absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
+        <div className="role-item col-start-1 row-start-1 text-center">
             <h2 className="text-[10vw] md:text-[12vw] leading-none font-bold font-pixel tracking-tighter uppercase text-[#DBD5B5] whitespace-nowrap">
                 {"DEVELOPER".split("").map((char, index) => (
                     <span key={index} className="developer-char inline-block opacity-30">
@@ -423,14 +422,14 @@ const RoleShowcase = () => {
         </div>
 
         {/* Role 2 */}
-        <div className="role-item absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center opacity-0">
+        <div className="role-item col-start-1 row-start-1 text-center opacity-0">
             <h2 className="text-[8vw] md:text-[12vw] leading-none font-bold font-pixel tracking-tighter uppercase text-[#DBD5B5] whitespace-nowrap">
                 Photographer
             </h2>
         </div>
 
         {/* Role 3 */}
-        <div className="role-item absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center opacity-0 flex flex-col items-center justify-center">
+        <div className="role-item col-start-1 row-start-1 text-center opacity-0 flex flex-col items-center justify-center">
             <h2 className="text-[11vw] md:text-[12vw] leading-none font-bold font-pixel tracking-tighter uppercase text-[#C7B580] whitespace-nowrap z-10 relative">
                 {"DESIGNER".split("").map((char, index) => (
                     <span key={index} className="designer-char inline-block opacity-30">
@@ -441,7 +440,7 @@ const RoleShowcase = () => {
         </div>
 
         {/* Role 4: Researcher */}
-        <div className="role-item absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center opacity-0">
+        <div className="role-item col-start-1 row-start-1 text-center opacity-0">
             <h2 className="text-[9vw] md:text-[12vw] leading-none font-bold font-pixel tracking-tighter uppercase text-[#C7B580] whitespace-nowrap z-10 relative">
                 {"RESEARCHER".split("").map((char, index) => (
                     <span key={index} className="researcher-char inline-block opacity-30">
