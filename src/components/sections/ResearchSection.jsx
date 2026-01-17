@@ -181,10 +181,10 @@ const ResearchSection = () => {
                   href={`https://doi.org/${publication.doi}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-blue-500/10 border border-blue-500/20 hover:bg-blue-500/20 transition-colors"
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-[#8B7E66]/10 border border-[#8B7E66]/30 hover:bg-[#8B7E66]/20 transition-colors"
                 >
-                  <span className="text-xs font-bold text-blue-400">DOI</span>
-                  <span className="text-xs text-blue-300 font-mono">{publication.doi}</span>
+                  <span className="text-xs font-bold text-[#8B7E66]">DOI</span>
+                  <span className="text-xs text-[#DBD5B5] font-mono">{publication.doi}</span>
                 </a>
                 <span className="text-xs text-[#DBD5B5]/40 font-geist-mono">
                   {publication.date}
