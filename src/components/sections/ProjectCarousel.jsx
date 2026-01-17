@@ -41,19 +41,18 @@ const ProjectCarousel = () => {
   useGSAP(() => {
     let mm = gsap.matchMedia();
     
-    // DESKTOP: Fan Deck Interaction (Artistic "W" Layout)
+    // DESKTOP: Fan Deck Interaction (Cinematic Spacing)
     mm.add("(min-width: 769px)", () => {
       const cards = gsap.utils.toArray(".project-card");
       
-      // 1. Initial State - "W" Formation (High-Low-High Zigzag)
-      // Card 0: Lef/Top, Tilted Left (\)
-      // Card 1: Center/Bottom, Tilted Right (/) -> Creates V shape with Card 0
-      // Card 2: Right/Top, Tilted Left (\) -> Creates inverted V with Card 1
+      // 1. Initial State - "Cinematic" Panorama
+      // Wide horizontal distribution with subtle arc
+      // Heavy overlap (50%) but distinct separation
       
       const layouts = [
-        { rotation: -15, xPercent: -75, yPercent: -60, zIndex: 1 }, // Left/High (\)
-        { rotation: 15, xPercent: -50, yPercent: -35, zIndex: 3 },  // Center/Low (/) - On Top
-        { rotation: -15, xPercent: -25, yPercent: -60, zIndex: 2 }  // Right/High (\)
+        { rotation: -5, xPercent: -85, yPercent: -45, zIndex: 1 },  // Left
+        { rotation: 0, xPercent: -50, yPercent: -45, zIndex: 2 },   // Center
+        { rotation: 5, xPercent: -15, yPercent: -45, zIndex: 1 }    // Right
       ];
 
       gsap.set(cards, {
@@ -73,29 +72,25 @@ const ProjectCarousel = () => {
           yPercent: layout.yPercent,
           scale: 0.9,
           zIndex: layout.zIndex,
-          filter: "brightness(0.6)",
-          duration: 1,
+          filter: "brightness(0.5)",
+          duration: 1.2,
           ease: "power3.out"
         });
 
-        // Hover Interaction
+        // Hover Interaction - Stable & Subtle
         card.addEventListener("mouseenter", () => {
-          // Active Card: Pop to Absolute Center
           gsap.to(card, {
-            scale: 1.1,
-            rotation: 0,
-            xPercent: -50,
-            yPercent: -50,
-            zIndex: 100,
-            filter: "brightness(1)",
-            duration: 0.5,
-            ease: "back.out(1.2)"
+            scale: 1.05,            // Subtle lift
+            zIndex: 100,            // Bring to front
+            filter: "brightness(1)",// Highlight
+            duration: 0.4,
+            ease: "power2.out"
           });
 
-          // Siblings: Fade out further
+          // Siblings: Fade slightly
           cards.filter(c => c !== card).forEach(sibling => {
             gsap.to(sibling, {
-              scale: 0.8,
+              scale: 0.9,
               filter: "brightness(0.3)",
               duration: 0.4
             });
@@ -103,19 +98,16 @@ const ProjectCarousel = () => {
         });
 
         card.addEventListener("mouseleave", () => {
-          // Reset to Artistic Layout
+          // Reset to Cinematic Layout
           cards.forEach((c, index) => {
              const l = layouts[index];
              
              gsap.to(c, {
-                rotation: l.rotation,
-                xPercent: l.xPercent,
-                yPercent: l.yPercent,
                 scale: 0.9,
                 zIndex: l.zIndex,
-                filter: "brightness(0.6)",
-                duration: 0.8,
-                ease: "power3.out"
+                filter: "brightness(0.5)", // Back to cinematic dark
+                duration: 0.6,
+                ease: "power2.out"
              });
           });
         });
