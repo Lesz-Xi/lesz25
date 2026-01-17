@@ -191,7 +191,6 @@ const ProjectCarousel = () => {
       </div>
     </section>
   );
-  );
 };
 
 export default ProjectCarousel;
