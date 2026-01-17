@@ -1,158 +1,171 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const ProjectCarousel = () => {
   const containerRef = useRef(null);
-  const wrapperRef = useRef(null);
-  
-  // Reordered: ThesisLens (1), Universe Splitter (CENTER), SkillShift (3)
+  const [activeIndex, setActiveIndex] = useState(1); // Start with center project (Universe Splitter)
+
+  // Order: ThesisLens (0), Universe Splitter (1), SkillShift (2)
   const projects = [
     {
       id: 1,
       title: "ThesisLens",
       category: "Academic Integrity",
       image: "/images/projects/thesislens-v2.webp",
-      color: "#F4F1EA",
       link: "https://thesislens.space/",
-      fit: "cover"
+      description: "AI-powered academic integrity detection system."
     },
     {
       id: 3,
       title: "Universe Splitter",
       category: "Quantum Experiment",
       image: "/images/projects/universe-splitter.webp",
-      color: "#000000",
       link: "https://univ-spitter.vercel.app/",
-      fit: "cover"
+      description: "Quantum mechanics visualization & interactive experiment."
     },
     {
       id: 2,
       title: "SkillShift",
       category: "Coaching Platform",
       image: "/images/projects/skillshift-v3.webp",
-      color: "#111111",
       link: "https://skillshift.vercel.app/",
-      fit: "cover"
+      description: "Professional coaching marketplace and scheduling platform."
     }
   ];
 
+  const handleProjectClick = (index) => {
+    setActiveIndex(index);
+  };
+
   useGSAP(() => {
-    // Only run on desktop/larger screens where sticky effects make sense
-    // On mobile, native scrolling is usually better UX
-    let mm = gsap.matchMedia();
+    const cards = gsap.utils.toArray(".project-card");
     
-    mm.add("(min-width: 769px)", () => {
-      const cards = gsap.utils.toArray(".project-card");
+    cards.forEach((card, index) => {
+      // Calculate specific properties based on position relative to active index
+      const isCenter = index === activeIndex;
+      const isLeft = index < activeIndex; // e.g. 0 when active is 1
+      const isRight = index > activeIndex; // e.g. 2 when active is 1
       
-      // We don't strictly need a timeline for basic sticky stacking, 
-      // but if we want the "scaling down" effect, we link it to scroll.
-      
-      cards.forEach((card, i) => {
-        // The scale logic:
-        // When Card (i+1) enters view, Card (i) should scale down.
-        if (i !== cards.length - 1) {
-          const nextCard = cards[i + 1];
-          
-          ScrollTrigger.create({
-            trigger: nextCard,
-            start: "top bottom", // When top of next card hits bottom of viewport
-            end: "top top",      // When top of next card hits top of viewport
-            scrub: true,
-            animation: gsap.to(card, {
-              scale: 0.9,
-              filter: "brightness(0.5)",
-              ease: "none",
-              duration: 1
-            })
-          });
-        }
+      // Determine X position
+      // Center: 0
+      // Immediate Left: -60%
+      // Immediate Right: 60%
+      // Further out: stack them further
+      let xPos = "0%";
+      let scale = 1;
+      let opacity = 1;
+      let zIndex = 10;
+      let filter = "none";
+      let brightness = 1;
+
+      if (index !== activeIndex) {
+        const diff = index - activeIndex;
+        xPos = `${diff * 65}%`; // -65% or +65%
+        scale = 0.85;
+        opacity = 0.6;
+        zIndex = 5;
+        filter = "blur(2px)";
+        brightness = 0.5;
+      }
+
+      gsap.to(card, {
+        x: xPos,
+        scale: scale,
+        opacity: opacity,
+        zIndex: zIndex,
+        filter: `${filter} brightness(${brightness})`,
+        duration: 0.6,
+        ease: "power3.out"
       });
     });
-    
-  }, { scope: containerRef });
+
+  }, { scope: containerRef, dependencies: [activeIndex] }); // Re-run when activeIndex changes
 
   return (
     <section 
       id="projects" 
       ref={containerRef} 
-      className="relative w-full bg-[#070707] py-16 md:py-24"
+      className="relative w-full bg-[#070707] py-24 overflow-hidden min-h-[100vh] flex flex-col justify-center"
     >
-      {/* Noise Texture Overlay - Matches Biography */}
+      {/* Noise Texture */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.04] bg-noise-pattern z-0"></div>
-      
+
       {/* Header */}
-      <div className="text-center w-full px-4 mb-16 md:mb-24 relative z-10">
-         <span className="text-xs font-bold tracking-[0.25em] text-[#DBD5B5]/40 uppercase mb-3 block">
-            Selected Work
-          </span>
-          <h2 className="text-3xl md:text-6xl font-bold font-accent text-[#8B7E66]">
-            Featured Projects
-          </h2>
+      <div className="text-center w-full px-4 mb-12 relative z-10">
+        <span className="text-xs font-bold tracking-[0.25em] text-[#DBD5B5]/40 uppercase mb-3 block">
+           Selected Work
+         </span>
+         <h2 className="text-4xl md:text-6xl font-bold font-accent text-[#8B7E66]">
+           Featured Projects
+         </h2>
       </div>
 
-      {/* Cards Scroll Container */}
-      <div ref={wrapperRef} className="w-full flex flex-col items-center gap-8 md:gap-0 pb-0 md:pb-20 relative z-10">
+      {/* Carousel Container */}
+      <div className="relative w-full h-[60vh] md:h-[70vh] flex justify-center items-center perspective-[1000px]">
         {projects.map((project, index) => (
-          <div 
+          <div
             key={project.id}
-            className="w-full md:min-h-[90vh] last:md:min-h-0 flex items-center md:items-start justify-center"
+            onClick={() => handleProjectClick(index)}
+            className={`project-card absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] md:w-[460px] aspect-[3/4.2] flex flex-col rounded-3xl overflow-hidden shadow-2xl cursor-pointer will-change-transform border border-white/10 bg-[#0A0A0A]`}
           >
-            <div
-              className="project-card relative md:sticky md:top-32 w-[85vw] md:w-[1000px] h-auto md:h-[600px] flex flex-col md:flex-row rounded-2xl md:rounded-3xl overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.4),0_0_0_1px_rgba(139,126,102,0.1)] origin-top will-change-transform border-2 border-white/5 hover:border-white/10 transition-colors duration-300"
-              style={{ 
-                zIndex: index + 1, 
-              }}
-            >
-              <div 
-                className="w-full md:w-2/3 aspect-[4/3] md:aspect-auto md:h-full relative overflow-hidden"
-                style={{ backgroundColor: project.color }}
-              >
-                 <img 
-                   src={project.image} 
-                   srcSet={`${project.image.replace('.webp', '-mobile.webp')} 600w, ${project.image} 1200w`}
-                   sizes="(max-width: 768px) 100vw, 800px"
-                   alt={project.title}
-                   className="w-full h-full object-center transition-transform duration-700 hover:scale-105"
-                   style={{ objectFit: project.fit || "contain" }}
-                   decoding="async"
-                   loading="lazy"
-                 />
+            {/* Image (Top 65%) */}
+            <div className="h-[65%] w-full relative overflow-hidden bg-black/50">
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#0A0A0A]/80 z-10" />
+              <img 
+                src={project.image} 
+                alt={project.title}
+                className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+              />
+            </div>
+
+            {/* Content (Bottom 35%) */}
+            <div className={`h-[35%] w-full p-8 flex flex-col justify-between bg-[#111] border-t border-white/5 relative z-20`}>
+              <div>
+                <span className="text-[10px] font-bold tracking-[0.25em] text-[#8B7E66] uppercase block mb-3">
+                  {project.category}
+                </span>
+                <h3 className="text-2xl md:text-3xl font-serif font-bold text-[#DBD5B5] leading-none mb-2">
+                  {project.title}
+                </h3>
               </div>
 
-              {/* Content Section - Glassmorphic */}
-              <div className="w-full md:w-1/3 md:h-full p-6 md:p-10 flex flex-col justify-between bg-white/5 backdrop-blur-xl border-l border-white/5">
-                 <div className="flex flex-col gap-2">
-                   <span className="text-[10px] md:text-xs font-bold tracking-[0.25em] text-[#8B7E66] uppercase">
-                      {project.category}
-                   </span>
-                   <h3 className="text-2xl md:text-4xl font-serif font-bold text-[#DBD5B5] leading-tight">
-                      {project.title}
-                   </h3>
-                   <p className="text-white/60 text-sm md:text-base mt-2 line-clamp-3">
-                     A premium digital experience crafted with precision and attention to detail.
-                   </p>
-                 </div>
-                 
-                 <div className="flex items-center justify-between mt-auto pt-6 border-t border-white/5">
-                   <a 
-                     href={project.link} 
-                     target="_blank" 
-                     rel="noopener noreferrer" 
-                     className="group/btn inline-flex items-center gap-3 px-7 py-3.5 rounded-full bg-gradient-to-r from-[#8B7E66] to-[#9d8f75] text-white text-sm font-display tracking-wide hover:shadow-lg hover:shadow-[#8B7E66]/20 hover:scale-[1.02] transition-all duration-300 transform origin-left"
-                   >
-                      <span>View Project</span>
-                      <svg className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                      </svg>
-                   </a>
-                 </div>
+              <div className="flex justify-between items-end">
+                <a 
+                  href={project.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group inline-flex items-center gap-2 text-white/60 hover:text-[#8B7E66] transition-colors text-sm font-medium"
+                  onClick={(e) => e.stopPropagation()} // Prevent card click when clicking link
+                >
+                  <span>View Case Study</span>
+                </a>
+                
+                {/* Circular Button */}
+                <div className="w-10 h-10 rounded-full bg-[#1C1C21] border border-white/10 flex items-center justify-center group-hover:border-[#8B7E66]/50 group-hover:bg-[#2A2A30] transition-all">
+                  <svg className="w-4 h-4 text-white group-hover:text-[#8B7E66]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </div>
               </div>
             </div>
           </div>
+        ))}
+      </div>
+
+      {/* Pagination Dots */}
+      <div className="relative z-10 flex gap-4 justify-center mt-12">
+        {projects.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setActiveIndex(i)}
+            className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+              i === activeIndex 
+                ? "bg-[#8B7E66] scale-125 shadow-[0_0_10px_#8B7E66]" 
+                : "bg-white/20 hover:bg-white/40"
+            }`}
+            aria-label={`Go to project ${i + 1}`}
+          />
         ))}
       </div>
     </section>
