@@ -226,7 +226,8 @@ const RoleShowcase = () => {
                 const line = pair;
                 
                 // Enhanced spacing for taller helix (20 pairs * 8px = 160px total height)
-                const yPos = 30 + (i * 8);
+                // Centered at y=100: start at 100 - 80 = 20
+                const yPos = 20 + (i * 8);
                 const centerX = 200;
                 const width = 70; // Wider oscillation for dramatic effect
                 const speed = 3; // Faster rotation per scroll
