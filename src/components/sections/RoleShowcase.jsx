@@ -205,17 +205,6 @@ const RoleShowcase = () => {
             }, 0.2);
         }
 
-        // Animate each base pair row
-        // We simulate 3D rotation by oscillating "cx" (x-position) and scaling "r" (radius)
-        basePairs.forEach((pair, i) => {
-            const dotA = dnaDotsA[i];
-            const dotB = dnaDotsB[i];
-            const line = pair;
-            const progress = i / 12; // Normalized index
-            
-            // Vertical spacing
-            const yPos = 40 + (i * 12); 
-            
         // Animate each base pair row - initial fade in only
         // All dynamic animation handled by onUpdate callback below
         basePairs.forEach((pair, i) => {
