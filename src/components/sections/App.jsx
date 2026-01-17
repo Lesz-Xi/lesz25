@@ -31,6 +31,30 @@ const ScrollToTop = () => {
   const { pathname } = useLocation();
   const previousPathRef = useRef(sessionStorage.getItem('previousPath') || '');
   
+  // MOUNT EFFECT: Force scroll to top on initial page load/refresh
+  // This runs before browser's scroll restoration attempt
+  useLayoutEffect(() => {
+    // Clear stale navigation state on fresh page load
+    if (!sessionStorage.getItem('isNavigating')) {
+      sessionStorage.removeItem('previousPath');
+      sessionStorage.removeItem('photographyScrollPosition');
+    }
+    sessionStorage.removeItem('isNavigating');
+    
+    // Force scroll reset immediately
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    
+    const lenis = getLenis();
+    if (lenis) {
+      lenis.scrollTo(0, { immediate: true, force: true });
+    }
+    
+    // Clear ScrollTrigger memory
+    ScrollTrigger.clearScrollMemory();
+  }, []); // Empty dependency = runs once on mount
+  
   // SYNCHRONOUS scroll reset - runs before paint
   useLayoutEffect(() => {
     const previousPath = previousPathRef.current;
@@ -86,6 +110,7 @@ const ScrollToTop = () => {
     // Update refs and storage
     previousPathRef.current = pathname;
     sessionStorage.setItem('previousPath', pathname);
+    sessionStorage.setItem('isNavigating', 'true'); // Flag for mount effect
     
     // Refresh ScrollTrigger after layout settles (safe mode)
     requestAnimationFrame(() => ScrollTrigger.refresh(true));
