@@ -89,7 +89,7 @@ const ProjectCarousel = () => {
       <div className="absolute inset-0 pointer-events-none opacity-[0.04] bg-noise-pattern z-0"></div>
 
       {/* Header */}
-      <div className="text-center w-full px-4 mb-12 relative z-10">
+      <div className="text-center w-full px-4 mb-24 relative z-10">
         <span className="text-xs font-bold tracking-[0.25em] text-[#DBD5B5]/40 uppercase mb-3 block">
            Selected Work
          </span>
@@ -104,7 +104,7 @@ const ProjectCarousel = () => {
           <div
             key={project.id}
             onClick={() => handleProjectClick(index)} // Allow clicking any card to center it
-            className={`project-card absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] md:w-[460px] aspect-[3/4.2] flex flex-col rounded-3xl overflow-hidden shadow-2xl cursor-pointer will-change-transform border border-white/10 bg-[#0A0A0A]`}
+            className={`project-card group absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] md:w-[460px] aspect-[3/4.2] flex flex-col rounded-3xl overflow-hidden shadow-2xl cursor-pointer will-change-transform border border-white/10 bg-[#0A0A0A]`}
           >
             {/* Image (Top 65%) */}
             <div className="h-[65%] w-full relative overflow-hidden bg-black/50">
