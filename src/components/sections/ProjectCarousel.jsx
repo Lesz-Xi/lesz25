@@ -19,21 +19,21 @@ const ProjectCarousel = () => {
       fit: "contain"
     },
     {
-      id: 2,
-      title: "SkillShift",
-      category: "Coaching Platform",
-      image: "/images/projects/skillshift-v3.webp",
-      color: "#111111",
-      link: "https://skillshift.vercel.app/",
-      fit: "contain"
-    },
-    {
       id: 3,
       title: "Universe Splitter",
       category: "Quantum Experiment",
       image: "/images/projects/universe-splitter.webp",
       color: "#000000",
       link: "https://univ-spitter.vercel.app/",
+      fit: "contain"
+    },
+    {
+      id: 2,
+      title: "SkillShift",
+      category: "Coaching Platform",
+      image: "/images/projects/skillshift-v3.webp",
+      color: "#111111",
+      link: "https://skillshift.vercel.app/",
       fit: "contain"
     }
   ];
@@ -136,11 +136,15 @@ const ProjectCarousel = () => {
     <section 
       id="projects" 
       ref={containerRef} 
-      className="relative w-full bg-[#070707] py-12 md:py-20 md:h-screen md:overflow-hidden flex flex-col"
+      className="relative w-full py-12 md:py-20 md:h-screen md:overflow-hidden flex flex-col"
+      style={{ backgroundColor: "#070707" }}
     >
+      {/* Noise Pattern Overlay */}
+      <div className="absolute inset-0 pointer-events-none opacity-[0.04] bg-noise-pattern z-0"></div>
+
       {/* Header */}
       <div className="text-center w-full px-4 mb-16 md:mb-12 z-10 relative">
-         <span className="text-xs font-bold tracking-[0.2em] text-[#DBD5B5]/40 uppercase mb-2 block">
+         <span className="text-xs font-bold tracking-[0.25em] text-[#DBD5B5]/40 uppercase mb-2 block">
             Selected Work
           </span>
           <h2 className="text-2xl md:text-6xl font-bold font-accent text-[#8B7E66]">
@@ -154,7 +158,7 @@ const ProjectCarousel = () => {
         {projects.map((project, index) => (
             <div
               key={project.id}
-              className="project-card w-full md:w-[60vw] md:max-w-[900px] aspect-[4/5] md:aspect-video flex flex-col md:flex-row rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl bg-[#1C1C21] border border-white/5"
+              className="project-card w-full md:w-[60vw] md:max-w-[900px] aspect-[4/5] md:aspect-video flex flex-col md:flex-row rounded-2xl md:rounded-3xl overflow-hidden border-2 border-white/5 shadow-[0_8px_32px_rgba(0,0,0,0.4),0_0_0_1px_rgba(139,126,102,0.1)] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4),0_0_40px_rgba(139,126,102,0.3)] transition-shadow duration-500 bg-[#1C1C21]"
             >
               {/* Image Section */}
               <div 
@@ -174,26 +178,28 @@ const ProjectCarousel = () => {
               </div>
 
               {/* Content Section */}
-              <div className="w-full md:w-1/3 h-1/2 md:h-full p-6 md:p-8 flex flex-col justify-between border-l border-white/5 relative z-20 bg-[#1C1C21]">
-                 <div className="flex flex-col gap-2">
-                   <span className="text-[10px] md:text-xs font-bold tracking-widest text-[#8B7E66] uppercase">
+              <div 
+                className="w-full md:w-1/3 h-1/2 md:h-full p-6 md:p-10 flex flex-col justify-between border-l border-white/5 relative z-20"
+                style={{ background: "linear-gradient(135deg, #1C1C21 0%, #151519 100%)" }}
+              >
+                 <div className="flex flex-col gap-3">
+                   <span className="text-[10px] md:text-xs font-bold tracking-[0.25em] text-[#8B7E66] uppercase">
                       {project.category}
                    </span>
-                   <h3 className="text-2xl md:text-3xl font-serif font-bold text-[#DBD5B5] leading-tight">
+                   <h3 className="text-2xl md:text-3xl font-serif font-bold text-[#DBD5B5] leading-tight" style={{ letterSpacing: "-0.02em" }}>
                       {project.title}
                    </h3>
-                   <p className="text-white/60 text-sm mt-3 leading-relaxed">
+                   <p className="text-white/60 text-sm mt-2 leading-loose">
                      A premium digital experience crafted with precision and attention to detail.
                    </p>
                  </div>
                  
-                 <div className="flex items-center justify-between mt-auto pt-6 border-t border-white/5">
+                 <div className="flex items-center justify-between mt-auto pt-6 border-t border-white/10">
                    <a 
                      href={project.link} 
                      target="_blank" 
                      rel="noopener noreferrer" 
-                     // We add 'pointer-events-auto' to ensure the button is clickable even if card has transforms
-                     className="group/btn inline-flex items-center gap-3 px-6 py-3 rounded-full bg-gradient-to-r from-[#8B7E66] to-[#9d8f75] text-white text-xs md:text-sm font-display tracking-wide hover:shadow-lg hover:shadow-[#8B7E66]/20 hover:scale-[1.02] transition-all duration-300 transform origin-left pointer-events-auto"
+                     className="group/btn inline-flex items-center gap-3 px-6 py-3 rounded-full bg-gradient-to-r from-[#8B7E66] to-[#9d8f75] text-white text-xs md:text-sm font-display tracking-wide hover:shadow-lg hover:shadow-[#8B7E66]/30 hover:scale-[1.02] transition-all duration-300 transform origin-left pointer-events-auto"
                    >
                       <span>View Project</span>
                       <svg className="w-3 h-3 md:w-4 md:h-4 transition-transform group-hover/btn:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
