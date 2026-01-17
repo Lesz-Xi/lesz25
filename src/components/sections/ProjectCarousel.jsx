@@ -57,7 +57,11 @@ const ProjectCarousel = () => {
       let brightness = 1;
 
       if (index !== activeIndex) {
-        const diff = index - activeIndex;
+        let diff = index - activeIndex;
+
+        // Circular wrapping for 3 items
+        if (diff > 1) diff -= 3;
+        if (diff < -1) diff += 3;
         xPos = `${diff * 65}%`; 
         scale = 0.85;
         opacity = 0.6;
@@ -127,22 +131,23 @@ const ProjectCarousel = () => {
                 </h3>
               </div>
 
-              <div className="flex justify-between items-end">
-                <a 
-                  href={project.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group inline-flex items-center gap-2 text-white/60 hover:text-[#8B7E66] transition-colors text-sm font-medium"
-                  onClick={(e) => e.stopPropagation()} 
-                >
-                  <span>View Case Study</span>
-                </a>
-                
-                <div className="w-10 h-10 rounded-full bg-[#1C1C21] border border-white/10 flex items-center justify-center group-hover:border-[#8B7E66]/50 group-hover:bg-[#2A2A30] transition-all">
-                  <svg className="w-4 h-4 text-white group-hover:text-[#8B7E66]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                  </svg>
-                </div>
+              <div className="flex justify-center items-end mt-auto">
+                {project.link ? (
+                  <a
+                    href={project.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="w-12 h-12 rounded-full border border-[#DBD5B5]/30 flex items-center justify-center hover:bg-[#DBD5B5] hover:border-[#DBD5B5] transition-all relative z-30 group/btn"
+                    aria-label={`View ${project.title}`}
+                  >
+                    <svg className="w-5 h-5 text-[#DBD5B5] group-hover/btn:text-[#0A0A0A] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </a>
+                ) : (
+                  <span className="text-white/30 text-xs font-medium uppercase tracking-widest py-3">In Progress</span>
+                )}
               </div>
             </div>
           </div>
