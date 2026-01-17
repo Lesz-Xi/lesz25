@@ -58,10 +58,10 @@ const Footer = () => {
             </h4>
             <ul className="space-y-3">
               {[
-                { name: "My Story", href: "/#work" },
                 { name: "Roles", href: "/#roles" },
                 { name: "Photography", href: "/#photography" },
                 { name: "The Journey", href: "/#about" },
+                { name: "Research", href: "/#research" },
               ].map((link) => (
                 <li key={link.name}>
                   {link.href.startsWith('/') ? (
