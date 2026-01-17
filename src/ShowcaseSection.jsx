@@ -49,9 +49,8 @@ const ShowcaseSection = () => {
               and the clarity of a publication.
             </p>
             <p>
-              For me, code and light are instruments of investigation. My work bridges the gap between 
-              technical precision and artistic intuition, ensuring that every interaction doesn't just function, 
-              but communicates a deeper narrative.
+              My work bridges technical precision and artistic intuition to create experiences that 
+              don't just function—they communicate.
             </p>
           </div>
 
