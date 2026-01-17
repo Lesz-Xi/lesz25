@@ -192,7 +192,7 @@ const RoleShowcase = () => {
 
         // Appear nodes sequentially with slight stagger
         researcherTl.to(nodes, {
-            opacity: 1,
+            opacity: 0.5, // Transparent/Glassy look
             duration: 0.1,
             stagger: 0.08,
             ease: "power2.out"
@@ -200,7 +200,7 @@ const RoleShowcase = () => {
 
         // Draw connection lines with stagger
         researcherTl.to(connections, {
-            opacity: 0.8,
+            opacity: 0.3, // Subtle connection lines
             strokeDashoffset: 0,
             duration: 0.15,
             stagger: 0.1,
@@ -209,7 +209,7 @@ const RoleShowcase = () => {
 
         // Add pulsing effect to nodes (discovery feel)
         researcherTl.to(nodes, {
-            opacity: 0.6,
+            opacity: 0.7, // Pulse slightly brighter
             yoyo: true,
             repeat: 2,
             duration: 0.3,
