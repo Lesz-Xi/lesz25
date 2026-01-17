@@ -41,53 +41,61 @@ const ProjectCarousel = () => {
   useGSAP(() => {
     let mm = gsap.matchMedia();
     
-    // DESKTOP: Fan Deck Interaction
+    // DESKTOP: Fan Deck Interaction (Artistic "Checkmark" Layout)
     mm.add("(min-width: 769px)", () => {
       const cards = gsap.utils.toArray(".project-card");
-      const spacer = 15; // overlap percentage
+      
+      // 1. Initial State - "Checkmark" Flow \ / /
+      // Card 0: Left, Tilted Left (Base of V)
+      // Card 1: Center, Tilted Right (Base of V, connecting)
+      // Card 2: Right, Tilted Right (High tail)
+      
+      const layouts = [
+        { rotation: -15, xPercent: -75, yPercent: -35, zIndex: 1 }, // Left
+        { rotation: 15, xPercent: -50, yPercent: -35, zIndex: 2 },  // Center (Universe Splitter)
+        { rotation: 15, xPercent: -25, yPercent: -70, zIndex: 3 }   // Right (High)
+      ];
 
-      // 1. Initial Fan State
       gsap.set(cards, {
         position: "absolute",
         top: "50%",
         left: "50%",
-        xPercent: -50,
-        yPercent: -50,
-        transformOrigin: "center bottom"
+        transformOrigin: "center center"
       });
 
-      // Distribution: -15deg, 0, 15deg (for 3 cards)
-      // X Offset: -20%, 0, 20%
       cards.forEach((card, i) => {
-        const rotation = (i - 1) * 10; // -10, 0, 10
-        const xOffset = (i - 1) * 15; // -15%, 0, 15%
+        const layout = layouts[i];
         
+        // Apply Initial Layout
         gsap.to(card, {
-          rotation: rotation,
-          xPercent: -50 + xOffset,
+          rotation: layout.rotation,
+          xPercent: layout.xPercent,
+          yPercent: layout.yPercent,
           scale: 0.9,
-          zIndex: i + 1,
+          zIndex: layout.zIndex,
           filter: "brightness(0.6)",
-          duration: 0.8,
-          ease: "power2.out"
+          duration: 1,
+          ease: "power3.out"
         });
 
         // Hover Interaction
         card.addEventListener("mouseenter", () => {
-          // Active Card: Pop up, Brighten, Center rotation
+          // Active Card: Pop to Absolute Center
           gsap.to(card, {
             scale: 1.1,
             rotation: 0,
+            xPercent: -50,
+            yPercent: -50,
             zIndex: 100,
             filter: "brightness(1)",
-            duration: 0.4,
-            ease: "back.out(1.7)"
+            duration: 0.5,
+            ease: "back.out(1.2)"
           });
 
-          // Siblings: Dim, Scale down
+          // Siblings: Fade out further
           cards.filter(c => c !== card).forEach(sibling => {
             gsap.to(sibling, {
-              scale: 0.85,
+              scale: 0.8,
               filter: "brightness(0.3)",
               duration: 0.4
             });
@@ -95,19 +103,19 @@ const ProjectCarousel = () => {
         });
 
         card.addEventListener("mouseleave", () => {
-          // Reset All to Fan State
+          // Reset to Artistic Layout
           cards.forEach((c, index) => {
-             const r = (index - 1) * 10;
-             const x = (index - 1) * 15;
+             const l = layouts[index];
              
              gsap.to(c, {
-                rotation: r,
-                xPercent: -50 + x,
+                rotation: l.rotation,
+                xPercent: l.xPercent,
+                yPercent: l.yPercent,
                 scale: 0.9,
-                zIndex: index + 1,
+                zIndex: l.zIndex,
                 filter: "brightness(0.6)",
-                duration: 0.6,
-                ease: "power2.out"
+                duration: 0.8,
+                ease: "power3.out"
              });
           });
         });
@@ -158,7 +166,7 @@ const ProjectCarousel = () => {
         {projects.map((project, index) => (
             <div
               key={project.id}
-              className="project-card w-full md:w-[60vw] md:max-w-[900px] aspect-[4/5] md:aspect-video flex flex-col md:flex-row rounded-2xl md:rounded-3xl overflow-hidden border-2 border-white/5 shadow-[0_8px_32px_rgba(0,0,0,0.4),0_0_0_1px_rgba(139,126,102,0.1)] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4),0_0_40px_rgba(139,126,102,0.3)] transition-shadow duration-500 bg-[#1C1C21]"
+              className="project-card w-full md:w-[45vw] md:max-w-[700px] aspect-[4/5] md:aspect-video flex flex-col md:flex-row rounded-2xl md:rounded-3xl overflow-hidden border-2 border-white/5 shadow-[0_8px_32px_rgba(0,0,0,0.4),0_0_0_1px_rgba(139,126,102,0.1)] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4),0_0_40px_rgba(139,126,102,0.3)] transition-shadow duration-500 bg-[#1C1C21]"
             >
               {/* Image Section */}
               <div 
