@@ -209,6 +209,18 @@ const RoleShowcase = () => {
                 stagger: { amount: 0.5, from: "center" },
                 ease: "power2.out"
             }, 0.2);
+
+            // Scroll-linked brightness increase (Glow Effect)
+            researcherTl.to(researcherChars, {
+                textShadow: "0 0 20px rgba(255, 255, 255, 0.7), 0 0 40px rgba(199, 181, 128, 0.4)",
+                color: "#FFFFFF", 
+                duration: 2.5, 
+                ease: "power2.inOut",
+                stagger: {
+                    amount: 1,
+                    from: "random" // Random "twinkle" brightening effect
+                }
+            }, 0.5);
         }
 
         // Animate each base pair row - initial fade in only
