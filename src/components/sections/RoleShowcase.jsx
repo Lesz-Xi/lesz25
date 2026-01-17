@@ -25,7 +25,7 @@ const RoleShowcase = () => {
       scrollTrigger: {
         trigger: containerRef.current,
         start: "top top",
-        end: "+=400%", // Pin for 4 screen heights (slower, more luxurious scroll)
+        end: "+=500%", // Pin for 5 screen heights to accommodate 4 roles
         scrub: 0.5,    // Reduced from 1.5 for snappier response
         pin: true,
       }
@@ -36,14 +36,16 @@ const RoleShowcase = () => {
     const devSvg = containerRef.current.querySelector("#dev-svg");
     const photoSvg = containerRef.current.querySelector("#photo-svg");
     const designerSvg = containerRef.current.querySelector("#designer-svg");
+    const researcherSvg = containerRef.current.querySelector("#researcher-svg");
     const curlyLine = containerRef.current.querySelector("#curly-line");
     const star = containerRef.current.querySelector(".designer-star");
 
-    // Total Duration: +=400% (Implied 0s to ~8s scrub time, but we control relative time)
+    // Total Duration: +=500% (Implied 0s to ~10s scrub time, but we control relative time)
     // Structure:
     // Act 1 (Dev): 0.0s -> 1.5s
     // Act 2 (Photo): 2.0s -> 3.5s
     // Act 3 (Designer): 4.0s -> 6.0s
+    // Act 4 (Researcher): 6.5s -> 8.5s
     
     // --- ACT 1: DEVELOPER --- 
     // Initial State: Dev Text is Visible (Static), SVG Hidden
@@ -164,8 +166,76 @@ const RoleShowcase = () => {
     // 5.5->6.0: Designer Exit
     tl.to(roles[2], { scale: 10, autoAlpha: 0, filter: "blur(20px)", ease: "power2.in", duration: 0.5 }, 5.5);
     tl.to(designerSvg, { scale: 10, autoAlpha: 0, filter: "blur(20px)", ease: "power2.in", duration: 0.5 }, 5.5);
+
+
+    // --- ACT 4: RESEARCHER ---
+    // Gap 6.0s -> 6.5s (Clean Slate)
+
+    // 6.5->7.0: Researcher Enter (Text + Initial Nodes)
+    tl.fromTo(roles[3], 
+        { scale: 0.5, autoAlpha: 0, filter: "blur(10px)", pointerEvents: "none" },
+        { scale: 1, autoAlpha: 1, filter: "blur(0px)", pointerEvents: "auto", ease: "power2.out", duration: 0.5 },
+        6.5
+    );
+
+    const researcherTl = gsap.timeline();
+    tl.add(researcherTl, 6.5);
+
+    // Fade in SVG container
+    researcherTl.fromTo(researcherSvg, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3 }, 0);
+
+    // 6.5->7.5: Molecular Network Assembly
+    if (researcherSvg) {
+        const nodes = researcherSvg.querySelectorAll(".node");
+        const connections = researcherSvg.querySelectorAll("[id^='conn-']");
+        const researcherChars = containerRef.current.querySelectorAll(".researcher-char");
+
+        // Appear nodes sequentially with slight stagger
+        researcherTl.to(nodes, {
+            opacity: 1,
+            duration: 0.1,
+            stagger: 0.08,
+            ease: "power2.out"
+        }, 0.2);
+
+        // Draw connection lines with stagger
+        researcherTl.to(connections, {
+            opacity: 0.8,
+            strokeDashoffset: 0,
+            duration: 0.15,
+            stagger: 0.1,
+            ease: "power2.inOut"
+        }, 0.5);
+
+        // Add pulsing effect to nodes (discovery feel)
+        researcherTl.to(nodes, {
+            opacity: 0.6,
+            yoyo: true,
+            repeat: 2,
+            duration: 0.3,
+            stagger: 0.05,
+            ease: "power1.inOut"
+        }, 1.2);
+
+        // Light up characters as network assembles
+        if (researcherChars.length > 0) {
+            researcherTl.to(researcherChars, {
+                opacity: 1,
+                duration: 0.1,
+                stagger: {
+                    amount: 0.6,
+                    from: "center"
+                },
+                ease: "power2.out"
+            }, 1.0);
+        }
+    }
+
+    // 8.0->8.5: Researcher Exit
+    tl.to(roles[3], { scale: 2, autoAlpha: 0, filter: "blur(10px)", ease: "power2.in", duration: 0.5 }, 8.0);
+    tl.to(researcherSvg, { scale: 1.5, autoAlpha: 0, duration: 0.5, ease: "power2.in" }, 8.0);
     
-    tl.to(contentRef.current, { autoAlpha: 0, duration: 0.5 }, 6); // End scene
+    tl.to(contentRef.current, { autoAlpha: 0, duration: 0.5 }, 8.5); // End scene
 
   }, { scope: containerRef });
 
@@ -233,6 +303,40 @@ const RoleShowcase = () => {
                         <circle cx="0" cy="0" r="4" fill="#F68F55" />
                     </g>
                 </g>
+
+                {/* --- RESEARCHER: Molecular Network --- */}
+                <g id="researcher-svg" className="opacity-0">
+                    <defs>
+                        <linearGradient id="molecule-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stopColor="#8B7E66" />
+                            <stop offset="100%" stopColor="#DBD5B5" />
+                        </linearGradient>
+                    </defs>
+                    
+                    {/* Connection Lines (will animate in) */}
+                    <g className="molecule-connections">
+                        <line id="conn-1" x1="200" y1="60" x2="250" y2="80" stroke="url(#molecule-gradient)" strokeWidth="1.5" opacity="0" pathLength="1" style={{strokeDasharray: 1, strokeDashoffset: 1}} />
+                        <line id="conn-2" x1="250" y1="80" x2="300" y2="60" stroke="url(#molecule-gradient)" strokeWidth="1.5" opacity="0" pathLength="1" style={{strokeDasharray: 1, strokeDashoffset: 1}} />
+                        <line id="conn-3" x1="200" y1="60" x2="180" y2="100" stroke="url(#molecule-gradient)" strokeWidth="1.5" opacity="0" pathLength="1" style={{strokeDasharray: 1, strokeDashoffset: 1}} />
+                        <line id="conn-4" x1="300" y1="60" x2="320" y2="100" stroke="url(#molecule-gradient)" strokeWidth="1.5" opacity="0" pathLength="1" style={{strokeDasharray: 1, strokeDashoffset: 1}} />
+                        <line id="conn-5" x1="180" y1="100" x2="220" y2="130" stroke="url(#molecule-gradient)" strokeWidth="1.5" opacity="0" pathLength="1" style={{strokeDasharray: 1, strokeDashoffset: 1}} />
+                        <line id="conn-6" x1="320" y1="100" x2="280" y2="130" stroke="url(#molecule-gradient)" strokeWidth="1.5" opacity="0" pathLength="1" style={{strokeDasharray: 1, strokeDashoffset: 1}} />
+                        <line id="conn-7" x1="220" y1="130" x2="280" y2="130" stroke="url(#molecule-gradient)" strokeWidth="1.5" opacity="0" pathLength="1" style={{strokeDasharray: 1, strokeDashoffset: 1}} />
+                        <line id="conn-8" x1="250" y1="80" x2="250" y2="130" stroke="url(#molecule-gradient)" strokeWidth="1.5" opacity="0" pathLength="1" style={{strokeDasharray: 1, strokeDashoffset: 1}} />
+                    </g>
+                    
+                    {/* Nodes (atoms) */}
+                    <g className="molecule-nodes">
+                        <circle className="node" cx="200" cy="60" r="4" fill="#8B7E66" opacity="0" />
+                        <circle className="node" cx="250" cy="80" r="5" fill="#9d8f75" opacity="0" />
+                        <circle className="node" cx="300" cy="60" r="4" fill="#8B7E66" opacity="0" />
+                        <circle className="node" cx="180" cy="100" r="3.5" fill="#DBD5B5" opacity="0" />
+                        <circle className="node" cx="320" cy="100" r="3.5" fill="#DBD5B5" opacity="0" />
+                        <circle className="node" cx="220" cy="130" r="4" fill="#8B7E66" opacity="0" />
+                        <circle className="node" cx="280" cy="130" r="4" fill="#8B7E66" opacity="0" />
+                        <circle className="node" cx="250" cy="130" r="5" fill="#9d8f75" opacity="0" />
+                    </g>
+                </g>
              </svg>
         </div>
 
@@ -263,6 +367,17 @@ const RoleShowcase = () => {
             <h2 className="text-[11vw] md:text-[12vw] leading-none font-bold font-pixel tracking-tighter uppercase text-[#C7B580] whitespace-nowrap z-10 relative">
                 {"DESIGNER".split("").map((char, index) => (
                     <span key={index} className="designer-char inline-block opacity-30">
+                        {char}
+                    </span>
+                ))}
+            </h2>
+        </div>
+
+        {/* Role 4: Researcher */}
+        <div className="role-item absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center opacity-0">
+            <h2 className="text-[9vw] md:text-[12vw] leading-none font-bold font-pixel tracking-tighter uppercase text-[#8B7E66] whitespace-nowrap z-10 relative">
+                {"RESEARCHER".split("").map((char, index) => (
+                    <span key={index} className="researcher-char inline-block opacity-30">
                         {char}
                     </span>
                 ))}
