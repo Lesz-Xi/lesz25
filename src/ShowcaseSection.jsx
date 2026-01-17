@@ -45,12 +45,13 @@ const ShowcaseSection = () => {
           {/* MAIN TEXT */}
           <div className="space-y-6 text-[#0D0C1D]/80 text-[15px] md:text-lg leading-relaxed font-geist-mono max-w-lg">
             <p>
-              I see code and specific moments as two distinct tools for the same purpose: to frame reality 
-              in a way that moves people.
+              I approach development as a form of inquiry—treating every project with the rigor of research 
+              and the clarity of a publication.
             </p>
             <p>
-              My work bridges the gap between technical precision and artistic intuition, ensuring that 
-              every interaction serves a greater narrative.
+              For me, code and light are instruments of investigation. My work bridges the gap between 
+              technical precision and artistic intuition, ensuring that every interaction doesn't just function, 
+              but communicates a deeper narrative.
             </p>
           </div>
 
