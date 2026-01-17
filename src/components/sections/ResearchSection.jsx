@@ -113,12 +113,63 @@ const ResearchSection = () => {
         {/* Publication Card */}
         <div 
           ref={cardRef}
-          className="group relative bg-[#0D0D0D] rounded-2xl md:rounded-3xl border border-white/5 overflow-hidden hover:border-[#8B7E66]/30 transition-all duration-500"
+          className="group relative rounded-2xl md:rounded-3xl overflow-visible"
         >
-          {/* Gradient Glow Effect on Hover */}
-          <div className="absolute -inset-px bg-gradient-to-r from-[#8B7E66]/0 via-[#8B7E66]/10 to-[#8B7E66]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl blur-xl"></div>
+          {/* Orbiting Border Animation Container - Desktop Only */}
+          <div className="hidden md:block absolute inset-0 rounded-2xl md:rounded-3xl pointer-events-none overflow-visible z-10">
+            {/* Orbit Wrapper 1: Clockwise, starts top-center */}
+            <div 
+              className="absolute inset-0"
+              style={{
+                animation: 'orbit-spin-cw 12s linear infinite'
+              }}
+            >
+              <div 
+                className="absolute w-2.5 h-2.5 rounded-full bg-gradient-to-br from-[#8B7E66] to-[#9d8f75] shadow-lg shadow-[#8B7E66]/60"
+                style={{
+                  top: '-5px',
+                  left: '50%',
+                  transform: 'translateX(-50%)'
+                }}
+              />
+            </div>
+            
+            {/* Orbit Wrapper 2: Counter-clockwise, starts bottom-center */}
+            <div 
+              className="absolute inset-0"
+              style={{
+                animation: 'orbit-spin-ccw 12s linear infinite'
+              }}
+            >
+              <div 
+                className="absolute w-2.5 h-2.5 rounded-full bg-gradient-to-br from-[#DBD5B5] to-[#c9c3a3] shadow-lg shadow-[#DBD5B5]/60"
+                style={{
+                  bottom: '-5px',
+                  left: '50%',
+                  transform: 'translateX(-50%)'
+                }}
+              />
+            </div>
+          </div>
           
-          <div className="relative flex flex-col lg:flex-row">
+          {/* Keyframes for Orbiting Animation */}
+          <style>{`
+            @keyframes orbit-spin-cw {
+              from { transform: rotate(0deg); }
+              to { transform: rotate(360deg); }
+            }
+            @keyframes orbit-spin-ccw {
+              from { transform: rotate(0deg); }
+              to { transform: rotate(-360deg); }
+            }
+          `}</style>
+          
+          {/* Card Glassmorphism Container */}
+          <div className="relative bg-white/[0.03] backdrop-blur-xl rounded-2xl md:rounded-3xl border border-white/10 overflow-hidden hover:border-[#8B7E66]/30 transition-all duration-500">
+            {/* Gradient Glow Effect on Hover */}
+            <div className="absolute -inset-px bg-gradient-to-r from-[#8B7E66]/0 via-[#8B7E66]/10 to-[#8B7E66]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl blur-xl"></div>
+            
+            <div className="relative flex flex-col lg:flex-row">
             
             {/* Left Side - Visual / Document Preview */}
             <div className="lg:w-2/5 p-6 md:p-10 flex flex-col justify-between bg-gradient-to-br from-[#0D0D0D] via-[#111] to-[#0D0D0D] border-b lg:border-b-0 lg:border-r border-white/5 relative overflow-hidden">
