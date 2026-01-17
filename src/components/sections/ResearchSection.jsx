@@ -307,6 +307,7 @@ const ResearchSection = () => {
         </div>
 
       </div>
+      </div>
     </section>
   );
 };
