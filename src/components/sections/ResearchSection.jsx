@@ -119,24 +119,25 @@ const ResearchSection = () => {
           <div className="hidden md:block absolute inset-0 rounded-2xl md:rounded-3xl pointer-events-none overflow-visible z-10">
             {/* Beam 1: Gold, Clockwise, Starts Top-Center */}
             <div 
-              className="absolute w-[150px] h-[2px] bg-gradient-to-r from-transparent via-[#8B7E66] to-[#8B7E66]"
+              className="absolute w-[150px] h-[2px] bg-gradient-to-r from-transparent via-[#8B7E66]/40 to-[#8B7E66]"
               style={{
                 top: 0,
                 left: 0,
                 offsetPath: 'rect(0 100% 100% 0 round 24px)',
-                offsetAnchor: '100% 0', // Anchor to the leading tip of the beam? No, anchor to center line.
                 animation: 'beam-travel-cw 8s infinite linear',
-              }} // Offset starting position is handled by animation keyframes or initial offset-distance
+                animationDelay: '-1.2s' // Start roughly at top-center (12.5% of 8s)
+              }} 
             />
 
-            {/* Beam 2: Creme, Counter-Clockwise, Starts Bottom-Center */}
+            {/* Beam 2: Creme, Clockwise (travels left from bottom), Starts Bottom-Center */}
             <div 
-              className="absolute w-[150px] h-[2px] bg-gradient-to-r from-transparent via-[#DBD5B5] to-[#DBD5B5]"
+              className="absolute w-[150px] h-[2px] bg-gradient-to-r from-transparent via-[#DBD5B5]/40 to-[#DBD5B5]"
               style={{
                 top: 0,
                 left: 0,
                 offsetPath: 'rect(0 100% 100% 0 round 24px)',
-                animation: 'beam-travel-ccw 8s infinite linear',
+                animation: 'beam-travel-cw 8s infinite linear',
+                animationDelay: '-5.2s' // Start roughly at bottom-center (62.5% of 8s)
               }}
             />
           </div>
@@ -145,15 +146,9 @@ const ResearchSection = () => {
           <style>{`
             @keyframes beam-travel-cw {
               0% { offset-distance: 0%; opacity: 0; }
-              10% { opacity: 1; }
+              5% { opacity: 1; }
               90% { opacity: 1; }
               100% { offset-distance: 100%; opacity: 0; }
-            }
-            @keyframes beam-travel-ccw {
-              0% { offset-distance: 50%; opacity: 0; } /* Start at bottom (50%) */
-              10% { opacity: 1; }
-              90% { opacity: 1; }
-              100% { offset-distance: -50%; opacity: 0; } /* Go backwards to -50% */
             }
           `}</style>
           
