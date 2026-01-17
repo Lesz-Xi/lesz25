@@ -243,34 +243,32 @@ const RoleShowcase = () => {
                 const dotB = dnaDotsB[i];
                 const line = pair;
                 
-                // Enhanced spacing for taller helix (20 pairs * 8px = 160px total height)
-                // Centered at y=100: start at 100 - 80 = 20
-                const yPos = 20 + (i * 8);
+                // Enhanced spacing for taller helix (30 pairs * 6px = 180px total height)
+                // Centered within 200px height: start at 10
+                const yPos = 10 + (i * 6);
                 const centerX = 200;
-                const width = 70; // Wider oscillation for dramatic effect
-                const speed = 3; // Faster rotation per scroll
-                const phase = i * 0.35; // Tighter twist for clearer helix
+                const width = 75; // Slightly wider oscillation for drama
+                const speed = 3; 
+                const phase = i * 0.5; // Tighter twist for more scientific complexity
                 
                 // Calculate simulated 3D positions
-                // Angle = time * speed + phase offset
                 const angleA = time * speed + phase;
-                const angleB = angleA + Math.PI; // 180 deg apart
+                const angleB = angleA + Math.PI; 
                 
                 const xA = centerX + Math.sin(angleA) * width;
                 const xB = centerX + Math.sin(angleB) * width;
                 
-                // Z-index simulation (scale/opacity)
-                // Cosine gives depth (-1 is back, 1 is front)
+                // Z-index simulation
                 const zA = Math.cos(angleA); 
                 const zB = Math.cos(angleB);
                 
-                // Enhanced radius range: 2-6px for stronger depth perception
-                const scaleA = 4 + (zA * 2); // Radius 2 to 6
-                const scaleB = 4 + (zB * 2);
+                // Enhanced radius range: 2px (back) to 7px (front) for stronger depth
+                const scaleA = 2 + ((zA + 1) / 2) * 5; 
+                const scaleB = 2 + ((zB + 1) / 2) * 5;
                 
-                // Enhanced opacity range: 0.3 to 1.0 for stronger depth
-                const opacityA = 0.3 + ((zA + 1) / 2) * 0.7;
-                const opacityB = 0.3 + ((zB + 1) / 2) * 0.7;
+                // Enhanced opacity range: 0.15 (back) to 1.0 (front) for deep atmosphere
+                const opacityA = 0.15 + ((zA + 1) / 2) * 0.85;
+                const opacityB = 0.15 + ((zB + 1) / 2) * 0.85;
                 
                 // Apply
                 if(dotA && dotB && line) {
@@ -290,9 +288,9 @@ const RoleShowcase = () => {
                     line.setAttribute("x2", xB);
                     line.setAttribute("y2", yPos);
                     
-                    // Dynamic line opacity based on average depth
+                    // Faint connection lines that disappear at the back
                     const avgZ = (zA + zB) / 2;
-                    const lineOpacity = 0.2 + ((avgZ + 1) / 2) * 0.4; // 0.2 to 0.6
+                    const lineOpacity = 0.05 + ((avgZ + 1) / 2) * 0.4; // 0.05 to 0.45
                     line.setAttribute("opacity", lineOpacity);
                 }
              });
@@ -390,9 +388,9 @@ const RoleShowcase = () => {
                         </filter>
                     </defs>
                     
-                    {/* DNA Strands & Connections - 20 base pairs for denser helix */}
+                    {/* DNA Strands & Connections - 30 base pairs for denser helix */}
                     <g className="dna-structure">
-                        {Array.from({ length: 20 }).map((_, i) => (
+                        {Array.from({ length: 30 }).map((_, i) => (
                             <g key={i} className="dna-base-pair">
                                 {/* Connecting Line (Base Pair) */}
                                 <line className="base-pair-line" x1="0" y1="0" x2="0" y2="0" stroke="url(#dna-gradient)" strokeWidth="1.5" opacity="0.3" />
