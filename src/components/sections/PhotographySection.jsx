@@ -64,7 +64,7 @@ const PhotographySection = () => {
       location: "COLLECTIONS",
       year: "2025",
       category: "NATURE",
-      className: "md:col-span-1 md:-mt-32",
+      className: "md:col-span-1 md:mt-0",
       speed: 0.8
     }
   ];
