@@ -25,7 +25,7 @@ const RoleShowcase = () => {
       scrollTrigger: {
         trigger: containerRef.current,
         start: "top top",
-        end: "+=500%", // Pin for 5 screen heights to accommodate 4 roles
+        end: "+=400%", // Reduced from 500% to fix "scrolling thrice" issue
         scrub: 0.5,    // Reduced from 1.5 for snappier response
         pin: true,
       }
