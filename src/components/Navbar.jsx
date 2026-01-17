@@ -39,7 +39,6 @@ const Navbar = () => {
 
   const navLinks = [
     { name: "Home", href: "/" },
-    { name: "My Story", href: "/#work" },
     { name: "Photography", href: "/#photography" },
     { name: "Journey", href: "/#about" },
     { name: "Research", href: "/#research" },
