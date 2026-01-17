@@ -34,8 +34,12 @@ const ProjectCarousel = () => {
     }
   ];
 
-  const handleProjectClick = (index) => {
-    setActiveIndex(index);
+  const handleNext = () => {
+    setActiveIndex((prev) => (prev + 1) % projects.length);
+  };
+
+  const handlePrev = () => {
+    setActiveIndex((prev) => (prev - 1 + projects.length) % projects.length);
   };
 
   useGSAP(() => {
@@ -43,30 +47,23 @@ const ProjectCarousel = () => {
     
     cards.forEach((card, index) => {
       // Calculate specific properties based on position relative to active index
-      const isCenter = index === activeIndex;
-      const isLeft = index < activeIndex; // e.g. 0 when active is 1
-      const isRight = index > activeIndex; // e.g. 2 when active is 1
+      // ... (logic remains same, just ensure filter is explicit)
       
-      // Determine X position
-      // Center: 0
-      // Immediate Left: -60%
-      // Immediate Right: 60%
-      // Further out: stack them further
       let xPos = "0%";
       let scale = 1;
       let opacity = 1;
       let zIndex = 10;
-      let filter = "none";
+      let filter = "blur(0px)"; // Explicitly no blur for center
       let brightness = 1;
 
       if (index !== activeIndex) {
         const diff = index - activeIndex;
-        xPos = `${diff * 65}%`; // -65% or +65%
+        xPos = `${diff * 65}%`; 
         scale = 0.85;
         opacity = 0.6;
         zIndex = 5;
-        filter = "blur(2px)";
-        brightness = 0.5;
+        filter = "blur(3px)"; // Slightly increased blur for depth
+        brightness = 0.4;
       }
 
       gsap.to(card, {
@@ -80,7 +77,7 @@ const ProjectCarousel = () => {
       });
     });
 
-  }, { scope: containerRef, dependencies: [activeIndex] }); // Re-run when activeIndex changes
+  }, { scope: containerRef, dependencies: [activeIndex] });
 
   return (
     <section 
@@ -106,7 +103,7 @@ const ProjectCarousel = () => {
         {projects.map((project, index) => (
           <div
             key={project.id}
-            onClick={() => handleProjectClick(index)}
+            onClick={() => handleProjectClick(index)} // Allow clicking any card to center it
             className={`project-card absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] md:w-[460px] aspect-[3/4.2] flex flex-col rounded-3xl overflow-hidden shadow-2xl cursor-pointer will-change-transform border border-white/10 bg-[#0A0A0A]`}
           >
             {/* Image (Top 65%) */}
@@ -136,12 +133,11 @@ const ProjectCarousel = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group inline-flex items-center gap-2 text-white/60 hover:text-[#8B7E66] transition-colors text-sm font-medium"
-                  onClick={(e) => e.stopPropagation()} // Prevent card click when clicking link
+                  onClick={(e) => e.stopPropagation()} 
                 >
                   <span>View Case Study</span>
                 </a>
                 
-                {/* Circular Button */}
                 <div className="w-10 h-10 rounded-full bg-[#1C1C21] border border-white/10 flex items-center justify-center group-hover:border-[#8B7E66]/50 group-hover:bg-[#2A2A30] transition-all">
                   <svg className="w-4 h-4 text-white group-hover:text-[#8B7E66]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
@@ -153,22 +149,48 @@ const ProjectCarousel = () => {
         ))}
       </div>
 
-      {/* Pagination Dots */}
-      <div className="relative z-10 flex gap-4 justify-center mt-12">
-        {projects.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setActiveIndex(i)}
-            className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
-              i === activeIndex 
-                ? "bg-[#8B7E66] scale-125 shadow-[0_0_10px_#8B7E66]" 
-                : "bg-white/20 hover:bg-white/40"
-            }`}
-            aria-label={`Go to project ${i + 1}`}
-          />
-        ))}
+      {/* Navigation & Pagination */}
+      <div className="relative z-10 flex items-center justify-center gap-8 mt-12">
+        {/* Prev Button */}
+        <button 
+          onClick={handlePrev}
+          className="p-4 rounded-full bg-white/5 border border-white/10 text-white/50 hover:text-[#8B7E66] hover:border-[#8B7E66]/30 hover:bg-white/10 transition-all active:scale-95"
+          aria-label="Previous project"
+        >
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+
+        {/* Dots */}
+        <div className="flex gap-4">
+          {projects.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setActiveIndex(i)}
+              className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                i === activeIndex 
+                  ? "bg-[#8B7E66] scale-125 shadow-[0_0_10px_#8B7E66]" 
+                  : "bg-white/20 hover:bg-white/40"
+              }`}
+              aria-label={`Go to project ${i + 1}`}
+            />
+          ))}
+        </div>
+
+        {/* Next Button */}
+        <button 
+          onClick={handleNext}
+          className="p-4 rounded-full bg-white/5 border border-white/10 text-white/50 hover:text-[#8B7E66] hover:border-[#8B7E66]/30 hover:bg-white/10 transition-all active:scale-95"
+          aria-label="Next project"
+        >
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
       </div>
     </section>
+  );
   );
 };
 
