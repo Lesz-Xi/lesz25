@@ -41,19 +41,19 @@ const ProjectCarousel = () => {
   useGSAP(() => {
     let mm = gsap.matchMedia();
     
-    // DESKTOP: Fan Deck Interaction (Artistic "Checkmark" Layout)
+    // DESKTOP: Fan Deck Interaction (Artistic "W" Layout)
     mm.add("(min-width: 769px)", () => {
       const cards = gsap.utils.toArray(".project-card");
       
-      // 1. Initial State - "Checkmark" Flow \ / /
-      // Card 0: Left, Tilted Left (Base of V)
-      // Card 1: Center, Tilted Right (Base of V, connecting)
-      // Card 2: Right, Tilted Right (High tail)
+      // 1. Initial State - "W" Formation (High-Low-High Zigzag)
+      // Card 0: Lef/Top, Tilted Left (\)
+      // Card 1: Center/Bottom, Tilted Right (/) -> Creates V shape with Card 0
+      // Card 2: Right/Top, Tilted Left (\) -> Creates inverted V with Card 1
       
       const layouts = [
-        { rotation: -15, xPercent: -75, yPercent: -35, zIndex: 1 }, // Left
-        { rotation: 15, xPercent: -50, yPercent: -35, zIndex: 2 },  // Center (Universe Splitter)
-        { rotation: 15, xPercent: -25, yPercent: -70, zIndex: 3 }   // Right (High)
+        { rotation: -15, xPercent: -75, yPercent: -60, zIndex: 1 }, // Left/High (\)
+        { rotation: 15, xPercent: -50, yPercent: -35, zIndex: 3 },  // Center/Low (/) - On Top
+        { rotation: -15, xPercent: -25, yPercent: -60, zIndex: 2 }  // Right/High (\)
       ];
 
       gsap.set(cards, {
@@ -166,7 +166,7 @@ const ProjectCarousel = () => {
         {projects.map((project, index) => (
             <div
               key={project.id}
-              className="project-card w-full md:w-[45vw] md:max-w-[700px] aspect-[4/5] md:aspect-video flex flex-col md:flex-row rounded-2xl md:rounded-3xl overflow-hidden border-2 border-white/5 shadow-[0_8px_32px_rgba(0,0,0,0.4),0_0_0_1px_rgba(139,126,102,0.1)] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4),0_0_40px_rgba(139,126,102,0.3)] transition-shadow duration-500 bg-[#1C1C21]"
+              className="project-card w-full md:w-[55vw] md:max-w-[800px] aspect-[4/5] md:aspect-video flex flex-col md:flex-row rounded-2xl md:rounded-3xl overflow-hidden border-2 border-white/5 shadow-[0_8px_32px_rgba(0,0,0,0.4),0_0_0_1px_rgba(139,126,102,0.1)] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4),0_0_40px_rgba(139,126,102,0.3)] transition-shadow duration-500 bg-[#1C1C21]"
             >
               {/* Image Section */}
               <div 
