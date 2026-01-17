@@ -476,7 +476,7 @@ const RoleShowcase = () => {
 
         {/* Role 4: Researcher */}
         <div className="role-item absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center opacity-0">
-            <h2 className="text-[9vw] md:text-[12vw] leading-none font-bold font-pixel tracking-tighter uppercase text-[#8B7E66] whitespace-nowrap z-10 relative">
+            <h2 className="text-[9vw] md:text-[12vw] leading-none font-bold font-pixel tracking-tighter uppercase text-[#C7B580] whitespace-nowrap z-10 relative">
                 {"RESEARCHER".split("").map((char, index) => (
                     <span key={index} className="researcher-char inline-block opacity-30">
                         {char}
