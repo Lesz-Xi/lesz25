@@ -54,7 +54,7 @@ const PhotographySection = () => {
       location: "DAVAO CITY",
       year: "2025",
       category: "CULTURE",
-      className: "md:col-span-1 md:mt-32",
+      className: "md:col-span-1 md:-mt-32",
       speed: 1.1
     },
     {
