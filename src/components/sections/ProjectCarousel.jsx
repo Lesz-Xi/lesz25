@@ -42,6 +42,10 @@ const ProjectCarousel = () => {
     setActiveIndex((prev) => (prev - 1 + projects.length) % projects.length);
   };
 
+  const handleProjectClick = (index) => {
+    setActiveIndex(index);
+  };
+
   useGSAP(() => {
     const cards = gsap.utils.toArray(".project-card");
     
@@ -156,17 +160,6 @@ const ProjectCarousel = () => {
 
       {/* Navigation & Pagination */}
       <div className="relative z-10 flex items-center justify-center gap-8 mt-12">
-        {/* Prev Button */}
-        <button 
-          onClick={handlePrev}
-          className="p-4 rounded-full bg-white/5 border border-white/10 text-white/50 hover:text-[#8B7E66] hover:border-[#8B7E66]/30 hover:bg-white/10 transition-all active:scale-95"
-          aria-label="Previous project"
-        >
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
-
         {/* Dots */}
         <div className="flex gap-4">
           {projects.map((_, i) => (
@@ -182,17 +175,6 @@ const ProjectCarousel = () => {
             />
           ))}
         </div>
-
-        {/* Next Button */}
-        <button 
-          onClick={handleNext}
-          className="p-4 rounded-full bg-white/5 border border-white/10 text-white/50 hover:text-[#8B7E66] hover:border-[#8B7E66]/30 hover:bg-white/10 transition-all active:scale-95"
-          aria-label="Next project"
-        >
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
       </div>
     </section>
   );
