@@ -185,50 +185,160 @@ const RoleShowcase = () => {
     researcherTl.fromTo(researcherSvg, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3 }, 0);
 
     // 6.5->7.5: Molecular Network Assembly
+    // 6.5->7.5: DNA Helix 3D Rotation
     if (researcherSvg) {
-        const nodes = researcherSvg.querySelectorAll(".node");
-        const connections = researcherSvg.querySelectorAll("[id^='conn-']");
+        const dnaDotsA = researcherSvg.querySelectorAll(".dna-dot-a");
+        const dnaDotsB = researcherSvg.querySelectorAll(".dna-dot-b");
+        const basePairs = researcherSvg.querySelectorAll(".base-pair-line");
         const researcherChars = containerRef.current.querySelectorAll(".researcher-char");
+        
+        // Initial State: Hidden
+        gsap.set([dnaDotsA, dnaDotsB, basePairs], { opacity: 0 });
 
-        // Appear nodes sequentially with slight stagger
-        researcherTl.to(nodes, {
-            opacity: 0.5, // Transparent/Glassy look
-            duration: 0.1,
-            stagger: 0.08,
-            ease: "power2.out"
-        }, 0.2);
-
-        // Draw connection lines with stagger
-        researcherTl.to(connections, {
-            opacity: 0.3, // Subtle connection lines
-            strokeDashoffset: 0,
-            duration: 0.15,
-            stagger: 0.1,
-            ease: "power2.inOut"
-        }, 0.5);
-
-        // Add pulsing effect to nodes (discovery feel)
-        researcherTl.to(nodes, {
-            opacity: 0.7, // Pulse slightly brighter
-            yoyo: true,
-            repeat: 2,
-            duration: 0.3,
-            stagger: 0.05,
-            ease: "power1.inOut"
-        }, 1.2);
-
-        // Light up characters as network assembles
+        // Text reveal synced with DNA appearance
         if (researcherChars.length > 0) {
-            researcherTl.to(researcherChars, {
+             researcherTl.to(researcherChars, {
                 opacity: 1,
-                duration: 0.1,
-                stagger: {
-                    amount: 0.6,
-                    from: "center"
-                },
+                duration: 1,
+                stagger: { amount: 0.5, from: "center" },
                 ease: "power2.out"
-            }, 1.0);
+            }, 0.2);
         }
+
+        // Animate each base pair row
+        // We simulate 3D rotation by oscillating "cx" (x-position) and scaling "r" (radius)
+        basePairs.forEach((pair, i) => {
+            const dotA = dnaDotsA[i];
+            const dotB = dnaDotsB[i];
+            const line = pair;
+            const progress = i / 12; // Normalized index
+            
+            // Vertical spacing
+            const yPos = 40 + (i * 12); 
+            
+            // Initial fade in
+            researcherTl.to([dotA, dotB, line], { opacity: 0.6, duration: 0.5 }, i * 0.05);
+
+            // Create rotation loop
+            // Use time-based or scroll-based value? Here we link to timeline scrub
+            // A sine wave for x-position: center +/- width * sin(angle)
+            
+            const centerX = 200;
+            const width = 60;
+            const frequency = 0.5; // How many twists in the helix
+            const phase = i * 0.5; // Offset for twist
+
+            // Animate A Strand
+            researcherTl.to(dotA, {
+                attr: { cx: centerX + width, r: 4, opacity: 0.8 }, // Start pos
+                duration: 0
+            }, 0);
+
+             // Animate B Strand (Opposite phase)
+            researcherTl.to(dotB, {
+                 attr: { cx: centerX - width, r: 3, opacity: 0.4 }, // Start pos
+                 duration: 0
+            }, 0);
+            
+             // Continuous Rotation Simulation over the act duration
+             // We animate a 'val' proxy or just direct attributes if we want simpler linear motion
+             // For true 3D feel using just 2D SVG, we oscillate
+             
+             gsap.to(dotA, {
+                 keyframes: {
+                     "0%":   { attr: { cx: centerX + width * Math.sin(phase), r: 4, opacity: 0.8 } },
+                     "25%":  { attr: { cx: centerX + width * Math.sin(phase + Math.PI/2), r: 3, opacity: 0.4 } }, // Back
+                     "50%":  { attr: { cx: centerX + width * Math.sin(phase + Math.PI), r: 4, opacity: 0.8 } },   // Side
+                     "75%":  { attr: { cx: centerX + width * Math.sin(phase + 3*Math.PI/2), r: 5, opacity: 1 } }, // Front
+                     "100%": { attr: { cx: centerX + width * Math.sin(phase + 2*Math.PI), r: 4, opacity: 0.8 } }
+                 },
+                 duration: 4, // Loop duration independent of scroll? Or linked?
+                 repeat: -1,
+                 ease: "none"
+             });
+             
+             // ... simpler approach for ScrollTrigger:
+             // Just specific keyframes mapped to the timeline duration (2s)
+             
+             researcherTl.to(dotA, {
+                 attr: { cx: centerX - width }, // Move to other side
+                 scale: 0.8, // shrink
+                 opacity: 0.3,
+                 yoyo: true,
+                 repeat: 1,
+                 duration: 1,
+                 ease: "sine.inOut"
+             }, 0);
+             
+              researcherTl.to(dotB, {
+                 attr: { cx: centerX + width }, // Move to other side
+                 scale: 1.2, // grow
+                 opacity: 0.9, 
+                 yoyo: true,
+                 repeat: 1,
+                 duration: 1,
+                 ease: "sine.inOut"
+             }, 0);
+             
+             // Update line connectors in an onUpdate or separate tween?
+             // Simplest: Just animate x1/x2 of line to match dots
+             // But syncing separate elements is tricky in simple tweens.
+             // Better: Use an onUpdate loop for the whole group.
+        });
+        
+        // BETTER APPROACH: timeline onUpdate to calculate positions
+        researcherTl.eventCallback("onUpdate", () => {
+             const time = researcherTl.totalTime(); // Current time in seconds within act
+             
+             basePairs.forEach((pair, i) => {
+                const dotA = dnaDotsA[i];
+                const dotB = dnaDotsB[i];
+                const line = pair;
+                
+                const yPos = 40 + (i * 12);
+                const centerX = 200;
+                const width = 50; 
+                const speed = 2; // Rotation speed
+                const phase = i * 0.4; // Twist factor
+                
+                // Calculate simulated 3D positions
+                // Angle = time * speed + phase offset
+                const angleA = time * speed + phase;
+                const angleB = angleA + Math.PI; // 180 deg apart
+                
+                const xA = centerX + Math.sin(angleA) * width;
+                const xB = centerX + Math.sin(angleB) * width;
+                
+                // Z-index simulation (scale/opacity)
+                // Cosine gives depth (-1 is back, 1 is front)
+                const zA = Math.cos(angleA); 
+                const zB = Math.cos(angleB);
+                
+                const scaleA = 3 + (zA * 1); // Radius 2 to 4
+                const scaleB = 3 + (zB * 1);
+                
+                const opacityA = 0.4 + ((zA + 1) / 2) * 0.6; // 0.4 to 1.0
+                const opacityB = 0.4 + ((zB + 1) / 2) * 0.6;
+                
+                // Apply
+                if(dotA && dotB && line) {
+                    dotA.setAttribute("cx", xA);
+                    dotA.setAttribute("cy", yPos);
+                    dotA.setAttribute("r", scaleA);
+                    dotA.setAttribute("opacity", opacityA);
+                    
+                    dotB.setAttribute("cx", xB);
+                    dotB.setAttribute("cy", yPos);
+                    dotB.setAttribute("r", scaleB);
+                    dotB.setAttribute("opacity", opacityB);
+                    
+                    line.setAttribute("x1", xA);
+                    line.setAttribute("y1", yPos);
+                    line.setAttribute("x2", xB);
+                    line.setAttribute("y2", yPos);
+                }
+             });
+        });
     }
 
     // 8.0->8.5: Researcher Exit
@@ -304,37 +414,28 @@ const RoleShowcase = () => {
                     </g>
                 </g>
 
-                {/* --- RESEARCHER: Molecular Network --- */}
+                {/* --- RESEARCHER: DNA Helix --- */}
                 <g id="researcher-svg" className="opacity-0">
                     <defs>
-                        <linearGradient id="molecule-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <linearGradient id="dna-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
                             <stop offset="0%" stopColor="#8B7E66" />
                             <stop offset="100%" stopColor="#DBD5B5" />
                         </linearGradient>
                     </defs>
                     
-                    {/* Connection Lines (will animate in) */}
-                    <g className="molecule-connections">
-                        <line id="conn-1" x1="200" y1="60" x2="250" y2="80" stroke="url(#molecule-gradient)" strokeWidth="1.5" opacity="0" pathLength="1" style={{strokeDasharray: 1, strokeDashoffset: 1}} />
-                        <line id="conn-2" x1="250" y1="80" x2="300" y2="60" stroke="url(#molecule-gradient)" strokeWidth="1.5" opacity="0" pathLength="1" style={{strokeDasharray: 1, strokeDashoffset: 1}} />
-                        <line id="conn-3" x1="200" y1="60" x2="180" y2="100" stroke="url(#molecule-gradient)" strokeWidth="1.5" opacity="0" pathLength="1" style={{strokeDasharray: 1, strokeDashoffset: 1}} />
-                        <line id="conn-4" x1="300" y1="60" x2="320" y2="100" stroke="url(#molecule-gradient)" strokeWidth="1.5" opacity="0" pathLength="1" style={{strokeDasharray: 1, strokeDashoffset: 1}} />
-                        <line id="conn-5" x1="180" y1="100" x2="220" y2="130" stroke="url(#molecule-gradient)" strokeWidth="1.5" opacity="0" pathLength="1" style={{strokeDasharray: 1, strokeDashoffset: 1}} />
-                        <line id="conn-6" x1="320" y1="100" x2="280" y2="130" stroke="url(#molecule-gradient)" strokeWidth="1.5" opacity="0" pathLength="1" style={{strokeDasharray: 1, strokeDashoffset: 1}} />
-                        <line id="conn-7" x1="220" y1="130" x2="280" y2="130" stroke="url(#molecule-gradient)" strokeWidth="1.5" opacity="0" pathLength="1" style={{strokeDasharray: 1, strokeDashoffset: 1}} />
-                        <line id="conn-8" x1="250" y1="80" x2="250" y2="130" stroke="url(#molecule-gradient)" strokeWidth="1.5" opacity="0" pathLength="1" style={{strokeDasharray: 1, strokeDashoffset: 1}} />
-                    </g>
-                    
-                    {/* Nodes (atoms) */}
-                    <g className="molecule-nodes">
-                        <circle className="node" cx="200" cy="60" r="4" fill="#8B7E66" opacity="0" />
-                        <circle className="node" cx="250" cy="80" r="5" fill="#9d8f75" opacity="0" />
-                        <circle className="node" cx="300" cy="60" r="4" fill="#8B7E66" opacity="0" />
-                        <circle className="node" cx="180" cy="100" r="3.5" fill="#DBD5B5" opacity="0" />
-                        <circle className="node" cx="320" cy="100" r="3.5" fill="#DBD5B5" opacity="0" />
-                        <circle className="node" cx="220" cy="130" r="4" fill="#8B7E66" opacity="0" />
-                        <circle className="node" cx="280" cy="130" r="4" fill="#8B7E66" opacity="0" />
-                        <circle className="node" cx="250" cy="130" r="5" fill="#9d8f75" opacity="0" />
+                    {/* DNA Strands & Connections will be generated/animated via GSAP */}
+                    <g className="dna-structure">
+                        {/* We use a loop to create pairs of dots and connecting lines */}
+                        {Array.from({ length: 12 }).map((_, i) => (
+                            <g key={i} className="dna-base-pair">
+                                {/* Connecting Line (Base Pair) */}
+                                <line className="base-pair-line" x1="0" y1="0" x2="0" y2="0" stroke="url(#dna-gradient)" strokeWidth="1" opacity="0.3" />
+                                {/* Strand A Dot */}
+                                <circle className="dna-dot-a" r="3" fill="#8B7E66" opacity="0.6" />
+                                {/* Strand B Dot */}
+                                <circle className="dna-dot-b" r="3" fill="#DBD5B5" opacity="0.6" />
+                            </g>
+                        ))}
                     </g>
                 </g>
              </svg>
