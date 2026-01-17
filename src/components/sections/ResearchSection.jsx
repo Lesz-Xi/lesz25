@@ -118,7 +118,7 @@ const ResearchSection = () => {
           {/* Card Glassmorphism Container */}
           <div className="relative bg-white/[0.03] backdrop-blur-xl rounded-2xl md:rounded-3xl border border-white/10 overflow-hidden hover:border-[#8B7E66]/30 transition-all duration-500">
             {/* Gradient Glow Effect on Hover */}
-            <div className="absolute -inset-px bg-gradient-to-r from-[#8B7E66]/0 via-[#8B7E66]/10 to-[#8B7E66]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl blur-xl"></div>
+            <div className="absolute -inset-px bg-gradient-to-r from-transparent via-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl blur-xl"></div>
             
             <div className="relative flex flex-col lg:flex-row">
             
