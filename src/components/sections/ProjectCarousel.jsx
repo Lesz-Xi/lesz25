@@ -55,14 +55,14 @@ const ProjectCarousel = () => {
       // Right: Rotated Right (12deg)
       
       const layouts = [
-        { rotation: -12, xPercent: -85, yPercent: -45, zIndex: 1 },  // Left (\)
-        { rotation: 0, xPercent: -50, yPercent: -45, zIndex: 2 },    // Center (|)
-        { rotation: 12, xPercent: -15, yPercent: -45, zIndex: 1 }    // Right (/)
+        { rotation: 0, xPercent: -100, yPercent: -50, zIndex: 1 },   // Left (Floating Slab)
+        { rotation: 0, xPercent: -50, yPercent: -50, zIndex: 2 },   // Center
+        { rotation: 0, xPercent: 0, yPercent: -50, zIndex: 1 }      // Right
       ];
 
       gsap.set(cards, {
         position: "absolute",
-        top: "50%",
+        top: "40%", // Moved up from 50% to fix "way at bottom" issue
         left: "50%",
         transformOrigin: "center center"
       });
@@ -82,39 +82,46 @@ const ProjectCarousel = () => {
           ease: "power3.out"
         });
 
-        // Hover Interaction - Straighten & Lift (Stable Position)
+        // Hover Interaction - Lift & Highlight (No Rotation)
         card.addEventListener("mouseenter", () => {
           gsap.to(card, {
-            rotation: 0,            // Straighten the card to read
             scale: 1.05,            // Lift
             zIndex: 100,            // Bring to front
             filter: "brightness(1) contrast(1)", // Full visibility
             duration: 0.5,
-            ease: "back.out(1.2)"
+            ease: "back.out(1.2)",
+            overwrite: "auto"
           });
 
           // Siblings: Fade background
           cards.filter(c => c !== card).forEach(sibling => {
             gsap.to(sibling, {
               scale: 0.85,
-              filter: "brightness(0.3) blur(2px)", // Blur siblings for focus
-              duration: 0.4
+              filter: "brightness(0.3) blur(2px)", // Blur siblings
+              duration: 0.4,
+              overwrite: "auto"
             });
           });
         });
 
-        card.addEventListener("mouseleave", () => {
-          // Reset to Fan Layout
+        card.addEventListener("mouseleave", (e) => {
+          // Smart Logic: If moving to another card, don't reset!
+          // This fixes the "glitch" where moving from Center -> Side resets everything.
+          if (e.relatedTarget && e.relatedTarget.closest(".project-card")) return;
+
+          // Reset to Main Layout
           cards.forEach((c, index) => {
              const l = layouts[index];
              
              gsap.to(c, {
-                rotation: l.rotation, // Rotate back
+                rotation: l.rotation, 
+                xPercent: l.xPercent, // Ensure X returns (though it shouldn't change)
                 scale: 0.9,
                 zIndex: l.zIndex,
                 filter: "brightness(0.5) contrast(1.1)", 
                 duration: 0.8,
-                ease: "power3.out"
+                ease: "power3.out",
+                overwrite: "auto"
              });
           });
         });
