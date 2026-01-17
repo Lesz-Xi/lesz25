@@ -45,11 +45,11 @@ const ShowcaseSection = () => {
           {/* MAIN TEXT */}
           <div className="space-y-6 text-[#0D0C1D]/80 text-[15px] md:text-lg leading-relaxed font-geist-mono max-w-lg">
             <p>
-              I approach development as a form of inquiry—treating every project with the rigor of research 
-              and the clarity of a publication.
+              Development is my form of inquiry. I treat every project with the rigor of 
+              research and the clarity of a publication.
             </p>
             <p>
-              My work bridges technical precision and artistic intuition to create experiences that 
+              My work bridges precision and intuition, creating experiences that 
               don't just function—they communicate.
             </p>
           </div>
