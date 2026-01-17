@@ -18,7 +18,7 @@ const ProjectCarousel = () => {
       image: "/images/projects/thesislens-v2.webp",
       color: "#F4F1EA",
       link: "https://thesislens.space/",
-      fit: "contain"
+      fit: "cover"
     },
     {
       id: 3,
@@ -27,7 +27,7 @@ const ProjectCarousel = () => {
       image: "/images/projects/universe-splitter.webp",
       color: "#000000",
       link: "https://univ-spitter.vercel.app/",
-      fit: "contain"
+      fit: "cover"
     },
     {
       id: 2,
@@ -36,7 +36,7 @@ const ProjectCarousel = () => {
       image: "/images/projects/skillshift-v3.webp",
       color: "#111111",
       link: "https://skillshift.vercel.app/",
-      fit: "contain"
+      fit: "cover"
     }
   ];
 
