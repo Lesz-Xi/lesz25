@@ -117,50 +117,43 @@ const ResearchSection = () => {
         >
           {/* Orbiting Border Animation Container - Desktop Only */}
           <div className="hidden md:block absolute inset-0 rounded-2xl md:rounded-3xl pointer-events-none overflow-visible z-10">
-            {/* Orbit Wrapper 1: Clockwise, starts top-center */}
+            {/* Beam 1: Gold, Clockwise, Starts Top-Center */}
             <div 
-              className="absolute inset-0"
+              className="absolute w-[150px] h-[2px] bg-gradient-to-r from-transparent via-[#8B7E66] to-[#8B7E66]"
               style={{
-                animation: 'orbit-spin-cw 12s linear infinite'
-              }}
-            >
-              <div 
-                className="absolute w-2.5 h-2.5 rounded-full bg-gradient-to-br from-[#8B7E66] to-[#9d8f75] shadow-lg shadow-[#8B7E66]/60"
-                style={{
-                  top: '-5px',
-                  left: '50%',
-                  transform: 'translateX(-50%)'
-                }}
-              />
-            </div>
-            
-            {/* Orbit Wrapper 2: Counter-clockwise, starts bottom-center */}
+                top: 0,
+                left: 0,
+                offsetPath: 'rect(0 100% 100% 0 round 24px)',
+                offsetAnchor: '100% 0', // Anchor to the leading tip of the beam? No, anchor to center line.
+                animation: 'beam-travel-cw 8s infinite linear',
+              }} // Offset starting position is handled by animation keyframes or initial offset-distance
+            />
+
+            {/* Beam 2: Creme, Counter-Clockwise, Starts Bottom-Center */}
             <div 
-              className="absolute inset-0"
+              className="absolute w-[150px] h-[2px] bg-gradient-to-r from-transparent via-[#DBD5B5] to-[#DBD5B5]"
               style={{
-                animation: 'orbit-spin-ccw 12s linear infinite'
+                top: 0,
+                left: 0,
+                offsetPath: 'rect(0 100% 100% 0 round 24px)',
+                animation: 'beam-travel-ccw 8s infinite linear',
               }}
-            >
-              <div 
-                className="absolute w-2.5 h-2.5 rounded-full bg-gradient-to-br from-[#DBD5B5] to-[#c9c3a3] shadow-lg shadow-[#DBD5B5]/60"
-                style={{
-                  bottom: '-5px',
-                  left: '50%',
-                  transform: 'translateX(-50%)'
-                }}
-              />
-            </div>
+            />
           </div>
           
           {/* Keyframes for Orbiting Animation */}
           <style>{`
-            @keyframes orbit-spin-cw {
-              from { transform: rotate(0deg); }
-              to { transform: rotate(360deg); }
+            @keyframes beam-travel-cw {
+              0% { offset-distance: 0%; opacity: 0; }
+              10% { opacity: 1; }
+              90% { opacity: 1; }
+              100% { offset-distance: 100%; opacity: 0; }
             }
-            @keyframes orbit-spin-ccw {
-              from { transform: rotate(0deg); }
-              to { transform: rotate(-360deg); }
+            @keyframes beam-travel-ccw {
+              0% { offset-distance: 50%; opacity: 0; } /* Start at bottom (50%) */
+              10% { opacity: 1; }
+              90% { opacity: 1; }
+              100% { offset-distance: -50%; opacity: 0; } /* Go backwards to -50% */
             }
           `}</style>
           
