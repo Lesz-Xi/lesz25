@@ -216,77 +216,18 @@ const RoleShowcase = () => {
             // Vertical spacing
             const yPos = 40 + (i * 12); 
             
-            // Initial fade in
-            researcherTl.to([dotA, dotB, line], { opacity: 0.6, duration: 0.5 }, i * 0.05);
-
-            // Create rotation loop
-            // Use time-based or scroll-based value? Here we link to timeline scrub
-            // A sine wave for x-position: center +/- width * sin(angle)
+        // Animate each base pair row - initial fade in only
+        // All dynamic animation handled by onUpdate callback below
+        basePairs.forEach((pair, i) => {
+            const dotA = dnaDotsA[i];
+            const dotB = dnaDotsB[i];
+            const line = pair;
             
-            const centerX = 200;
-            const width = 60;
-            const frequency = 0.5; // How many twists in the helix
-            const phase = i * 0.5; // Offset for twist
-
-            // Animate A Strand
-            researcherTl.to(dotA, {
-                attr: { cx: centerX + width, r: 4, opacity: 0.8 }, // Start pos
-                duration: 0
-            }, 0);
-
-             // Animate B Strand (Opposite phase)
-            researcherTl.to(dotB, {
-                 attr: { cx: centerX - width, r: 3, opacity: 0.4 }, // Start pos
-                 duration: 0
-            }, 0);
-            
-             // Continuous Rotation Simulation over the act duration
-             // We animate a 'val' proxy or just direct attributes if we want simpler linear motion
-             // For true 3D feel using just 2D SVG, we oscillate
-             
-             gsap.to(dotA, {
-                 keyframes: {
-                     "0%":   { attr: { cx: centerX + width * Math.sin(phase), r: 4, opacity: 0.8 } },
-                     "25%":  { attr: { cx: centerX + width * Math.sin(phase + Math.PI/2), r: 3, opacity: 0.4 } }, // Back
-                     "50%":  { attr: { cx: centerX + width * Math.sin(phase + Math.PI), r: 4, opacity: 0.8 } },   // Side
-                     "75%":  { attr: { cx: centerX + width * Math.sin(phase + 3*Math.PI/2), r: 5, opacity: 1 } }, // Front
-                     "100%": { attr: { cx: centerX + width * Math.sin(phase + 2*Math.PI), r: 4, opacity: 0.8 } }
-                 },
-                 duration: 4, // Loop duration independent of scroll? Or linked?
-                 repeat: -1,
-                 ease: "none"
-             });
-             
-             // ... simpler approach for ScrollTrigger:
-             // Just specific keyframes mapped to the timeline duration (2s)
-             
-             researcherTl.to(dotA, {
-                 attr: { cx: centerX - width }, // Move to other side
-                 scale: 0.8, // shrink
-                 opacity: 0.3,
-                 yoyo: true,
-                 repeat: 1,
-                 duration: 1,
-                 ease: "sine.inOut"
-             }, 0);
-             
-              researcherTl.to(dotB, {
-                 attr: { cx: centerX + width }, // Move to other side
-                 scale: 1.2, // grow
-                 opacity: 0.9, 
-                 yoyo: true,
-                 repeat: 1,
-                 duration: 1,
-                 ease: "sine.inOut"
-             }, 0);
-             
-             // Update line connectors in an onUpdate or separate tween?
-             // Simplest: Just animate x1/x2 of line to match dots
-             // But syncing separate elements is tricky in simple tweens.
-             // Better: Use an onUpdate loop for the whole group.
+            // Staggered fade in
+            researcherTl.to([dotA, dotB, line], { opacity: 0.8, duration: 0.3 }, i * 0.03);
         });
         
-        // BETTER APPROACH: timeline onUpdate to calculate positions
+        // SCROLL-LINKED ANIMATION: Calculate positions based on timeline progress
         researcherTl.eventCallback("onUpdate", () => {
              const time = researcherTl.totalTime(); // Current time in seconds within act
              
@@ -295,11 +236,12 @@ const RoleShowcase = () => {
                 const dotB = dnaDotsB[i];
                 const line = pair;
                 
-                const yPos = 40 + (i * 12);
+                // Enhanced spacing for taller helix (20 pairs * 8px = 160px total height)
+                const yPos = 30 + (i * 8);
                 const centerX = 200;
-                const width = 50; 
-                const speed = 2; // Rotation speed
-                const phase = i * 0.4; // Twist factor
+                const width = 70; // Wider oscillation for dramatic effect
+                const speed = 3; // Faster rotation per scroll
+                const phase = i * 0.35; // Tighter twist for clearer helix
                 
                 // Calculate simulated 3D positions
                 // Angle = time * speed + phase offset
@@ -314,11 +256,13 @@ const RoleShowcase = () => {
                 const zA = Math.cos(angleA); 
                 const zB = Math.cos(angleB);
                 
-                const scaleA = 3 + (zA * 1); // Radius 2 to 4
-                const scaleB = 3 + (zB * 1);
+                // Enhanced radius range: 2-6px for stronger depth perception
+                const scaleA = 4 + (zA * 2); // Radius 2 to 6
+                const scaleB = 4 + (zB * 2);
                 
-                const opacityA = 0.4 + ((zA + 1) / 2) * 0.6; // 0.4 to 1.0
-                const opacityB = 0.4 + ((zB + 1) / 2) * 0.6;
+                // Enhanced opacity range: 0.3 to 1.0 for stronger depth
+                const opacityA = 0.3 + ((zA + 1) / 2) * 0.7;
+                const opacityB = 0.3 + ((zB + 1) / 2) * 0.7;
                 
                 // Apply
                 if(dotA && dotB && line) {
@@ -332,10 +276,16 @@ const RoleShowcase = () => {
                     dotB.setAttribute("r", scaleB);
                     dotB.setAttribute("opacity", opacityB);
                     
+                    // Line connects both dots
                     line.setAttribute("x1", xA);
                     line.setAttribute("y1", yPos);
                     line.setAttribute("x2", xB);
                     line.setAttribute("y2", yPos);
+                    
+                    // Dynamic line opacity based on average depth
+                    const avgZ = (zA + zB) / 2;
+                    const lineOpacity = 0.2 + ((avgZ + 1) / 2) * 0.4; // 0.2 to 0.6
+                    line.setAttribute("opacity", lineOpacity);
                 }
              });
         });
@@ -418,22 +368,30 @@ const RoleShowcase = () => {
                 <g id="researcher-svg" className="opacity-0">
                     <defs>
                         <linearGradient id="dna-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stopColor="#8B7E66" />
+                            <stop offset="0%" stopColor="#C7B580" />
                             <stop offset="100%" stopColor="#DBD5B5" />
                         </linearGradient>
+                        {/* Glow Filter for 2041 Futuristic Effect */}
+                        <filter id="dna-glow" x="-100%" y="-100%" width="300%" height="300%">
+                            <feGaussianBlur stdDeviation="2" result="blur"/>
+                            <feDropShadow dx="0" dy="0" stdDeviation="4" floodColor="#C7B580" floodOpacity="0.6"/>
+                            <feMerge>
+                                <feMergeNode in="blur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
                     </defs>
                     
-                    {/* DNA Strands & Connections will be generated/animated via GSAP */}
+                    {/* DNA Strands & Connections - 20 base pairs for denser helix */}
                     <g className="dna-structure">
-                        {/* We use a loop to create pairs of dots and connecting lines */}
-                        {Array.from({ length: 12 }).map((_, i) => (
+                        {Array.from({ length: 20 }).map((_, i) => (
                             <g key={i} className="dna-base-pair">
                                 {/* Connecting Line (Base Pair) */}
-                                <line className="base-pair-line" x1="0" y1="0" x2="0" y2="0" stroke="url(#dna-gradient)" strokeWidth="1" opacity="0.3" />
+                                <line className="base-pair-line" x1="0" y1="0" x2="0" y2="0" stroke="url(#dna-gradient)" strokeWidth="1.5" opacity="0.3" />
                                 {/* Strand A Dot */}
-                                <circle className="dna-dot-a" r="3" fill="#8B7E66" opacity="0.6" />
+                                <circle className="dna-dot-a" r="3" fill="#C7B580" filter="url(#dna-glow)" opacity="0.6" />
                                 {/* Strand B Dot */}
-                                <circle className="dna-dot-b" r="3" fill="#DBD5B5" opacity="0.6" />
+                                <circle className="dna-dot-b" r="3" fill="#DBD5B5" filter="url(#dna-glow)" opacity="0.6" />
                             </g>
                         ))}
                     </g>
