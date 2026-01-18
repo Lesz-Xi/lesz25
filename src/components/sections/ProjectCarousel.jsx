@@ -91,14 +91,14 @@ const ProjectCarousel = () => {
     <section 
       id="projects" 
       ref={containerRef} 
-      className="relative w-full bg-[#070707] py-24 overflow-hidden min-h-[100vh] flex flex-col justify-center"
+      className="relative w-full bg-[#F5F2EB] py-24 overflow-hidden min-h-[100vh] flex flex-col justify-center"
     >
       {/* Noise Texture */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.04] bg-noise-pattern z-0"></div>
 
       {/* Header */}
       <div className="text-center w-full px-4 mb-24 relative z-10 transition-colors duration-500">
-        <span className="text-xs font-bold tracking-[0.25em] text-[#DBD5B5]/40 uppercase mb-3 block">
+        <span className="text-xs font-bold tracking-[0.25em] text-[#8B7E66] uppercase mb-3 block">
            Selected Work
          </span>
          <h2 className="text-4xl md:text-6xl font-bold font-accent text-[#8B7E66]">
@@ -168,8 +168,8 @@ const ProjectCarousel = () => {
               onClick={() => setActiveIndex(i)}
               className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
                 i === activeIndex 
-                  ? "bg-white scale-125 shadow-[0_0_10px_rgba(255,255,255,0.5)]" 
-                  : "bg-white/20 hover:bg-white/40"
+                  ? "bg-[#8B7E66] scale-125 shadow-[0_0_10px_rgba(139,126,102,0.5)]" 
+                  : "bg-[#8B7E66]/20 hover:bg-[#8B7E66]/40"
               }`}
               aria-label={`Go to project ${i + 1}`}
             />
