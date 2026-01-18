@@ -57,11 +57,11 @@ const ShowcaseSection = () => {
           {/* STATS / DETAILS (Gold Columns) */}
           <div className="flex gap-12 border-l border-[#DBD5B5] pl-6">
             <div>
-              <span className="block text-[#C7B580] font-display text-xl transition-colors duration-300 hover:text-white cursor-default">100%</span>
+              <span className="block text-[#C7B580] font-display text-xl transition-colors duration-300 hover:text-black cursor-default">100%</span>
               <span className="text-xs uppercase tracking-widest text-[#0D0C1D]/60 mt-1">User Centric</span>
             </div>
             <div>
-              <span className="block text-[#C7B580] font-display text-xl transition-colors duration-300 hover:text-white cursor-default">Philippines</span>
+              <span className="block text-[#C7B580] font-display text-xl transition-colors duration-300 hover:text-black cursor-default">Philippines</span>
               <span className="text-xs uppercase tracking-widest text-[#0D0C1D]/60 mt-1">Based</span>
             </div>
           </div>
