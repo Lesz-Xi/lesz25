@@ -168,8 +168,8 @@ const ProjectCarousel = () => {
               onClick={() => setActiveIndex(i)}
               className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
                 i === activeIndex 
-                  ? "bg-white scale-125 shadow-[0_0_10px_rgba(0,0,0,0.1)]" 
-                  : "bg-white/40 hover:bg-white/60"
+                  ? "bg-black scale-125 shadow-[0_0_10px_rgba(0,0,0,0.5)]" 
+                  : "bg-black/20 hover:bg-black/40"
               }`}
               aria-label={`Go to project ${i + 1}`}
             />
