@@ -31,7 +31,7 @@ const ShowcaseSection = () => {
           
           {/* HEADINGS */}
           <div>
-            <span className="text-xs font-bold tracking-[0.2em] text-[#0D0C1D]/40 uppercase mb-6 block">
+            <span className="text-xs font-bold tracking-[0.2em] text-[#0D0C1D]/40 uppercase mb-6 block transition-colors duration-300 hover:text-black cursor-default">
               Biography
             </span>
             <h2 className="text-5xl md:text-7xl font-display tracking-tight text-[#0D0C1D] mb-2">
