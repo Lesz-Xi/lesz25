@@ -85,7 +85,7 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className={`fixed top-0 left-0 w-full z-[100] px-6 md:px-12 flex justify-between items-center transition-all duration-500 py-6 ${isScrolled ? "bg-black/20 backdrop-blur-lg" : "bg-transparent"}`}>
+      <nav className={`fixed top-0 left-0 w-full z-[100] px-6 md:px-12 flex justify-between items-center transition-all duration-500 py-6 mix-blend-difference text-[#F5F2EB] ${isScrolled ? "backdrop-blur-lg" : "bg-transparent"}`}>
         {/* Left Side Navigation Area */}
         <div className="flex-shrink-0 relative z-[60]">
             {/* 1. Home Page: Show Nothing (Clean) */}
@@ -98,7 +98,7 @@ const Navbar = () => {
                   className="group flex items-center justify-center w-10 h-10 transition-transform duration-300 hover:-translate-x-1"
                   aria-label="Back to Albums"
                 >
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white group-hover:text-[#DBD5B5] transition-colors duration-300">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#F5F2EB] group-hover:text-[#DBD5B5] transition-colors duration-300">
                         <line x1="19" y1="12" x2="5" y2="12"></line>
                         <polyline points="12 19 5 12 12 5"></polyline>
                     </svg>
@@ -117,9 +117,9 @@ const Navbar = () => {
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label="Toggle Menu"
             >
-              <div className="w-5 h-px bg-[#DBD5B5] group-hover:bg-white transition-all duration-300" />
-              <div className="w-5 h-px bg-[#DBD5B5] group-hover:bg-white transition-all duration-300" />
-              <div className="w-5 h-px bg-[#DBD5B5] group-hover:bg-white transition-all duration-300" />
+              <div className="w-5 h-px bg-[#F5F2EB] group-hover:bg-[#DBD5B5] transition-all duration-300" />
+              <div className="w-5 h-px bg-[#F5F2EB] group-hover:bg-[#DBD5B5] transition-all duration-300" />
+              <div className="w-5 h-px bg-[#F5F2EB] group-hover:bg-[#DBD5B5] transition-all duration-300" />
             </button>
           </div>
         ) : (
@@ -135,11 +135,11 @@ const Navbar = () => {
                       <a
                         href={link.href}
                         onClick={(e) => handleNavigation(e, link.href)}
-                        className="text-[11px] font-display uppercase tracking-[0.2em] text-white/60 hover:text-[#DBD5B5] transition-all duration-300 relative block py-2 cursor-pointer"
+                        className="text-[11px] font-display uppercase tracking-[0.2em] text-[#F5F2EB] hover:text-[#DBD5B5] transition-all duration-300 relative block py-2 cursor-pointer"
                         data-hover
                       >
                         {link.name}
-                        <span className="absolute bottom-1 left-0 w-0 h-[1px] bg-[#DBD5B5] transition-all duration-300 group-hover/nav-item:w-full opacity-40" />
+                        <span className="absolute bottom-1 left-0 w-0 h-[1px] bg-[#DBD5B5] transition-all duration-300 group-hover/nav-item:w-full opacity-100" />
                       </a>
                       
                       {/* Dropdown Menu */}
@@ -167,11 +167,11 @@ const Navbar = () => {
                     <a
                       href={link.href}
                       onClick={(e) => handleNavigation(e, link.href)}
-                      className="text-[11px] font-display uppercase tracking-[0.2em] text-white/60 hover:text-[#DBD5B5] transition-all duration-300 relative block py-2 group cursor-pointer"
+                      className="text-[11px] font-display uppercase tracking-[0.2em] text-[#F5F2EB] hover:text-[#DBD5B5] transition-all duration-300 relative block py-2 group cursor-pointer"
                       data-hover
                     >
                       {link.name}
-                      <span className="absolute bottom-1 left-0 w-0 h-[1px] bg-[#DBD5B5] transition-all duration-300 group-hover:w-full opacity-40" />
+                      <span className="absolute bottom-1 left-0 w-0 h-[1px] bg-[#DBD5B5] transition-all duration-300 group-hover:w-full opacity-100" />
                     </a>
                   )}
                 </div>
