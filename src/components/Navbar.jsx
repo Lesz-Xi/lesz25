@@ -126,12 +126,7 @@ const Navbar = () => {
           <>
             {/* Standard Desktop Links */}
             <div 
-              className={`hidden md:flex items-center gap-6 px-6 rounded-full border transition-all duration-500 ease-out pointer-events-auto
-              ${
-                isScrolled
-                  ? "bg-black/40 backdrop-blur-xl border-white/10 py-2.5 shadow-[0_8px_32px_rgba(0,0,0,0.3)]"
-                  : "bg-white/[0.03] backdrop-blur-md border-white/5 py-3"
-              }`}
+              className="hidden md:flex items-center gap-8 pointer-events-auto"
             >
               {navLinks.map((link) => (
                 <div key={link.name} className="relative group/nav-item">
@@ -149,7 +144,7 @@ const Navbar = () => {
                       
                       {/* Dropdown Menu */}
                       <div className="absolute top-full left-1/2 -translate-x-1/2 pt-4 opacity-0 translate-y-2 pointer-events-none group-hover/nav-item:opacity-100 group-hover/nav-item:translate-y-0 group-hover/nav-item:pointer-events-auto transition-all duration-300 ease-out">
-                        <div className="bg-[#070707]/90 backdrop-blur-md border border-white/10 rounded-xl overflow-hidden shadow-2xl py-2 min-w-[140px] flex flex-col gap-1">
+                        <div className="bg-[#070707]/90 backdrop-blur-md rounded-xl overflow-hidden shadow-2xl py-2 min-w-[140px] flex flex-col gap-1">
                           <a 
                             href="/#photography"
                             onClick={(e) => handleNavigation(e, "/#photography")}
