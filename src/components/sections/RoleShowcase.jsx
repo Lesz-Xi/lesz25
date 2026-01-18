@@ -246,7 +246,15 @@ const RoleShowcase = () => {
                 // Enhanced spacing for taller helix (20 pairs * 8px = 160px total height)
                 // Centered at y=100: start at 100 - 80 = 20
                 const yPos = 20 + (i * 8);
-                const centerX = 200;
+                
+                // Dynamic Trajectory: Top-Left -> Center -> Bottom-Left
+                // User Goal: "starts from upper-top-most left side then travels going down to bottom-most left side"
+                const progressY = i / 19; // 0 to 1
+                const arcX = Math.sin(progressY * Math.PI); // 0 -> 1 -> 0
+                
+                // Start X: 40 (Left), Apex X: 200 (Center)
+                const centerX = 40 + (arcX * 160); 
+
                 const width = 70; // Wider oscillation for dramatic effect
                 const speed = 3; // Faster rotation per scroll
                 const phase = i * 0.35; // Tighter twist for clearer helix
