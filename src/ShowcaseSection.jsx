@@ -37,7 +37,7 @@ const ShowcaseSection = () => {
             <h2 className="text-5xl md:text-7xl font-display tracking-tight text-[#0D0C1D] mb-2">
               Rhine Tague
             </h2>
-            <p className="text-2xl md:text-5xl font-display italic text-[#C7B580] whitespace-nowrap transition-colors duration-300">
+            <p className="text-2xl md:text-5xl font-display font-medium italic text-[#C7B580] whitespace-nowrap transition-colors duration-300 hover:text-black cursor-default">
               Developer & Photographer
             </p>
           </div>
