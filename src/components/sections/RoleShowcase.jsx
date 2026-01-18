@@ -26,7 +26,7 @@ const RoleShowcase = () => {
         trigger: containerRef.current,
         start: "top top",
         end: "+=300%", // Reduced to 300% to aggressively fix "scrolling thrice"
-        scrub: 0.5,    // Reduced from 1.5 for snappier response
+        scrub: 2.5,    // Increased to 2.5 for Awwwards-style smooth damping
         pin: true,
       }
     });
