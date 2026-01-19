@@ -35,6 +35,13 @@ const Navbar = () => {
     }
   }, [location]);
 
+  // Reset Photography Submenu when Mobile Menu closes
+  useEffect(() => {
+    if (!isMobileMenuOpen) {
+      setIsPhotographySubmenuOpen(false);
+    }
+  }, [isMobileMenuOpen]);
+
   const isPhotographyPage = location.pathname.startsWith("/photography");
 
   const navLinks = [
@@ -261,7 +268,7 @@ const Navbar = () => {
                         </button>
                         
                         {/* Mobile Submenu Accordion */}
-                        <div className={`overflow-hidden transition-all duration-500 ease-in-out w-full ${isPhotographySubmenuOpen ? "max-h-40 opacity-100 mt-4" : "max-h-0 opacity-0 mt-0"}`}>
+                        <div className={`overflow-hidden transition-all duration-300 ease-out w-full ${isPhotographySubmenuOpen ? "max-h-40 opacity-100 mt-4" : "max-h-0 opacity-0 mt-0"}`}>
                             <div className="flex flex-col gap-4 pl-6 border-l border-[#DBD5B5]/20 ml-2">
                                 <a 
                                     href="/#photography"
