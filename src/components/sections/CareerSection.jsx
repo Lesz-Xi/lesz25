@@ -150,12 +150,12 @@ const CareerSection = () => {
                  </div>
 
                  {/* Center Dot with Magnetic Effect */}
-                 <div className="absolute left-[20px] md:left-1/2 -ml-[24px] top-0 md:top-2 z-10 timeline-dot transform scale-0 md:scale-100 md:opacity-0 flex items-center justify-center w-12 h-12 cursor-none group">
+                 <div className="absolute left-[20px] md:left-1/2 -ml-[16px] md:-ml-[24px] top-0 md:top-2 z-10 timeline-dot transform scale-0 md:scale-100 md:opacity-0 flex items-center justify-center w-8 h-8 md:w-12 md:h-12 cursor-none group">
                     {/* Outer Glow/Ring */}
-                    <div className="absolute w-12 h-12 rounded-full border border-[#8B7E66]/20 bg-[#8B7E66]/5 scale-50 group-hover:scale-100 transition-transform duration-500 ease-out"></div>
+                    <div className="absolute w-8 h-8 md:w-12 md:h-12 rounded-full border border-[#DBD5B5]/20 bg-[#DBD5B5]/5 scale-50 group-hover:scale-100 transition-transform duration-500 ease-out"></div>
                     
                     {/* Inner Core */}
-                    <div className="relative w-3 h-3 bg-[#8B7E66] rounded-full shadow-[0_0_10px_rgba(139,126,102,0.5)] group-hover:shadow-[0_0_20px_rgba(139,126,102,0.8)] transition-shadow duration-300"></div>
+                    <div className="relative w-2 h-2 md:w-3 md:h-3 bg-[#DBD5B5] rounded-full shadow-[0_0_10px_rgba(219,213,181,0.5)] animate-pulse"></div>
                  </div>
 
                  {/* Half Width Container 2 */}
