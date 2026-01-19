@@ -32,8 +32,8 @@ const services = [
   },
   {
     id: "05",
-    title: "Research & Inquiry",
-    description: "Driven by a genuine obsession to understand. I constantly explore the unknown and deconstruct systems simply because I love figuring out how they work.",
+    title: "Research",
+    description: "Driven by obsession. Deconstructing systems and exploring the unknown to master their core mechanics.",
     specs: ["Academic Papers", "Technical Analysis", "R&D Strategy", "Knowledge Synthesis"],
   }
 ];
@@ -131,7 +131,7 @@ const ServicesSection = () => {
               </span>
 
               {/* Title */}
-              <h3 className="text-3xl font-heading font-bold mb-6 group-hover:translate-x-2 transition-transform duration-500 text-[#0D0C1D]">
+              <h3 className="text-2xl lg:text-xl font-heading font-bold mb-6 group-hover:translate-x-2 transition-transform duration-500 text-[#0D0C1D]">
                 {service.title}
               </h3>
 
