@@ -261,14 +261,14 @@ const Navbar = () => {
                               e.preventDefault();
                               setIsPhotographySubmenuOpen(!isPhotographySubmenuOpen);
                           }}
-                          className={`text-3xl md:text-5xl font-display font-medium uppercase tracking-tight transition-all duration-500 hover:tracking-wide hover:ml-2 text-left flex items-center gap-4 ${isActive || isPhotographySubmenuOpen ? "text-[#DBD5B5]" : "text-white/40 hover:text-[#DBD5B5]"}`}
+                          className={`text-2xl md:text-5xl font-display font-medium uppercase tracking-tight transition-all duration-500 hover:tracking-wide hover:ml-2 text-left flex items-center gap-4 ${isActive || isPhotographySubmenuOpen ? "text-[#DBD5B5]" : "text-white/40 hover:text-[#DBD5B5]"}`}
                         >
                           {link.name}
                           <span className={`text-lg transition-transform duration-300 ${isPhotographySubmenuOpen ? "rotate-180" : ""}`}>↓</span>
                         </button>
                         
                         {/* Mobile Submenu Accordion */}
-                        <div className={`overflow-hidden transition-all duration-300 ease-out w-full ${isPhotographySubmenuOpen ? "max-h-40 opacity-100 mt-4" : "max-h-0 opacity-0 mt-0"}`}>
+                        <div className={`overflow-hidden transition-all duration-300 ease-out w-full ${isPhotographySubmenuOpen ? "max-h-28 opacity-100 mt-4" : "max-h-0 opacity-0 mt-0"}`}>
                             <div className="flex flex-col gap-4 pl-6 border-l border-[#DBD5B5]/20 ml-2">
                                 <a 
                                     href="/#photography"
@@ -295,7 +295,7 @@ const Navbar = () => {
                   key={link.name}
                   href={link.href}
                   onClick={(e) => handleNavigation(e, link.href)}
-                  className={`text-3xl md:text-5xl font-display font-medium uppercase tracking-tight transition-all duration-500 hover:tracking-wide hover:ml-2 ${isActive ? "text-[#DBD5B5]" : "text-white/40 hover:text-[#DBD5B5]"}`}
+                  className={`text-2xl md:text-5xl font-display font-medium uppercase tracking-tight transition-all duration-500 hover:tracking-wide hover:ml-2 ${isActive ? "text-[#DBD5B5]" : "text-white/40 hover:text-[#DBD5B5]"}`}
                   style={{ 
                     transitionDelay: isMobileMenuOpen ? `${index * 100}ms` : "0ms",
                     transform: isMobileMenuOpen ? "translateY(0)" : "translateY(40px)",
