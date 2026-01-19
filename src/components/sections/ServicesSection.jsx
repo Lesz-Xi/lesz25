@@ -113,12 +113,12 @@ const ServicesSection = () => {
         </div>
 
         {/* Swiss Grid Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 border-t border-[#0D0C1D]/10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 border-t border-[#0D0C1D]/10">
           {services.map((service, index) => (
             <div 
               key={service.id} 
               className={`
-                service-card group relative p-8 md:p-12 border-b border-[#0D0C1D]/10
+                service-card group relative p-8 md:p-12 lg:p-8 border-b border-[#0D0C1D]/10
                 ${service.colSpan || ""}
                 ${index !== services.length - 1 ? 'md:border-r' : ''} 
                 hover:bg-white transition-colors duration-500 ease-in-out
