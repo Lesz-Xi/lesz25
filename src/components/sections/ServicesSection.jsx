@@ -29,6 +29,13 @@ const services = [
     title: "AI Synthesis",
     description: "Transcending syntax to craft via intuition. Synthesizing art, code, and innovation into novel solutions.",
     specs: ["Vibecoding", "Generative Intuition", "Concept Synthesis", "Rapid Prototyping"],
+  },
+  {
+    id: "05",
+    title: "Research & Inquiry",
+    description: "Unbounded curiosity driving deep technical investigation. Bridging academic rigor with creative exploration to deconstruct and reconstruct systems.",
+    specs: ["Academic Papers", "Technical Analysis", "R&D Strategy", "Knowledge Synthesis"],
+    colSpan: "md:col-span-2 lg:col-span-4", // Full width on large screens
   }
 ];
 
@@ -113,6 +120,7 @@ const ServicesSection = () => {
               key={service.id} 
               className={`
                 service-card group relative p-8 md:p-12 border-b border-[#0D0C1D]/10
+                ${service.colSpan || ""}
                 ${index !== services.length - 1 ? 'md:border-r' : ''} 
                 hover:bg-white transition-colors duration-500 ease-in-out
               `}
