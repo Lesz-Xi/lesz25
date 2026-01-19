@@ -35,7 +35,6 @@ const services = [
     title: "Research & Inquiry",
     description: "Driven by a genuine obsession to understand. I constantly explore the unknown and deconstruct systems simply because I love figuring out how they work.",
     specs: ["Academic Papers", "Technical Analysis", "R&D Strategy", "Knowledge Synthesis"],
-    colSpan: "md:col-span-2 lg:col-span-4", // Full width on large screens
   }
 ];
 
