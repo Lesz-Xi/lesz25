@@ -54,12 +54,12 @@ const ProjectCarousel = () => {
     const section = sectionRef.current;
     if (!track || !section) return;
 
-    // Horizontal scroll: pin via sticky CSS, animate translateX via scrub
     // Add right-padding buffer (10vw) so the last card is fully visible at scroll end
     const rightPadding = window.innerWidth * 0.1;
     const totalScrollWidth = track.scrollWidth - window.innerWidth + rightPadding;
 
-    gsap.to(track, {
+    // Main horizontal scroll — keep reference for containerAnimation
+    const hScrollAnim = gsap.to(track, {
       x: -totalScrollWidth,
       ease: "none",
       scrollTrigger: {
@@ -71,17 +71,21 @@ const ProjectCarousel = () => {
       },
     });
 
-    // Staggered card entrance: fade + scale in from slight offset
+    const hST = hScrollAnim.scrollTrigger;
+
+    // Per-card content reveals driven by horizontal scroll progress
     const cards = gsap.utils.toArray(".h-project-card");
     cards.forEach((card, i) => {
+
+      // Initial vertical entrance when section first hits viewport
       gsap.fromTo(
         card,
-        { opacity: 0, y: 40 },
+        { opacity: 0, y: 50 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.8,
-          delay: i * 0.1,
+          duration: 0.9,
+          delay: i * 0.12,
           ease: "power3.out",
           scrollTrigger: {
             trigger: section,
@@ -90,6 +94,108 @@ const ProjectCarousel = () => {
           },
         }
       );
+
+      // Image scale reveal as card scrolls in
+      const img = card.querySelector(".card-img");
+      if (img && hST) {
+        gsap.fromTo(img,
+          { scale: 1.08 },
+          {
+            scale: 1,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: card,
+              containerAnimation: hST,
+              start: "left 90%",
+              end: "left 30%",
+              scrub: 0.8,
+            },
+          }
+        );
+      }
+
+      // Category label — slides down from above
+      const category = card.querySelector(".card-category");
+      if (category && hST) {
+        gsap.fromTo(category,
+          { opacity: 0, y: -10 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.4,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: card,
+              containerAnimation: hST,
+              start: "left 75%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+      }
+
+      // Title — slides up with slight delay after category
+      const title = card.querySelector(".card-title");
+      if (title && hST) {
+        gsap.fromTo(title,
+          { opacity: 0, y: 18 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.5,
+            delay: 0.08,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: card,
+              containerAnimation: hST,
+              start: "left 72%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+      }
+
+      // Description — slides up after title
+      const desc = card.querySelector(".card-desc");
+      if (desc && hST) {
+        gsap.fromTo(desc,
+          { opacity: 0, y: 20 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.5,
+            delay: 0.16,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: card,
+              containerAnimation: hST,
+              start: "left 68%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+      }
+
+      // Action button — fades in last
+      const action = card.querySelector(".card-action");
+      if (action && hST) {
+        gsap.fromTo(action,
+          { opacity: 0, scale: 0.8 },
+          {
+            opacity: 1,
+            scale: 1,
+            duration: 0.4,
+            delay: 0.24,
+            ease: "back.out(1.4)",
+            scrollTrigger: {
+              trigger: card,
+              containerAnimation: hST,
+              start: "left 65%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+      }
     });
   }, { scope: sectionRef });
 
@@ -98,7 +204,7 @@ const ProjectCarousel = () => {
       id="projects"
       ref={sectionRef}
       className="relative bg-[#F5F2EB]"
-      style={{ height: "calc(100vh + 1600px)" }} // extra height = scroll room for all 4 cards
+      style={{ height: "calc(100vh + 1600px)" }}
     >
       {/* Noise Texture */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.04] bg-noise-pattern z-0" />
@@ -134,27 +240,30 @@ const ProjectCarousel = () => {
                 <img
                   src={project.image}
                   alt={project.title}
-                  className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                  className="card-img w-full h-full object-cover"
                   style={{ objectPosition: project.imagePosition || "center" }}
                   loading="lazy"
                 />
               </div>
 
               {/* Content (bottom ~40%) */}
-              <div className="flex flex-col justify-between p-7 bg-[#111] border-t border-white/5 relative z-20" style={{ height: "40%" }}>
+              <div
+                className="flex flex-col justify-between p-7 bg-[#111] border-t border-white/5 relative z-20"
+                style={{ height: "40%" }}
+              >
                 <div>
-                  <span className="text-[10px] font-bold tracking-[0.25em] text-[#8B7E66] uppercase block mb-2">
+                  <span className="card-category text-[10px] font-bold tracking-[0.25em] text-[#8B7E66] uppercase block mb-2">
                     {project.category}
                   </span>
-                  <h3 className="text-xl md:text-2xl font-serif font-bold text-[#DBD5B5] leading-tight mb-3">
+                  <h3 className="card-title text-xl md:text-2xl font-serif font-bold text-[#DBD5B5] leading-tight mb-3">
                     {project.title}
                   </h3>
-                  <p className="text-neutral-400 text-xs md:text-sm leading-relaxed font-geist-mono line-clamp-3">
+                  <p className="card-desc text-neutral-400 text-xs md:text-sm leading-relaxed font-geist-mono line-clamp-3">
                     {project.description}
                   </p>
                 </div>
 
-                <div className="flex justify-end mt-auto pt-3">
+                <div className="card-action flex justify-end mt-auto pt-3">
                   {project.link ? (
                     <a
                       href={project.link}
