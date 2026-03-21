@@ -29,10 +29,10 @@ const words = [
 ];
 
 const counterItems = [
-  { value: 3, suffix: "+", label: "Years of Experience" },
-  { value: 8, suffix: "+", label: "Technologies Mastered" },
-  { value: 5, suffix: "+", label: "Completed Projects" },
-  { value: 4, suffix: "+", label: "Full-Stack Projects" },
+  { value: 1, suffix: "", label: "Published White Paper" },
+  { value: 47, suffix: "+", label: "API Routes Engineered" },
+  { value: 4, suffix: "+", label: "Shipped Projects" },
+  { value: 1, suffix: "", label: "Zenodo Publication" },
 ];
 
 const logoIconsList = [

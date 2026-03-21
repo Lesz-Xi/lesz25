@@ -22,13 +22,13 @@ const services = [
     id: "03",
     title: "Brand Sovereignty",
     description: "Defining and elevating brand presence with strategic design and cohesive systems.",
-    specs: ["UI/UX Design", "Design Systems", "Brand Strategy", "Creative Consultation"],
+    specs: ["UI/UX Design", "Design Systems", "Brand Strategy", "Technical Direction"],
   },
   {
     id: "04",
     title: "AI Synthesis",
     description: "Transcending syntax to craft via intuition. Synthesizing art, code, and innovation into novel solutions.",
-    specs: ["Vibecoding", "Generative Intuition", "Concept Synthesis", "Rapid Prototyping"],
+    specs: ["Agentic Engineering", "Generative Intuition", "Concept Synthesis", "Rapid Prototyping"],
   },
   {
     id: "05",

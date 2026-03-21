@@ -4,17 +4,25 @@ import { useGSAP } from "@gsap/react";
 
 const ProjectCarousel = () => {
   const containerRef = useRef(null);
-  const [activeIndex, setActiveIndex] = useState(1); // Start with center project (Universe Splitter)
+  const [activeIndex, setActiveIndex] = useState(0); // Start with Wu-Weism / MASA
 
-  // Order: ThesisLens (0), Universe Splitter (1), SkillShift (2)
+  // Order: Wu-Weism (0), ThesisLens (1), Universe Splitter (2), SkillShift (3)
   const projects = [
+    {
+      id: 4,
+      title: "Wu-Weism / MASA",
+      category: "AI Research Platform",
+      image: "/images/projects/wu-weism.png",
+      link: "https://wuweism.com",
+      description: "Causal AI research workbench built on Pearl's do-calculus. Closes the loop between hypothesis, intervention, and counterfactual reasoning with a 47-route API and sovereign memory."
+    },
     {
       id: 1,
       title: "ThesisLens",
       category: "Academic Integrity",
       image: "/images/projects/thesislens-v2.webp",
       link: "https://thesislens.space/",
-      description: "AI-powered academic integrity detection system."
+      description: "Academic integrity platform tackling AI false positives. Built forensic audit logging and defense algorithms to shield student work from erroneous AI detection at scale."
     },
     {
       id: 3,
@@ -22,15 +30,15 @@ const ProjectCarousel = () => {
       category: "Quantum Experiment",
       image: "/images/projects/universe-splitter.webp",
       link: "https://univ-spitter.vercel.app/",
-      description: "Quantum mechanics visualization & interactive experiment."
+      description: "Interactive visualization of the many-worlds interpretation of quantum mechanics. Renders quantum branching events as a navigable visual system."
     },
     {
       id: 2,
-      title: "SkillShift",
+      title: "SkillShift AI",
       category: "Coaching Platform",
       image: "/images/projects/skillshift-v3.webp",
       link: null,
-      description: "Professional coaching marketplace and scheduling platform."
+      description: "Professional-grade AI coaching platform for MLBB. Simulates Mythic-rank logic to deliver role-specific, actionable feedback and adaptive training modules."
     }
   ];
 

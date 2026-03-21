@@ -38,31 +38,41 @@ const ShowcaseSection = () => {
               Rhine Tague
             </h2>
             <p className="text-2xl md:text-5xl font-display font-medium italic text-[#C7B580] whitespace-nowrap transition-colors duration-300 hover:text-black cursor-default">
-              Developer & Photographer
+              Developer, Researcher & Photographer
             </p>
           </div>
 
           {/* MAIN TEXT */}
           <div className="space-y-6 text-[#0D0C1D]/80 text-[15px] md:text-lg leading-relaxed font-geist-mono max-w-lg">
             <p>
-              Development is my form of inquiry. I treat every project with the rigor of 
-              research and the clarity of a publication.
+              I architect systems at the boundary of code and inquiry. My primary work is MASA —
+              a causal AI research platform built on Pearl's do-calculus, designed to close the loop
+              between hypothesis, intervention, and counterfactual reasoning.
             </p>
             <p>
-              My work bridges precision and intuition, creating experiences that 
-              don't just function—they communicate.
+              Development is my form of publication. Every system I build is treated with the rigor
+              of a research paper and the precision of a surgical instrument — functional,
+              communicative, and hard-to-vary by design.
+            </p>
+            <p>
+              Photography is how I train my eye. The same discipline that produces a decisive frame
+              produces a decisive interface.
             </p>
           </div>
 
           {/* STATS / DETAILS (Gold Columns) */}
           <div className="flex gap-12 border-l border-[#DBD5B5] pl-6">
             <div>
-              <span className="block text-[#C7B580] font-display text-xl transition-colors duration-300 hover:text-black cursor-default">100%</span>
-              <span className="text-xs uppercase tracking-widest text-[#0D0C1D]/60 mt-1">User Centric</span>
-            </div>
-            <div>
               <span className="block text-[#C7B580] font-display text-xl transition-colors duration-300 hover:text-black cursor-default">Philippines</span>
               <span className="text-xs uppercase tracking-widest text-[#0D0C1D]/60 mt-1">Based</span>
+            </div>
+            <div>
+              <span className="block text-[#C7B580] font-display text-xl transition-colors duration-300 hover:text-black cursor-default">1</span>
+              <span className="text-xs uppercase tracking-widest text-[#0D0C1D]/60 mt-1">White Paper</span>
+            </div>
+            <div>
+              <span className="block text-[#C7B580] font-display text-xl transition-colors duration-300 hover:text-black cursor-default">47+</span>
+              <span className="text-xs uppercase tracking-widest text-[#0D0C1D]/60 mt-1">API Routes</span>
             </div>
           </div>
 

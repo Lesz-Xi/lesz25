@@ -100,7 +100,7 @@ const Hero = () => {
               </h1>
 
               <p className="hero-line font-heading text-[#929292] text-lg md:text-xl lg:text-2xl mb-10 md:mb-20 max-w-3xl tracking-[0.05em] leading-[2]">
-                I'm a <span className="text-[#FFFCE1]">developer</span> and <span className="text-[#FFFCE1]">photographer</span> based in the <span className="text-[#FFFCE1]">Philippines</span>. I focus on building clean, user-friendly experiences that make complex ideas simple, effective, and meaningful.
+                I'm a <span className="text-[#FFFCE1]">developer</span>, <span className="text-[#FFFCE1]">photographer</span>, and <span className="text-[#FFFCE1]">AI researcher</span> based in the <span className="text-[#FFFCE1]">Philippines</span>. I architect systems that think — from causal AI research platforms to immersive web experiences.
               </p>
             </div>
 
