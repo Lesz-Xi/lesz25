@@ -13,6 +13,7 @@ const projects = [
     category: "AI Research Platform",
     image: "/images/projects/wu-weism.png",
     imagePosition: "left top",
+    inProgress: true,
     link: "https://wuweism.com",
     description: "Causal AI research workbench built on Pearl's do-calculus. Closes the loop between hypothesis, intervention, and counterfactual reasoning with a 47-route API and sovereign memory."
   },
@@ -237,6 +238,14 @@ const ProjectCarousel = () => {
               {/* Image (top ~60%) */}
               <div className="relative overflow-hidden bg-black/50" style={{ height: "60%" }}>
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#0A0A0A]/70 z-10" />
+                {project.inProgress && (
+                  <div className="absolute top-3 left-3 z-20 flex items-center gap-1.5 bg-black/60 backdrop-blur-sm border border-[#8B7E66]/40 rounded-full px-3 py-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#C7B580] animate-pulse" />
+                    <span className="text-[10px] font-mono font-semibold tracking-[0.15em] text-[#C7B580] uppercase">
+                      Still in Progress
+                    </span>
+                  </div>
+                )}
                 <img
                   src={project.image}
                   alt={project.title}
