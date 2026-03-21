@@ -12,6 +12,7 @@ const HeroExperience = React.memo(() => {
   return (
     <Canvas
       camera={{ position: [0, 0, 8], fov: 50 }}
+      frameloop="always"
       dpr={[1, 1.5]}
     >
       <group
