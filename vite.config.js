@@ -13,8 +13,16 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          'three-vendor': ['three', '@react-three/fiber', '@react-three/drei'],
-          'animation-vendor': ['gsap', 'framer-motion'],
+          // @use-gesture/react is used internally by @react-three/fiber v9 —
+          // keeping it in the same chunk prevents a dual-instance "bind of undefined" crash
+          'three-vendor': [
+            'three',
+            '@react-three/fiber',
+            '@react-three/drei',
+            '@use-gesture/react',
+            '@react-spring/web',
+          ],
+          'animation-vendor': ['gsap', '@gsap/react', 'framer-motion'],
         }
       }
     }

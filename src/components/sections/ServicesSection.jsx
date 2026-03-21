@@ -2,8 +2,42 @@ import React, { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useSpring, animated, to } from "@react-spring/web";
 
 gsap.registerPlugin(ScrollTrigger);
+
+// 3D tilt card — tracks mouse position within the card bounds
+// Uses native onMouseMove instead of @use-gesture/react to avoid the
+// dual-instance bundling conflict with @react-three/fiber's internal gesture dep
+function TiltCard({ children, className }) {
+  const [{ rx, ry }, api] = useSpring(() => ({ rx: 0, ry: 0 }));
+
+  const handleMouseMove = (e) => {
+    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - left) / width - 0.5;
+    const y = (e.clientY - top) / height - 0.5;
+    api.start({ rx: -y * 10, ry: x * 10 });
+  };
+
+  const handleLeave = () => api.start({ rx: 0, ry: 0 });
+
+  return (
+    <animated.div
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleLeave}
+      className={className}
+      style={{
+        transform: to([rx, ry], (x, y) =>
+          `perspective(900px) rotateX(${x}deg) rotateY(${y}deg)`
+        ),
+        transformStyle: "preserve-3d",
+        willChange: "transform",
+      }}
+    >
+      {children}
+    </animated.div>
+  );
+}
 
 const services = [
   {
@@ -64,30 +98,7 @@ const ServicesSection = () => {
       }
     );
 
-    // Hover Animation
-    cards.forEach((card) => {
-      card.addEventListener("mouseenter", () => {
-        gsap.to(card, {
-          scale: 1.05,
-          duration: 0.4,
-          zIndex: 10,
-          boxShadow: "0px 20px 40px rgba(0,0,0,0.1)",
-          borderColor: "transparent", 
-          ease: "power2.out"
-        });
-      });
-      
-      card.addEventListener("mouseleave", () => {
-        gsap.to(card, {
-          scale: 1,
-          duration: 0.4,
-          zIndex: 1,
-          boxShadow: "none",
-          borderColor: "rgba(13, 12, 29, 0.1)", // Restore border color
-          ease: "power2.out"
-        });
-      });
-    });
+    // Hover scale removed — TiltCard handles hover interaction via react-spring
 
   }, { scope: containerRef });
 
@@ -115,15 +126,15 @@ const ServicesSection = () => {
         {/* Swiss Grid Layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 border-t border-[#0D0C1D]/10">
           {services.map((service, index) => (
-            <div 
-              key={service.id} 
+            <TiltCard
+              key={service.id}
               className={`
                 service-card group relative p-8 md:p-12 lg:p-8 border-b border-[#0D0C1D]/10
                 ${service.colSpan || ""}
-                ${index !== services.length - 1 ? 'md:border-r' : ''} 
+                ${index !== services.length - 1 ? 'md:border-r' : ''}
                 hover:bg-white transition-colors duration-500 ease-in-out
               `}
-              data-hover // Enable magnetic cursor and sound
+              data-hover
             >
               {/* ID Number */}
               <span className="text-xs font-mono text-[#0D0C1D]/40 mb-12 block group-hover:text-[#C7B580] transition-colors">
@@ -152,7 +163,7 @@ const ServicesSection = () => {
 
               {/* Hover Accent */}
               <div className="absolute top-0 left-0 w-full h-1 bg-[#C7B580] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
-            </div>
+            </TiltCard>
           ))}
         </div>
 
