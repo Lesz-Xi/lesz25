@@ -1,188 +1,187 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
+
+// Order: Wu-Weism (0), ThesisLens (1), Universe Splitter (2), SkillShift (3)
+const projects = [
+  {
+    id: 4,
+    title: "Wu-Weism / MASA",
+    category: "AI Research Platform",
+    image: "/images/projects/wu-weism.png",
+    link: "https://wuweism.com",
+    description: "Causal AI research workbench built on Pearl's do-calculus. Closes the loop between hypothesis, intervention, and counterfactual reasoning with a 47-route API and sovereign memory."
+  },
+  {
+    id: 1,
+    title: "ThesisLens",
+    category: "Academic Integrity",
+    image: "/images/projects/thesislens-v2.webp",
+    link: "https://thesislens.space/",
+    description: "Academic integrity platform tackling AI false positives. Built forensic audit logging and defense algorithms to shield student work from erroneous AI detection at scale."
+  },
+  {
+    id: 3,
+    title: "Universe Splitter",
+    category: "Quantum Experiment",
+    image: "/images/projects/universe-splitter.webp",
+    link: "https://univ-spitter.vercel.app/",
+    description: "Interactive visualization of the many-worlds interpretation of quantum mechanics. Renders quantum branching events as a navigable visual system."
+  },
+  {
+    id: 2,
+    title: "SkillShift AI",
+    category: "Coaching Platform",
+    image: "/images/projects/skillshift-v3.webp",
+    link: null,
+    description: "Professional-grade AI coaching platform for MLBB. Simulates Mythic-rank logic to deliver role-specific, actionable feedback and adaptive training modules."
+  }
+];
 
 const ProjectCarousel = () => {
-  const containerRef = useRef(null);
-  const [activeIndex, setActiveIndex] = useState(0); // Start with Wu-Weism / MASA
-
-  // Order: Wu-Weism (0), ThesisLens (1), Universe Splitter (2), SkillShift (3)
-  const projects = [
-    {
-      id: 4,
-      title: "Wu-Weism / MASA",
-      category: "AI Research Platform",
-      image: "/images/projects/wu-weism.png",
-      link: "https://wuweism.com",
-      description: "Causal AI research workbench built on Pearl's do-calculus. Closes the loop between hypothesis, intervention, and counterfactual reasoning with a 47-route API and sovereign memory."
-    },
-    {
-      id: 1,
-      title: "ThesisLens",
-      category: "Academic Integrity",
-      image: "/images/projects/thesislens-v2.webp",
-      link: "https://thesislens.space/",
-      description: "Academic integrity platform tackling AI false positives. Built forensic audit logging and defense algorithms to shield student work from erroneous AI detection at scale."
-    },
-    {
-      id: 3,
-      title: "Universe Splitter",
-      category: "Quantum Experiment",
-      image: "/images/projects/universe-splitter.webp",
-      link: "https://univ-spitter.vercel.app/",
-      description: "Interactive visualization of the many-worlds interpretation of quantum mechanics. Renders quantum branching events as a navigable visual system."
-    },
-    {
-      id: 2,
-      title: "SkillShift AI",
-      category: "Coaching Platform",
-      image: "/images/projects/skillshift-v3.webp",
-      link: null,
-      description: "Professional-grade AI coaching platform for MLBB. Simulates Mythic-rank logic to deliver role-specific, actionable feedback and adaptive training modules."
-    }
-  ];
-
-  const handleNext = () => {
-    setActiveIndex((prev) => (prev + 1) % projects.length);
-  };
-
-  const handlePrev = () => {
-    setActiveIndex((prev) => (prev - 1 + projects.length) % projects.length);
-  };
-
-  const handleProjectClick = (index) => {
-    setActiveIndex(index);
-  };
+  const sectionRef = useRef(null);
+  const trackRef = useRef(null);
 
   useGSAP(() => {
-    const cards = gsap.utils.toArray(".project-card");
-    
-    cards.forEach((card, index) => {
-      // Calculate specific properties based on position relative to active index
-      // ... (logic remains same, just ensure filter is explicit)
-      
-      let xPos = "0%";
-      let scale = 1;
-      let opacity = 1;
-      let zIndex = 10;
-      let filter = "blur(0px)"; // Explicitly no blur for center
-      let brightness = 1;
+    const track = trackRef.current;
+    const section = sectionRef.current;
+    if (!track || !section) return;
 
-      if (index !== activeIndex) {
-        let diff = index - activeIndex;
+    // Horizontal scroll: pin via sticky CSS, animate translateX via scrub
+    // Add right-padding buffer (10vw) so the last card is fully visible at scroll end
+    const rightPadding = window.innerWidth * 0.1;
+    const totalScrollWidth = track.scrollWidth - window.innerWidth + rightPadding;
 
-        // Circular wrapping for 3 items
-        if (diff > 1) diff -= 3;
-        if (diff < -1) diff += 3;
-        xPos = `${diff * 65}%`; 
-        scale = 0.85;
-        opacity = 0.6;
-        zIndex = 5;
-        filter = "blur(3px)"; // Slightly increased blur for depth
-        brightness = 0.4;
-      }
-
-      gsap.to(card, {
-        x: xPos,
-        scale: scale,
-        opacity: opacity,
-        zIndex: zIndex,
-        filter: `${filter} brightness(${brightness})`,
-        duration: 0.6,
-        ease: "power3.out"
-      });
+    gsap.to(track, {
+      x: -totalScrollWidth,
+      ease: "none",
+      scrollTrigger: {
+        trigger: section,
+        start: "top top",
+        end: () => `+=${totalScrollWidth}`,
+        scrub: 1.2,
+        invalidateOnRefresh: true,
+      },
     });
 
-  }, { scope: containerRef, dependencies: [activeIndex] });
+    // Staggered card entrance: fade + scale in from slight offset
+    const cards = gsap.utils.toArray(".h-project-card");
+    cards.forEach((card, i) => {
+      gsap.fromTo(
+        card,
+        { opacity: 0, y: 40 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          delay: i * 0.1,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: section,
+            start: "top 80%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
+    });
+  }, { scope: sectionRef });
 
   return (
-    <section 
-      id="projects" 
-      ref={containerRef} 
-      className="relative w-full bg-[#F5F2EB] py-24 overflow-hidden min-h-[100vh] flex flex-col justify-center"
+    <section
+      id="projects"
+      ref={sectionRef}
+      className="relative bg-[#F5F2EB]"
+      style={{ height: "calc(100vh + 1600px)" }} // extra height = scroll room for all 4 cards
     >
       {/* Noise Texture */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.04] bg-noise-pattern z-0"></div>
+      <div className="absolute inset-0 pointer-events-none opacity-[0.04] bg-noise-pattern z-0" />
 
-      {/* Header */}
-      <div className="text-center w-full px-4 mb-24 relative z-10 transition-colors duration-500">
-        <span className="text-xs font-bold tracking-[0.25em] text-[#8B7E66] uppercase mb-3 block">
-           Selected Work
-         </span>
-         <h2 className="text-4xl md:text-6xl font-bold font-accent text-[#8B7E66]">
-           Featured Projects
-         </h2>
-      </div>
+      {/* Sticky viewport wrapper */}
+      <div className="sticky top-0 h-screen overflow-hidden flex flex-col justify-center">
 
-      {/* Carousel Container */}
-      <div className="relative w-full h-[60vh] md:h-[70vh] flex justify-center items-center perspective-[1000px]">
-        {projects.map((project, index) => (
-          <div
-            key={project.id}
-            onClick={() => handleProjectClick(index)} // Allow clicking any card to center it
-            className={`project-card group absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] md:w-[460px] aspect-[3/4.2] flex flex-col rounded-3xl overflow-hidden shadow-2xl cursor-pointer will-change-transform border border-white/10 bg-[#0A0A0A]`}
-          >
-            {/* Image (Top 65%) */}
-            <div className="h-[65%] w-full relative overflow-hidden bg-black/50">
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#0A0A0A]/80 z-10" />
-              <img 
-                src={project.image} 
-                alt={project.title}
-                className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
-              />
-            </div>
+        {/* Header */}
+        <div className="text-center w-full px-4 mb-12 relative z-10 flex-none">
+          <span className="text-xs font-bold tracking-[0.25em] text-[#8B7E66] uppercase mb-3 block">
+            Selected Work
+          </span>
+          <h2 className="text-4xl md:text-6xl font-bold font-accent text-[#8B7E66]">
+            Featured Projects
+          </h2>
+        </div>
 
-            {/* Content (Bottom 35%) */}
-            <div className={`h-[35%] w-full p-8 flex flex-col justify-between bg-[#111] border-t border-white/5 relative z-20`}>
-              <div>
-                <span className="text-[10px] font-bold tracking-[0.25em] text-[#8B7E66] uppercase block mb-3">
-                  {project.category}
-                </span>
-                <h3 className="text-2xl md:text-3xl font-serif font-bold text-[#DBD5B5] leading-none mb-2">
-                  {project.title}
-                </h3>
+        {/* Horizontal track */}
+        <div
+          ref={trackRef}
+          className="flex gap-6 items-center will-change-transform flex-none"
+          style={{ paddingLeft: "10vw", paddingRight: "10vw" }}
+        >
+          {projects.map((project) => (
+            <div
+              key={project.id}
+              className="h-project-card flex-none w-[340px] md:w-[400px] bg-[#0A0A0A] rounded-2xl overflow-hidden shadow-2xl border border-white/10 flex flex-col"
+              style={{ height: "65vh", minHeight: "420px", maxHeight: "600px" }}
+            >
+              {/* Image (top ~60%) */}
+              <div className="relative overflow-hidden bg-black/50" style={{ height: "60%" }}>
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#0A0A0A]/70 z-10" />
+                <img
+                  src={project.image}
+                  alt={project.title}
+                  className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                  loading="lazy"
+                />
               </div>
 
-              <div className="flex justify-center items-end mt-auto">
-                {project.link ? (
-                  <a
-                    href={project.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={(e) => e.stopPropagation()}
-                    className="w-12 h-12 rounded-full border border-[#DBD5B5]/30 flex items-center justify-center hover:bg-[#DBD5B5] hover:border-[#DBD5B5] transition-all relative z-30 group/btn"
-                    aria-label={`View ${project.title}`}
-                  >
-                    <svg className="w-5 h-5 text-[#DBD5B5] group-hover/btn:text-[#0A0A0A] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
-                  </a>
-                ) : (
-                  <span className="text-white/30 text-xs font-medium uppercase tracking-widest py-3">In Progress</span>
-                )}
+              {/* Content (bottom ~40%) */}
+              <div className="flex flex-col justify-between p-7 bg-[#111] border-t border-white/5 relative z-20" style={{ height: "40%" }}>
+                <div>
+                  <span className="text-[10px] font-bold tracking-[0.25em] text-[#8B7E66] uppercase block mb-2">
+                    {project.category}
+                  </span>
+                  <h3 className="text-xl md:text-2xl font-serif font-bold text-[#DBD5B5] leading-tight mb-3">
+                    {project.title}
+                  </h3>
+                  <p className="text-neutral-400 text-xs md:text-sm leading-relaxed font-geist-mono line-clamp-3">
+                    {project.description}
+                  </p>
+                </div>
+
+                <div className="flex justify-end mt-auto pt-3">
+                  {project.link ? (
+                    <a
+                      href={project.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-10 h-10 rounded-full border border-[#DBD5B5]/30 flex items-center justify-center hover:bg-[#DBD5B5] hover:border-[#DBD5B5] transition-all group/btn"
+                      aria-label={`View ${project.title}`}
+                    >
+                      <svg
+                        className="w-4 h-4 text-[#DBD5B5] group-hover/btn:text-[#0A0A0A] transition-colors"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                      </svg>
+                    </a>
+                  ) : (
+                    <span className="text-white/30 text-xs font-medium uppercase tracking-widest py-2">
+                      In Progress
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Navigation & Pagination */}
-      <div className="relative z-10 flex items-center justify-center gap-8 mt-12">
-        {/* Dots */}
-        <div className="flex gap-4">
-          {projects.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setActiveIndex(i)}
-              className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
-                i === activeIndex 
-                  ? "bg-black scale-125 shadow-[0_0_10px_rgba(0,0,0,0.5)]" 
-                  : "bg-black/20 hover:bg-black/40"
-              }`}
-              aria-label={`Go to project ${i + 1}`}
-            />
           ))}
         </div>
+
+        {/* Scroll hint */}
+        <p className="text-center text-[#8B7E66]/50 text-xs tracking-[0.2em] uppercase mt-8 flex-none">
+          Scroll to explore →
+        </p>
       </div>
     </section>
   );

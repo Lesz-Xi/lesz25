@@ -3,12 +3,12 @@ import { DoubleSide } from "three";
 
 export default function CameraModel() {
   const wireframeMaterial = (
-    <meshBasicMaterial 
-      color="white" 
-      wireframe 
-      transparent 
-      opacity={0.8} 
-      side={DoubleSide} 
+    <meshBasicMaterial
+      color="white"
+      wireframe
+      transparent
+      opacity={0.85}
+      side={DoubleSide}
     />
   );
 

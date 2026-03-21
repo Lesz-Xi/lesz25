@@ -1,6 +1,50 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
+
+const SCRAMBLE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+
+function scrambleReveal(el, finalText, duration = 1.4) {
+  const chars = finalText.split("");
+  let frame = 0;
+  const totalFrames = Math.round(duration * 60);
+
+  const tick = () => {
+    el.textContent = chars
+      .map((char, i) => {
+        if (char === " ") return " ";
+        if (frame / totalFrames > i / chars.length) return char;
+        return SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
+      })
+      .join("");
+
+    if (frame++ < totalFrames) requestAnimationFrame(tick);
+    else el.textContent = finalText;
+  };
+
+  tick();
+}
 
 const ShowcaseSection = () => {
+  const bioRefs = useRef([]);
+
+  useEffect(() => {
+    bioRefs.current.forEach((el, i) => {
+      if (!el) return;
+      const finalText = el.dataset.text;
+      ScrollTrigger.create({
+        trigger: el,
+        start: "top 82%",
+        once: true,
+        onEnter: () => scrambleReveal(el, finalText, 1.3 + i * 0.25),
+      });
+    });
+
+    return () => ScrollTrigger.getAll().forEach(t => t.kill());
+  }, []);
+
   return (
     <section id="work" className="relative bg-[#F5F2EB] text-[#0D0C1D] py-24 md:py-32 overflow-hidden" data-theme="light">
       <div className="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -37,24 +81,33 @@ const ShowcaseSection = () => {
             <h2 className="text-5xl md:text-7xl font-display tracking-tight text-[#0D0C1D] mb-2">
               Rhine Tague
             </h2>
-            <p className="text-2xl md:text-5xl font-display font-medium italic text-[#C7B580] whitespace-nowrap transition-colors duration-300 hover:text-black cursor-default">
+            <p className="text-2xl md:text-4xl font-display font-medium italic text-[#C7B580] transition-colors duration-300 hover:text-black cursor-default">
               Developer, Researcher & Photographer
             </p>
           </div>
 
           {/* MAIN TEXT */}
           <div className="space-y-6 text-[#0D0C1D]/80 text-[15px] md:text-lg leading-relaxed font-geist-mono max-w-lg">
-            <p>
+            <p
+              ref={el => bioRefs.current[0] = el}
+              data-text="I architect systems at the boundary of code and inquiry. My primary work is MASA — a causal AI research platform built on Pearl's do-calculus, designed to close the loop between hypothesis, intervention, and counterfactual reasoning."
+            >
               I architect systems at the boundary of code and inquiry. My primary work is MASA —
               a causal AI research platform built on Pearl's do-calculus, designed to close the loop
               between hypothesis, intervention, and counterfactual reasoning.
             </p>
-            <p>
+            <p
+              ref={el => bioRefs.current[1] = el}
+              data-text="Development is my form of publication. Every system I build is treated with the rigor of a research paper and the precision of a surgical instrument — functional, communicative, and hard-to-vary by design."
+            >
               Development is my form of publication. Every system I build is treated with the rigor
               of a research paper and the precision of a surgical instrument — functional,
               communicative, and hard-to-vary by design.
             </p>
-            <p>
+            <p
+              ref={el => bioRefs.current[2] = el}
+              data-text="Photography is how I train my eye. The same discipline that produces a decisive frame produces a decisive interface."
+            >
               Photography is how I train my eye. The same discipline that produces a decisive frame
               produces a decisive interface.
             </p>

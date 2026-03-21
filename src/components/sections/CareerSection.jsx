@@ -12,7 +12,7 @@ const CareerSection = () => {
   const careerData = [
     {
       title: "Wu-Weism / MASA",
-      period: "2025 — Present",
+      period: "2025 — 2026",
       description:
         "Architecting MASA — a causal AI research platform grounded in Judea Pearl's do-calculus. Features a 47-route API, sovereign RAG memory, multi-agent critique pipeline, and a formal White Paper. Hosted at wuweism.com.",
       showDot: true,
