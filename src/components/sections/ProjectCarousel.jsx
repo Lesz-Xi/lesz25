@@ -12,6 +12,7 @@ const projects = [
     title: "Wu-Weism / MASA",
     category: "AI Research Platform",
     image: "/images/projects/wu-weism.png",
+    imagePosition: "left top",
     link: "https://wuweism.com",
     description: "Causal AI research workbench built on Pearl's do-calculus. Closes the loop between hypothesis, intervention, and counterfactual reasoning with a 47-route API and sovereign memory."
   },
@@ -20,6 +21,7 @@ const projects = [
     title: "ThesisLens",
     category: "Academic Integrity",
     image: "/images/projects/thesislens-v2.webp",
+    imagePosition: "center top",
     link: "https://thesislens.space/",
     description: "Academic integrity platform tackling AI false positives. Built forensic audit logging and defense algorithms to shield student work from erroneous AI detection at scale."
   },
@@ -28,6 +30,7 @@ const projects = [
     title: "Universe Splitter",
     category: "Quantum Experiment",
     image: "/images/projects/universe-splitter.webp",
+    imagePosition: "center top",
     link: "https://univ-spitter.vercel.app/",
     description: "Interactive visualization of the many-worlds interpretation of quantum mechanics. Renders quantum branching events as a navigable visual system."
   },
@@ -36,6 +39,7 @@ const projects = [
     title: "SkillShift AI",
     category: "Coaching Platform",
     image: "/images/projects/skillshift-v3.webp",
+    imagePosition: "center top",
     link: null,
     description: "Professional-grade AI coaching platform for MLBB. Simulates Mythic-rank logic to deliver role-specific, actionable feedback and adaptive training modules."
   }
@@ -131,6 +135,7 @@ const ProjectCarousel = () => {
                   src={project.image}
                   alt={project.title}
                   className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                  style={{ objectPosition: project.imagePosition || "center" }}
                   loading="lazy"
                 />
               </div>
