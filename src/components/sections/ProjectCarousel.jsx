@@ -249,7 +249,7 @@ const ProjectCarousel = () => {
         className="flex flex-col justify-between p-7 md:p-8 bg-[#111] border-t border-white/5 relative z-20"
         style={{ height: isMobile ? "40%" : "46%" }}
       >
-        <div className="space-y-3">
+        <div className="space-y-3 min-h-0">
           <span className="card-category text-[10px] md:text-[11px] font-bold tracking-[0.25em] text-[#8B7E66] uppercase block">
             {project.category}
           </span>
@@ -258,7 +258,7 @@ const ProjectCarousel = () => {
           </h3>
           <p
             className={`card-desc text-neutral-400 text-xs md:text-[0.92rem] leading-[1.65] font-geist-mono ${
-              isMobile ? "line-clamp-3" : ""
+              isMobile ? "line-clamp-3" : "line-clamp-4"
             }`}
           >
             {project.description}

@@ -461,11 +461,11 @@ const ResearchSection = () => {
 
         {/* ── Footer rule ── */}
         <div className="mt-20 md:mt-28 flex items-center gap-4">
-          <div className="flex-1 h-px bg-white/[0.04]" />
-          <p className="text-[11px] text-[#DBD5B5]/20 font-geist-mono tracking-wider whitespace-nowrap">
+          <div className="flex-1 h-px bg-[#DBD5B5]/12" />
+          <p className="text-[11px] text-[#DBD5B5]/45 font-geist-mono tracking-wider whitespace-nowrap">
             Wu-Weism · Ongoing Research · 2026
           </p>
-          <div className="flex-1 h-px bg-white/[0.04]" />
+          <div className="flex-1 h-px bg-[#DBD5B5]/12" />
         </div>
 
       </div>
