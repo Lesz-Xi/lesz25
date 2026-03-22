@@ -90,7 +90,7 @@ const research = [
     ],
     abstract: "A proprietary AI architecture for causally disciplined scientific discovery. MASA runs a closed loop: hypothesis generation from heterogeneous evidence, multi-agent critique under explicit causal constraints, durable memory of evaluations, and governance protocols that force claims to match implementation reality.",
     keywords: ["Causal AI", "Do-Calculus", "Sovereign Memory", "RAG", "pgvector", "Pyodide", "Judea Pearl"],
-    primaryCta: { label: "Read White Paper", url: "https://wuweism.com", icon: "doc" },
+    primaryCta: { label: "Read White Paper", url: "/MASA_White_Paper.html", icon: "doc" },
     secondaryCta: { label: "View Project", url: "https://github.com/Lesz-Xi", icon: "github" },
     Decoration: CausalGraph,
     flip: true,
