@@ -222,10 +222,10 @@ const ProjectCarousel = () => {
       className={`h-project-card flex-none bg-[#0A0A0A] rounded-[2rem] overflow-hidden shadow-2xl border border-black/15 flex flex-col ${
         isMobile ? "w-[80vw] snap-center" : "w-[clamp(360px,30vw,420px)]"
       }`}
-      style={{ height: isMobile ? "65vh" : "60vh", minHeight: "400px", maxHeight: "620px" }}
+      style={{ height: isMobile ? "65vh" : "62vh", minHeight: isMobile ? "400px" : "430px", maxHeight: "640px" }}
     >
       {/* Image (top ~60%) */}
-      <div className="relative overflow-hidden bg-black/50" style={{ height: isMobile ? "60%" : "54%" }}>
+      <div className="relative overflow-hidden bg-black/50" style={{ height: isMobile ? "60%" : "50%" }}>
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0A0A0A]/78 z-10" />
         {project.inProgress && (
           <div className="absolute top-3 left-3 z-20 flex items-center gap-1.5 bg-black/60 backdrop-blur-sm border border-[#8B7E66]/40 rounded-full px-3 py-1">
@@ -246,8 +246,8 @@ const ProjectCarousel = () => {
 
       {/* Content (bottom ~40%) */}
       <div
-        className="flex flex-col p-6 md:p-8 bg-[#111] border-t border-white/5 relative z-20 min-h-0"
-        style={{ height: isMobile ? "40%" : "46%" }}
+        className="flex flex-col p-6 md:p-7 bg-[#111] border-t border-white/5 relative z-20 min-h-0"
+        style={{ height: isMobile ? "40%" : "50%" }}
       >
         <div className="space-y-3 flex-1 min-h-0 overflow-hidden">
           <span className="card-category text-[10px] md:text-[11px] font-bold tracking-[0.25em] text-[#8B7E66] uppercase block">
@@ -257,7 +257,9 @@ const ProjectCarousel = () => {
             {project.title}
           </h3>
           <p
-            className="card-desc text-neutral-400 text-xs md:text-[0.92rem] leading-[1.65] font-geist-mono line-clamp-3"
+            className={`card-desc text-neutral-400 text-xs md:text-[0.92rem] leading-[1.65] font-geist-mono ${
+              isMobile ? "line-clamp-3" : "line-clamp-4"
+            }`}
           >
             {project.description}
           </p>
