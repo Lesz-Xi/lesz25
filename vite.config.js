@@ -5,26 +5,33 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   assetsInclude: ["**/*.glb"],
   build: {
-    modulePreload: {
-      resolveDependencies: (url, deps, context) => {
-        return deps.filter((dep) => !dep.includes("three") && !dep.includes("three-vendor"));
-      },
-    },
     rollupOptions: {
       output: {
-        manualChunks: {
-          // @use-gesture/react is used internally by @react-three/fiber v9 —
-          // keeping it in the same chunk prevents a dual-instance "bind of undefined" crash
-          'three-vendor': [
-            'three',
-            '@react-three/fiber',
-            '@react-three/drei',
-            '@use-gesture/react',
-            '@react-spring/web',
-          ],
-          'animation-vendor': ['gsap', '@gsap/react', 'framer-motion'],
-        }
-      }
-    }
-  }
+        // Function form covers all subpath imports (e.g. gsap/ScrollTrigger)
+        // and transitive deps — the array form only matches exact entry points.
+        manualChunks(id) {
+          // @use-gesture must co-locate with r3f — fiber v9 imports it internally
+          // and two instances cause the "bind of undefined" crash.
+          if (
+            id.includes("node_modules/three") ||
+            id.includes("node_modules/@react-three") ||
+            id.includes("node_modules/@use-gesture")
+          ) {
+            return "three-vendor";
+          }
+          // All GSAP subpaths (gsap/ScrollTrigger, gsap/Observer, etc.),
+          // @gsap/react, framer-motion, and @react-spring must share a chunk
+          // so ScrollTrigger's internal Observer doesn't cross chunk boundaries.
+          if (
+            id.includes("node_modules/gsap") ||
+            id.includes("node_modules/@gsap") ||
+            id.includes("node_modules/framer-motion") ||
+            id.includes("node_modules/@react-spring")
+          ) {
+            return "animation-vendor";
+          }
+        },
+      },
+    },
+  },
 });

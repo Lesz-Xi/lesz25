@@ -1,8 +1,7 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useMediaQuery } from "react-responsive";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -50,7 +49,17 @@ const projects = [
 const ProjectCarousel = () => {
   const sectionRef = useRef(null);
   const trackRef = useRef(null);
-  const isMobile = useMediaQuery({ maxWidth: 767 });
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== "undefined" ? window.innerWidth < 768 : false
+  );
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    setIsMobile(mq.matches);
+    const handler = (e) => setIsMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
   useGSAP(() => {
     const track = trackRef.current;
@@ -199,7 +208,7 @@ const ProjectCarousel = () => {
         );
       }
     });
-  }, { scope: sectionRef, dependencies: [isMobile] });
+  }, { scope: sectionRef, dependencies: [isMobile], revertOnUpdate: true });
 
   // Shared card content — rendered identically on both mobile and desktop
   const renderCard = (project) => (

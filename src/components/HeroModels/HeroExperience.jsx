@@ -1,10 +1,19 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
-import { useMediaQuery } from "react-responsive";
 import Scene from "./Scene";
 
 const HeroExperience = React.memo(() => {
-  const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== "undefined" ? window.innerWidth <= 768 : false
+  );
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 768px)");
+    setIsMobile(mq.matches);
+    const handler = (e) => setIsMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
   // Skip 3D rendering entirely on mobile for better performance
   if (isMobile) return null;
