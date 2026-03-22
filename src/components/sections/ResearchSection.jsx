@@ -430,8 +430,9 @@ const ResearchSection = () => {
                           rel="noopener noreferrer"
                           className="group/cta inline-flex items-center gap-2.5 px-6 py-3 rounded-full
                                      text-sm font-display tracking-wide text-[#070707]
-                                     transition-all duration-300 hover:opacity-90 hover:scale-[1.02]"
-                          style={{ background: `linear-gradient(135deg,${item.accent},${item.accent}cc)` }}
+                                     transition-all duration-300 hover:scale-[1.02] hover:brightness-[1.03]
+                                     shadow-[0_0_0_1px_rgba(199,181,128,0.08)] hover:shadow-[0_0_0_1px_rgba(219,213,181,0.14),0_14px_32px_rgba(199,181,128,0.14)]"
+                          style={{ background: "linear-gradient(135deg,#C7B580,#dbc895)" }}
                         >
                           <span>{item.primaryCta.label}</span>
                           <CtaIcon type={item.primaryCta.icon} />
