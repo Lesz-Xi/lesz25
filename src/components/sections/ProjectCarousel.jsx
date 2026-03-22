@@ -246,10 +246,10 @@ const ProjectCarousel = () => {
 
       {/* Content (bottom ~40%) */}
       <div
-        className="flex flex-col justify-between p-7 md:p-8 bg-[#111] border-t border-white/5 relative z-20"
+        className="flex flex-col p-6 md:p-8 bg-[#111] border-t border-white/5 relative z-20 min-h-0"
         style={{ height: isMobile ? "40%" : "46%" }}
       >
-        <div className="space-y-3 min-h-0">
+        <div className="space-y-3 flex-1 min-h-0 overflow-hidden">
           <span className="card-category text-[10px] md:text-[11px] font-bold tracking-[0.25em] text-[#8B7E66] uppercase block">
             {project.category}
           </span>
@@ -257,16 +257,14 @@ const ProjectCarousel = () => {
             {project.title}
           </h3>
           <p
-            className={`card-desc text-neutral-400 text-xs md:text-[0.92rem] leading-[1.65] font-geist-mono ${
-              isMobile ? "line-clamp-3" : "line-clamp-4"
-            }`}
+            className="card-desc text-neutral-400 text-xs md:text-[0.92rem] leading-[1.65] font-geist-mono line-clamp-3"
           >
             {project.description}
           </p>
         </div>
 
-        <div className="card-action flex justify-between items-center mt-auto pt-4 border-t border-white/6">
-          <span className="text-[10px] md:text-[11px] uppercase tracking-[0.18em] text-[#8B7E66]/70 font-mono">
+        <div className="card-action flex shrink-0 justify-between items-center gap-3 mt-3 md:mt-4 pt-3 md:pt-4 border-t border-white/6">
+          <span className="min-w-0 truncate text-[10px] md:text-[11px] uppercase tracking-[0.18em] text-[#8B7E66]/70 font-mono">
             {project.link ? "Protocol Online" : "In Private Build"}
           </span>
           {project.link ? (
@@ -274,7 +272,7 @@ const ProjectCarousel = () => {
               href={project.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-10 h-10 rounded-full border border-[#DBD5B5]/30 flex items-center justify-center hover:bg-[#DBD5B5] hover:border-[#DBD5B5] transition-all group/btn"
+              className="w-9 h-9 md:w-10 md:h-10 shrink-0 rounded-full border border-[#DBD5B5]/30 flex items-center justify-center hover:bg-[#DBD5B5] hover:border-[#DBD5B5] transition-all group/btn"
               aria-label={`View ${project.title}`}
             >
               <svg
