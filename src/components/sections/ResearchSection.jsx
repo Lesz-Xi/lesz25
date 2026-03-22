@@ -65,7 +65,7 @@ const research = [
     author: "Rhine Lesther Tague",
     date: "January 5, 2026",
     doi: "10.5281/zenodo.18287138",
-    stats: [{ val: "89", label: "Views" }, { val: "58", label: "Downloads" }],
+    stats: [{ val: "103", label: "Views" }, { val: "62", label: "Downloads" }],
     abstract: "A physics-based framework exploiting high-barrier thermodynamic constraints — regions where mutations impose severe fitness costs on the virus. Three integrated components: the Entropic Vise targeting the gp41 HR1 domain; Thermodynamically Constrained Generative Models that predict future variants; and Sentinel Cells with humanised reporters for real-time latency detection.",
     keywords: ["HIV-1", "Thermodynamics", "Shannon Entropy", "Generative AI", "TC-GAN", "Sentinel Cells", "Computational Virology"],
     indexed: "OpenAIRE",
