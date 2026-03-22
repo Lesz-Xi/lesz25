@@ -66,32 +66,36 @@ const ProjectCarousel = () => {
     const section = sectionRef.current;
     if (!track || !section || isMobile) return; // mobile uses CSS scroll
 
-    // Add right-padding buffer (10vw) so the last card is fully visible at scroll end
-    const rightPadding = window.innerWidth * 0.1;
-    const totalScrollWidth = track.scrollWidth - window.innerWidth + rightPadding;
+    const cards = gsap.utils.toArray(".h-project-card", track);
+    const firstCard = cards[0];
+    const lastCard = cards[cards.length - 1];
+
+    if (!firstCard || !lastCard) return;
+
+    // Travel just enough so the last card occupies the first card's starting lane.
+    const totalTravel = lastCard.offsetLeft - firstCard.offsetLeft;
+    const scrollDistance = totalTravel + window.innerHeight * 0.35;
 
     // Main horizontal scroll — keep reference for containerAnimation
     const hScrollAnim = gsap.to(track, {
-      x: -totalScrollWidth,
+      x: -totalTravel,
       ease: "none",
       scrollTrigger: {
         trigger: section,
         start: "top top",
-        end: () => `+=${totalScrollWidth}`,
+        end: () => `+=${scrollDistance}`,
+        pin: true,
         scrub: 1.2,
         invalidateOnRefresh: true,
       },
     });
 
-    const hST = hScrollAnim.scrollTrigger;
-
     // Per-card content reveals driven by horizontal scroll progress
-    const cards = gsap.utils.toArray(".h-project-card");
     cards.forEach((card, i) => {
       // Initial vertical entrance when section first hits viewport
       gsap.fromTo(
         card,
-        { opacity: 0, y: 50 },
+        { opacity: 0, y: 40 },
         {
           opacity: 1,
           y: 0,
@@ -108,7 +112,7 @@ const ProjectCarousel = () => {
 
       // Image scale reveal as card scrolls in
       const img = card.querySelector(".card-img");
-      if (img && hST) {
+      if (img) {
         gsap.fromTo(img,
           { scale: 1.08 },
           {
@@ -116,7 +120,7 @@ const ProjectCarousel = () => {
             ease: "power2.out",
             scrollTrigger: {
               trigger: card,
-              containerAnimation: hST,
+              containerAnimation: hScrollAnim,
               start: "left 90%",
               end: "left 30%",
               scrub: 0.8,
@@ -127,19 +131,20 @@ const ProjectCarousel = () => {
 
       // Category label — slides down from above
       const category = card.querySelector(".card-category");
-      if (category && hST) {
-        gsap.fromTo(category,
-          { opacity: 0, y: -10 },
+      if (category) {
+        gsap.fromTo(
+          category,
+          { opacity: 0.18, y: -12 },
           {
             opacity: 1,
             y: 0,
-            duration: 0.4,
-            ease: "power2.out",
+            ease: "none",
             scrollTrigger: {
               trigger: card,
-              containerAnimation: hST,
-              start: "left 75%",
-              toggleActions: "play none none reverse",
+              containerAnimation: hScrollAnim,
+              start: "left 94%",
+              end: "left 72%",
+              scrub: true,
             },
           }
         );
@@ -147,20 +152,20 @@ const ProjectCarousel = () => {
 
       // Title — slides up with slight delay
       const title = card.querySelector(".card-title");
-      if (title && hST) {
-        gsap.fromTo(title,
-          { opacity: 0, y: 18 },
+      if (title) {
+        gsap.fromTo(
+          title,
+          { opacity: 0.24, y: 18 },
           {
             opacity: 1,
             y: 0,
-            duration: 0.5,
-            delay: 0.08,
-            ease: "power3.out",
+            ease: "none",
             scrollTrigger: {
               trigger: card,
-              containerAnimation: hST,
-              start: "left 72%",
-              toggleActions: "play none none reverse",
+              containerAnimation: hScrollAnim,
+              start: "left 92%",
+              end: "left 66%",
+              scrub: true,
             },
           }
         );
@@ -168,20 +173,20 @@ const ProjectCarousel = () => {
 
       // Description — slides up after title
       const desc = card.querySelector(".card-desc");
-      if (desc && hST) {
-        gsap.fromTo(desc,
-          { opacity: 0, y: 20 },
+      if (desc) {
+        gsap.fromTo(
+          desc,
+          { opacity: 0.16, y: 24 },
           {
             opacity: 1,
             y: 0,
-            duration: 0.5,
-            delay: 0.16,
-            ease: "power2.out",
+            ease: "none",
             scrollTrigger: {
               trigger: card,
-              containerAnimation: hST,
-              start: "left 68%",
-              toggleActions: "play none none reverse",
+              containerAnimation: hScrollAnim,
+              start: "left 90%",
+              end: "left 60%",
+              scrub: true,
             },
           }
         );
@@ -189,20 +194,20 @@ const ProjectCarousel = () => {
 
       // Action button — pops in last
       const action = card.querySelector(".card-action");
-      if (action && hST) {
-        gsap.fromTo(action,
-          { opacity: 0, scale: 0.8 },
+      if (action) {
+        gsap.fromTo(
+          action,
+          { opacity: 0.18, scale: 0.88 },
           {
             opacity: 1,
             scale: 1,
-            duration: 0.4,
-            delay: 0.24,
-            ease: "back.out(1.4)",
+            ease: "none",
             scrollTrigger: {
               trigger: card,
-              containerAnimation: hST,
-              start: "left 65%",
-              toggleActions: "play none none reverse",
+              containerAnimation: hScrollAnim,
+              start: "left 86%",
+              end: "left 58%",
+              scrub: true,
             },
           }
         );
@@ -214,14 +219,14 @@ const ProjectCarousel = () => {
   const renderCard = (project) => (
     <div
       key={project.id}
-      className={`h-project-card flex-none bg-[#0A0A0A] rounded-2xl overflow-hidden shadow-2xl border border-white/10 flex flex-col ${
-        isMobile ? "w-[80vw] snap-center" : "w-[340px] md:w-[400px]"
+      className={`h-project-card flex-none bg-[#0A0A0A] rounded-[2rem] overflow-hidden shadow-2xl border border-black/15 flex flex-col ${
+        isMobile ? "w-[80vw] snap-center" : "w-[clamp(360px,30vw,420px)]"
       }`}
-      style={{ height: "65vh", minHeight: "420px", maxHeight: "600px" }}
+      style={{ height: isMobile ? "65vh" : "60vh", minHeight: "400px", maxHeight: "620px" }}
     >
       {/* Image (top ~60%) */}
-      <div className="relative overflow-hidden bg-black/50" style={{ height: "60%" }}>
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#0A0A0A]/70 z-10" />
+      <div className="relative overflow-hidden bg-black/50" style={{ height: isMobile ? "60%" : "54%" }}>
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0A0A0A]/78 z-10" />
         {project.inProgress && (
           <div className="absolute top-3 left-3 z-20 flex items-center gap-1.5 bg-black/60 backdrop-blur-sm border border-[#8B7E66]/40 rounded-full px-3 py-1">
             <span className="w-1.5 h-1.5 rounded-full bg-[#C7B580] animate-pulse" />
@@ -241,22 +246,29 @@ const ProjectCarousel = () => {
 
       {/* Content (bottom ~40%) */}
       <div
-        className="flex flex-col justify-between p-7 bg-[#111] border-t border-white/5 relative z-20"
-        style={{ height: "40%" }}
+        className="flex flex-col justify-between p-7 md:p-8 bg-[#111] border-t border-white/5 relative z-20"
+        style={{ height: isMobile ? "40%" : "46%" }}
       >
-        <div>
-          <span className="card-category text-[10px] font-bold tracking-[0.25em] text-[#8B7E66] uppercase block mb-2">
+        <div className="space-y-3">
+          <span className="card-category text-[10px] md:text-[11px] font-bold tracking-[0.25em] text-[#8B7E66] uppercase block">
             {project.category}
           </span>
-          <h3 className="card-title text-xl md:text-2xl font-serif font-bold text-[#DBD5B5] leading-tight mb-3">
+          <h3 className="card-title text-xl md:text-[2rem] font-serif font-bold text-[#DBD5B5] leading-[0.95]">
             {project.title}
           </h3>
-          <p className="card-desc text-neutral-400 text-xs md:text-sm leading-relaxed font-geist-mono line-clamp-3">
+          <p
+            className={`card-desc text-neutral-400 text-xs md:text-[0.92rem] leading-[1.65] font-geist-mono ${
+              isMobile ? "line-clamp-3" : ""
+            }`}
+          >
             {project.description}
           </p>
         </div>
 
-        <div className="card-action flex justify-end mt-auto pt-3">
+        <div className="card-action flex justify-between items-center mt-auto pt-4 border-t border-white/6">
+          <span className="text-[10px] md:text-[11px] uppercase tracking-[0.18em] text-[#8B7E66]/70 font-mono">
+            {project.link ? "Protocol Online" : "In Private Build"}
+          </span>
           {project.link ? (
             <a
               href={project.link}
@@ -297,6 +309,9 @@ const ProjectCarousel = () => {
           <h2 className="text-4xl font-bold font-accent text-[#8B7E66]">
             Featured Projects
           </h2>
+          <p className="max-w-xl mx-auto mt-4 text-sm leading-relaxed text-[#5F5749] font-geist-mono">
+            Active instruments, deployed studies, and in-progress systems. Swipe through the portfolio stream to inspect each protocol without losing the working description.
+          </p>
         </div>
 
         {/* Horizontally scrollable snap container */}
@@ -326,31 +341,38 @@ const ProjectCarousel = () => {
       id="projects"
       ref={sectionRef}
       className="relative bg-[#F5F2EB]"
-      style={{ height: "calc(100vh + 1600px)" }}
     >
       <div className="absolute inset-0 pointer-events-none opacity-[0.04] bg-noise-pattern z-0" />
 
-      <div className="sticky top-0 h-screen overflow-hidden flex flex-col justify-center">
-        <div className="text-center w-full px-4 mb-12 relative z-10 flex-none">
-          <span className="text-xs font-bold tracking-[0.25em] text-[#8B7E66] uppercase mb-3 block">
-            Selected Work
-          </span>
-          <h2 className="text-4xl md:text-6xl font-bold font-accent text-[#8B7E66]">
-            Featured Projects
-          </h2>
+      <div className="min-h-screen overflow-hidden flex flex-col pt-20 pb-8">
+        <div className="projects-intro relative z-20 w-full px-8 md:px-12 lg:px-16 flex-none">
+          <div className="max-w-6xl mx-auto text-center">
+            <span className="text-xs font-bold tracking-[0.25em] text-[#8B7E66] uppercase mb-4 block">
+              Selected Work
+            </span>
+            <h2 className="text-4xl md:text-6xl font-bold font-accent text-[#8B7E66] leading-none">
+              Featured Projects
+            </h2>
+          </div>
         </div>
 
-        <div
-          ref={trackRef}
-          className="flex gap-6 items-center will-change-transform flex-none"
-          style={{ paddingLeft: "10vw", paddingRight: "10vw" }}
-        >
-          {projects.map(renderCard)}
+        <div className="w-full px-8 md:px-12 lg:px-16 flex-1 flex items-end mt-10">
+          <div className="max-w-7xl mx-auto">
+            <div
+              ref={trackRef}
+              className="flex gap-8 items-stretch will-change-transform"
+              style={{ paddingLeft: "1rem", paddingRight: "1rem" }}
+            >
+              {projects.map(renderCard)}
+            </div>
+          </div>
         </div>
 
-        <p className="text-center text-[#8B7E66]/50 text-xs tracking-[0.2em] uppercase mt-8 flex-none">
-          Scroll to explore →
-        </p>
+        <div className="w-full px-8 md:px-12 lg:px-16 pt-8 flex-none">
+          <div className="max-w-7xl mx-auto flex items-center justify-between text-[#8B7E66]/60 text-xs tracking-[0.2em] uppercase font-mono">
+            <span>Scroll to inspect</span>
+          </div>
+        </div>
       </div>
     </section>
   );
