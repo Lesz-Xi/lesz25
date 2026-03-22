@@ -49,7 +49,7 @@ const CareerSection = () => {
       title: "Independent Practice",
       period: "Present",
       description:
-        "Synthesizing creative technology and visual arts. Building bespoke digital experiences and curating a premium print collection, bridging the gap between functional code and aesthetic narrative.",
+        "Operating at the frontier of agentic engineering and causal AI — architecting MASA (Methods of Automated Scientific Analysis), a closed-loop research platform that fuses causal inference, sovereign memory, and multi-agent orchestration. Conducting rigorous R&D across computational virology, thermodynamic modelling, and higher-order neuroscience, while mastering the full agentic stack: LLM orchestration, tool-use pipelines, RAG systems, and real-time reasoning loops. Alongside the research, crafting bespoke digital experiences and a premium print collection — bridging functional code, scientific narrative, and aesthetic vision.",
       showDot: true,
     },
   ];
