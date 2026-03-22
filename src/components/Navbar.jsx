@@ -43,6 +43,10 @@ const Navbar = () => {
   }, [isMobileMenuOpen]);
 
   const isPhotographyPage = location.pathname.startsWith("/photography");
+  const mobileButtonInset = {
+    top: "calc(env(safe-area-inset-top, 0px) + 1rem)",
+    right: "calc(env(safe-area-inset-right, 0px) + 1rem)",
+  };
 
   const navLinks = [
     { name: "Home", href: "/" },
@@ -118,7 +122,10 @@ const Navbar = () => {
         {/* Conditional Navigation Rendering */}
         {isPhotographyPage ? (
           /* Photography Page: Minimalist 2-line Hamburger - Hidden when menu is open */
-          <div className={`flex items-center absolute top-4 right-4 md:right-8 z-[70] transition-opacity duration-300 ${isMobileMenuOpen ? "opacity-0 pointer-events-none" : "opacity-100"}`}>
+          <div
+            className={`md:hidden flex items-center fixed z-[120] transition-opacity duration-300 ${isMobileMenuOpen ? "opacity-0 pointer-events-none" : "opacity-100"}`}
+            style={mobileButtonInset}
+          >
             <button
               className="group flex flex-col gap-[5px] p-2 transition-all duration-300"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -186,13 +193,17 @@ const Navbar = () => {
             </div>
 
             {/* Standard Mobile Menu Button - Hidden when menu is open */}
-            <div className={`md:hidden flex items-center transition-opacity duration-300 ${isMobileMenuOpen ? "opacity-0 pointer-events-none" : "opacity-100"}`}>
+            <div
+              className={`md:hidden fixed z-[120] flex items-center transition-opacity duration-300 ${isMobileMenuOpen ? "opacity-0 pointer-events-none" : "opacity-100"}`}
+              style={mobileButtonInset}
+            >
               <button
-                className={`p-2 rounded-full border transition-all duration-500
+                className={`w-12 h-12 flex items-center justify-center rounded-full border transition-all duration-500
                 ${isScrolled 
                   ? "bg-black/40 backdrop-blur-xl border-white/10 shadow-lg" 
                   : "bg-white/[0.05] backdrop-blur-md border-white/10"}`}
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                aria-label="Toggle Menu"
               >
                 <div className="w-4 h-3 relative flex flex-col justify-between">
                   <span className="w-full h-px bg-[#DBD5B5]" />
@@ -210,8 +221,8 @@ const Navbar = () => {
         <button 
             onClick={() => setIsMobileMenuOpen(false)}
             onTouchEnd={(e) => { e.preventDefault(); setIsMobileMenuOpen(false); }}
-            className="fixed top-4 right-4 z-[200] group w-11 h-11 md:w-9 md:h-9 flex items-center justify-center rounded-full bg-black/80 border border-[#DBD5B5]/30 active:scale-95 transition-transform duration-150"
-            style={{ touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
+            className="fixed z-[200] group w-11 h-11 md:w-9 md:h-9 flex items-center justify-center rounded-full bg-black/80 border border-[#DBD5B5]/30 active:scale-95 transition-transform duration-150"
+            style={{ ...mobileButtonInset, touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
             aria-label="Close Menu"
         >
             <div className="relative w-5 h-5 flex justify-center items-center">
