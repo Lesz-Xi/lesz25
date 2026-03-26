@@ -11,8 +11,8 @@ const projects = [
     id: 4,
     title: "Wu-Weism / MASA",
     category: "AI Research Platform",
-    image: "/images/projects/wu-weism.png",
-    imagePosition: "left top",
+    image: "/images/projects/wu-weism-display.png",
+    imagePosition: "center center",
     inProgress: true,
     link: "https://wuweism.com",
     description: "Causal AI workbench for hypothesis, intervention, and counterfactual reasoning."
