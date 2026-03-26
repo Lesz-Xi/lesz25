@@ -13,7 +13,7 @@ const projects = [
     category: "AI Research Platform",
     image: "/images/projects/wu-weism-display.png",
     imagePosition: "center center",
-    mobileImagePosition: "center center",
+    mobileImagePosition: "58% center",
     mobileImageFit: "contain",
     inProgress: true,
     link: "https://wuweism.com",
