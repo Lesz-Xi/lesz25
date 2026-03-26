@@ -13,7 +13,8 @@ const projects = [
     category: "AI Research Platform",
     image: "/images/projects/wu-weism-display.png",
     imagePosition: "center center",
-    mobileImagePosition: "42% center",
+    mobileImagePosition: "center center",
+    mobileImageFit: "contain",
     inProgress: true,
     link: "https://wuweism.com",
     description: "Causal AI workbench for hypothesis, intervention, and counterfactual reasoning."
@@ -239,7 +240,7 @@ const ProjectCarousel = () => {
         <img
           src={project.image}
           alt={project.title}
-          className="card-img w-full h-full object-cover"
+          className={`card-img w-full h-full ${isMobile && project.mobileImageFit === "contain" ? "object-contain" : "object-cover"}`}
           style={{ objectPosition: (isMobile ? project.mobileImagePosition : project.imagePosition) || project.imagePosition || "center" }}
           loading="lazy"
         />
