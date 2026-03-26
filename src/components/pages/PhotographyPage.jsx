@@ -52,20 +52,19 @@ const PhotographyPage = () => {
 
     useLayoutEffect(() => {
         const ctx = gsap.context(() => {
-            gsap.fromTo(".album-card", 
-                { y: 100, opacity: 0 },
-                { 
-                    y: 0, 
-                    opacity: 1, 
-                    duration: 1, 
-                    stagger: 0.1, 
-                    ease: "power3.out",
-                    scrollTrigger: {
-                        trigger: containerRef.current,
-                        start: "top 80%"
-                    }
-                }
-            );
+            const cards = gsap.utils.toArray(".album-card", containerRef.current);
+            if (!cards.length) return;
+
+            gsap.set(cards, { y: 48, opacity: 0 });
+            gsap.to(cards, {
+                y: 0,
+                opacity: 1,
+                duration: 0.9,
+                stagger: 0.08,
+                ease: "power3.out",
+                clearProps: "transform,opacity",
+                delay: 0.08,
+            });
         }, containerRef);
         return () => ctx.revert();
     }, []);
