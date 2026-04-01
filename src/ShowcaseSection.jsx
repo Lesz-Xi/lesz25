@@ -5,6 +5,11 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const SCRAMBLE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+const biographyParagraphs = [
+  "I architect systems at the boundary of code and inquiry. My primary work is MASA — a causal AI research platform built on Pearl's do-calculus, designed to close the loop between hypothesis, intervention, and counterfactual reasoning.",
+  "Critical thinking is the method underneath how I research, build, and refine systems. Long before formal systems design, MLBB trained me to read timing, roles, tradeoffs, and shifting states with precision.",
+  "That discipline now carries into SkillShift AI, my still-in-progress MLBB project, and into the interfaces I design. Photography continues to train my eye, so every system aims to feel as decisive in use as it is rigorous in structure.",
+];
 
 function scrambleReveal(el, finalText, duration = 1.4) {
   const chars = finalText.split("");
@@ -65,7 +70,7 @@ const ShowcaseSection = () => {
                width="800"
                height="1000"
                loading="eager"
-               fetchpriority="high"
+               fetchPriority="high"
              />
           </div>
         </div>
@@ -88,29 +93,15 @@ const ShowcaseSection = () => {
 
           {/* MAIN TEXT */}
           <div className="space-y-6 text-[#0D0C1D]/80 text-[15px] md:text-lg leading-relaxed font-geist-mono max-w-lg">
-            <p
-              ref={el => bioRefs.current[0] = el}
-              data-text="I architect systems at the boundary of code and inquiry. My primary work is MASA — a causal AI research platform built on Pearl's do-calculus, designed to close the loop between hypothesis, intervention, and counterfactual reasoning."
-            >
-              I architect systems at the boundary of code and inquiry. My primary work is MASA —
-              a causal AI research platform built on Pearl's do-calculus, designed to close the loop
-              between hypothesis, intervention, and counterfactual reasoning.
-            </p>
-            <p
-              ref={el => bioRefs.current[1] = el}
-              data-text="Development is my form of publication. Every system I build is treated with the rigor of a research paper and the precision of a surgical instrument — functional, communicative, and hard-to-vary by design."
-            >
-              Development is my form of publication. Every system I build is treated with the rigor
-              of a research paper and the precision of a surgical instrument — functional,
-              communicative, and hard-to-vary by design.
-            </p>
-            <p
-              ref={el => bioRefs.current[2] = el}
-              data-text="Photography is how I train my eye. The same discipline that produces a decisive frame produces a decisive interface."
-            >
-              Photography is how I train my eye. The same discipline that produces a decisive frame
-              produces a decisive interface.
-            </p>
+            {biographyParagraphs.map((paragraph, index) => (
+              <p
+                key={index}
+                ref={el => bioRefs.current[index] = el}
+                data-text={paragraph}
+              >
+                {paragraph}
+              </p>
+            ))}
           </div>
 
           {/* STATS / DETAILS (Gold Columns) */}
