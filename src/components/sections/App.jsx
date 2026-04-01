@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useLayoutEffect, Suspense, useRef } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation, useParams } from "react-router-dom";
 import Lenis from "lenis";
+import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Navbar from "../Navbar";
 import IntroAnimation from "../IntroAnimation";
@@ -149,15 +150,19 @@ const App = () => {
     // Register Lenis instance globally
     setLenis(lenis);
 
-    function raf(time) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
+    lenis.on("scroll", ScrollTrigger.update);
 
-    requestAnimationFrame(raf);
+    const ticker = (time) => {
+      lenis.raf(time * 1000);
+    };
+
+    gsap.ticker.add(ticker);
+    gsap.ticker.lagSmoothing(0);
 
     return () => {
       setLenis(null);
+      lenis.off("scroll", ScrollTrigger.update);
+      gsap.ticker.remove(ticker);
       lenis.destroy();
     };
   }, []);

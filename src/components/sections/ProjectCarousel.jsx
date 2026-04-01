@@ -12,7 +12,7 @@ const projects = [
     title: "Wu-Weism / MASA",
     category: "AI Research Platform",
     image: "/images/projects/wu-weism-display.png",
-    imagePosition: "center center",
+    imagePosition: "62% center",
     mobileImagePosition: "58% center",
     mobileImageFit: "contain",
     inProgress: true,
@@ -218,21 +218,29 @@ const ProjectCarousel = () => {
   }, { scope: sectionRef, dependencies: [isMobile], revertOnUpdate: true });
 
   // Shared card content — rendered identically on both mobile and desktop
-  const renderCard = (project) => (
+  const renderCard = (project, index) => (
     <div
       key={project.id}
-      className={`h-project-card flex-none bg-[#0A0A0A] rounded-[2rem] overflow-hidden shadow-2xl border border-black/15 flex flex-col ${
+      className={`h-project-card group relative flex-none overflow-hidden rounded-[1.85rem] border border-[#3A342A]/16 bg-[#11100E] flex flex-col ${
         isMobile ? "w-[80vw] snap-center" : "w-[clamp(360px,30vw,420px)]"
       }`}
-      style={{ height: isMobile ? "65vh" : "62vh", minHeight: isMobile ? "400px" : "430px", maxHeight: "640px" }}
+      style={{
+        height: isMobile ? "65vh" : "62vh",
+        minHeight: isMobile ? "400px" : "430px",
+        maxHeight: "640px",
+        boxShadow: "0 22px 72px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.025)",
+      }}
     >
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#DBD5B5]/14 to-transparent" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(219,213,181,0.045),transparent_42%),linear-gradient(180deg,rgba(255,255,255,0.015),transparent_22%,transparent_76%,rgba(0,0,0,0.08))]" />
+
       {/* Image (top ~60%) */}
-      <div className="relative overflow-hidden bg-black/50" style={{ height: isMobile ? "60%" : "50%" }}>
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0A0A0A]/78 z-10" />
+      <div className="relative overflow-hidden bg-[#0D0D0C]" style={{ height: isMobile ? "57%" : "53%" }}>
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#11100E]/84 z-10" />
         {project.inProgress && (
-          <div className="absolute top-3 left-3 z-20 flex items-center gap-1.5 bg-black/60 backdrop-blur-sm border border-[#8B7E66]/40 rounded-full px-3 py-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#C7B580] animate-pulse" />
-            <span className="text-[10px] font-mono font-semibold tracking-[0.15em] text-[#C7B580] uppercase">
+          <div className="absolute left-4 top-4 z-20 inline-flex items-center gap-2 rounded-full border border-[#C7B580]/18 bg-[#141311]/82 px-3 py-1.5 backdrop-blur-sm">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#C7B580]" />
+            <span className="text-[9px] font-geist-mono font-medium tracking-[0.18em] text-[#C7B580]/90 uppercase">
               Still in Progress
             </span>
           </div>
@@ -248,18 +256,28 @@ const ProjectCarousel = () => {
 
       {/* Content (bottom ~40%) */}
       <div
-        className="flex flex-col p-6 md:p-7 bg-[#111] border-t border-white/5 relative z-20 min-h-0"
-        style={{ height: isMobile ? "40%" : "50%" }}
+        className="relative z-20 flex min-h-0 flex-col border-t border-white/5 bg-[#11100E]/98 p-6 md:p-7"
+        style={{ height: isMobile ? "43%" : "47%" }}
       >
-        <div className="space-y-3 flex-1 min-h-0 overflow-hidden">
-          <span className="card-category text-[10px] md:text-[11px] font-bold tracking-[0.25em] text-[#8B7E66] uppercase block">
-            {project.category}
+        <div className="flex items-center justify-between gap-4 pb-4">
+          <div className="min-w-0">
+            <span className="card-category block text-[10px] md:text-[10.5px] font-semibold tracking-[0.24em] text-[#8B7E66]/82 uppercase">
+              {project.category}
+            </span>
+          </div>
+          <span className="shrink-0 text-[10px] font-geist-mono tracking-[0.22em] text-[#DBD5B5]/28">
+            {String(index + 1).padStart(2, "0")}
           </span>
-          <h3 className="card-title text-xl md:text-[2rem] font-serif font-bold text-[#DBD5B5] leading-[0.95]">
+        </div>
+
+        <div className="mb-4 h-px bg-gradient-to-r from-[#DBD5B5]/10 via-[#8B7E66]/10 to-transparent" />
+
+        <div className="flex-1 min-h-0 overflow-hidden">
+          <h3 className="card-title max-w-[14ch] text-[1.55rem] md:text-[1.85rem] font-heading font-semibold tracking-[-0.04em] text-[#F1ECD9] leading-[0.96]">
             {project.title}
           </h3>
           <p
-            className={`card-desc text-neutral-400 text-xs md:text-[0.92rem] leading-[1.65] font-geist-mono ${
+            className={`card-desc mt-4 max-w-[30ch] text-[0.9rem] md:text-[0.96rem] leading-[1.6] text-[#B8B1A2] ${
               isMobile ? "line-clamp-3" : "line-clamp-4"
             }`}
           >
@@ -267,8 +285,8 @@ const ProjectCarousel = () => {
           </p>
         </div>
 
-        <div className="card-action flex shrink-0 justify-between items-center gap-3 mt-3 md:mt-4 pt-3 md:pt-4 border-t border-white/6">
-          <span className="min-w-0 truncate text-[10px] md:text-[11px] uppercase tracking-[0.18em] text-[#8B7E66]/70 font-mono">
+        <div className="card-action mt-5 flex shrink-0 items-center justify-between gap-3 border-t border-white/6 pt-4">
+          <span className="min-w-0 truncate text-[10px] md:text-[10.5px] uppercase tracking-[0.18em] text-[#8B7E66]/62 font-geist-mono">
             {project.link ? "Protocol Online" : "In Private Build"}
           </span>
           {project.link ? (
@@ -276,11 +294,12 @@ const ProjectCarousel = () => {
               href={project.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-9 h-9 md:w-10 md:h-10 shrink-0 rounded-full border border-[#DBD5B5]/30 flex items-center justify-center hover:bg-[#DBD5B5] hover:border-[#DBD5B5] transition-all group/btn"
+              className="group/btn inline-flex shrink-0 items-center gap-2 rounded-full border border-[#DBD5B5]/14 px-3.5 py-2 text-[10px] md:text-[10.5px] font-medium uppercase tracking-[0.18em] text-[#E7E0C6] transition-all duration-300 hover:border-[#DBD5B5]/28 hover:bg-[#DBD5B5]/6"
               aria-label={`View ${project.title}`}
             >
+              <span>View</span>
               <svg
-                className="w-4 h-4 text-[#DBD5B5] group-hover/btn:text-[#0A0A0A] transition-colors"
+                className="h-3.5 w-3.5 text-[#DBD5B5] transition-transform duration-300 group-hover/btn:translate-x-0.5"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -289,8 +308,8 @@ const ProjectCarousel = () => {
               </svg>
             </a>
           ) : (
-            <span className="text-white/30 text-xs font-medium uppercase tracking-widest py-2">
-              In Progress
+            <span className="rounded-full border border-[#C7B580]/14 px-3.5 py-2 text-[10px] font-geist-mono uppercase tracking-[0.18em] text-[#C7B580]/72">
+              Private Build
             </span>
           )}
         </div>

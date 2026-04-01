@@ -1,5 +1,6 @@
 import React from "react";
 import Hero from "../sections/Hero";
+import CriticalThinkingSection from "../sections/CriticalThinkingSection";
 import ShowcaseSection from "../../ShowcaseSection";
 import LogoSection from "../sections/LogoSection";
 import CareerSection from "../sections/CareerSection";
@@ -17,6 +18,7 @@ const Home = () => {
       <Hero />
       
       <div id="work">
+         <CriticalThinkingSection />
          <ShowcaseSection />
       </div>
 
