@@ -57,10 +57,9 @@ const UplinkCookie = () => {
                 </div>
 
                 <p className="font-sans text-sm text-neutral-400 leading-relaxed font-light">
-                    This website uses cookies to ensure you get the best experience on our website.{" "}
-                    <a href="#" className="text-[#C7B580] hover:underline underline-offset-4 decoration-[#C7B580]/50 transition-all">
-                        Cookies Policy
-                    </a>
+                    This website uses local storage and anonymous analytics to measure visits, pages viewed,
+                    device/browser trends, and overall portfolio performance. No personal identity, Gmail,
+                    or username is collected through this flow.
                 </p>
 
                 {/* 2041 Controls - Minimal, High Contrast */}
