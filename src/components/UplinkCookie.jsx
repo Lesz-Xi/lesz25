@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
+const MotionDiv = motion.div;
+
 const UplinkCookie = () => {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -20,7 +22,7 @@ const UplinkCookie = () => {
   return (
     <AnimatePresence>
       {isVisible && (
-        <motion.div
+        <MotionDiv
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 10, filter: "blur(10px)", transition: { duration: 0.4 } }}
@@ -57,9 +59,9 @@ const UplinkCookie = () => {
                 </div>
 
                 <p className="font-sans text-sm text-neutral-400 leading-relaxed font-light">
-                    This website uses local storage and anonymous analytics to measure visits, pages viewed,
-                    device/browser trends, and overall portfolio performance. No personal identity, Gmail,
-                    or username is collected through this flow.
+                    This website uses local storage and privacy-conscious analytics to measure visits,
+                    pages viewed, device trends, and portfolio performance. No Gmail, username, or other
+                    personal identity is collected through this flow.
                 </p>
 
                 {/* 2041 Controls - Minimal, High Contrast */}
@@ -76,7 +78,7 @@ const UplinkCookie = () => {
                 </div>
             </div>
           </div>
-        </motion.div>
+        </MotionDiv>
       )}
     </AnimatePresence>
   );

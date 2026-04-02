@@ -8,11 +8,13 @@ import IntroAnimation from "../IntroAnimation";
 import Cursor from "../Cursor";
 import ErrorBoundary from "../ErrorBoundary"; 
 import UplinkCookie from "../UplinkCookie"; 
+import UmamiTracker from "../UmamiTracker";
 
 // Pages - Lazy loaded for code splitting
 import Home from "../pages/Home";
 const PhotographyPage = React.lazy(() => import("../pages/PhotographyPage"));
 const AlbumDisplay = React.lazy(() => import("../pages/AlbumDisplay"));
+const AdminPage = React.lazy(() => import("../pages/AdminPage"));
 const NotFound = React.lazy(() => import("../pages/NotFound"));
 
 // Disable browser's native scroll restoration IMMEDIATELY (before any navigation)
@@ -130,6 +132,34 @@ const AlbumDisplayWrapper = () => {
   return <AlbumDisplay key={albumId} />;
 }
 
+const AppShell = ({ showIntro, onIntroComplete }) => {
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith("/admin");
+
+  return (
+    <>
+      {!isAdminRoute && showIntro && <IntroAnimation onComplete={onIntroComplete} />}
+      <ScrollToTop />
+      <UmamiTracker />
+      <div className="bg-[#070707] min-h-screen cursor-none">
+        {!isAdminRoute && <Cursor />}
+        {!isAdminRoute && <UplinkCookie />}
+        {!isAdminRoute && <Navbar />}
+        
+        <Suspense fallback={<div className="min-h-screen bg-[#070707]" />}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/admin" element={<AdminPage />} />
+            <Route path="/photography" element={<PhotographyPage />} />
+            <Route path="/photography/:albumId" element={<AlbumDisplayWrapper />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
+      </div>
+    </>
+  );
+};
+
 const App = () => {
   const [showIntro, setShowIntro] = useState(true);
 
@@ -174,25 +204,7 @@ const App = () => {
   return (
     <ErrorBoundary>
       <Router>
-        {showIntro && <IntroAnimation onComplete={handleIntroComplete} />}
-        
-        {/* Main Application Content - Rendered immediately but covered by Intro */}
-        <ScrollToTop />
-        <div className="bg-[#070707] min-h-screen cursor-none">
-          <Cursor />
-          <UplinkCookie />
-          <Navbar />
-          
-          <Suspense fallback={<div className="min-h-screen bg-[#070707]" />}>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/photography" element={<PhotographyPage />} />
-              <Route path="/photography/:albumId" element={<AlbumDisplayWrapper />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Suspense>
-
-        </div>
+        <AppShell showIntro={showIntro} onIntroComplete={handleIntroComplete} />
       </Router>
     </ErrorBoundary>
   );
