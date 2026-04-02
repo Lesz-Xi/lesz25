@@ -116,10 +116,14 @@ const CriticalThinkingSection = () => {
       const labelElements = labelRefs.current.filter(Boolean);
       const pathLength = pathRef.current?.getTotalLength?.() ?? 0;
 
-      const activateStage = (timeline, index, position) => {
+      const activateStage = (timeline, index, position, options = {}) => {
         const activeNode = nodeRefs.current[index];
         const activeLabel = labelRefs.current[index];
         const point = boardNodes[index];
+        const {
+          travelEase = "none",
+          stageEase = "none",
+        } = options;
 
         if (!activeNode || !activeLabel || !point) return;
 
@@ -128,7 +132,7 @@ const CriticalThinkingSection = () => {
           {
             attr: { cx: point.x, cy: point.y },
             duration: index === 0 ? 0.56 : 0.86,
-            ease: "none",
+            ease: travelEase,
           },
           position
         );
@@ -138,7 +142,7 @@ const CriticalThinkingSection = () => {
           {
             attr: { cx: point.x, cy: point.y },
             duration: index === 0 ? 0.56 : 0.86,
-            ease: "none",
+            ease: travelEase,
           },
           position
         );
@@ -149,7 +153,7 @@ const CriticalThinkingSection = () => {
             opacity: (_, target) => (target === activeNode ? 1 : 0.18),
             scale: (_, target) => (target === activeNode ? 1.12 : 0.9),
             duration: 0.62,
-            ease: "none",
+            ease: stageEase,
             overwrite: "auto",
           },
           position
@@ -187,7 +191,7 @@ const CriticalThinkingSection = () => {
             autoAlpha: (_, target) => (target === activeLabel ? 1 : 0.12),
             y: (_, target) => (target === activeLabel ? 0 : 14),
             duration: 0.6,
-            ease: "none",
+            ease: stageEase,
             overwrite: "auto",
           },
           position
@@ -471,6 +475,44 @@ const CriticalThinkingSection = () => {
         });
         gsap.set(bridgeRef.current, { autoAlpha: 0, y: 24 });
 
+        const mobileLoop = gsap.timeline({
+          paused: true,
+          repeat: -1,
+          repeatDelay: 0.45,
+        });
+        let mobileLoopStarted = false;
+
+        activateStage(mobileLoop, 1, 0.16, {
+          travelEase: "power2.inOut",
+          stageEase: "power2.out",
+        });
+        activateStage(mobileLoop, 2, 1.34, {
+          travelEase: "power2.inOut",
+          stageEase: "power2.out",
+        });
+        activateStage(mobileLoop, 3, 2.52, {
+          travelEase: "power2.inOut",
+          stageEase: "power2.out",
+        });
+        activateStage(mobileLoop, 0, 3.7, {
+          travelEase: "power2.inOut",
+          stageEase: "power2.out",
+        });
+
+        const mobileLoopTrigger = ScrollTrigger.create({
+          trigger: sectionRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          onEnter: () => {
+            if (mobileLoopStarted) mobileLoop.resume();
+          },
+          onEnterBack: () => {
+            if (mobileLoopStarted) mobileLoop.resume();
+          },
+          onLeave: () => mobileLoop.pause(),
+          onLeaveBack: () => mobileLoop.pause(),
+        });
+
         const timeline = gsap.timeline({
           defaults: { ease: "power2.out" },
           scrollTrigger: {
@@ -537,10 +579,21 @@ const CriticalThinkingSection = () => {
           0.48
         );
 
-        activateStage(timeline, 0, 0.62);
-        activateStage(timeline, 1, 1.08);
-        activateStage(timeline, 2, 1.48);
-        activateStage(timeline, 3, 1.9);
+        activateStage(timeline, 0, 0.62, {
+          travelEase: "power2.inOut",
+          stageEase: "power2.out",
+        });
+
+        timeline.call(
+          () => {
+            mobileLoopStarted = true;
+            if (mobileLoopTrigger.isActive) {
+              mobileLoop.play(0);
+            }
+          },
+          null,
+          1.1
+        );
 
         timeline.to(
           bridgeRef.current,
@@ -549,7 +602,7 @@ const CriticalThinkingSection = () => {
             y: 0,
             duration: 0.6,
           },
-          2.18
+          1.42
         );
       });
 
