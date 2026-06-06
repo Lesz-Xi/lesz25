@@ -1226,10 +1226,7 @@ textarea:-webkit-autofill:active {
   min-height: 100svh;
   padding-top: clamp(7rem, 12vw, 10rem);
   padding-bottom: clamp(6rem, 10vw, 9rem);
-  background:
-    radial-gradient(46% 42% at 72% 18%, rgba(199, 181, 128, 0.07), transparent 72%),
-    radial-gradient(58% 46% at 8% 92%, rgba(219, 213, 181, 0.035), transparent 70%),
-    #070707;
+  background: #070707;
 }
 
 .hero-manifesto::after {
