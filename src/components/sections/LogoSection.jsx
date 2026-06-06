@@ -1,15 +1,15 @@
+import { useRef } from "react";
 import { logoIconsList } from "../../constants/index.js";
+import { useAuralisMotion } from "../hooks/useAuralisMotion.js";
 
 const LogoIcon = ({ icon }) => {
   return (
-    <div className="flex-none flex-center px-8 md:px-12 group">
-      <div
-        className="w-12 h-12 md:w-12 md:h-12 flex items-center justify-center"
-      >
+    <div className="flex-none px-7 md:px-10">
+      <div className="flex h-14 w-14 items-center justify-center rounded-full border border-[#DBD5B5]/10 bg-[#11100E]/70 p-3 shadow-[inset_0_1px_0_rgba(245,242,235,0.04)] transition duration-500 hover:-translate-y-1 hover:border-[#C7B580]/30 hover:bg-[#161410]">
         <img
           src={icon.imgPath}
           alt={icon.name}
-          className="w-full h-full object-contain filter grayscale-0 brightness-100 md:grayscale md:brightness-75 md:hover:grayscale-0 md:hover:brightness-100 transition-all duration-300"
+          className="h-full w-full object-contain opacity-65 grayscale saturate-[0.72] transition duration-500 hover:opacity-100 hover:grayscale-0 hover:saturate-100"
         />
       </div>
     </div>
@@ -17,39 +17,51 @@ const LogoIcon = ({ icon }) => {
 };
 
 const LogoSection = () => {
+  const sectionRef = useRef(null);
+  useAuralisMotion(sectionRef);
+
   return (
-    <div className="relative pt-24 pb-20 md:pt-32 md:pb-24" style={{ backgroundColor: "#070707" }}>
-      {/* Section Header */}
-      <div className="text-center mb-16">
-        <span className="text-xs font-bold tracking-[0.2em] text-white/40 uppercase mb-6 block">
-          Stack
-        </span>
-        <h2 className="text-5xl md:text-6xl font-bold font-accent leading-tight text-[#8B7E66]">
-          Technologies
-        </h2>
-      </div>
+    <section ref={sectionRef} className="auralis-section" data-theme="dark">
+      <div className="auralis-shell">
+        <div className="auralis-section-head">
+          <div data-auralis-reveal>
+            <div className="auralis-rule" data-auralis-rule />
+            <span className="auralis-mark">Instrument stack</span>
+            <span className="auralis-submark">Tools kept quiet</span>
+          </div>
 
-      {/* Container to center and Limit width */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        {/* Gradient edges for the contained area */}
-        <div className="absolute left-0 top-0 h-full w-32 bg-gradient-to-r from-[#070707] to-transparent z-20 pointer-events-none" />
-        <div className="absolute right-0 top-0 h-full w-32 bg-gradient-to-l from-[#070707] to-transparent z-20 pointer-events-none" />
+          <div className="auralis-head-main" data-auralis-reveal>
+            <h2 className="auralis-title">
+              <span className="block">capability without</span>
+              <span className="block auralis-serif">display noise.</span>
+            </h2>
+            <p className="auralis-copy">
+              The stack is present, but not dominant. Technology supports the work;
+              it does not become the work’s visual identity.
+            </p>
+          </div>
+        </div>
 
-        {/* Marquee container */}
-        <div className="relative h-20 md:h-24 overflow-hidden">
-          <div className="absolute flex items-center animate-logo-scroll">
-            {/* First set of logos */}
-            {logoIconsList.map((icon, index) => (
-              <LogoIcon key={`${icon.name}-${index}`} icon={icon} />
-            ))}
-            {/* Duplicate for seamless loop */}
-            {logoIconsList.map((icon, index) => (
-              <LogoIcon key={`${icon.name}-duplicate-${index}`} icon={icon} />
-            ))}
+        <div className="auralis-record-panel py-10" data-auralis-card data-auralis-reveal>
+          <span className="auralis-water-seam" aria-hidden="true" />
+          <div className="auralis-record-head"><span>Technology record · moving index</span><span>RT-STACK</span></div>
+          <div className="relative overflow-hidden py-8">
+            <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-28 bg-gradient-to-r from-[#070707] to-transparent" />
+            <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-28 bg-gradient-to-l from-[#070707] to-transparent" />
+            <div className="relative h-20 overflow-hidden">
+              <div className="absolute flex items-center animate-logo-scroll">
+                {logoIconsList.map((icon, index) => (
+                  <LogoIcon key={`${icon.name}-${index}`} icon={icon} />
+                ))}
+                {logoIconsList.map((icon, index) => (
+                  <LogoIcon key={`${icon.name}-duplicate-${index}`} icon={icon} />
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

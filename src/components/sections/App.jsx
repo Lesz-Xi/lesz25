@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useLayoutEffect, Suspense, useRef } from "react";
-import { BrowserRouter as Router, Routes, Route, useLocation, useParams } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate, useParams } from "react-router-dom";
 import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -22,25 +22,41 @@ if (typeof window !== 'undefined' && 'scrollRestoration' in history) {
   history.scrollRestoration = 'manual';
 }
 
-// Store Lenis instance globally so components can access it
+// Store Lenis instance at module scope so scroll restoration can stay in sync.
 let lenisInstance = null;
-export const getLenis = () => lenisInstance;
-export const setLenis = (lenis) => { lenisInstance = lenis; };
+const getLenis = () => lenisInstance;
+const setLenis = (lenis) => { lenisInstance = lenis; };
 
 // ScrollToTop component with scroll position memory for Photography page
 // Uses useLayoutEffect for synchronous pre-paint scroll reset
 // FIX: Properly clears ScrollTrigger memory and syncs Lenis internal state
 const ScrollToTop = () => {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
+  const navigate = useNavigate();
+  const initialRefreshHandledRef = useRef(false);
   const previousPathRef = useRef(sessionStorage.getItem('previousPath') || '');
   
   // MOUNT EFFECT: Force scroll to top on initial page load/refresh
   // This runs before browser's scroll restoration attempt
   useLayoutEffect(() => {
-    // Clear stale navigation state on fresh page load
-    if (!sessionStorage.getItem('isNavigating')) {
+    if (initialRefreshHandledRef.current) return;
+    initialRefreshHandledRef.current = true;
+
+    const navigationEntry = performance.getEntriesByType?.('navigation')?.[0];
+    const navigationType = navigationEntry && 'type' in navigationEntry ? navigationEntry.type : undefined;
+    const isFreshPageLoad = navigationType === 'navigate' || navigationType === 'reload' || !sessionStorage.getItem('isNavigating');
+    const shouldNormalizeToHome = isFreshPageLoad && !pathname.startsWith('/admin') && (pathname !== '/' || hash);
+
+    // Clear stale navigation state on fresh page load / hard refresh.
+    if (isFreshPageLoad) {
       sessionStorage.removeItem('previousPath');
       sessionStorage.removeItem('photographyScrollPosition');
+      sessionStorage.removeItem('photographyReturnTarget');
+
+      if (shouldNormalizeToHome) {
+        previousPathRef.current = '/';
+        navigate('/', { replace: true });
+      }
     }
     sessionStorage.removeItem('isNavigating');
     
@@ -56,7 +72,7 @@ const ScrollToTop = () => {
     
     // Clear ScrollTrigger memory
     ScrollTrigger.clearScrollMemory();
-  }, []); // Empty dependency = runs once on mount
+  }, [hash, navigate, pathname]);
   
   // SYNCHRONOUS scroll reset - runs before paint
   useLayoutEffect(() => {

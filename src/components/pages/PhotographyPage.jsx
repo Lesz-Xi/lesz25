@@ -85,9 +85,6 @@ const PhotographyPage = () => {
             {/* 2-Column Grid - Simple Staggered Layout */}
             <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-32">
                 {albums.map((album, index) => {
-                    // Last item (Flowers) should be centered
-                    const isLast = index === albums.length - 1;
-                    
                     return (
                     <Link 
                         to={`/photography/${album.id}`} 

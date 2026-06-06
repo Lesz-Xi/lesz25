@@ -64,7 +64,7 @@ const Typewriter = ({
 
     ticker = setTimeout(handleTyping, typingSpeed);
     return () => clearTimeout(ticker);
-  }, [displayedText, isDeleting, loopNum, hasStarted, text, speed, deleteSpeed, pauseBeforeDelete, loop, hasEnded]);
+  }, [displayedText, isDeleting, loopNum, hasStarted, text, speed, deleteSpeed, pauseBeforeDelete, loop, hasEnded, onComplete, typingSpeed]);
 
   return (
     <span className={className}>

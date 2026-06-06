@@ -1,6 +1,5 @@
 import { counterItems } from "../../constants/index.js";
 import { useEffect, useRef, useState } from "react";
-// eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 import CountUp from "react-countup";
 

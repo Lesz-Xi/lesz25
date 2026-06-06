@@ -1,210 +1,168 @@
-import React, { useRef, useLayoutEffect } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import React, { useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { useAuralisMotion } from "../hooks/useAuralisMotion.js";
+
+const featuredPhotos = [
+  {
+    id: "switzerland",
+    url: "/images/switz-new-feat.webp",
+    title: "Alpine Serenity",
+    location: "Zug, Switzerland",
+    year: "2022",
+    tag: "Distance Snow Quiet",
+    concept: "Ma",
+    conceptLine: "Space makes the distance legible.",
+  },
+  {
+    id: "paris",
+    url: "/images/feat-paris.webp",
+    title: "City of Light",
+    location: "Paris, France",
+    year: "2022",
+    tag: "Architecture Window Line",
+    concept: "Shibui",
+    conceptLine: "Refinement appears through restraint.",
+  },
+  {
+    id: "nature",
+    url: "/images/nature-feat.webp",
+    title: "Nature",
+    location: "Collections",
+    year: "2022",
+    tag: "Stillness Green Weather",
+    concept: "Wabi-sabi",
+    conceptLine: "Weather and irregularity remain visible.",
+  },
+  {
+    id: "beach",
+    url: "/images/sunset-new-feat.webp",
+    title: "Sunrise & Sunset",
+    location: "Collections",
+    year: "2025",
+    tag: "Horizon Light Tide",
+    concept: "Ma",
+    conceptLine: "The horizon holds the pause.",
+  },
+  {
+    id: "philippines",
+    url: "/images/ph-feat.webp",
+    title: "Islands & Icons",
+    location: "Davao City, Philippines",
+    year: "2025",
+    tag: "Home Heat Return",
+    concept: "Shibui",
+    conceptLine: "Familiarity becomes quiet structure.",
+  },
+  {
+    id: "flowers",
+    url: "/images/flowers-feat.webp",
+    title: "Flowers",
+    location: "Botanical Garden",
+    year: "2025",
+    tag: "Petal Garden Close looking",
+    concept: "Wabi-sabi",
+    conceptLine: "Small impermanence becomes the subject.",
+  },
+];
 
 const PhotographySection = () => {
-  const containerRef = useRef(null);
-  
-  const photos = [
-    {
-      id: 1,
-      url: "/images/switz-new-feat.webp",
-      title: "Alps",
-      location: "ZUG, SWITZERLAND",
-      year: "2022",
-      category: "LANDSCAPE",
-      className: "md:col-span-1 md:mt-0",
-      speed: 1 // Baseline
-    },
-    {
-      id: 2,
-      url: "/images/feat-paris.webp",
-      title: "City of Lights",
-      location: "PARIS, FRANCE",
-      year: "2022",
-      category: "ARCHITECTURE",
-      className: "md:col-span-1 md:mt-32",
-      speed: 1.5 // Moves faster
-    },
-    {
-      id: 3,
-      url: "/images/nature-feat.webp",
-      title: "Nature",
-      location: "COLLECTIONS",
-      year: "2022",
-      category: "NATURE",
-      className: "md:col-span-1 md:-mt-32",
-      speed: 0.8 // Moves slower (drag)
-    },
-    {
-      id: 4,
-      url: "/images/sunset-new-feat.webp",
-      title: "Sunrise & Sunset",
-      location: "COLLECTIONS",
-      year: "2025",
-      category: "STREET",
-      className: "md:col-span-1 md:mt-0",
-      speed: 1.2
-    },
-    {
-      id: 5,
-      url: "/images/ph-feat.webp",
-      title: "Philippines",
-      location: "DAVAO CITY",
-      year: "2025",
-      category: "CULTURE",
-      className: "md:col-span-1 md:-mt-32",
-      speed: 1.1
-    },
-    {
-      id: 7,
-      url: "/images/flowers-feat.webp",
-      title: "Flowers",
-      location: "COLLECTIONS",
-      year: "2025",
-      category: "NATURE",
-      className: "md:col-span-1 md:mt-0",
-      speed: 0.8
-    }
-  ];
+  const sectionRef = useRef(null);
+  const [activePhotoIndex, setActivePhotoIndex] = useState(0);
+  const activePhoto = featuredPhotos[activePhotoIndex];
 
-  useLayoutEffect(() => {
-    const ctx = gsap.context(() => {
-      const photoCards = gsap.utils.toArray(".photo-card");
-      photoCards.forEach((card) => {
-        const speed = parseFloat(card.dataset.speed);
-        gsap.to(card, {
-          y: -120 * speed, // Increased for deeper parallax
-          ease: "none",
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 1
-          }
-        });
-      });
-    }, containerRef);
+  useAuralisMotion(sectionRef);
 
-    return () => ctx.revert();
-  }, []);
-
-  const handleMouseMove = (e) => {
-    // Disable on touch devices or screens that don't support hover
-    if (window.matchMedia("(hover: none)").matches) return;
-
-    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
-    const relativeX = (e.clientX - left) / width;
-    const relativeY = (e.clientY - top) / height;
-    
-    // Map 0-1 to -1 to 1 range (center is 0)
-    const tiltX = (relativeY - 0.5) * 20; // Tilt range -10 to 10 approx (inverted for natural feel)
-    const tiltY = (relativeX - 0.5) * -20; // Tilt range -10 to 10 (inverted)
-
-    gsap.to(e.currentTarget, {
-      rotationX: -tiltX, // Invert X for natural tilt (mouse up -> tilt up)
-      rotationY: -tiltY, // Invert Y for natural tilt
-      scale: 1.05,
-      transformPerspective: 1000,
-      ease: "power2.out",
-      duration: 0.4
-    });
+  const showPreviousPhoto = () => {
+    setActivePhotoIndex((currentIndex) => (
+      currentIndex === 0 ? featuredPhotos.length - 1 : currentIndex - 1
+    ));
   };
 
-  const handleMouseLeave = (e) => {
-    gsap.to(e.currentTarget, {
-      rotationX: 0,
-      rotationY: 0,
-      scale: 1,
-      ease: "power2.out",
-      duration: 0.5
-    });
+  const showNextPhoto = () => {
+    setActivePhotoIndex((currentIndex) => (
+      currentIndex === featuredPhotos.length - 1 ? 0 : currentIndex + 1
+    ));
+  };
+
+  const rememberPhotographyOrigin = () => {
+    sessionStorage.setItem("photographyReturnTarget", "/#photography");
   };
 
   return (
-    <section id="photography" ref={containerRef} className="py-16 md:py-32 text-[#DBD5B5]" style={{ backgroundColor: "#070707" }}>
-      <div className="max-w-[1400px] mx-auto px-6 md:px-12">
-        
-        {/* Header */}
-        <div className="mb-24 max-w-xl">
-          <span className="text-xs font-bold tracking-[0.2em] text-[#DBD5B5]/40 uppercase mb-6 block">
-            Visuals
-          </span>
-          <h2 className="text-5xl md:text-7xl font-bold font-accent mb-6 tracking-normal text-[#8B7E66]">
-            Photography
-          </h2>
-          <p className="text-[#DBD5B5]/80 text-sm md:text-[15px] leading-relaxed max-w-sm font-geist-mono">
-            Capturing moments, light, and composition. A visual journal of my perspective on the world.
-          </p>
+    <section id="photography" ref={sectionRef} className="auralis-section" data-theme="dark">
+      <div className="auralis-shell">
+        <div className="auralis-section-head">
+          <div data-auralis-reveal>
+            <div className="auralis-rule" data-auralis-rule />
+            <span className="auralis-mark">Wabi-sabi — Image</span>
+            <span className="auralis-submark">Materials that hold time</span>
+          </div>
+
+          <div className="auralis-head-main" data-auralis-reveal>
+            <h2 className="auralis-title">
+              <span className="block">texture softens</span>
+              <span className="block auralis-serif">the system.</span>
+            </h2>
+            <p className="auralis-copy">
+              I return to images when words become too loud. Each frame keeps a
+              small piece of time intact: quiet weather, remembered distance, and
+              the feeling of looking until the world begins to soften.
+            </p>
+          </div>
         </div>
 
-        {/* Asymmetrical Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-24">
-          {photos.map((photo) => (
-            <div key={photo.id} className={`photo-card group ${photo.className}`} data-speed={photo.speed} data-hover>
-              
-              {/* Image Container with Tilt */}
-              <div 
-                className="relative mb-6 overflow-hidden rounded-lg cursor-pointer transform-gpu border border-white/5"
-                onMouseMove={handleMouseMove}
-                onMouseLeave={handleMouseLeave}
-              >
-
-
-                {/* Image */}
-                <div className="aspect-[4/3] overflow-hidden">
-                  <img
-                    src={photo.url}
-                    srcSet={`${photo.url.replace('.webp', '-mobile.webp')} 600w, ${photo.url} 1200w`}
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    alt={photo.title}
-                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-                    style={{ willChange: "transform" }}
-                    decoding="async"
-                    loading="lazy"
-                  />
-                </div>
-                
-                {/* Shine Effect */}
-                <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none mix-blend-overlay"></div>
-              </div>
-
-              {/* Info Below */}
-              <div className="flex justify-between items-baseline border-b border-white/10 pb-4">
-                <div>
-                  <h3 className="text-lg font-bold text-[#DBD5B5] mb-1">
-                    {photo.title}
-                  </h3>
-                  <p className="text-[10px] tracking-widest uppercase text-[#DBD5B5]/50 font-medium">
-                    {photo.location}
-                  </p>
-                </div>
-                <span className="text-xs font-bold text-[#DBD5B5]/40">
-                  {photo.year}
-                </span>
-              </div>
-
-            </div>
-          ))}
-        </div>
-
-      {/* Bottom Actions */}
-        <div className="mt-16 flex justify-center items-center border-t border-white/10 pt-10 relative z-30">
-          
-          <Link to="/photography" className="group relative px-12 py-4 overflow-hidden rounded-full border border-[#8B7E66]/40 transition-all duration-500 hover:border-[#8B7E66]">
-            {/* Animated Background Overlay */}
-            <div className="absolute inset-0 bg-[#8B7E66] translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out"></div>
-            
-            {/* Button Text */}
-            <span className="relative z-10 text-xs font-bold tracking-[0.3em] uppercase text-[#8B7E66] group-hover:text-white transition-colors duration-500">
-              See All
-            </span>
+        <div className="image-monograph" data-auralis-reveal>
+          <Link
+            to={`/photography/${activePhoto.id}`}
+            className="image-monograph-frame"
+            aria-label={`View ${activePhoto.title}`}
+            onClick={rememberPhotographyOrigin}
+            data-image-monograph-card
+          >
+            <img
+              key={activePhoto.id}
+              src={activePhoto.url}
+              srcSet={`${activePhoto.url.replace(".webp", "-mobile.webp")} 600w, ${activePhoto.url} 1200w`}
+              sizes="(max-width: 980px) 100vw, 76vw"
+              alt={activePhoto.title}
+              decoding="async"
+              loading="lazy"
+              data-auralis-image
+            />
           </Link>
 
+          <div className="image-monograph-meta">
+            <div>
+              <span className="image-monograph-count">
+                {String(activePhotoIndex + 1).padStart(2, "0")} / {String(featuredPhotos.length).padStart(2, "0")}
+              </span>
+              <h3>{activePhoto.title}</h3>
+              <p>{activePhoto.location} — {activePhoto.year}</p>
+            </div>
+
+            <div className="image-monograph-concept">
+              <span>{activePhoto.concept}</span>
+              <p>{activePhoto.conceptLine}</p>
+            </div>
+
+            <span className="image-monograph-tag">{activePhoto.tag}</span>
+          </div>
+
+          <div className="image-monograph-controls" aria-label="Featured photography controls">
+            <button type="button" onClick={showPreviousPhoto} aria-label="Show previous album">
+              &lt;
+            </button>
+            <button type="button" onClick={showNextPhoto} aria-label="Show next album">
+              &gt;
+            </button>
+          </div>
         </div>
 
-
+        <div className="image-monograph-browse" data-auralis-reveal>
+          <Link to="/photography" onClick={rememberPhotographyOrigin}>
+            Browse gallery <span aria-hidden="true">→</span>
+          </Link>
+        </div>
       </div>
     </section>
   );

@@ -1,160 +1,127 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Logo from "./Logo";
-import { FaGithub, FaLinkedinIn, FaInstagram, FaXTwitter } from "react-icons/fa6";
+import { FaGithub, FaInstagram, FaLinkedinIn, FaXTwitter } from "react-icons/fa6";
+
+const navigation = [
+  { name: "Roles", href: "/#roles" },
+  { name: "Projects", href: "/#projects" },
+  { name: "Research", href: "/#research" },
+  { name: "Photography", href: "/#photography" },
+  { name: "Journey", href: "/#about" },
+];
+
+const photoLinks = [
+  { name: "Alpine Serenity", href: "/photography/switzerland" },
+  { name: "City of Light", href: "/photography/paris" },
+  { name: "Nature", href: "/photography/nature" },
+  { name: "Sunrise & Sunset", href: "/photography/beach" },
+  { name: "Islands & Icons", href: "/photography/philippines" },
+  { name: "Flowers", href: "/photography/flowers" },
+];
+
+const principles = [
+  { name: "Ma", line: "Leave space for the work to breathe." },
+  { name: "Shibui", line: "Refine until only the necessary remains." },
+  { name: "Wabi-sabi", line: "Let the trace of practice stay visible." },
+];
+
+const socials = [
+  { name: "LinkedIn", href: "https://www.linkedin.com/in/rhine-lesther-tague-4b604a246", icon: <FaLinkedinIn size={16} /> },
+  { name: "GitHub", href: "https://github.com/Lesz-Xi", icon: <FaGithub size={16} /> },
+  { name: "Instagram", href: "https://www.instagram.com/ichrhin3y?igsh=MXBwejdiYTEyODBlbg%3D%3D&utm_source=q", icon: <FaInstagram size={16} /> },
+  { name: "X / Twitter", href: "https://x.com/codefar1", icon: <FaXTwitter size={15} /> },
+];
 
 const Footer = () => {
   return (
-    <footer className="bg-[#12110E] py-16 relative overflow-hidden">
+    <footer className="relative overflow-hidden bg-[#070707] px-6 py-24 text-[#DBD5B5] md:px-10">
+      <div className="pointer-events-none absolute inset-0 opacity-[0.035] bg-noise-pattern" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 md:gap-8">
-          
-          {/* Brand/Bio Section */}
-          <div className="lg:col-span-5 space-y-6">
-            <div className="space-y-4">
-              <span className="text-[10px] font-bold tracking-[0.3em] font-pixel uppercase text-[#8B7E66]">
-                Principal
-              </span>
-              <h2 className="text-4xl md:text-5xl font-display text-[#F5F2EB] tracking-tight">
-                Rhine Tague
-              </h2>
-              <p className="text-xl font-accent text-[#8B7E66]">
-                Developer & Photographer
-              </p>
-            </div>
-            
-            <p className="text-[#F5F2EB]/60 text-base leading-relaxed max-w-md font-heading tracking-wide">
-              I focus on building clean, user-friendly experiences 
-              that make complex ideas simple, effective, and meaningful.
-              Based in the Philippines, available worldwide.
+      <div className="auralis-shell relative z-10">
+        <div className="grid gap-16 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-start">
+          <div>
+            <span className="auralis-mark">Closing note</span>
+            <h2 className="mt-8 max-w-3xl [font-family:var(--font-auralis-jp)] text-[clamp(3rem,6.9vw,7.2rem)] font-light leading-[0.92] tracking-[-0.092em] text-[#F5F2EB]">
+              Rhine<span className="ml-1 text-[#C7B580]/82">.</span>
+            </h2>
+            <p className="mt-8 max-w-[34rem] [font-family:var(--font-auralis-jp)] text-[clamp(1rem,1.12vw,1.18rem)] font-light leading-[1.95] tracking-[-0.018em] text-[#DBD5B5]/52">
+              Ultimately trying to understand how knowledge actually grows.
             </p>
 
-            <div className="pt-4 flex flex-col items-start gap-4">
-              <Link 
-                to="/#contact" 
-                className="text-xs font-bold font-pixel uppercase tracking-widest text-[#F5F2EB] hover:text-[#8B7E66] transition-colors border-b border-[#8B7E66]/30 pb-1"
-              >
-                Get in touch
-              </Link>
-              <a 
-                href="mailto:rhinelesther@gmail.com" 
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[10px] font-pixel text-[#8B7E66]/60 hover:text-[#F5F2EB] transition-colors uppercase tracking-[0.2em] cursor-pointer"
-              >
-                rhinelesther@gmail.com
+            <div className="mt-10 flex flex-wrap items-center gap-x-7 gap-y-3 font-auralis-mono text-[0.64rem] uppercase tracking-[0.2em] text-[#DBD5B5]/42">
+              <a href="mailto:rhinelesther@gmail.com" className="transition-colors hover:text-[#F5F2EB]">
+                Email →
               </a>
+              {socials.map((item) => (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 transition-colors hover:text-[#F5F2EB]"
+                  aria-label={item.name}
+                >
+                  {item.icon}
+                  <span className="sr-only">{item.name}</span>
+                </a>
+              ))}
             </div>
           </div>
 
-          {/* Spacer for Desktop */}
-          <div className="hidden lg:block lg:col-span-1"></div>
+          <div className="grid gap-12 md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+            <div>
+              <h3 className="font-auralis-mono text-[0.64rem] uppercase tracking-[0.22em] text-[#C7B580]/70">
+                Index
+              </h3>
+              <nav className="mt-7 grid gap-3.5" aria-label="Footer navigation">
+                {navigation.map((link) => (
+                  <Link
+                    key={link.name}
+                    to={link.href}
+                    className="w-fit [font-family:var(--font-auralis-jp)] text-[clamp(0.98rem,1.08vw,1.08rem)] font-light tracking-[-0.006em] text-[#DBD5B5]/48 transition-colors hover:text-[#F5F2EB]"
+                  >
+                    {link.name}
+                  </Link>
+                ))}
+              </nav>
+            </div>
 
-          {/* Navigation Links */}
-          <div className="lg:col-span-2 space-y-6">
-            <h4 className="text-[10px] font-bold tracking-[0.3em] font-pixel uppercase text-[#8B7E66]">
-              Navigation
-            </h4>
-            <ul className="space-y-3">
-              {[
-                { name: "Roles", href: "/#roles" },
-                { name: "Photography", href: "/#photography" },
-                { name: "The Journey", href: "/#about" },
-                { name: "Research", href: "/#research" },
-              ].map((link) => (
-                <li key={link.name}>
-                  {link.href.startsWith('/') ? (
-                    <Link to={link.href} className="text-sm font-heading text-[#F5F2EB]/60 hover:text-[#F5F2EB] hover:translate-x-1 transition-all inline-block">
-                      {link.name}
-                    </Link>
-                  ) : (
-                    <a href={link.href} className="text-sm font-heading text-[#F5F2EB]/60 hover:text-[#F5F2EB] hover:translate-x-1 transition-all inline-block">
-                      {link.name}
-                    </a>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Photography Links */}
-          <div className="lg:col-span-2 space-y-6">
-            <h4 className="text-[10px] font-bold tracking-[0.3em] font-pixel uppercase text-[#8B7E66]">
-              Photography
-            </h4>
-            <ul className="space-y-3">
-              {[
-                { name: "Alpine Serenity", href: "/photography/switzerland" },
-                { name: "Quiet Whispers", href: "/photography/nature" },
-                { name: "Islands & Icons", href: "/photography/philippines" },
-                { name: "Browse Gallery", href: "/photography" },
-              ].map((item) => (
-                <li key={item.name}>
-                  <Link to={item.href} className="text-sm font-heading text-[#F5F2EB]/60 hover:text-[#F5F2EB] hover:translate-x-1 transition-all inline-block">
+            <div>
+              <h3 className="font-auralis-mono text-[0.64rem] uppercase tracking-[0.22em] text-[#C7B580]/70">
+                Albums
+              </h3>
+              <nav className="mt-7 grid grid-cols-1 gap-3.5 sm:grid-cols-2" aria-label="Footer photography albums">
+                {photoLinks.map((item) => (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    className="w-fit [font-family:var(--font-auralis-jp)] text-[clamp(0.98rem,1.08vw,1.08rem)] font-light tracking-[-0.006em] text-[#DBD5B5]/48 transition-colors hover:text-[#F5F2EB]"
+                  >
                     {item.name}
                   </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Social Links */}
-          <div className="lg:col-span-2 space-y-6">
-            <h4 className="text-[10px] font-bold tracking-[0.3em] font-pixel uppercase text-[#8B7E66]">
-              Connection
-            </h4>
-            <ul className="flex items-center gap-5 pt-2">
-              {[
-                { name: "LinkedIn", href: "https://www.linkedin.com/in/rhine-lesther-tague-4b604a246", icon: <FaLinkedinIn size={20} /> },
-                { name: "GitHub", href: "https://github.com/Lesz-Xi", icon: <FaGithub size={20} /> },
-                { name: "Instagram", href: "https://www.instagram.com/ichrhin3y?igsh=MXBwejdiYTEyODBlbg%3D%3D&utm_source=q", icon: <FaInstagram size={20} /> },
-                { name: "X / Twitter", href: "https://x.com/codefar1", icon: <FaXTwitter size={18} /> },
-              ].map((item) => (
-                <li key={item.name}>
-                  <a 
-                    href={item.href} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="text-[#F5F2EB]/40 hover:text-[#F5F2EB] hover:scale-110 transition-all duration-300 inline-block"
-                    aria-label={item.name}
-                  >
-                    {item.icon}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-        </div>
-
-        {/* Footer Bottom Bar */}
-        <div className="mt-16 pt-8 border-t border-[#F5F2EB]/5 flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex flex-col md:flex-row items-center gap-6">
-            <p className="text-[10px] font-pixel text-[#F5F2EB]/40 uppercase tracking-widest">
-              © 2026 Rhine Tague — Made with precision
-            </p>
-            <div className="flex gap-6">
-              <a href="#" className="text-[10px] font-pixel text-[#F5F2EB]/40 hover:text-[#8B7E66] transition-colors uppercase tracking-[0.2em]">
-                Privacy
-              </a>
-              <a href="#" className="text-[10px] font-pixel text-[#F5F2EB]/40 hover:text-[#8B7E66] transition-colors uppercase tracking-[0.2em]">
-                Terms
-              </a>
+                ))}
+              </nav>
             </div>
           </div>
-          
-          <span className="text-[10px] font-pixel text-[#F5F2EB]/30 uppercase tracking-[0.4em] hidden md:block">
-            Design & Code
-          </span>
         </div>
-      </div>
 
-      {/* Architectural Background Element - RT */}
-      <div className="absolute right-[-2%] bottom-[-8%] opacity-[0.02] pointer-events-none select-none">
-        <h1 className="text-[18rem] font-bold font-pixel leading-none">
-          RT
-        </h1>
+        <div className="mt-20 grid gap-8 border-t border-[#DBD5B5]/8 pt-10 lg:grid-cols-3">
+          {principles.map((principle) => (
+            <div key={principle.name} className="max-w-sm">
+              <h3 className="font-auralis-mono text-[0.64rem] uppercase tracking-[0.22em] text-[#C7B580]/64">
+                {principle.name}
+              </h3>
+              <p className="mt-3 max-w-[18rem] [font-family:var(--font-auralis-jp)] text-[0.92rem] font-light leading-[1.78] tracking-[-0.004em] text-[#DBD5B5]/40">
+                {principle.line}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-16 flex flex-col gap-4 font-auralis-mono text-[0.62rem] uppercase tracking-[0.2em] text-[#DBD5B5]/32 md:flex-row md:items-center md:justify-between">
+          <p>© 2026 Rhine — made through imagination</p>
+          <p>Space Restraint Trace</p>
+        </div>
       </div>
     </footer>
   );

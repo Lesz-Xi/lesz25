@@ -1,25 +1,31 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
+const rawNameCharacters = Array.from("RHINE TAGUE");
+const nameCharacters = rawNameCharacters.map((character, index) => ({
+  character,
+  key: `${character}-${index}`,
+  order: character === " "
+    ? -1
+    : rawNameCharacters.slice(0, index + 1).filter((item) => item !== " ").length - 1,
+}));
+
 const IntroAnimation = ({ onComplete }) => {
   const [progress, setProgress] = useState(0);
   const [isExiting, setIsExiting] = useState(false);
 
   useEffect(() => {
-    // Unified timing for consistent UX across devices
-    // Duration: 100/2 * 30ms = 1500ms loading time
-    const increment = 2; 
+    const increment = 2;
     const intervalTime = 30;
 
-    // Simulate loading progress
     const interval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
-          setTimeout(() => setIsExiting(true), 500); // Reduced delay to strictly meet LCP < 2.5s
+          setTimeout(() => setIsExiting(true), 540);
           return 100;
         }
-        // Ensure we don't overshoot 100
+
         return Math.min(prev + increment, 100);
       });
     }, intervalTime);
@@ -28,11 +34,13 @@ const IntroAnimation = ({ onComplete }) => {
   }, []);
 
   useEffect(() => {
-    if (isExiting) {
-      setTimeout(() => {
-        if (onComplete) onComplete();
-      }, 1000); // Wait for the exit animation to complete
-    }
+    if (!isExiting) return undefined;
+
+    const exitTimer = setTimeout(() => {
+      if (onComplete) onComplete();
+    }, 980);
+
+    return () => clearTimeout(exitTimer);
   }, [isExiting, onComplete]);
 
   return (
@@ -40,88 +48,71 @@ const IntroAnimation = ({ onComplete }) => {
       {!isExiting && (
         <motion.div
           initial={{ opacity: 1 }}
-          exit={{ 
+          exit={{
             opacity: 0,
-            transition: { duration: 1.2, ease: [0.76, 0, 0.24, 1] } // Cinematic easeInOutQuart-like curve
+            filter: "blur(10px)",
+            transition: { duration: 1.05, ease: [0.76, 0, 0.24, 1] },
           }}
-          className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#F5F2EB]"
+          className="intro-loader"
+          aria-label="Loading Rhine Tague portfolio"
+          role="status"
         >
-          {/* Main Logo / Name */}
-          <div className="relative overflow-hidden mb-12">
-            <motion.h1
-              initial={{ y: 100, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-              className="text-3xl md:text-6xl font-bold font-pixel tracking-[0.2em] md:tracking-[0.5em] text-[#0D0C1D] uppercase text-center"
-            >
-              RHINE TAGUE
-            </motion.h1>
-            
-            {/* Subtitle - Synced with name */}
+          <div className="intro-loader-grain" aria-hidden="true" />
+          <div className="intro-loader-ambient" aria-hidden="true" />
+          <div className="intro-loader-circuit" aria-hidden="true" />
+
+          <motion.div
+            className="intro-loader-mark"
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, ease: [0.19, 1, 0.22, 1], delay: 0.12 }}
+          >
+            <div className="intro-loader-name" aria-label="Rhine Tague">
+              {nameCharacters.map(({ character, key, order }) => (
+                <motion.span
+                  key={key}
+                  className={character === " " ? "intro-loader-space" : "intro-loader-letter"}
+                  style={{ "--letter-index": order }}
+                  initial={{ opacity: character === " " ? 1 : 0.14, y: character === " " ? 0 : 5, filter: "blur(2px)" }}
+                  animate={{ opacity: character === " " ? 1 : [0.18, 1, 0.62, 0.9], y: 0, filter: "blur(0px)" }}
+                  transition={{
+                    duration: character === " " ? 0.01 : 0.86,
+                    delay: character === " " ? 0 : 0.2 + order * 0.095,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
+                >
+                  {character === " " ? "\u00A0" : character}
+                </motion.span>
+              ))}
+            </div>
+
             <motion.div
+              className="intro-loader-light-sweep"
+              initial={{ scaleX: 0, opacity: 0 }}
+              animate={{ scaleX: [0, 1, 1], opacity: [0, 0.84, 0] }}
+              transition={{ duration: 1.55, delay: 0.34, ease: [0.76, 0, 0.24, 1] }}
+              aria-hidden="true"
+            />
+
+            <motion.div
+              className="intro-loader-meta"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.2 }} // Synced with title delay (was 0.6)
-              className="mt-6 flex justify-between items-center w-full px-1"
+              transition={{ duration: 0.48, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             >
-              <div className="relative h-4 overflow-hidden flex-1">
-                <AnimatePresence mode="wait">
-                  {progress < 50 ? (
-                    <motion.span
-                      key="dev"
-                      initial={{ y: 20, opacity: 0 }}
-                      animate={{ y: 0, opacity: 1 }}
-                      exit={{ y: -20, opacity: 0 }}
-                      transition={{ duration: 0.5, ease: "circOut" }}
-                      className="absolute left-0 text-[10px] font-bold tracking-[0.3em] font-heading uppercase text-[#0D0C1D]/40"
-                    >
-                      Developer
-                    </motion.span>
-                  ) : (
-                    <motion.span
-                      key="photo"
-                      initial={{ y: 20, opacity: 0 }}
-                      animate={{ y: 0, opacity: 1 }}
-                      exit={{ y: -20, opacity: 0 }}
-                      transition={{ duration: 0.5, ease: "circOut" }}
-                      className="absolute left-0 text-[10px] font-bold tracking-[0.3em] font-heading uppercase text-[#0D0C1D]/40"
-                    >
-                      Photographer
-                    </motion.span>
-                  )}
-                </AnimatePresence>
-              </div>
-              <span className="text-[10px] font-bold font-heading text-[#8B7E66] ml-4">
-                {progress}%
-              </span>
+              <span>{progress < 52 ? "Developer" : "Photographer"}</span>
+              <span>{progress}%</span>
             </motion.div>
-          </div>
 
-          {/* Minimalist Progress Bar */}
-          <div className="w-48 md:w-64 h-[1px] bg-[#0D0C1D]/10 relative">
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: `${progress}%` }}
-              transition={{ duration: 0.1 }}
-              className="absolute left-0 top-0 h-full bg-[#8B7E66]"
-            />
-          </div>
-
-          {/* Architectural Decorative Element */}
-          <motion.div
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ duration: 1.5, delay: 0.5, ease: "circOut" }}
-            className="absolute top-[15%] left-0 w-full flex justify-center opacity-[0.05] pointer-events-none"
-          >
-            <div className="text-[15rem] font-bold font-pixel select-none">
-              RT
+            <div className="intro-loader-track" aria-hidden="true">
+              <motion.div
+                className="intro-loader-progress"
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: progress / 100 }}
+                transition={{ duration: 0.12, ease: "linear" }}
+              />
             </div>
           </motion.div>
-
-          {/* Background Texture Overlay */}
-          {/* CSS-only noise texture - no external request */}
-          <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-noise-pattern z-10"></div>
         </motion.div>
       )}
     </AnimatePresence>

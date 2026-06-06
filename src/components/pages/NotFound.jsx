@@ -1,13 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
 import gsap from "gsap";
 
 const NotFound = () => {
   const containerRef = useRef(null);
   const particleRef = useRef(null);
   const textRef = useRef(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     // Particle Interaction (Lost Star)
@@ -15,8 +13,6 @@ const NotFound = () => {
       // Calculate normalized position (-1 to 1) for parallax
       const x = (e.clientX / window.innerWidth) * 2 - 1;
       const y = (e.clientY / window.innerHeight) * 2 - 1;
-      
-      setMousePosition({ x, y });
       
       // Move the particle slightly towards mouse but with lag
       gsap.to(particleRef.current, {

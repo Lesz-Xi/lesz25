@@ -2,171 +2,171 @@ import React, { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useSpring, animated, to } from "@react-spring/web";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// 3D tilt card — tracks mouse position within the card bounds
-// Uses native onMouseMove instead of @use-gesture/react to avoid the
-// dual-instance bundling conflict with @react-three/fiber's internal gesture dep
-function TiltCard({ children, className }) {
-  const [{ rx, ry }, api] = useSpring(() => ({ rx: 0, ry: 0 }));
-
-  const handleMouseMove = (e) => {
-    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
-    const x = (e.clientX - left) / width - 0.5;
-    const y = (e.clientY - top) / height - 0.5;
-    api.start({ rx: -y * 10, ry: x * 10 });
-  };
-
-  const handleLeave = () => api.start({ rx: 0, ry: 0 });
-
-  return (
-    <animated.div
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleLeave}
-      className={className}
-      style={{
-        transform: to([rx, ry], (x, y) =>
-          `perspective(900px) rotateX(${x}deg) rotateY(${y}deg)`
-        ),
-        transformStyle: "preserve-3d",
-        willChange: "transform",
-      }}
-    >
-      {children}
-    </animated.div>
-  );
-}
-
-const services = [
+const capabilities = [
   {
     id: "01",
     title: "Digital Architecture",
-    description: "Building immersive, high-performance web applications that bridge functionality and art.",
-    specs: ["React / Vite / Next.js", "WebGL / Three.js / OGL", "System Architecture", "Performance Optimization"],
+    description:
+      "Interfaces, systems, and web experiences built with structure first and atmosphere second.",
+    specs: ["React / Vite", "Three.js / WebGL", "System architecture"],
   },
   {
     id: "02",
     title: "Visual Narrative",
-    description: "Crafting compelling visual stories through photography, motion, and art direction.",
-    specs: ["Art Direction", "Photography & Editing", "Motion Design", "Visual Identity"],
+    description:
+      "Photography, motion, and composition used as a way of thinking, not decoration.",
+    specs: ["Photography", "Art direction", "Motion language"],
   },
   {
     id: "03",
-    title: "Brand Sovereignty",
-    description: "Defining and elevating brand presence with strategic design and cohesive systems.",
-    specs: ["UI/UX Design", "Design Systems", "Brand Strategy", "Technical Direction"],
+    title: "AI Synthesis",
+    description:
+      "Agentic workflows, causal reasoning, and research systems shaped into usable instruments.",
+    specs: ["Agentic engineering", "Causal systems", "RAG / orchestration"],
   },
   {
     id: "04",
-    title: "AI Synthesis",
-    description: "Transcending syntax to craft via intuition. Synthesizing art, code, and innovation into novel solutions.",
-    specs: ["Agentic Engineering", "Generative Intuition", "Concept Synthesis", "Rapid Prototyping"],
+    title: "Research Craft",
+    description:
+      "Long-form inquiry across scientific, technical, and philosophical systems with causal rigor.",
+    specs: ["White papers", "Technical analysis", "Knowledge synthesis"],
   },
-  {
-    id: "05",
-    title: "Research",
-    description: "Driven by obsession. Deconstructing systems and exploring the unknown to master their core mechanics.",
-    specs: ["Academic Papers", "Technical Analysis", "R&D Strategy", "Knowledge Synthesis"],
-  }
 ];
 
 const ServicesSection = () => {
   const containerRef = useRef(null);
 
-  useGSAP(() => {
-    const cards = gsap.utils.toArray(".service-card");
+  useGSAP(
+    () => {
+      const cards = gsap.utils.toArray(".capability-card");
+      const rules = gsap.utils.toArray(".capability-rule");
 
-    gsap.fromTo(cards, 
-      {
-        y: 100,
-        opacity: 0
-      },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 1,
-        stagger: 0.2,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top 80%",
-          end: "bottom 20%",
-          toggleActions: "play none none reverse" 
+      gsap.fromTo(
+        ".capability-kicker, .capability-title, .capability-copy",
+        { autoAlpha: 0, y: 28 },
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: 1,
+          stagger: 0.09,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: "top 78%",
+            once: true,
+          },
         }
-      }
-    );
+      );
 
-    // Hover scale removed — TiltCard handles hover interaction via react-spring
+      gsap.fromTo(
+        rules,
+        { scaleX: 0, transformOrigin: "left center" },
+        {
+          scaleX: 1,
+          duration: 1.2,
+          stagger: 0.08,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: ".capability-grid",
+            start: "top 84%",
+            once: true,
+          },
+        }
+      );
 
-  }, { scope: containerRef });
+      cards.forEach((card, index) => {
+        gsap.fromTo(
+          card,
+          { autoAlpha: 0, y: 54, clipPath: "inset(12% 0 0 0)" },
+          {
+            autoAlpha: 1,
+            y: 0,
+            clipPath: "inset(0% 0 0 0)",
+            duration: 1,
+            delay: index * 0.06,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: card,
+              start: "top 86%",
+              once: true,
+            },
+          }
+        );
+      });
+    },
+    { scope: containerRef }
+  );
 
   return (
-    <section ref={containerRef} className="py-32 border-t border-[#0D0C1D]/10" style={{ backgroundColor: "#F5F2EB" }}>
-      <div className="max-w-7xl mx-auto px-6">
-        
-        {/* Header */}
-        <div className="mb-20 grid grid-cols-1 md:grid-cols-12 gap-y-8 gap-x-12 items-end">
-          <div className="md:col-span-8">
-            <span className="text-xs font-bold tracking-[0.2em] text-[#0D0C1D]/40 uppercase mb-6 block">
+    <section
+      ref={containerRef}
+      className="relative overflow-hidden border-t border-[#0D0C1D]/10 bg-[#F5F2EB] py-28 text-[#0D0C1D] md:py-36"
+      data-theme="light"
+    >
+      <div className="mx-auto max-w-7xl px-6 md:px-12">
+        <div className="mb-20 grid gap-10 md:mb-24 md:grid-cols-[0.95fr_1.05fr] md:items-end">
+          <div>
+            <span className="capability-kicker mb-7 block font-geist-mono text-[11px] uppercase tracking-[0.34em] text-[#0D0C1D]/38">
               Capabilities
             </span>
-            <h2 className="text-5xl md:text-[5rem] font-bold font-accent mb-8 tracking-normal leading-tight text-[#8B7E66] whitespace-nowrap">
+            <h2 className="capability-title max-w-[9ch] font-display text-[clamp(4rem,8vw,8rem)] font-semibold leading-[0.86] tracking-[-0.07em] text-[#0D0C1D]">
               The Discipline
             </h2>
           </div>
-          <div className="md:col-span-4">
-            <p className="text-[#0D0C1D]/60 text-lg leading-relaxed font-general-sans">
-              A convergence of technical precision and artistic intuition. Every project is approached as a bespoke architectural endeavor.
-            </p>
-          </div>
+
+          <p className="capability-copy max-w-[34rem] font-general-sans text-xl leading-[1.65] tracking-[-0.03em] text-[#0D0C1D]/58 md:justify-self-end md:text-2xl">
+            A small set of abilities, held with restraint. Each one has to make
+            the work more understandable, more useful, or more alive.
+          </p>
         </div>
 
-        {/* Swiss Grid Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 border-t border-[#0D0C1D]/10">
-          {services.map((service, index) => (
-            <TiltCard
-              key={service.id}
-              className={`
-                service-card group relative p-8 md:p-12 lg:p-8 border-b border-[#0D0C1D]/10
-                ${service.colSpan || ""}
-                ${index !== services.length - 1 ? 'md:border-r' : ''}
-                hover:bg-white transition-colors duration-500 ease-in-out
-              `}
+        <div className="capability-rule mb-0 h-px w-full bg-[#0D0C1D]/12" />
+
+        <div className="capability-grid grid grid-cols-1 md:grid-cols-2">
+          {capabilities.map((capability, index) => (
+            <article
+              key={capability.id}
+              className={`capability-card group relative min-h-[25rem] overflow-hidden border-b border-[#0D0C1D]/12 p-7 transition-colors duration-500 hover:bg-white/45 md:p-10 ${
+                index % 2 === 0 ? "md:border-r" : ""
+              }`}
               data-hover
             >
-              {/* ID Number */}
-              <span className="text-xs font-mono text-[#0D0C1D]/40 mb-12 block group-hover:text-[#C7B580] transition-colors">
-                {service.id}
-              </span>
+              <div className="capability-rule absolute left-0 top-0 h-px w-full bg-[#0D0C1D]/10" />
+              <div className="flex h-full flex-col justify-between gap-14">
+                <div className="flex items-start justify-between gap-8">
+                  <span className="font-geist-mono text-[12px] tracking-[0.24em] text-[#8B7E66]/75">
+                    {capability.id}
+                  </span>
+                  <span className="h-2 w-2 rounded-full bg-[#8B7E66]/45 transition-transform duration-500 group-hover:scale-[1.8]" />
+                </div>
 
-              {/* Title */}
-              <h3 className="text-2xl lg:text-xl font-heading font-bold mb-6 group-hover:translate-x-2 transition-transform duration-500 text-[#0D0C1D]">
-                {service.title}
-              </h3>
+                <div>
+                  <h3 className="max-w-[12ch] font-display text-[clamp(2rem,4vw,4.6rem)] leading-[0.92] tracking-[-0.06em] text-[#0D0C1D]">
+                    {capability.title}
+                  </h3>
+                  <p className="mt-7 max-w-[29rem] font-general-sans text-[15px] leading-[1.8] text-[#0D0C1D]/58 md:text-base">
+                    {capability.description}
+                  </p>
+                </div>
 
-              {/* Description */}
-              <p className="text-[#0D0C1D]/60 mb-10 leading-relaxed min-h-[80px] font-general-sans">
-                {service.description}
-              </p>
-
-              {/* Specs List */}
-              <ul className="space-y-3">
-                {service.specs.map((spec, idx) => (
-                  <li key={idx} className="flex items-center text-sm font-mono text-[#0D0C1D]/80 border-t border-[#0D0C1D]/5 pt-3">
-                    <span className="w-1.5 h-1.5 bg-[#C7B580] rounded-full mr-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-[${idx * 50}ms]"></span>
-                    {spec}
-                  </li>
-                ))}
-              </ul>
-
-              {/* Hover Accent */}
-              <div className="absolute top-0 left-0 w-full h-1 bg-[#C7B580] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
-            </TiltCard>
+                <ul className="grid gap-0 border-t border-[#0D0C1D]/8 pt-2">
+                  {capability.specs.map((spec) => (
+                    <li
+                      key={spec}
+                      className="flex items-center justify-between border-b border-[#0D0C1D]/6 py-3 font-geist-mono text-[11px] uppercase tracking-[0.18em] text-[#0D0C1D]/62"
+                    >
+                      <span>{spec}</span>
+                      <span className="text-[#8B7E66]/45">/</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </article>
           ))}
         </div>
-
       </div>
     </section>
   );

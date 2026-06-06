@@ -1,22 +1,44 @@
-import React, { useState, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaGithub, FaLinkedinIn, FaInstagram } from "react-icons/fa6";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [hasReachedSecondSection, setHasReachedSecondSection] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isPhotographySubmenuOpen, setIsPhotographySubmenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("/"); // Track active section in state
   const location = useLocation();
   const navigate = useNavigate();
+  const isMenuNavigationRef = useRef(false);
 
   useEffect(() => {
-    const handleScroll = () => {
+    const updateNavState = () => {
       setIsScrolled(window.scrollY > 50);
+
+      if (location.pathname !== "/") {
+        setHasReachedSecondSection(false);
+        return;
+      }
+
+      if (window.scrollY <= 8) {
+        setHasReachedSecondSection(false);
+        return;
+      }
+
+      const secondSection = document.getElementById("work");
+      const secondSectionTop = secondSection?.getBoundingClientRect().top ?? window.innerHeight;
+      setHasReachedSecondSection(secondSectionTop <= window.innerHeight - 1);
     };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+
+    updateNavState();
+    window.addEventListener("scroll", updateNavState, { passive: true });
+    window.addEventListener("resize", updateNavState);
+    return () => {
+      window.removeEventListener("scroll", updateNavState);
+      window.removeEventListener("resize", updateNavState);
+    };
+  }, [location.pathname]);
 
   // Sync activeSection with location changes (for browser back/forward)
   useEffect(() => {
@@ -42,10 +64,50 @@ const Navbar = () => {
     }
   }, [isMobileMenuOpen]);
 
+  // Lock background scroll while the full-screen menu is open.
+  useEffect(() => {
+    if (!isMobileMenuOpen) return undefined;
+
+    const scrollY = window.scrollY;
+    const bodyStyle = document.body.style;
+    const htmlStyle = document.documentElement.style;
+    const previousBodyPosition = bodyStyle.position;
+    const previousBodyTop = bodyStyle.top;
+    const previousBodyWidth = bodyStyle.width;
+    const previousBodyOverflow = bodyStyle.overflow;
+    const previousBodyOverscroll = bodyStyle.overscrollBehavior;
+    const previousHtmlOverflow = htmlStyle.overflow;
+    const previousHtmlOverscroll = htmlStyle.overscrollBehavior;
+
+    bodyStyle.position = "fixed";
+    bodyStyle.top = `-${scrollY}px`;
+    bodyStyle.width = "100%";
+    bodyStyle.overflow = "hidden";
+    bodyStyle.overscrollBehavior = "none";
+    htmlStyle.overflow = "hidden";
+    htmlStyle.overscrollBehavior = "none";
+
+    return () => {
+      bodyStyle.position = previousBodyPosition;
+      bodyStyle.top = previousBodyTop;
+      bodyStyle.width = previousBodyWidth;
+      bodyStyle.overflow = previousBodyOverflow;
+      bodyStyle.overscrollBehavior = previousBodyOverscroll;
+      htmlStyle.overflow = previousHtmlOverflow;
+      htmlStyle.overscrollBehavior = previousHtmlOverscroll;
+
+      if (!isMenuNavigationRef.current) {
+        window.scrollTo(0, scrollY);
+      }
+    };
+  }, [isMobileMenuOpen]);
+
   const isPhotographyPage = location.pathname.startsWith("/photography");
+  const shouldCollapseHomeNav = location.pathname === "/" && hasReachedSecondSection;
+  const shouldHideDesktopNavLinks = true;
   const mobileButtonInset = {
-    top: "calc(env(safe-area-inset-top, 0px) + 1rem)",
-    right: "calc(env(safe-area-inset-right, 0px) + 1rem)",
+    top: "calc(env(safe-area-inset-top, 0px) + 1.35rem)",
+    right: "calc(env(safe-area-inset-right, 0px) + 1.1rem)",
   };
 
   const navLinks = [
@@ -53,45 +115,84 @@ const Navbar = () => {
     { name: "Photography", href: "/#photography" },
     { name: "Journey", href: "/#about" },
     { name: "Research", href: "/#research" },
-    { name: "Contact", href: "/#contact" },
   ];
 
   const handleNavigation = (e, href) => {
     e.preventDefault();
-    
-    // Update active section IMMEDIATELY before closing menu
+
+    isMenuNavigationRef.current = true;
     setActiveSection(href);
     setIsMobileMenuOpen(false);
 
-    if (href.startsWith("/#")) {
-       const targetId = href.replace("/", "");
-       if (location.pathname === "/") {
+    const runAfterMenuUnlock = (callback) => {
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => {
+          callback();
+          window.setTimeout(() => {
+            isMenuNavigationRef.current = false;
+          }, 160);
+        });
+      });
+    };
+
+    runAfterMenuUnlock(() => {
+      if (href.startsWith("/#")) {
+        const targetId = href.replace("/", "");
+
+        if (location.pathname === "/") {
           const element = document.querySelector(targetId);
           if (element) element.scrollIntoView({ behavior: "smooth" });
-       } else {
-          navigate(href.replace("#", "#")); // Navigate to /#section
-          setTimeout(() => {
-             const element = document.querySelector(targetId);
-             if (element) element.scrollIntoView({ behavior: "smooth" });
-          }, 300);
-       }
-    } else if (href === "/") {
-        if (location.pathname === "/") {
-           window.scrollTo({ top: 0, behavior: "smooth" });
-        } else {
-           navigate("/");
+          return;
         }
-    } else {
-       navigate(href);
-    }
+
+        navigate(href);
+        window.setTimeout(() => {
+          const element = document.querySelector(targetId);
+          if (element) element.scrollIntoView({ behavior: "smooth" });
+        }, 300);
+        return;
+      }
+
+      if (href === "/") {
+        if (location.pathname === "/") {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          return;
+        }
+
+        navigate("/");
+        return;
+      }
+
+      if (href === "/photography") {
+        sessionStorage.removeItem("photographyReturnTarget");
+      }
+
+      navigate(href);
+    });
+  };
+
+  const getPhotographyReturnTarget = () => {
+      const storedTarget = sessionStorage.getItem("photographyReturnTarget");
+
+      if (storedTarget === "/" || storedTarget?.startsWith("/#")) {
+          return storedTarget;
+      }
+
+      return "/";
   };
 
   const handleLogoClick = () => {
       if (location.pathname === "/") {
           window.scrollTo({ top: 0, behavior: "smooth" });
-      } else {
-          navigate("/");
+          return;
       }
+
+      if (location.pathname === "/photography") {
+          navigate(getPhotographyReturnTarget());
+          return;
+      }
+
+      navigate("/");
   };
 
   return (
@@ -103,16 +204,13 @@ const Navbar = () => {
             {location.pathname === "/photography" && (
                 <button
                   onClick={handleLogoClick}
-                  className="group flex items-center gap-2 rounded-full border border-[#DBD5B5]/18 bg-black/15 px-3 py-2 backdrop-blur-md transition-all duration-300 hover:border-[#DBD5B5]/40 hover:bg-black/30"
+                  className="group flex h-10 w-10 items-center justify-center transition-transform duration-300 hover:-translate-x-1"
                   aria-label="Back to Home"
                 >
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-[#F5F2EB] transition-transform duration-300 group-hover:-translate-x-0.5 group-hover:text-[#DBD5B5]">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-[#F5F2EB] transition-colors duration-300 group-hover:text-[#DBD5B5]">
                         <line x1="19" y1="12" x2="5" y2="12"></line>
                         <polyline points="12 19 5 12 12 5"></polyline>
                     </svg>
-                    <span className="hidden sm:block text-[11px] font-display uppercase tracking-[0.22em] text-[#F5F2EB] transition-colors duration-300 group-hover:text-[#DBD5B5]">
-                      Home
-                    </span>
                 </button>
             )}
 
@@ -135,26 +233,28 @@ const Navbar = () => {
 
         {/* Conditional Navigation Rendering */}
         {isPhotographyPage ? (
-          /* Photography Page: Minimalist 2-line Hamburger - Hidden when menu is open */
+          /* Photography Page: Minimalist short-long-short Hamburger - Hidden when menu is open */
           <div
             className={`md:hidden flex items-center fixed z-[120] transition-opacity duration-300 ${isMobileMenuOpen ? "opacity-0 pointer-events-none" : "opacity-100"}`}
             style={mobileButtonInset}
           >
             <button
-              className="group flex flex-col gap-[5px] p-2 transition-all duration-300"
+              className="group flex h-9 w-9 items-center justify-center transition-opacity duration-300 hover:opacity-80"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label="Toggle Menu"
             >
-              <div className="w-5 h-px bg-[#F5F2EB] group-hover:bg-[#DBD5B5] transition-all duration-300" />
-              <div className="w-5 h-px bg-[#F5F2EB] group-hover:bg-[#DBD5B5] transition-all duration-300" />
-              <div className="w-5 h-px bg-[#F5F2EB] group-hover:bg-[#DBD5B5] transition-all duration-300" />
+              <div className="flex h-4 w-5 flex-col items-end justify-center gap-[6px]">
+                <span className="h-px w-5 bg-[#DBD5B5]/82 transition-all duration-300 group-hover:w-4 group-hover:bg-[#F5F2EB]" />
+                <span className="h-px w-3.5 bg-[#DBD5B5]/70 transition-all duration-300 group-hover:w-5 group-hover:bg-[#F5F2EB]" />
+              </div>
             </button>
           </div>
         ) : (
           <>
             {/* Standard Desktop Links */}
             <div 
-              className="hidden md:flex items-center gap-8 pointer-events-auto"
+              className={`hidden items-center gap-8 transition-all duration-300 ${shouldHideDesktopNavLinks ? "translate-y-[-0.25rem] opacity-0 pointer-events-none" : "translate-y-0 opacity-100 pointer-events-auto"}`}
+              aria-hidden={shouldHideDesktopNavLinks}
             >
               {navLinks.map((link) => (
                 <div key={link.name} className="relative group/nav-item">
@@ -163,7 +263,7 @@ const Navbar = () => {
                       <a
                         href={link.href}
                         onClick={(e) => handleNavigation(e, link.href)}
-                        className="text-[11px] font-display uppercase tracking-[0.2em] text-[#F5F2EB] hover:text-[#DBD5B5] transition-all duration-300 relative block py-2 cursor-pointer"
+                        className="text-[11px] font-auralis-display font-light tracking-[0.08em] text-[#F5F2EB]/78 hover:text-[#DBD5B5] transition-all duration-300 relative block py-2 cursor-pointer"
                         data-hover
                       >
                         {link.name}
@@ -176,7 +276,7 @@ const Navbar = () => {
                           <a 
                             href="/#photography"
                             onClick={(e) => handleNavigation(e, "/#photography")}
-                            className="text-[10px] uppercase tracking-[0.15em] text-white/70 hover:text-[#DBD5B5] hover:bg-white/5 px-4 py-2 text-center transition-colors duration-200"
+                            className="text-[10px] font-auralis-display font-light tracking-[0.08em] text-white/58 hover:text-[#DBD5B5] hover:bg-white/5 px-4 py-2 text-center transition-colors duration-200"
                           >
                             Portfolio
                           </a>
@@ -184,7 +284,7 @@ const Navbar = () => {
                           <a 
                             href="/photography"
                             onClick={(e) => handleNavigation(e, "/photography")}
-                            className="text-[10px] uppercase tracking-[0.15em] text-white/70 hover:text-[#DBD5B5] hover:bg-white/5 px-4 py-2 text-center transition-colors duration-200"
+                            className="text-[10px] font-auralis-display font-light tracking-[0.08em] text-white/58 hover:text-[#DBD5B5] hover:bg-white/5 px-4 py-2 text-center transition-colors duration-200"
                           >
                             Albums
                           </a>
@@ -195,7 +295,7 @@ const Navbar = () => {
                     <a
                       href={link.href}
                       onClick={(e) => handleNavigation(e, link.href)}
-                      className="text-[11px] font-display uppercase tracking-[0.2em] text-[#F5F2EB] hover:text-[#DBD5B5] transition-all duration-300 relative block py-2 group cursor-pointer"
+                      className="text-[11px] font-auralis-display font-light tracking-[0.08em] text-[#F5F2EB]/78 hover:text-[#DBD5B5] transition-all duration-300 relative block py-2 group cursor-pointer"
                       data-hover
                     >
                       {link.name}
@@ -206,23 +306,19 @@ const Navbar = () => {
               ))}
             </div>
 
-            {/* Standard Mobile Menu Button - Hidden when menu is open */}
+            {/* Standard Menu Button - mobile always, desktop after second section */}
             <div
-              className={`md:hidden fixed z-[120] flex items-center transition-opacity duration-300 ${isMobileMenuOpen ? "opacity-0 pointer-events-none" : "opacity-100"}`}
+              className={`fixed z-[120] flex items-center transition-opacity duration-200 ${shouldCollapseHomeNav ? "md:flex" : "md:hidden"} ${isMobileMenuOpen ? "opacity-0 pointer-events-none" : "opacity-100"}`}
               style={mobileButtonInset}
             >
               <button
-                className={`w-12 h-12 flex items-center justify-center rounded-full border transition-all duration-500
-                ${isScrolled 
-                  ? "bg-black/40 backdrop-blur-xl border-white/10 shadow-lg" 
-                  : "bg-white/[0.05] backdrop-blur-md border-white/10"}`}
+                className="group flex h-9 w-9 items-center justify-center transition-opacity duration-300 hover:opacity-80"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 aria-label="Toggle Menu"
               >
-                <div className="w-4 h-3 relative flex flex-col justify-between">
-                  <span className="w-full h-px bg-[#DBD5B5]" />
-                  <span className="w-full h-px bg-[#DBD5B5]" />
-                  <span className="w-full h-px bg-[#DBD5B5]" />
+                <div className="flex h-4 w-5 flex-col items-end justify-center gap-[6px]">
+                  <span className="h-px w-5 bg-[#DBD5B5]/82 transition-all duration-300 group-hover:w-4 group-hover:bg-[#F5F2EB]" />
+                  <span className="h-px w-3.5 bg-[#DBD5B5]/70 transition-all duration-300 group-hover:w-5 group-hover:bg-[#F5F2EB]" />
                 </div>
               </button>
             </div>
@@ -235,30 +331,35 @@ const Navbar = () => {
         <button 
             onClick={() => setIsMobileMenuOpen(false)}
             onTouchEnd={(e) => { e.preventDefault(); setIsMobileMenuOpen(false); }}
-            className="fixed z-[200] group w-11 h-11 md:w-9 md:h-9 flex items-center justify-center rounded-full bg-black/80 border border-[#DBD5B5]/30 active:scale-95 transition-transform duration-150"
+            className="fixed z-[200] group flex h-10 w-10 items-center justify-center active:scale-95 transition-transform duration-150"
             style={{ ...mobileButtonInset, touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
             aria-label="Close Menu"
         >
-            <div className="relative w-5 h-5 flex justify-center items-center">
-                <span className="absolute w-4 h-[2px] bg-[#DBD5B5] rotate-45" />
-                <span className="absolute w-4 h-[2px] bg-[#DBD5B5] -rotate-45" />
+            <div className="relative flex h-5 w-5 items-center justify-center rounded-full border border-[#DBD5B5]/20 transition-colors duration-300 group-hover:border-[#F5F2EB]/42">
+                <span className="absolute h-px w-3.5 rotate-45 bg-[#DBD5B5]/82 transition-colors duration-300 group-hover:bg-[#F5F2EB]" />
+                <span className="absolute h-px w-3.5 -rotate-45 bg-[#DBD5B5]/82 transition-colors duration-300 group-hover:bg-[#F5F2EB]" />
             </div>
         </button>
       )}
 
       {/* Unified Cinematic Full-Screen Menu Overlay (All Pages) */}
       <div 
-        className={`fixed inset-0 z-[80] bg-[#070707] transition-all duration-700 ease-in-out ${isMobileMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
+        className={`fixed inset-0 z-[140] bg-[#060605] transition-all duration-700 ease-in-out ${isMobileMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
       >
         {/* Background Decorative Element */}
-        <div className="absolute inset-0 opacity-20 pointer-events-none">
-          <div className="absolute top-[-10%] right-[-10%] w-[60%] h-[60%] bg-[#DBD5B5]/10 blur-[120px] rounded-full" />
-          <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#DBD5B5]/5 blur-[100px] rounded-full" />
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute inset-0 opacity-[0.035] bg-noise-pattern" />
+          <div className="absolute left-[8vw] top-0 h-full w-px bg-gradient-to-b from-transparent via-[#DBD5B5]/10 to-transparent" />
         </div>
 
         {/* Menu Content - Positioned from top with scroll for mobile */}
-        <div className="relative h-full flex flex-col justify-start items-start px-8 md:px-32 pt-24 md:pt-32 pb-8 overflow-y-auto">
-          <div className="flex flex-col gap-6 md:gap-8 items-start">
+        <div className="relative h-full flex flex-col justify-start items-start px-8 md:px-[10vw] pt-24 md:pt-28 pb-10 overflow-y-auto">
+          <div className="mb-10 flex items-center gap-4 font-auralis-mono text-[0.62rem] uppercase tracking-[0.24em] text-[#C7B580]/54">
+            <span className="h-px w-8 bg-[#C7B580]/28" />
+            <span>Index</span>
+          </div>
+
+          <div className="flex flex-col gap-5 md:gap-6 items-start">
             {navLinks.map((link, index) => {
               // Use stored activeSection state for reliable highlighting
               let isActive = false;
@@ -286,26 +387,26 @@ const Navbar = () => {
                               e.preventDefault();
                               setIsPhotographySubmenuOpen(!isPhotographySubmenuOpen);
                           }}
-                          className={`text-2xl md:text-5xl font-display font-medium uppercase tracking-tight transition-all duration-500 hover:tracking-wide hover:ml-2 text-left flex items-center gap-4 ${isActive || isPhotographySubmenuOpen ? "text-[#DBD5B5]" : "text-white/40 hover:text-[#DBD5B5]"}`}
+                          className={`flex items-baseline gap-4 text-left [font-family:var(--font-auralis-jp)] text-[clamp(2.45rem,5.5vw,5.6rem)] font-light leading-[0.95] tracking-[-0.085em] transition-all duration-500 hover:translate-x-3 hover:tracking-[-0.07em] ${isActive || isPhotographySubmenuOpen ? "text-[#F5F2EB]" : "text-[#F5F2EB]/34 hover:text-[#DBD5B5]"}`}
                         >
                           {link.name}
-                          <span className={`text-lg transition-transform duration-300 ${isPhotographySubmenuOpen ? "rotate-180" : ""}`}>↓</span>
+                          <span className={`font-auralis-mono text-[0.82rem] tracking-[0.08em] text-[#C7B580]/54 transition-transform duration-300 ${isPhotographySubmenuOpen ? "rotate-180" : ""}`}>↓</span>
                         </button>
                         
                         {/* Mobile Submenu Accordion */}
-                        <div className={`overflow-hidden transition-all duration-300 ease-out w-full ${isPhotographySubmenuOpen ? "max-h-28 opacity-100 mt-4" : "max-h-0 opacity-0 mt-0"}`}>
-                            <div className="flex flex-col gap-4 pl-6 border-l border-[#DBD5B5]/20 ml-2">
+                        <div className={`overflow-hidden transition-all duration-300 ease-out w-full ${isPhotographySubmenuOpen ? "max-h-28 opacity-100 mt-5" : "max-h-0 opacity-0 mt-0"}`}>
+                            <div className="ml-3 flex flex-col gap-3 border-l border-[#DBD5B5]/12 pl-6">
                                 <a 
                                     href="/#photography"
                                     onClick={(e) => handleNavigation(e, "/#photography")}
-                                    className="text-xl font-display uppercase tracking-widest text-white/60 hover:text-[#DBD5B5] transition-colors"
+                                    className="[font-family:var(--font-auralis-jp)] text-lg font-light tracking-[-0.02em] text-white/44 transition-colors hover:text-[#DBD5B5]"
                                 >
                                     Portfolio
                                 </a>
                                 <a 
                                     href="/photography"
                                     onClick={(e) => handleNavigation(e, "/photography")}
-                                    className="text-xl font-display uppercase tracking-widest text-white/60 hover:text-[#DBD5B5] transition-colors"
+                                    className="[font-family:var(--font-auralis-jp)] text-lg font-light tracking-[-0.02em] text-white/44 transition-colors hover:text-[#DBD5B5]"
                                 >
                                     Albums
                                 </a>
@@ -320,7 +421,7 @@ const Navbar = () => {
                   key={link.name}
                   href={link.href}
                   onClick={(e) => handleNavigation(e, link.href)}
-                  className={`text-2xl md:text-5xl font-display font-medium uppercase tracking-tight transition-all duration-500 hover:tracking-wide hover:ml-2 ${isActive ? "text-[#DBD5B5]" : "text-white/40 hover:text-[#DBD5B5]"}`}
+                  className={`[font-family:var(--font-auralis-jp)] text-[clamp(2.45rem,5.5vw,5.6rem)] font-light leading-[0.95] tracking-[-0.085em] transition-all duration-500 hover:translate-x-3 hover:tracking-[-0.07em] ${isActive ? "text-[#F5F2EB]" : "text-[#F5F2EB]/34 hover:text-[#DBD5B5]"}`}
                   style={{ 
                     transitionDelay: isMobileMenuOpen ? `${index * 100}ms` : "0ms",
                     transform: isMobileMenuOpen ? "translateY(0)" : "translateY(40px)",
@@ -335,17 +436,16 @@ const Navbar = () => {
 
           {/* Contact Info in Menu */}
           <div 
-            className="mt-20 flex flex-col gap-4 items-start transition-all duration-700 delay-500"
+            className="mt-16 flex flex-col gap-3.5 items-start transition-all duration-700 delay-500"
             style={{ 
               opacity: isMobileMenuOpen ? 1 : 0,
               transform: isMobileMenuOpen ? "translateY(0)" : "translateY(20px)"
             }}
           >
-            <div className="w-12 h-[1px] bg-[#DBD5B5]/30 mb-4" />
+            <div className="mb-4 h-px w-10 bg-[#DBD5B5]/18" />
             <a 
-              href="/#contact" 
-              onClick={(e) => handleNavigation(e, "/#contact")}
-              className="text-[#DBD5B5] text-xs uppercase tracking-[0.3em] font-medium hover:text-white transition-colors"
+              href="mailto:rhinelesther@gmail.com" 
+              className="font-auralis-mono text-[0.66rem] uppercase tracking-[0.18em] text-[#C7B580]/64 transition-colors hover:text-[#F5F2EB]"
             >
               Get in Touch
             </a>
@@ -353,13 +453,13 @@ const Navbar = () => {
               href="mailto:rhinelesther@gmail.com" 
               target="_blank"
               rel="noopener noreferrer"
-              className="text-white/40 hover:text-white transition-colors text-lg font-light tracking-wide cursor-pointer"
+              className="[font-family:var(--font-auralis-jp)] text-base font-light tracking-[-0.012em] text-white/34 transition-colors hover:text-white/76 cursor-pointer"
             >
               rhinelesther@gmail.com
             </a>
             
             {/* Social Links Row */}
-            <div className="flex items-center gap-6 mt-4">
+            <div className="mt-4 flex items-center gap-5">
                 <a 
                   href="https://github.com/Lesz-Xi" 
                   target="_blank" 

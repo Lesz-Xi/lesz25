@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from "framer-motion";
 
 const greetings = ["Hi", "Hallo", "Bonjour", "Annyeong", "Kumusta"];
