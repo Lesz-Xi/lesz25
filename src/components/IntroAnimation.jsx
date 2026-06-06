@@ -15,6 +15,38 @@ const IntroAnimation = ({ onComplete }) => {
   const [isExiting, setIsExiting] = useState(false);
 
   useEffect(() => {
+    const scrollY = window.scrollY;
+    const bodyStyle = document.body.style;
+    const htmlStyle = document.documentElement.style;
+    const previousBodyPosition = bodyStyle.position;
+    const previousBodyTop = bodyStyle.top;
+    const previousBodyWidth = bodyStyle.width;
+    const previousBodyOverflow = bodyStyle.overflow;
+    const previousBodyOverscroll = bodyStyle.overscrollBehavior;
+    const previousHtmlOverflow = htmlStyle.overflow;
+    const previousHtmlOverscroll = htmlStyle.overscrollBehavior;
+
+    bodyStyle.position = "fixed";
+    bodyStyle.top = `-${scrollY}px`;
+    bodyStyle.width = "100%";
+    bodyStyle.overflow = "hidden";
+    bodyStyle.overscrollBehavior = "none";
+    htmlStyle.overflow = "hidden";
+    htmlStyle.overscrollBehavior = "none";
+
+    return () => {
+      bodyStyle.position = previousBodyPosition;
+      bodyStyle.top = previousBodyTop;
+      bodyStyle.width = previousBodyWidth;
+      bodyStyle.overflow = previousBodyOverflow;
+      bodyStyle.overscrollBehavior = previousBodyOverscroll;
+      htmlStyle.overflow = previousHtmlOverflow;
+      htmlStyle.overscrollBehavior = previousHtmlOverscroll;
+      window.scrollTo(0, scrollY);
+    };
+  }, []);
+
+  useEffect(() => {
     const increment = 2;
     const intervalTime = 30;
 

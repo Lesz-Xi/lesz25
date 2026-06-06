@@ -106,7 +106,7 @@ const Navbar = () => {
   const shouldCollapseHomeNav = location.pathname === "/" && hasReachedSecondSection;
   const shouldHideDesktopNavLinks = true;
   const mobileButtonInset = {
-    top: "calc(env(safe-area-inset-top, 0px) + 1.35rem)",
+    top: "calc(env(safe-area-inset-top, 0px) + 0.75rem)",
     right: "calc(env(safe-area-inset-right, 0px) + 1.1rem)",
   };
 
