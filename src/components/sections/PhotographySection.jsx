@@ -4,6 +4,16 @@ import { useAuralisMotion } from "../hooks/useAuralisMotion.js";
 
 const featuredPhotos = [
   {
+    id: "flowers",
+    url: "/images/flowers-feat.webp",
+    title: "Flowers",
+    location: "Botanical Garden",
+    year: "2025",
+    tag: "Petal Garden Close looking",
+    concept: "Wabi-sabi",
+    conceptLine: "Small impermanence becomes the subject.",
+  },
+  {
     id: "switzerland",
     url: "/images/switz-new-feat.webp",
     title: "Alpine Serenity",
@@ -52,16 +62,6 @@ const featuredPhotos = [
     tag: "Home Heat Return",
     concept: "Shibui",
     conceptLine: "Familiarity becomes quiet structure.",
-  },
-  {
-    id: "flowers",
-    url: "/images/flowers-feat.webp",
-    title: "Flowers",
-    location: "Botanical Garden",
-    year: "2025",
-    tag: "Petal Garden Close looking",
-    concept: "Wabi-sabi",
-    conceptLine: "Small impermanence becomes the subject.",
   },
 ];
 
