@@ -338,36 +338,36 @@ export function useAuralisMotion(scopeRef) {
 
           gsap.set(card, {
             autoAlpha: 0,
-            y: -60,
-            z: -80,
-            rotateX: -8,
-            scale: 0.965,
-            filter: "blur(8px)",
-            transformPerspective: 1400,
-            transformOrigin: "center top",
+            y: 92,
+            z: -120,
+            rotateX: 11,
+            scale: 0.94,
+            filter: "blur(10px)",
+            transformPerspective: 1200,
+            transformOrigin: "center bottom",
           });
 
           if (image) {
             gsap.set(image, {
-              y: -34,
-              scale: 1.06,
-              filter: "saturate(0.82) contrast(0.94) brightness(0.82)",
+              y: 42,
+              scale: 1.08,
+              filter: "saturate(0.82) contrast(0.92) brightness(0.8)",
             });
           }
 
           const imageTimeline = gsap.timeline({
             scrollTrigger: {
               trigger: card,
-              start: "top 86%",
-              end: "top 48%",
-              scrub: 1.1,
+              start: "top 88%",
+              end: "top 42%",
+              scrub: 1.05,
               invalidateOnRefresh: true,
             },
           });
 
           imageTimeline.to(card, {
             autoAlpha: 1,
-            y: 0,
+            y: -24,
             z: 0,
             rotateX: 0,
             scale: 1,

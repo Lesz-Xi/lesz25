@@ -111,7 +111,7 @@ const PhotographySection = () => {
           </div>
         </div>
 
-        <div className="image-monograph" data-auralis-reveal>
+        <div className="image-monograph">
           <Link
             to={`/photography/${activePhoto.id}`}
             className="image-monograph-frame"
@@ -131,7 +131,7 @@ const PhotographySection = () => {
             />
           </Link>
 
-          <div className="image-monograph-meta">
+          <div className="image-monograph-meta" data-auralis-reveal>
             <div>
               <span className="image-monograph-count">
                 {String(activePhotoIndex + 1).padStart(2, "0")} / {String(featuredPhotos.length).padStart(2, "0")}
@@ -148,7 +148,7 @@ const PhotographySection = () => {
             <span className="image-monograph-tag">{activePhoto.tag}</span>
           </div>
 
-          <div className="image-monograph-controls" aria-label="Featured photography controls">
+          <div className="image-monograph-controls" aria-label="Featured photography controls" data-auralis-reveal>
             <button type="button" onClick={showPreviousPhoto} aria-label="Show previous album">
               &lt;
             </button>
