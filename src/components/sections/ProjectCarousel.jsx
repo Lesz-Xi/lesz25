@@ -42,7 +42,7 @@ const projects = [
     actionLabel: "In development",
     image: "/images/projects/aurelian.png",
     mobileImage: "/images/projects/aurelian.png",
-    imagePosition: "right center",
+    imagePosition: "left center",
     copy: "A terminal-native AI workspace for structured execution, memory-aware routing, and companion-grade software work inside the command line.",
     tag: "Terminal · Agentic workflow · Runtime",
   },
