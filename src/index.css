@@ -1373,7 +1373,7 @@ textarea:-webkit-autofill:active {
   font-weight: 300;
   line-height: 2.05;
   letter-spacing: 0.012em;
-  color: rgba(219, 213, 181, 0.46);
+  color: rgba(245, 242, 235, 0.9);
   text-wrap: balance;
   font-feature-settings: "palt" 1;
 }
@@ -1385,15 +1385,15 @@ textarea:-webkit-autofill:active {
   font-weight: 300;
   font-size: 1em;
   letter-spacing: 0.018em;
-  color: rgba(226, 211, 151, 0.92);
-  text-shadow: 0 0 12px rgba(226, 211, 151, 0.08);
+  color: #C7B580;
+  text-shadow: 0 0 12px rgba(199, 181, 128, 0.08);
 }
 
 .hero-shimmer-word {
   position: relative;
   display: inline-block;
-  color: #FFFDF7;
-  text-shadow: 0 0 10px rgba(245, 242, 235, 0.045);
+  color: #C7B580;
+  text-shadow: 0 0 10px rgba(199, 181, 128, 0.08);
 }
 
 .hero-manifesto-right {
