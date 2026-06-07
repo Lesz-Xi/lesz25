@@ -2708,11 +2708,15 @@ textarea:-webkit-autofill:active {
 }
 
 .archive-record-kicker {
+  display: block;
+  max-width: min(100%, 36rem);
   font-family: var(--font-auralis-serif);
-  font-size: clamp(1.7rem, 3.5vw, 4rem);
+  font-size: clamp(1.7rem, 3.5vw, 3.65rem);
   font-style: italic;
   line-height: 0.95;
   color: rgba(199, 181, 128, 0.82);
+  overflow-wrap: anywhere;
+  text-wrap: balance;
 }
 
 .archive-record-name {
