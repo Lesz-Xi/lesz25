@@ -13,6 +13,15 @@ const research = [
   },
   {
     number: "02",
+    type: "Preprint",
+    title: "Continuous Valence-Corrected Intelligence",
+    label: "Affective Intelligence",
+    copy: "A source-grounded framework for intelligence as situated correction, where valence functions as a continuous regulatory signal for attention, action, memory, and adaptive self-world alignment.",
+    meta: "Valence · Emotion · Adaptive systems · Self-correction",
+    href: "https://zenodo.org/records/20579513",
+  },
+  {
+    number: "03",
     type: "White Paper",
     title: "MASA",
     label: "Causal AI Architecture",
@@ -21,7 +30,7 @@ const research = [
     href: "/MASA_White_Paper.html",
   },
   {
-    number: "03",
+    number: "04",
     type: "Boundary",
     title: "Claim discipline",
     label: "Research posture",
