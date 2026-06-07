@@ -17,8 +17,38 @@ const projects = [
     tag: "Question · Scope · Owner",
   },
   {
-    id: "thesislens",
+    id: "twin-sparrow",
     number: "02",
+    principle: "Shinkei",
+    principleLine: "Continuity before command.",
+    title: "Make reasoning inhabitable.",
+    name: "Twin-Sparrow",
+    link: null,
+    actionLabel: "In development",
+    image: "/images/projects/twin-sparrow.png",
+    mobileImage: "/images/projects/twin-sparrow.png",
+    imagePosition: "center center",
+    copy: "A companion-agent runtime where Solaris and Atoman preserve continuity, route attention, and turn explanation into a living operating surface.",
+    tag: "Continuity · Skills · Companion runtime",
+  },
+  {
+    id: "aurelian",
+    number: "03",
+    principle: "Kanso",
+    principleLine: "Interface before noise.",
+    title: "Give the terminal a mind.",
+    name: "Aurelian",
+    link: null,
+    actionLabel: "In development",
+    image: "/images/projects/aurelian.png",
+    mobileImage: "/images/projects/aurelian.png",
+    imagePosition: "center center",
+    copy: "An iTerm-native AI workspace for structured execution, memory-aware routing, and companion-grade software work inside the command line.",
+    tag: "Terminal · Agentic workflow · iTerm",
+  },
+  {
+    id: "thesislens",
+    number: "04",
     principle: "Shibui",
     principleLine: "Refinement without noise.",
     title: "Expose fragile assumptions.",
@@ -32,7 +62,7 @@ const projects = [
   },
   {
     id: "universe-splitter",
-    number: "03",
+    number: "05",
     principle: "Wabi-sabi",
     principleLine: "Evidence of becoming.",
     title: "Reopen the branch.",
@@ -46,7 +76,7 @@ const projects = [
   },
   {
     id: "skillshift",
-    number: "04",
+    number: "06",
     principle: "Shibui",
     principleLine: "Refinement through feedback.",
     title: "Bind feedback to action.",
@@ -129,7 +159,7 @@ const ProjectCarousel = () => {
                       </a>
                     ) : (
                       <span className="archive-panel-button archive-panel-button--muted">
-                        Private build
+                        {project.actionLabel || "Private build"}
                       </span>
                     )}
                   </div>
