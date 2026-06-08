@@ -2472,99 +2472,6 @@ textarea:-webkit-autofill:active {
   border-bottom: 0;
 }
 
-.research-ledger-row-featured {
-  min-height: clamp(30rem, 43vw, 45rem);
-  scroll-margin-top: 18svh;
-  grid-template-columns: minmax(9rem, 0.25fr) minmax(0, 1fr) minmax(18rem, 0.38fr);
-  align-items: center;
-  padding: clamp(4rem, 7vw, 7rem) 0;
-  border-top: 1px solid rgba(245, 242, 235, 0.18);
-  border-bottom-color: rgba(245, 242, 235, 0.18);
-  isolation: isolate;
-}
-
-.research-ledger-row-featured::before {
-  width: 100%;
-  background: linear-gradient(90deg, rgba(245, 242, 235, 0.72), rgba(219, 213, 181, 0.22), rgba(245, 242, 235, 0.08));
-  transform: scaleX(0.34);
-}
-
-.research-ledger-row-featured:hover::before,
-.research-ledger-row-featured:focus-within::before {
-  transform: scaleX(1);
-  background: linear-gradient(90deg, rgba(245, 242, 235, 0.88), rgba(219, 213, 181, 0.32), rgba(245, 242, 235, 0.1));
-}
-
-.research-ledger-row-featured::after {
-  content: "";
-  position: absolute;
-  inset: clamp(1.2rem, 2vw, 2rem) -1.2rem;
-  z-index: -1;
-  background:
-    radial-gradient(circle at 24% 8%, rgba(219, 213, 181, 0.075), transparent 24%),
-    radial-gradient(circle at 76% 82%, rgba(245, 242, 235, 0.045), transparent 28%),
-    linear-gradient(135deg, rgba(245, 242, 235, 0.022), transparent 54%);
-  opacity: 0.86;
-  pointer-events: none;
-}
-
-.research-ledger-row-featured .research-ledger-index {
-  align-self: start;
-  padding-top: 0.2rem;
-  color: rgba(219, 213, 181, 0.48);
-}
-
-.research-ledger-row-featured .research-ledger-main {
-  max-width: 68rem;
-}
-
-.research-ledger-row-featured .research-ledger-label {
-  margin-bottom: clamp(2rem, 3vw, 3rem);
-  color: rgba(199, 181, 128, 0.78);
-}
-
-.research-ledger-row-featured .research-ledger-main h3 {
-  max-width: 12.5ch;
-  font-size: clamp(4.5rem, 8vw, 10.4rem);
-  line-height: 0.86;
-  letter-spacing: -0.105em;
-}
-
-.research-ledger-row-featured .research-ledger-main p:not(.research-ledger-label) {
-  max-width: 55rem;
-  margin-top: clamp(1.8rem, 2.8vw, 2.6rem);
-  font-size: clamp(1.08rem, 1.45vw, 1.55rem);
-  line-height: 1.62;
-  color: rgba(219, 213, 181, 0.64);
-}
-
-.research-ledger-row-featured .research-ledger-proof {
-  align-self: stretch;
-  align-items: flex-start;
-  padding-top: 0.36rem;
-  padding-bottom: clamp(1.2rem, 2vw, 2.2rem);
-}
-
-.research-ledger-row-featured .research-ledger-proof span {
-  max-width: 28rem;
-  font-size: clamp(0.72rem, 0.84vw, 0.86rem);
-  letter-spacing: 0.16em;
-  color: rgba(219, 213, 181, 0.48);
-}
-
-.research-ledger-row-featured .research-ledger-proof a {
-  color: rgba(245, 242, 235, 0.88);
-}
-
-.research-ledger-row-featured .research-ledger-actions {
-  margin-top: auto;
-}
-
-.research-ledger-row-featured:hover,
-.research-ledger-row-featured:focus-within {
-  border-bottom-color: rgba(245, 242, 235, 0.28);
-}
-
 .research-ledger-row:hover,
 .research-ledger-row:focus-within {
   border-bottom-color: rgba(245, 242, 235, 0.16);
@@ -2683,20 +2590,9 @@ textarea:-webkit-autofill:active {
 }
 
 @media (max-width: 980px) {
-  .research-ledger-row,
-  .research-ledger-row-featured {
+  .research-ledger-row {
     grid-template-columns: 1fr;
     gap: 1.4rem;
-  }
-
-  .research-ledger-row-featured {
-    min-height: auto;
-    padding: 3.5rem 0;
-  }
-
-  .research-ledger-row-featured .research-ledger-main h3 {
-    max-width: 13ch;
-    font-size: clamp(3.5rem, 11vw, 6.8rem);
   }
 
   .research-ledger-label {
@@ -2726,10 +2622,6 @@ textarea:-webkit-autofill:active {
     letter-spacing: -0.06em;
   }
 
-  .research-ledger-row-featured .research-ledger-main h3 {
-    font-size: clamp(3rem, 14vw, 4.7rem);
-    letter-spacing: -0.082em;
-  }
 }
 
 .archive-records {
