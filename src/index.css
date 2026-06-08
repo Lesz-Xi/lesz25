@@ -985,7 +985,7 @@ textarea:-webkit-autofill:active {
 
 .hero-manifesto {
   min-height: 100svh;
-  padding-top: clamp(7rem, 12vw, 10rem);
+  padding-top: clamp(6.5rem, 10vw, 8.5rem);
   padding-bottom: clamp(6rem, 10vw, 9rem);
   background: #070707;
 }
@@ -1008,10 +1008,10 @@ textarea:-webkit-autofill:active {
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: minmax(0, 0.72fr) minmax(0, 1fr);
-  gap: clamp(3rem, 8vw, 9rem);
+  grid-template-columns: minmax(0, 0.68fr) minmax(26rem, 0.92fr);
+  gap: clamp(4rem, 7vw, 8rem);
   align-items: center;
-  min-height: calc(100svh - clamp(13rem, 22vw, 19rem));
+  min-height: calc(100svh - clamp(12.5rem, 20vw, 17.5rem));
 }
 
 .hero-manifesto-left {
@@ -1020,16 +1020,16 @@ textarea:-webkit-autofill:active {
   align-content: start;
   gap: clamp(2rem, 4vw, 3.5rem);
   max-width: 48rem;
-  padding-top: clamp(2.2rem, 5.8vh, 5.6rem);
+  padding-top: clamp(3.4rem, 7vh, 6.4rem);
 }
 
 .hero-manifesto-identity {
-  transform: translateX(clamp(-1.4rem, -1.8vw, -0.45rem));
+  transform: translateX(clamp(-0.75rem, -1vw, -0.25rem));
 }
 
 .hero-manifesto-title {
   display: grid;
-  gap: clamp(3rem, 5.6vw, 6.2rem);
+  gap: clamp(1.8rem, 3.4vw, 3.8rem);
   margin: 0;
   text-wrap: balance;
 }
@@ -1038,12 +1038,12 @@ textarea:-webkit-autofill:active {
   position: relative;
   isolation: isolate;
   display: block;
-  width: clamp(15rem, 30vw, 32rem);
-  height: clamp(7rem, 13.2vw, 14rem);
-  margin-left: -0.35rem;
+  width: clamp(14rem, 27vw, 29rem);
+  height: clamp(6.5rem, 11.8vw, 12.6rem);
+  margin-left: -0.3rem;
   overflow: visible;
   cursor: default;
-  transform: translateY(clamp(-2.6rem, -4.2vh, -1.25rem));
+  transform: translateY(clamp(-0.75rem, -1.2vh, -0.25rem));
 }
 
 .hero-manifesto-greeting-fallback {
@@ -1089,21 +1089,21 @@ textarea:-webkit-autofill:active {
 
 .hero-manifesto-name-stack {
   display: grid;
-  gap: clamp(0.15rem, 0.8vw, 0.7rem);
-  margin-left: clamp(1.9rem, 5.4vw, 7.6rem);
+  gap: clamp(0.05rem, 0.42vw, 0.38rem);
+  margin-left: clamp(1.2rem, 4.2vw, 6.1rem);
 }
 
 .hero-manifesto-im {
   display: block;
   width: fit-content;
   font-family: var(--font-auralis-serif);
-  font-size: clamp(2.2rem, 5vw, 6rem);
+  font-size: clamp(2rem, 4.1vw, 5.1rem);
   font-style: italic;
   font-weight: 400;
   line-height: 0.9;
-  letter-spacing: -0.035em;
-  color: rgba(199, 181, 128, 0.76);
-  transform: translateY(clamp(-1.55rem, -2.45vh, -0.75rem));
+  letter-spacing: -0.03em;
+  color: rgba(199, 181, 128, 0.68);
+  transform: translateY(clamp(-0.75rem, -1.2vh, -0.35rem));
 }
 
 .hero-manifesto-im-i {
@@ -1113,28 +1113,28 @@ textarea:-webkit-autofill:active {
 
 .hero-manifesto-im-rest,
 .hero-manifesto-rhine-i {
-  color: rgba(199, 181, 128, 0.76);
+  color: rgba(199, 181, 128, 0.7);
 }
 
 .hero-manifesto-rhine {
   display: block;
   font-family: var(--font-auralis-jp);
-  font-size: clamp(3.6rem, 8.1vw, 9.2rem);
+  font-size: clamp(3.8rem, 7.7vw, 8.7rem);
   font-weight: 300;
   line-height: 0.88;
-  letter-spacing: -0.09em;
+  letter-spacing: -0.075em;
   color: #F5F2EB;
 }
 
 .hero-manifesto-statement {
-  max-width: 34rem;
+  max-width: 31.5rem;
   margin: 0;
   font-family: var(--font-auralis-jp);
-  font-size: clamp(1.06rem, 1.36vw, 1.5rem);
+  font-size: clamp(1.02rem, 1.2vw, 1.34rem);
   font-weight: 300;
-  line-height: 2.05;
-  letter-spacing: 0.012em;
-  color: rgba(245, 242, 235, 0.9);
+  line-height: 2.16;
+  letter-spacing: 0.018em;
+  color: rgba(245, 242, 235, 0.76);
   text-wrap: balance;
   font-feature-settings: "palt" 1;
 }
@@ -1159,9 +1159,10 @@ textarea:-webkit-autofill:active {
 
 .hero-manifesto-right {
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
   align-items: center;
-  padding-top: clamp(8.2rem, 19vh, 14.6rem);
+  padding-top: clamp(10.5rem, 21vh, 15.5rem);
+  padding-left: clamp(1rem, 4vw, 5.5rem);
 }
 
 @media (max-width: 1100px) {
@@ -1172,6 +1173,8 @@ textarea:-webkit-autofill:active {
 
   .hero-manifesto-right {
     justify-content: flex-start;
+    padding-top: 0;
+    padding-left: 0;
   }
 
   .hero-manifesto-statement {
@@ -1205,6 +1208,7 @@ textarea:-webkit-autofill:active {
   .hero-manifesto-greeting {
     width: clamp(14rem, 72vw, 21rem);
     height: clamp(6.6rem, 34vw, 10.5rem);
+    transform: translateY(-0.35rem);
   }
 
   .hero-manifesto-name-stack {

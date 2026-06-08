@@ -8,6 +8,8 @@ const Cursor = () => {
     const followerRef = useRef(null);
     const [isHovering, setIsHovering] = useState(false);
     const [isLightTheme, setIsLightTheme] = useState(false);
+    const [hasPointerMoved, setHasPointerMoved] = useState(false);
+    const hasPointerMovedRef = useRef(false);
     
     // Track the last played target to prevent spamming
     const lastPlayedTarget = useRef(null);
@@ -35,6 +37,11 @@ const Cursor = () => {
         const ySetFollower = gsap.quickSetter(follower, "y", "px");
 
         const moveCursor = (e) => {
+            if (!hasPointerMovedRef.current) {
+                hasPointerMovedRef.current = true;
+                setHasPointerMoved(true);
+            }
+
             mouse.x = e.clientX;
             mouse.y = e.clientY;
             xSet(mouse.x);
@@ -109,7 +116,9 @@ const Cursor = () => {
     <>
       <div
         ref={cursorRef}
-        className={`hidden md:block fixed top-0 left-0 w-1.5 h-1.5 rounded-full pointer-events-none z-[9999] transition-colors duration-300 ${
+        className={`hidden md:block fixed top-0 left-0 w-1.5 h-1.5 rounded-full pointer-events-none z-[9999] transition-all duration-300 ${
+            hasPointerMoved ? "opacity-100" : "opacity-0"
+        } ${
             isLightTheme ? "bg-[#FFFCE1]" : "bg-[#DBD5B5]"
         }`}
       />
@@ -117,6 +126,7 @@ const Cursor = () => {
         ref={followerRef}
         className={`hidden md:block fixed top-0 left-0 rounded-full pointer-events-none z-[9998] transition-all duration-300 ease-out 
         shadow-[0_4px_30px_rgba(0,0,0,0.1)]
+        ${hasPointerMoved ? "opacity-100" : "opacity-0"}
         ${
           isLightTheme 
             ? "mix-blend-difference bg-[#FFFCE1]" // Light Theme: Difference mode inverts colors (Cream cursor -> Dark on BG, Light on Text)
