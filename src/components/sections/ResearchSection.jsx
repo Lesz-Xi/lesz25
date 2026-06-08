@@ -68,31 +68,40 @@ const ResearchSection = () => {
         </div>
 
         <div className="research-ledger" aria-label="Research ledger">
-          {research.map((item) => (
-            <article className="research-ledger-row" data-auralis-reveal key={`${item.number}-${item.title}`}>
-              <div className="research-ledger-index">
-                <span>{item.number}</span>
-                <span>{item.type}</span>
-              </div>
+          {research.map((item) => {
+            const isFeaturedPreprint = item.number === "02";
 
-              <div className="research-ledger-main">
-                <p className="research-ledger-label">{item.label}</p>
-                <h3>{item.title}</h3>
-                <p>{item.copy}</p>
-              </div>
+            return (
+              <article
+                id={isFeaturedPreprint ? "continuous-valence-corrected-intelligence" : undefined}
+                className={`research-ledger-row${isFeaturedPreprint ? " research-ledger-row-featured" : ""}`}
+                data-auralis-reveal
+                key={`${item.number}-${item.title}`}
+              >
+                <div className="research-ledger-index">
+                  <span>{item.number}</span>
+                  <span>{item.type}</span>
+                </div>
 
-              <div className="research-ledger-proof">
-                <span>{item.meta}</span>
-                {item.href ? (
-                  <a href={item.href} target="_blank" rel="noopener noreferrer">
-                    Read record <span aria-hidden="true">→</span>
-                  </a>
-                ) : (
-                  <span className="research-ledger-boundary">Held as posture</span>
-                )}
-              </div>
-            </article>
-          ))}
+                <div className="research-ledger-main">
+                  <p className="research-ledger-label">{item.label}</p>
+                  <h3>{item.title}</h3>
+                  <p>{item.copy}</p>
+                </div>
+
+                <div className="research-ledger-proof">
+                  <span>{item.meta}</span>
+                  {item.href ? (
+                    <a href={item.href} target="_blank" rel="noopener noreferrer">
+                      Read record <span aria-hidden="true">→</span>
+                    </a>
+                  ) : (
+                    <span className="research-ledger-boundary">Held as posture</span>
+                  )}
+                </div>
+              </article>
+            );
+          })}
         </div>
       </div>
     </section>
