@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useLayoutEffect, Suspense, useRef } from "react";
+import React, { useEffect, useLayoutEffect, Suspense, useRef } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate, useParams } from "react-router-dom";
 import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Navbar from "../Navbar";
-import IntroAnimation from "../IntroAnimation";
 import Cursor from "../Cursor";
 import ErrorBoundary from "../ErrorBoundary"; 
 import UplinkCookie from "../UplinkCookie"; 
@@ -148,13 +147,12 @@ const AlbumDisplayWrapper = () => {
   return <AlbumDisplay key={albumId} />;
 }
 
-const AppShell = ({ showIntro, onIntroComplete }) => {
+const AppShell = () => {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
 
   return (
     <>
-      {!isAdminRoute && showIntro && <IntroAnimation onComplete={onIntroComplete} />}
       <ScrollToTop />
       <UmamiTracker />
       <div className="bg-[#070707] min-h-screen cursor-none">
@@ -177,8 +175,6 @@ const AppShell = ({ showIntro, onIntroComplete }) => {
 };
 
 const App = () => {
-  const [showIntro, setShowIntro] = useState(true);
-
   useEffect(() => {
     // Note: scrollRestoration is set at module scope for immediate effect
     
@@ -213,14 +209,10 @@ const App = () => {
     };
   }, []);
 
-  const handleIntroComplete = () => {
-    setShowIntro(false);
-  };
-
   return (
     <ErrorBoundary>
       <Router>
-        <AppShell showIntro={showIntro} onIntroComplete={handleIntroComplete} />
+        <AppShell />
       </Router>
     </ErrorBoundary>
   );
