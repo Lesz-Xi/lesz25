@@ -19,6 +19,7 @@ const research = [
     copy: "A source-grounded framework for intelligence as situated correction, where valence functions as a continuous regulatory signal for attention, action, memory, and adaptive self-world alignment.",
     meta: "Valence · Emotion · Adaptive systems · Self-correction",
     href: "https://zenodo.org/records/20579513",
+    relicHref: "/relics/brittle-ai-podcast.html",
   },
   {
     number: "03",
@@ -91,13 +92,20 @@ const ResearchSection = () => {
 
                 <div className="research-ledger-proof">
                   <span>{item.meta}</span>
-                  {item.href ? (
-                    <a href={item.href} target="_blank" rel="noopener noreferrer">
-                      Read record <span aria-hidden="true">→</span>
-                    </a>
-                  ) : (
-                    <span className="research-ledger-boundary">Held as posture</span>
-                  )}
+                  <div className="research-ledger-actions">
+                    {item.href ? (
+                      <a href={item.href} target="_blank" rel="noopener noreferrer">
+                        Read record <span aria-hidden="true">→</span>
+                      </a>
+                    ) : (
+                      <span className="research-ledger-boundary">Held as posture</span>
+                    )}
+                    {item.relicHref ? (
+                      <a href={item.relicHref} className="research-ledger-relic">
+                        Relics <span aria-hidden="true">↗</span>
+                      </a>
+                    ) : null}
+                  </div>
                 </div>
               </article>
             );

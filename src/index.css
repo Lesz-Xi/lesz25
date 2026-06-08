@@ -2553,8 +2553,11 @@ textarea:-webkit-autofill:active {
 }
 
 .research-ledger-row-featured .research-ledger-proof a {
-  margin-top: auto;
   color: rgba(245, 242, 235, 0.88);
+}
+
+.research-ledger-row-featured .research-ledger-actions {
+  margin-top: auto;
 }
 
 .research-ledger-row-featured:hover,
@@ -2637,6 +2640,13 @@ textarea:-webkit-autofill:active {
   color: rgba(219, 213, 181, 0.42);
 }
 
+.research-ledger-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: clamp(1rem, 1.6vw, 1.55rem);
+}
+
 .research-ledger-proof a,
 .research-ledger-boundary {
   display: inline-flex;
@@ -2658,6 +2668,14 @@ textarea:-webkit-autofill:active {
 .research-ledger-proof a:hover {
   color: #C7B580;
   transform: translateX(4px);
+}
+
+.research-ledger-relic {
+  color: rgba(199, 181, 128, 0.82) !important;
+}
+
+.research-ledger-relic:hover {
+  color: #F5F2EB !important;
 }
 
 .research-ledger-boundary {
