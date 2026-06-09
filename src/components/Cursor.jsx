@@ -11,11 +11,7 @@ const Cursor = () => {
     const [hasPointerMoved, setHasPointerMoved] = useState(false);
     const hasPointerMovedRef = useRef(false);
     
-    // Track the last played target to prevent spamming
-    const lastPlayedTarget = useRef(null);
-
     useGSAP(() => {
-        // ... (existing GSAP setup code unchanged) ...
         const cursor = cursorRef.current;
         const follower = followerRef.current;
 
@@ -24,12 +20,6 @@ const Cursor = () => {
         // Center the cursor elements initially (off-screen to avoid flash)
         gsap.set(cursor, { xPercent: -50, yPercent: -50 });
         gsap.set(follower, { xPercent: -50, yPercent: -50 });
-
-        const pos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-        const mouse = { x: pos.x, y: pos.y }; // Renamed from mouse to avoid confusion in this scope if needed, but keeping local var is fine.
-        const speed = 0.15; 
-
-        let hoverTarget = null;
 
         const xSet = gsap.quickSetter(cursor, "x", "px");
         const ySet = gsap.quickSetter(cursor, "y", "px");
@@ -42,40 +32,12 @@ const Cursor = () => {
                 setHasPointerMoved(true);
             }
 
-            mouse.x = e.clientX;
-            mouse.y = e.clientY;
-            xSet(mouse.x);
-            ySet(mouse.y);
+            xSet(e.clientX);
+            ySet(e.clientY);
+            xSetFollower(e.clientX);
+            ySetFollower(e.clientY);
         };
 
-        const tick = () => {
-             // ... (existing tick code unchanged) ...
-            let targetX = mouse.x;
-            let targetY = mouse.y;
-
-            if (isHovering && hoverTarget) {
-                const rect = hoverTarget.getBoundingClientRect();
-                const centerX = rect.left + rect.width / 2;
-                const centerY = rect.top + rect.height / 2;
-                
-                const strength = 0.3; 
-                targetX = mouse.x + (centerX - mouse.x) * strength;
-                targetY = mouse.y + (centerY - mouse.y) * strength;
-            }
-
-            pos.x += (targetX - pos.x) * speed;
-            pos.y += (targetY - pos.y) * speed;
-            xSetFollower(pos.x);
-            ySetFollower(pos.y);
-        };
-
-
-
-    
-    // ... existing refs ...
-
-    // ... inside useGSAP ...
-    
     const handleMouseOver = (e) => {
       const target = e.target;
       const tagName = target.tagName;
@@ -93,21 +55,16 @@ const Cursor = () => {
 
       if (isTextTag || isInteractive || isTextDiv) {
         setIsHovering(true);
-        hoverTarget = isInteractive || target; 
       } else {
         setIsHovering(false);
-        hoverTarget = null;
-        lastPlayedTarget.current = null;
       }
     };
 
     window.addEventListener("mousemove", moveCursor);
-    gsap.ticker.add(tick);
     document.addEventListener("mouseover", handleMouseOver);
 
     return () => {
       window.removeEventListener("mousemove", moveCursor);
-      gsap.ticker.remove(tick);
       document.removeEventListener("mouseover", handleMouseOver);
     };
   }, []);
@@ -116,7 +73,7 @@ const Cursor = () => {
     <>
       <div
         ref={cursorRef}
-        className={`hidden md:block fixed top-0 left-0 w-1.5 h-1.5 rounded-full pointer-events-none z-[9999] transition-all duration-300 ${
+        className={`hidden md:block fixed top-0 left-0 w-1.5 h-1.5 rounded-full pointer-events-none z-[9999] transition-opacity duration-200 ${
             hasPointerMoved ? "opacity-100" : "opacity-0"
         } ${
             isLightTheme ? "bg-[#FFFCE1]" : "bg-[#DBD5B5]"
@@ -124,7 +81,7 @@ const Cursor = () => {
       />
       <div
         ref={followerRef}
-        className={`hidden md:block fixed top-0 left-0 rounded-full pointer-events-none z-[9998] transition-all duration-300 ease-out 
+        className={`hidden md:block fixed top-0 left-0 rounded-full pointer-events-none z-[9998] transition-[width,height,opacity,background-color,backdrop-filter,border-color] duration-200 ease-out 
         shadow-[0_4px_30px_rgba(0,0,0,0.1)]
         ${hasPointerMoved ? "opacity-100" : "opacity-0"}
         ${
