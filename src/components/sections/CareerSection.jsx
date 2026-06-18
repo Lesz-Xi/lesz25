@@ -13,7 +13,7 @@ const careerData = [
   {
     step: "Step 02 — Continuity",
     title: "Twin-Sparrow",
-    period: "2026 — In development",
+    period: "2025 — 2026 / In development",
     concept: "Shinkei",
     description:
       "Building a companion-agent runtime where Solaris and Atoman preserve continuity, route attention, and turn explanation into a living operating surface.",
@@ -21,7 +21,7 @@ const careerData = [
   {
     step: "Step 03 — Runtime",
     title: "Aurelian",
-    period: "2026 — In development",
+    period: "2025 — 2026 / In development",
     concept: "Kanso",
     description:
       "Developing a terminal-native AI workspace for structured execution, memory-aware routing, and companion-grade software work inside the command line.",
