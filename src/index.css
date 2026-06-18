@@ -1658,6 +1658,9 @@ textarea:-webkit-autofill:active {
   }
 
   .portrait-mantra {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.95rem, 4vw, 1.6rem);
     width: 100%;
     height: auto;
     min-height: 0;
@@ -1669,6 +1672,7 @@ textarea:-webkit-autofill:active {
     max-width: none;
     transform: none;
     font-size: clamp(3.2rem, 14vw, 6rem);
+    line-height: 0.92;
     text-align: left;
   }
 
