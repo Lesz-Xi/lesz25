@@ -2722,20 +2722,22 @@ textarea:-webkit-autofill:active {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 3.2rem;
-    height: 3.2rem;
-    border: 1px solid rgba(199, 181, 128, 0.28);
-    border-radius: 999px;
-    background: rgba(199, 181, 128, 0.065);
-    color: rgba(245, 242, 235, 0.86);
+    min-width: 2rem;
+    min-height: 2rem;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: rgba(245, 242, 235, 0.72);
     font-family: var(--font-auralis-mono);
-    font-size: 1.2rem;
+    font-size: 1rem;
     line-height: 1;
-    transition: border-color 0.25s ease, background 0.25s ease, transform 0.25s ease;
+    transition: color 0.25s ease, transform 0.25s ease;
   }
 
   .archive-mobile-button:active {
-    transform: scale(0.96);
+    color: #F5F2EB;
+    transform: translateY(1px);
   }
 
   .archive-mobile-count {
