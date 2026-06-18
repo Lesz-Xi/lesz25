@@ -67,7 +67,15 @@ const careerData = [
       "Published The Entropic Vise on Zenodo, exploring HIV/AIDS through thermodynamic and information-theoretic frames.",
   },
   {
-    step: "Step 09 — Revisit",
+    step: "Step 09 — Correct",
+    title: "Continuous Valence Research",
+    period: "2026 — Research record",
+    concept: "Shinkei",
+    description:
+      "Developed a source-grounded research frame for intelligence as situated correction, where valence regulates attention, action, memory, and adaptive self-world alignment.",
+  },
+  {
+    step: "Step 10 — Revisit",
     title: "Independent Practice",
     period: "Present",
     concept: "Wabi-sabi",

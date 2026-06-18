@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { useAuralisMotion } from "../hooks/useAuralisMotion.js";
 
 const roles = [
@@ -30,7 +30,16 @@ const roles = [
 
 const RoleShowcase = () => {
   const sectionRef = useRef(null);
+  const [activeRoleIndex, setActiveRoleIndex] = useState(0);
   useAuralisMotion(sectionRef);
+
+  const goToPreviousRole = () => {
+    setActiveRoleIndex((currentIndex) => (currentIndex - 1 + roles.length) % roles.length);
+  };
+
+  const goToNextRole = () => {
+    setActiveRoleIndex((currentIndex) => (currentIndex + 1) % roles.length);
+  };
 
   return (
     <section ref={sectionRef} className="auralis-section" data-theme="dark">
@@ -67,9 +76,9 @@ const RoleShowcase = () => {
             </g>
           </svg>
 
-          {roles.map((role) => (
+          {roles.map((role, index) => (
             <article
-              className={`role-eye-node role-eye-node--${role.position}`}
+              className={`role-eye-node role-eye-node--${role.position}${index === activeRoleIndex ? " is-mobile-active" : ""}`}
               data-role-eye-node
               key={role.index}
             >
@@ -82,6 +91,18 @@ const RoleShowcase = () => {
               <span className="role-eye-tag"><span aria-hidden="true" />{role.tag}</span>
             </article>
           ))}
+        </div>
+
+        <div className="role-mobile-controls" aria-label="Principle role navigation">
+          <button type="button" className="role-mobile-button" onClick={goToPreviousRole} aria-label="Previous principle role">
+            &lt;
+          </button>
+          <span className="role-mobile-count">
+            {String(activeRoleIndex + 1).padStart(2, "0")} / {String(roles.length).padStart(2, "0")}
+          </span>
+          <button type="button" className="role-mobile-button" onClick={goToNextRole} aria-label="Next principle role">
+            &gt;
+          </button>
         </div>
       </div>
     </section>

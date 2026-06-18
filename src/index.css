@@ -1915,11 +1915,15 @@ textarea:-webkit-autofill:active {
   filter: blur(0px);
 }
 
+.role-mobile-controls {
+  display: none;
+}
+
 @media (max-width: 980px) {
   .role-eye-field {
-    min-height: 0;
-    display: grid;
-    gap: 3rem;
+    position: relative;
+    display: block;
+    min-height: clamp(18rem, 78vw, 24rem);
     margin-top: 4.5rem;
     padding-left: 1.35rem;
   }
@@ -1957,13 +1961,26 @@ textarea:-webkit-autofill:active {
   .role-eye-node--left,
   .role-eye-node--center,
   .role-eye-node--right {
-    position: relative;
-    left: auto;
-    right: auto;
-    top: auto;
-    width: 100%;
-    transform: none;
+    position: absolute;
+    left: 1.35rem;
+    right: 0;
+    top: 50%;
+    width: auto;
+    transform: translateY(-50%) translateX(8%);
     text-align: left;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .role-eye-node.is-mobile-active,
+  .role-eye-node--left.is-mobile-active,
+  .role-eye-node--center.is-mobile-active,
+  .role-eye-node--right.is-mobile-active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(-50%) translateX(0);
+    pointer-events: auto;
   }
 
   .role-eye-node--center .role-eye-node-label,
@@ -1986,8 +2003,50 @@ textarea:-webkit-autofill:active {
   }
 
   .role-eye-field:hover .role-eye-node {
-    opacity: 1;
+    opacity: 0;
     filter: none;
+  }
+
+  .role-eye-field:hover .role-eye-node.is-mobile-active {
+    opacity: 1;
+  }
+
+  .role-mobile-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1.15rem;
+    padding-left: 1.35rem;
+  }
+
+  .role-mobile-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2rem;
+    min-height: 2rem;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: rgba(245, 242, 235, 0.72);
+    font-family: var(--font-auralis-mono);
+    font-size: 1rem;
+    line-height: 1;
+    transition: color 0.25s ease, transform 0.25s ease;
+  }
+
+  .role-mobile-button:active {
+    color: #F5F2EB;
+    transform: translateY(1px);
+  }
+
+  .role-mobile-count {
+    font-family: var(--font-auralis-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.22em;
+    color: rgba(199, 181, 128, 0.62);
   }
 }
 
