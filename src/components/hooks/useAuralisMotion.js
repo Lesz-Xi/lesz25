@@ -334,59 +334,32 @@ export function useAuralisMotion(scopeRef) {
         });
 
         gsap.utils.toArray("[data-image-monograph-card]").forEach((card) => {
-          const image = card.querySelector("img");
-
           gsap.set(card, {
             autoAlpha: 0,
-            y: 92,
-            z: -120,
-            rotateX: 11,
-            scale: 0.94,
-            filter: "blur(10px)",
+            y: 42,
+            scale: 0.982,
+            filter: "blur(4px)",
             transformPerspective: 1200,
             transformOrigin: "center bottom",
           });
 
-          if (image) {
-            gsap.set(image, {
-              y: 42,
-              scale: 1.08,
-              filter: "saturate(0.82) contrast(0.92) brightness(0.8)",
-            });
-          }
-
           const imageTimeline = gsap.timeline({
             scrollTrigger: {
               trigger: card,
-              start: "top 88%",
-              end: "top 42%",
-              scrub: 1.05,
+              start: "top 90%",
+              end: "top 50%",
+              scrub: 1.85,
               invalidateOnRefresh: true,
             },
           });
 
           imageTimeline.to(card, {
             autoAlpha: 1,
-            y: -24,
-            z: 0,
-            rotateX: 0,
+            y: 0,
             scale: 1,
             filter: "blur(0px)",
             ease: "none",
           });
-
-          if (image) {
-            imageTimeline.to(
-              image,
-              {
-                y: 0,
-                scale: 1,
-                filter: "saturate(0.9) contrast(0.96) brightness(0.88)",
-                ease: "none",
-              },
-              0
-            );
-          }
         });
 
         gsap.utils.toArray("[data-portrait-stand]").forEach((card) => {
