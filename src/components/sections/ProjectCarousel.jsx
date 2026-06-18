@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { useAuralisMotion } from "../hooks/useAuralisMotion.js";
 
 const projects = [
@@ -47,8 +47,22 @@ const projects = [
     tag: "Terminal · Agentic workflow · Runtime",
   },
   {
-    id: "thesislens",
+    id: "tsra-observation",
     number: "04",
+    principle: "Kiroku",
+    principleLine: "Record before claim.",
+    title: "Separate signal from certainty.",
+    name: "Seismic Observation / TSRA",
+    link: "https://tectonic-strain-ratchet-analyzer.vercel.app/",
+    image: "/images/projects/tsra-observation.png",
+    mobileImage: "/images/projects/tsra-observation.png",
+    imagePosition: "center top",
+    copy: "An observational seismic interface that keeps confirmed events, local felt reports, elapsed windows, and generated watch cycles visibly separate.",
+    tag: "Observation · Evidence gates · Field rhythm",
+  },
+  {
+    id: "thesislens",
+    number: "05",
     principle: "Shibui",
     principleLine: "Refinement without noise.",
     title: "Expose fragile assumptions.",
@@ -62,7 +76,7 @@ const projects = [
   },
   {
     id: "universe-splitter",
-    number: "05",
+    number: "06",
     principle: "Wabi-sabi",
     principleLine: "Evidence of becoming.",
     title: "Reopen the branch.",
@@ -76,7 +90,7 @@ const projects = [
   },
   {
     id: "skillshift",
-    number: "06",
+    number: "07",
     principle: "Shibui",
     principleLine: "Refinement through feedback.",
     title: "Bind feedback to action.",
@@ -92,7 +106,16 @@ const projects = [
 
 const ProjectCarousel = () => {
   const sectionRef = useRef(null);
+  const [activeProjectIndex, setActiveProjectIndex] = useState(0);
   useAuralisMotion(sectionRef);
+
+  const goToPreviousProject = () => {
+    setActiveProjectIndex((currentIndex) => (currentIndex - 1 + projects.length) % projects.length);
+  };
+
+  const goToNextProject = () => {
+    setActiveProjectIndex((currentIndex) => (currentIndex + 1) % projects.length);
+  };
 
   return (
     <section id="projects" ref={sectionRef} className="auralis-section" data-theme="dark">
@@ -118,8 +141,12 @@ const ProjectCarousel = () => {
         </div>
 
         <div className="archive-records" data-archive-records aria-label="Selected project records">
-          {projects.map((project) => (
-            <article className="archive-record" key={project.id} data-archive-record>
+          {projects.map((project, index) => (
+            <article
+              className={`archive-record${index === activeProjectIndex ? " is-mobile-active" : ""}`}
+              key={project.id}
+              data-archive-record
+            >
               <div className="archive-record-header">
                 <span className="archive-bar-index">{project.number}</span>
                 <span className="archive-record-principle">{project.principle}</span>
@@ -167,6 +194,18 @@ const ProjectCarousel = () => {
               </div>
             </article>
           ))}
+        </div>
+
+        <div className="archive-mobile-controls" aria-label="Project navigation">
+          <button type="button" className="archive-mobile-button" onClick={goToPreviousProject} aria-label="Previous project">
+            &lt;
+          </button>
+          <span className="archive-mobile-count">
+            {String(activeProjectIndex + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}
+          </span>
+          <button type="button" className="archive-mobile-button" onClick={goToNextProject} aria-label="Next project">
+            &gt;
+          </button>
         </div>
       </div>
     </section>
