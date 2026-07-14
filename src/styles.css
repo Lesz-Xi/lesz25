@@ -759,13 +759,24 @@ canvas#canvas.shader-ready {
 /* Photography — album grid, single-album detail, lightbox */
 .photo-albums {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  /* minmax(0, 1fr), not 1fr: a bare 1fr refuses to shrink below its content's
+     min-width, and the long mono place names (ZUG, SWITZERLAND / BOTANICAL
+     GARDEN) would then force their columns wider — giving unequal columns and
+     mismatched cover sizes. */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 20px 18px;
 }
 
 /* An author `display` beats the [hidden] UA rule, so guard the toggle explicitly. */
 .photo-albums[hidden] {
   display: none;
+}
+
+/* The 28px scroll gutter exists to clear the letter-index rail — but the rail is
+   only built for letters with ledger rows, and photography has none. Give the
+   photographs the width back. */
+#letter-photography .letter-scroll {
+  padding-right: 0;
 }
 
 .photo-album-card {
@@ -821,7 +832,8 @@ canvas#canvas.shader-ready {
 }
 
 .photo-album-where {
-  font: 11px/1 var(--mono-font);
+  /* line-height 1 clipped descenders and collided wrapped lines on narrow cards */
+  font: 11px/1.45 var(--mono-font);
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: #8f6f3a;
@@ -1389,6 +1401,11 @@ body.has-letter #audio-toggle {
     padding: 54px 40px 48px;
   }
 
+  /* Three covers across is too thin once the card narrows. */
+  .photo-albums {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   :root {
     --overlay-bottom-safe-zone: 120px;
   }
@@ -1428,6 +1445,21 @@ body.has-letter #audio-toggle {
   .contact-list li {
     grid-template-columns: 1fr;
     gap: 2px;
+  }
+
+  /* On a phone the photographs matter more than the density: one album per row,
+     full-width cover. A two-up grid here shrinks each cover to a ~130px stamp. */
+  .photo-albums {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 26px;
+  }
+
+  .photo-album-card {
+    gap: 10px;
+  }
+
+  .photo-album-name {
+    font-size: 18px;
   }
 }
 
