@@ -1,49 +1,52 @@
-# Rhine Tague's Personal Website and Portfolio
+# Rhine Tague — Portfolio
 
-![Built with Google Antigravity](https://img.shields.io/badge/built%20with-Google%20Antigravity-4285F4?logo=google&logoColor=white)
+![Rhine Tague — I watch, doubt, and build.](public/cover.jpg)
 
-Site is live on: [rhinetague.com](https://rhinetague.com)
+> I watch, doubt, and build.
 
-![Portfolio Preview](public/images/portfolio_preview_v2.jpg)
+A portfolio built as a place rather than a page: a full-viewport WebGL ocean under a
+day/night sky, with the work opening as paper letters over water that never restarts.
 
-## Usage Documentation
+Live: **[lesz25.vercel.app](https://lesz25.vercel.app)**
+
+---
+
+## What's here
+
+- **Work** — causal AI, companion-agent runtimes, observational interfaces.
+- **Research** — preprints and white papers.
+- **Photography** — six albums, shot across Switzerland, Paris, and the Philippines.
+- **Archive** — field notes. Currently: *What My Hands Knew First*.
+- **Purpose** — the ground under the work.
+
+## The ocean
+
+A raymarched WebGL sea (based on afl_ext's *Ocean*, MIT) retuned to a warm two-tone
+palette. Day and night are one shader: the entire palette resolves from two anchor
+colours in a duotone post-process, so the two themes are the same geometry seen under
+different light.
+
+**Day** — an Interstellar-warm sea: cream sky, sun-path glints, clear water.
+**Night** — a Milky Way band overhead, and bioluminescent plankton blooms lighting the
+crests of breaking waves.
+
+A boat sails the horizon; click it to pause the ambient audio.
+
+## Stack
+
+Vanilla — no framework. Vite, WebGL2, ES modules. Five languages (EN/DE/FR/IT/ZH).
 
 ```bash
-# Install dependencies
 npm install
-
-# Start the dev server
-npm run dev
-
-# Build for production
+npm run dev     # localhost:5174
 npm run build
 ```
 
-## Design
+## Credits
 
-**Color Palette:**
+Ocean shader based on [afl_ext](https://www.shadertoy.com/user/afl_ext)'s *Ocean* (MIT).
+Ambient track: *ICARUS (Sleep Version)* — Tony Ann.
 
-*   **Primary Gold:** `#DBD5B5` (Text, Accents, Borders)
-*   **Secondary Gold:** `#C7B580` (Highlighted Text)
-*   **Background:** `#070707` (Deep Black)
-*   **Card Background:** `#1C1C21`
-*   **Text/Muted:** `#8B7E66`
+## Licence
 
-**Typography:**
-
-*   **Display:** Clash Display (Elegant, High-Contrast)
-*   **Body:** Inter / Sans-Serif
-*   **Mono:** SF Mono (Technical details)
-*   **Pixel:** Doto (Creative accents)
-
-## Image Auditing
-
-I utilize optimal compression for all 3D assets and portfolio images to ensure high performance without sacrificing visual fidelity. Images are stored in the `public/images` directory.
-
-## To Do
-
-- [x] Implement Glassmorphism UI for forms and buttons
-- [x] Refine "See My Work" button interaction and animation
-- [x] Optimize Mobile Responsiveness for Career and Role sections
-- [ ] Add more detailed case studies for Featured Projects
-- [ ] Integrate database for dynamic content management
+Apache 2.0.

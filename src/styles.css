@@ -1,0 +1,1560 @@
+/* ==========================================================================
+   RHINE — WAVES
+   Ported scaffold from earendil.com (waves), retuned to the "Auralis" palette.
+
+   Z-INDEX LAYERS
+   0   - Canvas background (WebGL ocean + sky)
+   10  - Center logo (emblem, reflected in water)
+   100 - Page content / hero / letter overlays
+   200 - Chrome (nav, footer, theme toggle)
+   ========================================================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --cursor-light: url('/cursor-light.svg') 12 12;
+  --cursor-dark: url('/cursor-dark.svg') 12 12;
+  /* Japanese type doctrine (Relics four-voice, three used):
+     Serif = Shippori Mincho (mincho gravity, headlines + prose),
+     Body  = Zen Kaku Gothic New (legible reading),
+     Mono  = IBM Plex Mono (labels, nav, status). */
+  --mono-font: 'IBM Plex Mono', 'SFMono-Regular', ui-monospace, monospace;
+  --serif-font: 'Crimson Pro', 'PlantinNow', Georgia, serif;
+  --body-font: 'Crimson Pro', 'PlantinNow', Georgia, serif;
+
+  /* Auralis palette */
+  --gold: #dbd5b5;
+  --gold-2: #c7b580;
+  --muted: #8b7e66;
+  --ink: #221e18;
+  /* warm ink for paper letters (day) */
+  --paper-day: #cfc9b8;
+  /* fallback bg before canvas fades in */
+  --paper-night: #0a0a08;
+
+  --viewport-height: 100vh;
+  --overlay-top-safe-zone: 30px;
+  --overlay-bottom-safe-zone: 170px;
+  --overlay-border-gap: 2px;
+}
+
+@supports (height: 100dvh) {
+  :root {
+    --viewport-height: 100dvh;
+  }
+}
+
+html,
+body {
+  cursor: var(--cursor-light), auto;
+  background: var(--paper-day);
+  overflow: hidden;
+  height: 100%;
+}
+
+.theme-night,
+.theme-night body {
+  background: var(--paper-night);
+}
+
+* {
+  cursor: inherit;
+}
+
+a {
+  cursor: var(--cursor-light), pointer;
+}
+
+a:hover {
+  cursor: var(--cursor-dark), pointer;
+}
+
+.theme-night a {
+  cursor: var(--cursor-dark), pointer;
+}
+
+.theme-night a:hover {
+  cursor: var(--cursor-light), pointer;
+}
+
+/* ==========================================================================
+   LAYER 0: Canvas
+   ========================================================================== */
+
+canvas#canvas {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  image-rendering: auto;
+  opacity: 0;
+  transition: opacity 1000ms ease;
+}
+
+@supports (height: 100dvh) {
+  canvas#canvas {
+    height: 100dvh;
+  }
+}
+
+canvas#canvas.shader-ready {
+  opacity: 1;
+}
+
+/* ==========================================================================
+   LAYER 100: Page content — hero
+   ========================================================================== */
+
+.page {
+  position: relative;
+  z-index: 100;
+}
+
+.home-hero {
+  position: relative;
+  min-height: var(--viewport-height);
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  padding: 4vh 30px 0;
+  text-align: center;
+  color: rgba(248, 244, 232, 0.96);
+}
+
+.home-hero-text {
+  margin: 0;
+  font-family: var(--serif-font);
+  font-size: clamp(26px, 3.1vw, 46px);
+  line-height: 1.5;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  text-wrap: balance;
+  max-width: 22ch;
+}
+
+/* No underline. The operative word is set apart by warmth; on hover a warm sparkle
+   rises above it and slowly spins — earendil's hero-word affordance, tuned to the
+   Auralis gold so it rhymes with the signal star overhead. Colour is theme-aware:
+   bright gold reads on the near-black night sky, but on the pale day sky it would
+   vanish — so day uses a deeper bronze that keeps 'build' the most legible word. */
+.home-hero-link {
+  position: relative;
+  display: inline-block;
+  --hero-star-size: 15px;
+  --hero-star-gap: 3px;
+  --hero-link: #8f6f3a;
+  /* day: warm bronze, stands out on pale sky */
+  --hero-link-hover: #6f5528;
+  --hero-star-color: #8f6f3a;
+  --hero-hover-glow: transparent;
+  /* a light glow only reads on the dark sky */
+  color: var(--hero-link);
+  text-decoration: none;
+  transition: color 0.24s ease, text-shadow 0.24s ease;
+}
+
+.theme-night .home-hero-link {
+  --hero-link: var(--gold);
+  /* night: gold on near-black */
+  --hero-link-hover: #f4ecd0;
+  --hero-star-color: #f4ecd0;
+  --hero-hover-glow: rgba(219, 213, 181, 0.45);
+}
+
+.home-hero-link:hover {
+  color: var(--hero-link-hover);
+  text-shadow: 0 0 10px var(--hero-hover-glow);
+}
+
+.home-hero-link::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: calc(-1 * (var(--hero-star-size) + var(--hero-star-gap)));
+  width: var(--hero-star-size);
+  height: var(--hero-star-size);
+  transform: translateX(-50%);
+  transform-origin: center;
+  background-color: var(--hero-star-color);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cg%20fill='%23000'%20opacity='0.95'%3E%3Cpath%20d='M12%200.6%20L13.1%2011.6%20L10.9%2011.6%20Z'/%3E%3Cpath%20d='M12%200.6%20L13.1%2011.6%20L10.9%2011.6%20Z'%20transform='rotate(180%2012%2012)'/%3E%3Cpath%20d='M23.2%2012%20L12.4%2012.9%20L12.4%2011.1%20Z'/%3E%3Cpath%20d='M23.2%2012%20L12.4%2012.9%20L12.4%2011.1%20Z'%20transform='rotate(180%2012%2012)'/%3E%3Cpath%20d='M12%205.8%20L12.9%2012%20L11.1%2012%20Z'%20transform='rotate(45%2012%2012)'/%3E%3Cpath%20d='M12%205.8%20L12.9%2012%20L11.1%2012%20Z'%20transform='rotate(135%2012%2012)'/%3E%3Cpath%20d='M12%205.8%20L12.9%2012%20L11.1%2012%20Z'%20transform='rotate(225%2012%2012)'/%3E%3Cpath%20d='M12%205.8%20L12.9%2012%20L11.1%2012%20Z'%20transform='rotate(315%2012%2012)'/%3E%3Cpath%20d='M12%209.4%20L13.1%2012%20L12%2014.6%20L10.9%2012%20Z'%20opacity='0.85'/%3E%3Ccircle%20cx='12'%20cy='12'%20r='0.6'%20opacity='0.85'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cg%20fill='%23000'%20opacity='0.95'%3E%3Cpath%20d='M12%200.6%20L13.1%2011.6%20L10.9%2011.6%20Z'/%3E%3Cpath%20d='M12%200.6%20L13.1%2011.6%20L10.9%2011.6%20Z'%20transform='rotate(180%2012%2012)'/%3E%3Cpath%20d='M23.2%2012%20L12.4%2012.9%20L12.4%2011.1%20Z'/%3E%3Cpath%20d='M23.2%2012%20L12.4%2012.9%20L12.4%2011.1%20Z'%20transform='rotate(180%2012%2012)'/%3E%3Cpath%20d='M12%205.8%20L12.9%2012%20L11.1%2012%20Z'%20transform='rotate(45%2012%2012)'/%3E%3Cpath%20d='M12%205.8%20L12.9%2012%20L11.1%2012%20Z'%20transform='rotate(135%2012%2012)'/%3E%3Cpath%20d='M12%205.8%20L12.9%2012%20L11.1%2012%20Z'%20transform='rotate(225%2012%2012)'/%3E%3Cpath%20d='M12%205.8%20L12.9%2012%20L11.1%2012%20Z'%20transform='rotate(315%2012%2012)'/%3E%3Cpath%20d='M12%209.4%20L13.1%2012%20L12%2014.6%20L10.9%2012%20Z'%20opacity='0.85'/%3E%3Ccircle%20cx='12'%20cy='12'%20r='0.6'%20opacity='0.85'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.home-hero-link:hover::before {
+  opacity: 1;
+  animation: heroWordStarSpin 0.85s linear infinite;
+}
+
+@keyframes heroWordStarSpin {
+  from {
+    transform: translateX(-50%) rotate(0deg);
+  }
+
+  to {
+    transform: translateX(-50%) rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-hero-link {
+    transition: none;
+  }
+
+  .home-hero-link:hover::before {
+    animation: none;
+  }
+}
+
+/* ==========================================================================
+   LAYER 100: Letter overlays (paper cards over the ocean)
+   ========================================================================== */
+
+.letter-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--overlay-top-safe-zone) 30px var(--overlay-bottom-safe-zone);
+  background: transparent;
+  opacity: 0;
+  pointer-events: none;
+  /* Closed letters are fully out of hit-testing — their cards keep
+     pointer-events:auto, so without this a stacked closed card would
+     intercept wheel/touch over the open letter. */
+  visibility: hidden;
+  transition: opacity 0.35s ease;
+}
+
+.letter-overlay.is-open {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+}
+
+.letter-overlay.is-closing {
+  opacity: 0;
+  pointer-events: none;
+  visibility: visible;
+}
+
+.letter-card {
+  --letter-inline-padding: 64px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(1000px, 92vw);
+  margin: 0;
+  max-height: calc(var(--viewport-height) - var(--overlay-top-safe-zone) - var(--overlay-bottom-safe-zone) - var(--overlay-border-gap));
+  overflow: hidden;
+  padding: 60px var(--letter-inline-padding) 54px;
+  box-sizing: border-box;
+  pointer-events: auto;
+  /* Day card: solid paper — no ocean bleed-through. Grain material via ::before. */
+  background: rgb(236, 230, 213);
+  box-shadow: 0 12px 40px rgba(43, 34, 20, 0.20);
+  border: 1px solid rgba(34, 30, 24, 0.10);
+  font: 400 15px/1.7 var(--body-font);
+  color: var(--ink);
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  cursor: var(--cursor-dark), auto;
+}
+
+/* Faint paper grain (wabi-sabi material) over the translucent scrim, below text. */
+.letter-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: url('/paper.png') center/256px 256px;
+  opacity: 0.08;
+}
+
+.theme-night .letter-card {
+  /* Solid warm-black card — the night sea's own dark, not a neutral grey. A
+     gold-2 hairline holds it (the bioluminescent thread inside the letters),
+     and the shadow falls warm, like the water under the card. */
+  background: rgb(13, 12, 10);
+  border-color: rgba(199, 181, 128, 0.18);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.55), 0 2px 14px rgba(199, 181, 128, 0.05);
+  color: rgba(240, 236, 224, 0.82);
+  cursor: var(--cursor-light), auto;
+}
+
+.theme-night .letter-card::before {
+  background: url('/paper-dark.png') center/256px 256px;
+  opacity: 0.14;
+}
+
+.theme-night .letter-kicker,
+.theme-night .ledger-index,
+.theme-night .photo-album-meta,
+.theme-night .contact-key {
+  color: var(--gold-2);
+}
+
+
+.letter-overlay.is-open .letter-card {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.letter-overlay.is-closing .letter-card {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+/* Letter internals */
+.letter-dismiss {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  z-index: 2;
+  border: 0;
+  background: none;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  /* Icon is a 14px hairline SVG (stroke: currentColor) — micro, quiet. */
+  color: rgba(34, 30, 24, 0.4);
+  cursor: var(--cursor-dark), pointer;
+  transition: color 0.16s ease;
+}
+
+.letter-dismiss svg {
+  display: block;
+}
+
+.letter-dismiss:hover {
+  color: var(--ink);
+}
+
+.theme-night .letter-dismiss {
+  color: rgba(240, 236, 224, 0.5);
+  cursor: var(--cursor-light), pointer;
+}
+
+.theme-night .letter-dismiss:hover {
+  color: #fff;
+}
+
+.letter-kicker {
+  flex: 0 0 auto;
+  font: 13px/1 var(--mono-font);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: #8f6f3a;
+  /* day bronze — the hero-link accent threading the warm theme */
+  margin-bottom: 10px;
+}
+
+.letter-title {
+  flex: 0 0 auto;
+  font-family: var(--serif-font);
+  font-style: normal;
+  font-weight: 400;
+  font-size: clamp(30px, 3.6vw, 46px);
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+  margin-bottom: 26px;
+}
+
+.letter-scroll {
+  /* Fills exactly the space under the title and scrolls — no fixed max-height,
+     so nothing clips regardless of content length. */
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 28px;
+  /* Native scrollbar hidden — the filter-icon index instrument carries position. */
+  scrollbar-width: none;
+}
+
+.letter-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* Honest overflow: fade the bottom edge only while more content remains. */
+.letter-scroll.has-more {
+  -webkit-mask-image: linear-gradient(to bottom, black calc(100% - 44px), transparent 100%);
+  mask-image: linear-gradient(to bottom, black calc(100% - 44px), transparent 100%);
+}
+
+/* Letter index — the one instrument mark per card. Resting: the filter icon.
+   Hover/focus: expands into one hairline per entry; click jumps; active is amber. */
+.letter-index {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  transform: translateY(-50%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 7px;
+  padding: 8px 4px;
+}
+
+/* The index reads as the always-open hairline instrument (the former filter glyph
+   was its collapsed state) — its expanded 'hover' look is now the resting default. */
+.letter-index-icon {
+  display: none;
+}
+
+.letter-index-lines {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 7px;
+}
+
+.letter-index-line {
+  appearance: none;
+  border: 0;
+  background: none;
+  padding: 4px 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  cursor: var(--cursor-dark), pointer;
+}
+
+.theme-night .letter-index-line {
+  cursor: var(--cursor-light), pointer;
+}
+
+.letter-index-line::before {
+  content: "";
+  width: 14px;
+  height: 1px;
+  background: rgba(34, 30, 24, 0.35);
+  transition: width 0.16s ease, background 0.16s ease;
+}
+
+.theme-night .letter-index-line::before {
+  background: rgba(219, 213, 181, 0.35);
+}
+
+.letter-index-line:hover::before {
+  width: 22px;
+  background: var(--ink);
+}
+
+.theme-night .letter-index-line:hover::before {
+  background: var(--gold);
+}
+
+.letter-index-line.is-active::before {
+  width: 22px;
+  background: var(--gold-2);
+}
+
+/* Photography — single-image album viewer */
+.photo-viewer {
+  display: flex;
+  flex-direction: column;
+}
+
+.photo-stage {
+  position: relative;
+  /* Capped band so the image AND the ‹ › controls are visible without scrolling,
+     even on short (~700px) viewports where the card max-height bites. */
+  height: clamp(170px, 24vh, 330px);
+  overflow: hidden;
+  border: 1px solid rgba(34, 30, 24, 0.12);
+  background: rgba(34, 30, 24, 0.05);
+  margin: 0;
+}
+
+.theme-night .photo-stage {
+  border-color: rgba(219, 213, 181, 0.14);
+}
+
+.photo-stage .photo-thumb {
+  position: absolute;
+  inset: 0;
+  aspect-ratio: auto;
+  border: 0;
+}
+
+.photo-stage img {
+  transition: opacity 0.24s ease;
+}
+
+.photo-stage.is-switching img {
+  opacity: 0;
+}
+
+.photo-caption {
+  margin-top: 12px;
+}
+
+.photo-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 10px;
+}
+
+.photo-nav-btn {
+  appearance: none;
+  border: 0;
+  background: none;
+  min-width: 44px;
+  min-height: 32px;
+  display: grid;
+  place-items: center;
+  /* Hairline chevron SVGs (stroke-width 1) — micro, matching the close ✕. */
+  color: rgba(34, 30, 24, 0.4);
+  cursor: var(--cursor-dark), pointer;
+  transition: color 0.16s ease;
+}
+
+.photo-nav-btn svg {
+  display: block;
+}
+
+.photo-nav-btn:hover {
+  color: var(--ink);
+}
+
+.theme-night .photo-nav-btn {
+  color: rgba(240, 236, 224, 0.45);
+  cursor: var(--cursor-light), pointer;
+}
+
+.theme-night .photo-nav-btn:hover {
+  color: var(--gold);
+}
+
+.photo-counter {
+  font: 11px/1 var(--mono-font);
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+
+.theme-night .photo-counter {
+  color: var(--gold-2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .letter-index-lines,
+  .letter-index-icon,
+  .photo-stage img {
+    transition: none;
+  }
+}
+
+.letter-body p {
+  margin-bottom: 18px;
+}
+
+.letter-body a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 0.14em;
+  font-weight: 500;
+  cursor: var(--cursor-dark), pointer;
+}
+
+.theme-night .letter-body a {
+  cursor: var(--cursor-light), pointer;
+}
+
+.letter-body a:hover,
+.theme-night .letter-body a:hover {
+  color: #000;
+}
+
+.theme-night .letter-body a:hover {
+  color: #fff;
+}
+
+/* Ledger rows (projects / research / career) — hairline-separated, 7/5 asymmetry */
+.ledger {
+  display: flex;
+  flex-direction: column;
+}
+
+.ledger-row {
+  display: grid;
+  grid-template-columns: 7fr 5fr;
+  gap: 18px 28px;
+  padding: 18px 0;
+  border-top: 1px solid rgba(34, 30, 24, 0.16);
+}
+
+.ledger-row:first-child {
+  border-top: 0;
+}
+
+.theme-night .ledger-row {
+  border-top-color: rgba(219, 213, 181, 0.16);
+}
+
+.ledger-index {
+  font: 12px/1.6 var(--mono-font);
+  color: #8f6f3a;
+  /* day bronze */
+  letter-spacing: 0.08em;
+}
+
+.ledger-name {
+  font-family: var(--serif-font);
+  font-style: normal;
+  font-weight: 400;
+  font-size: 23px;
+  line-height: 1.2;
+  margin-bottom: 6px;
+}
+
+.ledger-name a {
+  text-decoration: none;
+}
+
+.ledger-tag {
+  font: 11px/1 var(--mono-font);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+
+.ledger-desc {
+  font-family: var(--body-font);
+  font-size: 13.5px;
+  line-height: 1.7;
+}
+
+.ledger-meta {
+  font: 12px/1.5 var(--mono-font);
+  color: var(--muted);
+  text-align: left;
+}
+
+/* 'Read →' / 'Visit →' — no dotted underline; a thin rule grows in from the left
+   on hover, in the bronze accent (gold at night). */
+.ledger-meta a {
+  color: #8f6f3a;
+  text-decoration: none;
+  font-weight: 500;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 1px;
+  transition: background-size 0.24s ease, color 0.16s ease;
+}
+
+.ledger-meta a:hover {
+  color: #6f5528;
+  background-size: 100% 1px;
+}
+
+.theme-night .ledger-meta a {
+  color: var(--gold-2);
+}
+
+.theme-night .ledger-meta a:hover {
+  color: var(--gold);
+}
+
+/* Archive: written works, presented as quiet field notes */
+.archive-eyebrow {
+  font: 500 11px/1 var(--mono-font);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #8f6f3a;
+  margin: 4px 0 10px;
+}
+
+.theme-night .archive-eyebrow {
+  color: var(--gold-2);
+}
+
+.archive-title {
+  font: 600 26px/1.3 var(--serif-font);
+  margin: 0 0 20px;
+}
+
+.archive-lede {
+  font-style: italic;
+  font-size: 17px;
+}
+
+.archive-entry p.letter-body {
+  margin: 0 0 16px;
+}
+
+.archive-entry a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: rgba(143, 111, 58, 0.45);
+  text-underline-offset: 3px;
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+.archive-entry a:hover {
+  color: #6f5528;
+  text-decoration-color: currentColor;
+}
+
+.theme-night .archive-entry a {
+  text-decoration-color: rgba(199, 181, 128, 0.45);
+}
+
+.theme-night .archive-entry a:hover {
+  color: var(--gold);
+}
+
+.archive-close {
+  font-family: var(--serif-font);
+  font-style: italic;
+  margin-top: 28px;
+}
+
+/* Contact / socials list */
+.contact-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.contact-list li {
+  display: grid;
+  grid-template-columns: 8em 1fr;
+  gap: 16px;
+  align-items: baseline;
+}
+
+.contact-key {
+  font: 12px/1.6 var(--mono-font);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #8f6f3a;
+}
+
+.contact-val {
+  font-family: var(--body-font);
+  font-size: 15px;
+}
+
+/* Photography — album grid, single-album detail, lightbox */
+.photo-albums {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px 18px;
+}
+
+/* An author `display` beats the [hidden] UA rule, so guard the toggle explicitly. */
+.photo-albums[hidden] {
+  display: none;
+}
+
+.photo-album-card {
+  appearance: none;
+  border: 0;
+  background: none;
+  padding: 0;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: var(--cursor-dark), pointer;
+}
+
+.theme-night .photo-album-card {
+  cursor: var(--cursor-light), pointer;
+}
+
+.photo-album-cover {
+  display: block;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border: 1px solid rgba(34, 30, 24, 0.12);
+  background: rgba(34, 30, 24, 0.05);
+}
+
+.theme-night .photo-album-cover {
+  border-color: rgba(219, 213, 181, 0.14);
+}
+
+.photo-album-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.photo-album-card:hover .photo-album-cover img,
+.photo-album-card:focus-visible .photo-album-cover img {
+  transform: scale(1.04);
+}
+
+.photo-album-name {
+  font-family: var(--serif-font);
+  font-size: 17px;
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+.theme-night .photo-album-name {
+  color: rgba(240, 236, 224, 0.9);
+}
+
+.photo-album-where {
+  font: 11px/1 var(--mono-font);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #8f6f3a;
+}
+
+.theme-night .photo-album-where {
+  color: var(--gold-2);
+}
+
+/* Detail view: back affordance, then just the image + ‹ › toggle. */
+.photo-back {
+  appearance: none;
+  border: 0;
+  background: none;
+  padding: 0;
+  margin-bottom: 14px;
+  font: 12px/1 var(--mono-font);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #8f6f3a;
+  cursor: var(--cursor-dark), pointer;
+  transition: color 0.16s ease;
+}
+
+.photo-back:hover {
+  color: var(--ink);
+}
+
+.theme-night .photo-back {
+  color: var(--gold-2);
+  cursor: var(--cursor-light), pointer;
+}
+
+.theme-night .photo-back:hover {
+  color: var(--gold);
+}
+
+.photo-controls[hidden] {
+  display: none;
+}
+
+/* Album detail is image-first and fits WITHOUT scrolling: drop the section title +
+   intro, then flex the photo to fill the same card footprint as the grid, with the
+   ‹ › toggle pinned just beneath it (no has-more fade bleeding over the image). */
+#letter-photography.is-album-detail .letter-title,
+#letter-photography.is-album-detail [data-photo-intro] {
+  display: none;
+}
+
+/* Give the detail card a definite height (its own max-height) so the flex-filled
+   image has room to grow into — otherwise the card shrinks to the controls. This
+   also makes the detail card match the album grid card's footprint. */
+#letter-photography.is-album-detail .letter-card {
+  height: calc(var(--viewport-height) - var(--overlay-top-safe-zone) - var(--overlay-bottom-safe-zone) - var(--overlay-border-gap));
+}
+
+#letter-photography.is-album-detail .letter-scroll {
+  overflow: hidden;
+  padding-right: 0;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+#letter-photography.is-album-detail .letter-scroll>.letter-body {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+#letter-photography.is-album-detail .photo-detail {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+#letter-photography.is-album-detail .photo-stage {
+  flex: 1 1 auto;
+  height: auto;
+  min-height: 0;
+}
+
+/* Shared image tile (the detail stage's thumb; also drives the lightbox source). */
+.photo-thumb {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border: 0;
+  cursor: var(--cursor-dark), pointer;
+  background: rgba(34, 30, 24, 0.05);
+}
+
+.photo-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease, opacity 0.4s ease;
+}
+
+.photo-thumb:hover img {
+  transform: scale(1.04);
+}
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(8, 8, 8, 0.86);
+  backdrop-filter: blur(6px);
+  padding: 40px;
+  cursor: var(--cursor-light), pointer;
+}
+
+.lightbox.is-open {
+  display: flex;
+}
+
+.lightbox img {
+  max-width: 92vw;
+  max-height: 88vh;
+  object-fit: contain;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5);
+}
+
+/* ==========================================================================
+   LAYER 200: Chrome
+   ========================================================================== */
+
+#fps {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  color: #fff;
+  font: 16px var(--mono-font);
+  background: rgba(0, 0, 0, 0.5);
+  padding: 5px 10px;
+  z-index: 200;
+  display: none;
+}
+
+#fps.visible {
+  display: block;
+}
+
+.top-nav {
+  position: fixed;
+  top: 75px;
+  right: 75px;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  transition: opacity 0.3s ease;
+  /* Theme-aware nav voice. Day: warm ink + bronze (the hero-link accent) against
+     the pale cream sky — a light glow would vanish there, so day glow is off. */
+  --nav-ink: rgba(63, 52, 36, 0.82);
+  --nav-ink-strong: rgba(63, 52, 36, 0.95);
+  --nav-ink-dim: rgba(63, 52, 36, 0.45);
+  --nav-hover: #6f5528;
+  --nav-glow: rgba(219, 213, 181, 0);
+  --nav-star: #8f6f3a;
+  --nav-pulse-from: rgba(143, 111, 58, 0.5);
+  --nav-pulse-to: rgba(63, 52, 36, 0.95);
+}
+
+.theme-night .top-nav {
+  /* Night: the original warm-white + gold voice on the near-black sky. */
+  --nav-ink: rgba(248, 244, 232, 0.95);
+  --nav-ink-strong: rgba(248, 244, 232, 0.95);
+  --nav-ink-dim: rgba(248, 244, 232, 0.45);
+  --nav-hover: var(--gold);
+  --nav-glow: rgba(219, 213, 181, 0.9);
+  --nav-star: #f4ecd0;
+  --nav-pulse-from: rgba(219, 213, 181, 0.45);
+  --nav-pulse-to: rgba(248, 244, 232, 0.95);
+}
+
+/* Hide the corner menu while a letter is open so it never collides with Close. */
+body.has-letter .top-nav {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* The translucent night card lets DOM content behind it show through its blur —
+   without this the hero prose ghosts into the open letter. Hidden while reading. */
+body.has-letter .home-hero {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.menu-trigger-toggle {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  cursor: var(--cursor-light), pointer;
+}
+
+.menu-about {
+  font: 14px/1 var(--mono-font);
+  letter-spacing: 0.02em;
+  color: var(--nav-ink);
+  transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+.top-nav.is-open .menu-about {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.menu-chevron {
+  display: inline-block;
+  position: relative;
+  top: 1px;
+  font: 20px/1 var(--mono-font);
+  color: var(--nav-ink-dim);
+  transform-origin: center;
+  transition: transform 0.25s ease, color 0.25s ease;
+  animation: chevronPulse 1.1s ease-in-out infinite alternate;
+}
+
+.menu-trigger-toggle:hover .menu-about,
+.menu-trigger-toggle:hover .menu-chevron {
+  color: var(--nav-hover);
+  animation: none;
+}
+
+.top-nav.is-open .menu-chevron {
+  animation: none;
+  transform: rotate(90deg);
+  color: var(--nav-ink-strong);
+}
+
+.menu-links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 9px;
+}
+
+.menu-links[hidden] {
+  display: none;
+}
+
+@keyframes chevronPulse {
+
+  /* Custom props resolve against the animated element at apply time, so the pulse
+     re-colors per theme without duplicate keyframe sets. */
+  from {
+    color: var(--nav-pulse-from);
+  }
+
+  to {
+    color: var(--nav-pulse-to);
+  }
+}
+
+.nav-link {
+  font: 14px/1 var(--mono-font);
+  letter-spacing: 0.02em;
+  color: var(--nav-ink);
+  text-decoration: none;
+  text-shadow: 0 0 4px rgba(219, 213, 181, 0);
+  transition: color 0.2s ease, text-shadow 0.3s ease;
+  cursor: var(--cursor-light), pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: 0;
+}
+
+.nav-link::after {
+  content: "";
+  width: 14px;
+  height: 14px;
+  /* Mask-tinted star (same technique as the hero sparkle) so it re-colors per theme. */
+  background-color: var(--nav-star);
+  -webkit-mask: url('/cursor-light.svg') center/contain no-repeat;
+  mask: url('/cursor-light.svg') center/contain no-repeat;
+  flex: 0 0 auto;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.nav-link:hover {
+  color: var(--nav-hover);
+  text-shadow: 0 0 4px var(--nav-glow);
+  cursor: var(--cursor-dark), pointer;
+}
+
+.nav-link:hover::after {
+  opacity: 1;
+  animation: navLinkStarSpin 0.85s linear infinite;
+}
+
+@keyframes navLinkStarSpin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.theme-night .nav-link,
+.theme-night .menu-trigger-toggle {
+  cursor: var(--cursor-dark), pointer;
+}
+
+.theme-night .nav-link:hover,
+.theme-night .menu-trigger-toggle:hover {
+  cursor: var(--cursor-light), pointer;
+}
+
+/* Ambient-audio control as a small boat sailing the sea horizon, just below the
+   hero line. It drifts left→right; hovering halts it so you can click to play/pause;
+   unhovering sends it on again. Ink by day (pale horizon), warm-white by night. */
+#audio-toggle {
+  position: fixed;
+  top: 56.8vh;
+  /* straddling the horizon line, not the near water */
+  left: 0;
+  z-index: 150;
+  border: 0;
+  background: none;
+  padding: 8px;
+  color: #6f5528;
+  /* day: bronze — one colour in every state (sailing, hovered, paused) */
+  cursor: var(--cursor-light), pointer;
+  transition: color 0.2s ease;
+  animation: boatSail 110s linear infinite;
+  /* slow, distant drift */
+  will-change: transform;
+}
+
+.theme-night #audio-toggle {
+  color: rgba(248, 244, 232, 0.92);
+  /* night: warm white — one colour in every state */
+  cursor: var(--cursor-dark), pointer;
+}
+
+/* The boat sails by default (from load). It freezes only when the audio is
+   explicitly paused (.boat-stopped) or while hovered, resuming from the exact
+   spot it stopped. */
+#audio-toggle.boat-stopped,
+#audio-toggle:hover {
+  animation-play-state: paused;
+}
+
+/* The boat never changes hue — not on hover, not when paused. Stopping the sail
+   is the feedback; only the cursor swaps for legibility against the hull. */
+#audio-toggle:hover {
+  cursor: var(--cursor-dark), pointer;
+}
+
+.theme-night #audio-toggle:hover {
+  cursor: var(--cursor-light), pointer;
+}
+
+#audio-toggle .value {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  animation: boatBob 4.5s ease-in-out infinite;
+  /* gentle rock on the swell */
+}
+
+#audio-toggle:hover .value {
+  animation-play-state: paused;
+}
+
+#audio-toggle .value svg {
+  width: 28px;
+  height: 28px;
+  display: block;
+}
+
+/* Thin caption riding just under the boat; inherits the boat's per-theme color. */
+.audio-hint {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 5px;
+  white-space: nowrap;
+  font-family: var(--mono-font);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: inherit;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+}
+
+/* Shown once (first visit), then dismissed and remembered. */
+#audio-toggle.show-hint .audio-hint {
+  opacity: 0.42;
+}
+
+#audio-toggle.show-hint:hover .audio-hint {
+  opacity: 0.7;
+}
+
+/* Start just inside the left edge — visible (with its caption) the moment the
+   page loads — and sail right across, then loop. */
+@keyframes boatSail {
+  from {
+    transform: translateX(12vw);
+  }
+
+  to {
+    transform: translateX(100vw);
+  }
+}
+
+/* Rock + rise, as if riding the swell (separate element from the sail translate). */
+@keyframes boatBob {
+
+  0%,
+  100% {
+    transform: translateY(0) rotate(-4deg);
+  }
+
+  50% {
+    transform: translateY(-3px) rotate(4deg);
+  }
+}
+
+/* The boat lives on the hero horizon — hide it while a letter is open. */
+body.has-letter #audio-toggle {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #audio-toggle {
+    animation: none;
+    left: 8vw;
+  }
+
+  /* park it — no drift */
+  #audio-toggle .value {
+    animation: none;
+  }
+}
+
+/* Theme toggle — top-left, over the sky, so it is theme-aware (ink by day). */
+.bottom-controls {
+  position: fixed;
+  top: 75px;
+  left: 75px;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Theme toggle — minimal sun/moon icon with a quiet poetic whisper on hover */
+#theme-toggle {
+  position: relative;
+  border: 0;
+  background: none;
+  color: rgba(63, 52, 36, 0.72);
+  /* day: ink on the pale sky */
+  padding: 6px;
+  cursor: var(--cursor-light), pointer;
+  transition: color 0.2s ease;
+}
+
+#theme-toggle:hover {
+  color: #3f3424;
+  cursor: var(--cursor-dark), pointer;
+}
+
+.theme-night #theme-toggle {
+  color: rgba(248, 244, 232, 0.9);
+  cursor: var(--cursor-dark), pointer;
+}
+
+.theme-night #theme-toggle:hover {
+  color: #fff;
+  cursor: var(--cursor-light), pointer;
+}
+
+#theme-toggle .value {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+}
+
+#theme-toggle .value svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+#theme-toggle::after {
+  content: attr(data-tip);
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 12px;
+  white-space: nowrap;
+  font-family: var(--serif-font);
+  font-style: italic;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+  color: rgba(63, 52, 36, 0.82);
+  /* day ink; night overrides below */
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.16s ease, transform 0.16s ease;
+  pointer-events: none;
+}
+
+.theme-night #theme-toggle::after {
+  color: rgba(248, 244, 232, 0.92);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+}
+
+#theme-toggle:hover::after,
+#theme-toggle:focus-visible::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #theme-toggle::after {
+    transition: opacity 0.16s ease;
+    transform: none;
+  }
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 800px) {
+  .top-nav {
+    top: 40px;
+    right: 40px;
+  }
+
+  .bottom-controls {
+    top: 40px;
+    left: 40px;
+  }
+
+  .letter-card {
+    --letter-inline-padding: 40px;
+    padding: 54px 40px 48px;
+  }
+
+  :root {
+    --overlay-bottom-safe-zone: 120px;
+  }
+}
+
+@media (max-width: 520px) {
+  .top-nav {
+    top: 24px;
+    right: 24px;
+  }
+
+  .bottom-controls {
+    top: 24px;
+    left: 24px;
+    gap: 12px;
+  }
+
+  .home-hero-text {
+    font-size: clamp(20px, 5vw, 28px);
+    line-height: 1.2;
+  }
+
+  .letter-card {
+    --letter-inline-padding: 26px;
+    padding: 48px 26px 40px;
+  }
+
+  .ledger-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .ledger-meta {
+    text-align: left;
+  }
+
+  .contact-list li {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-chevron {
+    animation: none;
+  }
+
+  .nav-link:hover::after {
+    animation: none;
+  }
+
+  canvas#canvas,
+  .letter-overlay,
+  .letter-card,
+  .main-logo {
+    transition: none;
+  }
+}
+/* ---- Language picker (bottom-right) ------------------------------------ */
+/* Wears our own material: the letter-card paper by day, the solid card by night. */
+.lang-picker {
+  position: fixed;
+  right: 28px;
+  bottom: 22px;
+  z-index: 160;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.lang-trigger {
+  border: 0;
+  background: none;
+  padding: 4px 2px;
+  font-family: var(--mono-font);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #6f5528;
+  cursor: var(--cursor-light), pointer;
+  transition: color 0.2s ease;
+}
+
+.theme-night .lang-trigger {
+  color: rgba(248, 244, 232, 0.72);
+  cursor: var(--cursor-dark), pointer;
+}
+
+.lang-trigger:hover { color: #4f3b1a; }
+.theme-night .lang-trigger:hover { color: var(--gold); }
+
+.lang-menu {
+  list-style: none;
+  margin: 0;
+  padding: 6px;
+  min-width: 196px;
+  background: rgb(236, 230, 213);
+  border: 1px solid rgba(143, 111, 58, 0.18);
+  box-shadow: 0 12px 40px rgba(43, 34, 20, 0.2);
+  animation: langMenuIn 0.22s ease-out;
+}
+
+.theme-night .lang-menu {
+  background: rgb(14, 14, 16);
+  border-color: rgba(219, 213, 181, 0.14);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+}
+
+@keyframes langMenuIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.lang-option {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  border: 0;
+  background: none;
+  padding: 8px 10px;
+  text-align: left;
+  cursor: var(--cursor-light), pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.theme-night .lang-option { cursor: var(--cursor-dark), pointer; }
+.lang-option:hover { background: rgba(143, 111, 58, 0.09); }
+.theme-night .lang-option:hover { background: rgba(219, 213, 181, 0.08); }
+
+.lang-name {
+  font-family: var(--mono-font);
+  font-size: 13px;
+  color: rgba(63, 52, 36, 0.86);
+}
+
+.theme-night .lang-name { color: rgba(248, 244, 232, 0.82); }
+.lang-option.is-active .lang-name { color: #6f5528; }
+.theme-night .lang-option.is-active .lang-name { color: var(--gold); }
+
+.lang-check {
+  font-size: 11px;
+  opacity: 0;
+  color: #8f6f3a;
+}
+
+.theme-night .lang-check { color: var(--gold); }
+.lang-option.is-active .lang-check { opacity: 1; }
+
+.lang-code {
+  font-family: var(--mono-font);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: rgba(143, 111, 58, 0.6);
+}
+
+.theme-night .lang-code { color: rgba(219, 213, 181, 0.42); }
+
+/* A letter covers the sky; the picker steps aside, like the boat. */
+body.has-letter .lang-picker {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lang-menu { animation: none; }
+}

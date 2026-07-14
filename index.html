@@ -1,65 +1,83 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/lz-logo.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Rhine Tague | Developer & Photographer Portfolio</title>
-    <meta name="description" content="Rhine Tague is a developer and photographer based in the Philippines. Explore my portfolio showcasing web development projects, photography, and creative work." />
-    <meta name="author" content="Rhine Tague" />
-    <meta name="robots" content="index, follow" />
-    
-    <!-- Open Graph / Social Media -->
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="Rhine Tague - Creative Developer & 3D Artist" />
-    <meta property="og:description" content="A curated portfolio of digital experiences, 3D artistry, and creative development. Exploring the intersection of code, design, and narrative." />
-    <meta property="og:url" content="https://lesz25.com/" />
-    <meta property="og:image" content="https://lesz25.com/images/social-card.jpg" />
-    <meta property="og:image:width" content="1600" />
-    <meta property="og:image:height" content="920" />
-    <meta property="og:image:type" content="image/jpeg" />
-    <meta property="og:site_name" content="Rhine Tague" />
-    <meta property="og:locale" content="en_US" />
-    
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Rhine Tague - Creative Developer & 3D Artist" />
-    <meta name="twitter:description" content="A curated portfolio of digital experiences, 3D artistry, and creative development. Exploring the intersection of code, design, and narrative." />
-    <meta name="twitter:image" content="https://lesz25.com/images/social-card.jpg" />
-    
-    <!-- Preload Critical Assets -->
-    <link rel="preload" href="/images/leszport.webp" as="image" type="image/webp" fetchpriority="high" />
-    <link rel="preload" href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&display=swap" as="style" />
-    
-    <!-- Fonts - Preconnect to all font origins -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
-    <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
-    
-    <!-- ALL fonts loaded ASYNC (non-blocking) using media=print technique -->
-    <link rel="stylesheet" 
-          href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&f[]=general-sans@400,500,600&display=swap" 
-          media="print" 
-          onload="this.media='all'">
-    <link rel="stylesheet" 
-          href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@300;400;500&family=Zen+Kaku+Gothic+New:wght@300;400;500;700&family=DotGothic16&family=Geist+Mono:wght@400;500&family=Playfair+Display:wght@400;600;700&family=Outfit:wght@400;500;600&family=Inter:wght@400;500&family=Doto:wght@400;700&family=Dancing+Script:wght@400..700&family=Square+Peg&display=swap" 
-          media="print" 
-          onload="this.media='all'">
-    <noscript>
-      <link href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&f[]=general-sans@400,500,600&display=swap" rel="stylesheet">
-      <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@300;400;500&family=Zen+Kaku+Gothic+New:wght@300;400;500;700&family=DotGothic16&family=Geist+Mono:wght@400;500&family=Playfair+Display:wght@400;600;700&family=Outfit:wght@400;500;600&family=Inter:wght@400;500&family=Doto:wght@400;700&family=Square+Peg&display=swap" rel="stylesheet">
-    </noscript>
-  </head>
-  <body>
-    <!-- Force scroll to top BEFORE React loads - prevents scroll restoration flash -->
-    <script>
-      if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-      window.scrollTo(0, 0);
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-    </script>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rhine Tague</title>
+  <meta name="description" content="Rhine Tague — developer, photographer, and researcher from the Philippines. Seeing first, building carefully, keeping each claim answerable." />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Rhine Tague" />
+  <meta property="og:description" content="Developer, photographer, and researcher from the Philippines." />
+  <meta property="og:image" content="/cover.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Rhine Tague" />
+  <meta name="twitter:description" content="I watch, doubt, and build." />
+  <meta name="twitter:image" content="/cover.jpg" />
+
+  <link rel="icon" type="image/png" href="/pixel-star.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <link rel="preload" href="/cursor-light.svg" as="image" />
+  <link rel="preload" href="/cursor-dark.svg" as="image" />
+  <link rel="preload" href="/paper.png" as="image" />
+  <link rel="preload" href="/paper-dark.png" as="image" />
+</head>
+<body>
+  <!-- Layer 0 -->
+  <canvas id="canvas"></canvas>
+
+  <!-- Layer 100: hero -->
+  <div class="page" data-page-type="home">
+    <section class="home-hero" aria-label="Rhine Tague hero">
+      <p class="home-hero-text"></p>
+    </section>
+  </div>
+
+  <!-- Layer 200: chrome -->
+  <div id="fps">FPS: --</div>
+
+  <nav class="top-nav" data-chevron-menu>
+    <div class="menu-trigger">
+      <button class="menu-trigger-toggle" type="button" aria-expanded="false" aria-controls="site-menu-links" aria-label="Open menu">
+        <span class="menu-about" data-i18n="nav.about">About</span>
+        <span class="menu-chevron" aria-hidden="true">›</span>
+      </button>
+    </div>
+    <div class="menu-links" id="site-menu-links" hidden>
+      <a class="nav-link" href="#about" data-i18n="nav.about">About</a>
+      <a class="nav-link" href="#work" data-i18n="nav.work">Work</a>
+      <a class="nav-link" href="#research" data-i18n="nav.research">Research</a>
+      <a class="nav-link" href="#photography" data-i18n="nav.photography">Photography</a>
+      <a class="nav-link" href="#archive" data-i18n="nav.archive">Archive</a>
+      <a class="nav-link" href="#contact" data-i18n="nav.contact">Contact</a>
+      <a class="nav-link" href="#purpose" data-i18n="nav.purpose">Purpose</a>
+    </div>
+  </nav>
+
+  <button id="audio-toggle" type="button" aria-label="Play ambient audio" aria-pressed="false">
+    <span class="value"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" d="M34.964 43H13.162l-4.466-8.806h30.608zM24 5l-9.371 26.644l17.255-5.664z"/></svg></span>
+    <span class="audio-hint" aria-hidden="true" data-i18n="ui.boatHint">Click the boat to pause the audio</span>
+  </button>
+  <audio id="ambient-audio" src="/audio/icarus.mp3" loop autoplay preload="auto"></audio>
+
+  <div class="lang-picker" data-lang-picker>
+    <ul class="lang-menu" role="listbox" hidden></ul>
+    <button class="lang-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Language">
+      <span class="lang-current">EN</span>
+    </button>
+  </div>
+
+  <div class="bottom-controls">
+    <button id="theme-toggle" type="button" aria-label="Toggle color theme"><span class="value"></span></button>
+  </div>
+
+  <!-- Lightbox (photography) -->
+  <div class="lightbox" id="lightbox" aria-hidden="true"><img id="lightbox-img" src="" alt="" /></div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
 </html>
