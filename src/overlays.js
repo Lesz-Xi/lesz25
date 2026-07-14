@@ -8,12 +8,6 @@ import { t } from './i18n.js';
 const REDUCED_MOTION = window.matchMedia
   && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-// Fluent filter icon (32) — inlined so currentColor theming applies.
-const FILTER_ICON_SVG = `
-  <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" aria-hidden="true">
-    <path d="M3 8.5a.5.5 0 0 1 .5-.5h25a.5.5 0 0 1 0 1h-25a.5.5 0 0 1-.5-.5m4 7a.5.5 0 0 1 .5-.5h17a.5.5 0 0 1 0 1h-17a.5.5 0 0 1-.5-.5m4.5 6.5a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1z"/>
-  </svg>`;
-
 const OPEN_KEYS = Object.keys(LETTERS);
 let activeKey = null;
 let closingTimer = null;
@@ -45,56 +39,16 @@ function buildLetters() {
     frag.appendChild(overlay);
   }
   document.body.appendChild(frag);
-  for (const key of OPEN_KEYS) buildLetterIndex(key);
+  for (const key of OPEN_KEYS) wireLetterScroll(key);
 }
 
-// --- Letter index instrument: filter icon at rest, per-item lines on hover ---
-
-function buildLetterIndex(key) {
+// A letter is a short ledger you read by scrolling. The bottom fade is the whole
+// signal: it says "there is more below" and nothing it cannot back up.
+function wireLetterScroll(key) {
   const overlay = document.getElementById(`letter-${key}`);
   if (!overlay) return;
-  const card = overlay.querySelector('.letter-card');
   const scroll = overlay.querySelector('.letter-scroll');
-  const items = Array.from(scroll.querySelectorAll('.ledger-row'));
-  if (items.length < 3) {
-    wireOverflowFade(scroll);
-    return; // short letters keep just the honest fade
-  }
-
-  const nav = document.createElement('nav');
-  nav.className = 'letter-index';
-  nav.setAttribute('aria-label', `${LETTERS[key].title()} ${t('ui.index')}`);
-  const lines = items.map((item, i) => {
-    const name = item.querySelector('.ledger-name')?.textContent?.trim() || `Item ${i + 1}`;
-    return `<button class="letter-index-line" type="button" data-index-target="${i}" aria-label="${name}"></button>`;
-  }).join('');
-  nav.innerHTML = `
-    <span class="letter-index-icon">${FILTER_ICON_SVG}</span>
-    <div class="letter-index-lines">${lines}</div>`;
-  card.appendChild(nav);
-
-  nav.addEventListener('click', (e) => {
-    const btn = e.target.closest('[data-index-target]');
-    if (!btn) return;
-    const item = items[Number(btn.dataset.indexTarget)];
-    if (!item) return;
-    const top = item.getBoundingClientRect().top - scroll.getBoundingClientRect().top + scroll.scrollTop;
-    scroll.scrollTo({ top: Math.max(0, top - 8), behavior: REDUCED_MOTION ? 'auto' : 'smooth' });
-  });
-
-  const lineButtons = Array.from(nav.querySelectorAll('.letter-index-line'));
-  const trackActive = () => {
-    const mid = scroll.scrollTop + scroll.clientHeight * 0.35;
-    let active = 0;
-    items.forEach((item, i) => {
-      const top = item.getBoundingClientRect().top - scroll.getBoundingClientRect().top + scroll.scrollTop;
-      if (top <= mid) active = i;
-    });
-    lineButtons.forEach((b, i) => b.classList.toggle('is-active', i === active));
-  };
-  scroll.addEventListener('scroll', trackActive, { passive: true });
-  trackActive();
-  wireOverflowFade(scroll);
+  if (scroll) wireOverflowFade(scroll);
 }
 
 function wireOverflowFade(scroll) {

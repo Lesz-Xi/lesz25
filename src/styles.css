@@ -379,8 +379,7 @@ canvas#canvas.shader-ready {
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
-  padding-right: 28px;
-  /* Native scrollbar hidden — the filter-icon index instrument carries position. */
+  /* Native scrollbar hidden; the bottom fade below is the honest overflow signal. */
   scrollbar-width: none;
 }
 
@@ -392,75 +391,6 @@ canvas#canvas.shader-ready {
 .letter-scroll.has-more {
   -webkit-mask-image: linear-gradient(to bottom, black calc(100% - 44px), transparent 100%);
   mask-image: linear-gradient(to bottom, black calc(100% - 44px), transparent 100%);
-}
-
-/* Letter index — the one instrument mark per card. Resting: the filter icon.
-   Hover/focus: expands into one hairline per entry; click jumps; active is amber. */
-.letter-index {
-  position: absolute;
-  top: 50%;
-  right: 14px;
-  transform: translateY(-50%);
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 7px;
-  padding: 8px 4px;
-}
-
-/* The index reads as the always-open hairline instrument (the former filter glyph
-   was its collapsed state) — its expanded 'hover' look is now the resting default. */
-.letter-index-icon {
-  display: none;
-}
-
-.letter-index-lines {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 7px;
-}
-
-.letter-index-line {
-  appearance: none;
-  border: 0;
-  background: none;
-  padding: 4px 0;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  cursor: var(--cursor-dark), pointer;
-}
-
-.theme-night .letter-index-line {
-  cursor: var(--cursor-light), pointer;
-}
-
-.letter-index-line::before {
-  content: "";
-  width: 14px;
-  height: 1px;
-  background: rgba(34, 30, 24, 0.35);
-  transition: width 0.16s ease, background 0.16s ease;
-}
-
-.theme-night .letter-index-line::before {
-  background: rgba(219, 213, 181, 0.35);
-}
-
-.letter-index-line:hover::before {
-  width: 22px;
-  background: var(--ink);
-}
-
-.theme-night .letter-index-line:hover::before {
-  background: var(--gold);
-}
-
-.letter-index-line.is-active::before {
-  width: 22px;
-  background: var(--gold-2);
 }
 
 /* Photography — single-image album viewer */
@@ -554,8 +484,6 @@ canvas#canvas.shader-ready {
 
 @media (prefers-reduced-motion: reduce) {
 
-  .letter-index-lines,
-  .letter-index-icon,
   .photo-stage img {
     transition: none;
   }
@@ -770,13 +698,6 @@ canvas#canvas.shader-ready {
 /* An author `display` beats the [hidden] UA rule, so guard the toggle explicitly. */
 .photo-albums[hidden] {
   display: none;
-}
-
-/* The 28px scroll gutter exists to clear the letter-index rail — but the rail is
-   only built for letters with ledger rows, and photography has none. Give the
-   photographs the width back. */
-#letter-photography .letter-scroll {
-  padding-right: 0;
 }
 
 .photo-album-card {
