@@ -7,7 +7,7 @@
 A portfolio built as a place rather than a page: a full-viewport WebGL ocean under a
 day/night sky, with the work opening as paper letters over water that never restarts.
 
-Live: **[lesz25.vercel.app](https://lesz25.vercel.app)**
+Live: **[lesz25.com](https://lesz25.com)**
 
 ---
 
