@@ -55,7 +55,6 @@ const STRINGS = {
     'ui.openAlbum': 'Open album',
     'ui.boatHint': 'Click the boat to pause the audio',
     'ui.language': 'Language',
-    'ui.rights': 'All rights reserved.',
 
     'theme.tip.toLight': 'let there be light',
     'theme.tip.toDark': 'return to the dark',
@@ -154,7 +153,6 @@ const STRINGS = {
     'ui.openAlbum': 'Album öffnen',
     'ui.boatHint': 'Klicke auf das Boot, um den Ton zu pausieren',
     'ui.language': 'Sprache',
-    'ui.rights': 'Alle Rechte vorbehalten.',
 
     'theme.tip.toLight': 'es werde Licht',
     'theme.tip.toDark': 'zurück ins Dunkel',
@@ -253,7 +251,6 @@ const STRINGS = {
     'ui.openAlbum': 'Ouvrir l’album',
     'ui.boatHint': 'Cliquez sur le bateau pour mettre l’audio en pause',
     'ui.language': 'Langue',
-    'ui.rights': 'Tous droits réservés.',
 
     'theme.tip.toLight': 'que la lumière soit',
     'theme.tip.toDark': 'retour à l’obscurité',
@@ -352,7 +349,6 @@ const STRINGS = {
     'ui.openAlbum': 'Apri album',
     'ui.boatHint': 'Clicca sulla barca per mettere in pausa l’audio',
     'ui.language': 'Lingua',
-    'ui.rights': 'Tutti i diritti riservati.',
 
     'theme.tip.toLight': 'sia la luce',
     'theme.tip.toDark': 'ritorno al buio',
@@ -451,7 +447,6 @@ const STRINGS = {
     'ui.openAlbum': '打开相册',
     'ui.boatHint': '点击小船可暂停音乐',
     'ui.language': '语言',
-    'ui.rights': '版权所有。',
 
     'theme.tip.toLight': '要有光',
     'theme.tip.toDark': '重归黑暗',

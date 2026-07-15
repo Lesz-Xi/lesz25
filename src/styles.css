@@ -1382,15 +1382,6 @@ body.has-letter #audio-toggle {
   .photo-album-name {
     font-size: 18px;
   }
-
-  .site-copyright {
-    left: 24px;
-  }
-
-  /* Name + year is enough on a phone; the full line would run into the EN picker. */
-  .site-copyright span {
-    display: none;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1420,29 +1411,6 @@ body.has-letter #audio-toggle {
   flex-direction: column;
   align-items: flex-end;
   gap: 10px;
-}
-
-/* Quiet copyright line, mirroring the language picker at the opposite corner. */
-.site-copyright {
-  position: fixed;
-  left: 28px;
-  bottom: 22px;
-  z-index: 160;
-  margin: 0;
-  font-family: var(--mono-font);
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  color: rgba(63, 52, 36, 0.5);
-  pointer-events: none;
-  transition: opacity 0.4s ease;
-}
-
-.theme-night .site-copyright {
-  color: rgba(248, 244, 232, 0.42);
-}
-
-body.has-letter .site-copyright {
-  opacity: 0;
 }
 
 .lang-trigger {
