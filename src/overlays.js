@@ -249,19 +249,6 @@ function wireChevronNav() {
     if (!nav.contains(e.target)) setOpen(false);
   });
 
-  // Hover reveal (seijaku: quiet attention, no click needed) — pointer-fine only,
-  // so touch devices keep the click/tap toggle as their sole interaction.
-  const canHover = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-  if (canHover) {
-    let closeTimer = null;
-    const openNow = () => { clearTimeout(closeTimer); setOpen(true); };
-    const scheduleClose = () => { clearTimeout(closeTimer); closeTimer = setTimeout(() => setOpen(false), 160); };
-    nav.addEventListener('mouseenter', openNow);
-    nav.addEventListener('mouseleave', scheduleClose);
-    nav.addEventListener('focusin', openNow);
-    nav.addEventListener('focusout', (e) => { if (!nav.contains(e.relatedTarget)) scheduleClose(); });
-  }
-
   // Escape closes menu, then letter.
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
