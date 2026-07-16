@@ -3,7 +3,6 @@ import './styles.css';
 import { heroHtml } from './data.js';
 import { initOverlays, rebuildLetters } from './overlays.js';
 import { initOcean } from './ocean.js';
-import { initAudio } from './audio.js';
 import { initLangPicker, onLangChange } from './i18n.js';
 
 function paintHero() {
@@ -23,11 +22,7 @@ function boot() {
   // Boot the WebGL ocean + sky + day/night theme system (grabs #canvas, #theme-toggle).
   initOcean();
 
-  // Ambient audio + the sailing boat toggle.
-  initAudio();
-
-  // Switching language re-renders text only: the ocean never re-mounts and the
-  // audio keeps playing.
+  // Switching language re-renders text only: the ocean never re-mounts.
   onLangChange(() => {
     paintHero();
     rebuildLetters();

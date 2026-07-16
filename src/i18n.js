@@ -53,7 +53,6 @@ const STRINGS = {
     'ui.prev': 'Previous image',
     'ui.next': 'Next image',
     'ui.openAlbum': 'Open album',
-    'ui.boatHint': 'Click the boat to pause the audio',
     'ui.language': 'Language',
 
     'theme.tip.toLight': 'let there be light',
@@ -151,7 +150,6 @@ const STRINGS = {
     'ui.prev': 'Vorheriges Bild',
     'ui.next': 'Nächstes Bild',
     'ui.openAlbum': 'Album öffnen',
-    'ui.boatHint': 'Klicke auf das Boot, um den Ton zu pausieren',
     'ui.language': 'Sprache',
 
     'theme.tip.toLight': 'es werde Licht',
@@ -249,7 +247,6 @@ const STRINGS = {
     'ui.prev': 'Image précédente',
     'ui.next': 'Image suivante',
     'ui.openAlbum': 'Ouvrir l’album',
-    'ui.boatHint': 'Cliquez sur le bateau pour mettre l’audio en pause',
     'ui.language': 'Langue',
 
     'theme.tip.toLight': 'que la lumière soit',
@@ -347,7 +344,6 @@ const STRINGS = {
     'ui.prev': 'Immagine precedente',
     'ui.next': 'Immagine successiva',
     'ui.openAlbum': 'Apri album',
-    'ui.boatHint': 'Clicca sulla barca per mettere in pausa l’audio',
     'ui.language': 'Lingua',
 
     'theme.tip.toLight': 'sia la luce',
@@ -445,7 +441,6 @@ const STRINGS = {
     'ui.prev': '上一张',
     'ui.next': '下一张',
     'ui.openAlbum': '打开相册',
-    'ui.boatHint': '点击小船可暂停音乐',
     'ui.language': '语言',
 
     'theme.tip.toLight': '要有光',

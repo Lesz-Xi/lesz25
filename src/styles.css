@@ -1056,52 +1056,30 @@ body.has-letter .home-hero {
   cursor: var(--cursor-light), pointer;
 }
 
-/* Ambient-audio control as a small boat sailing the sea horizon, just below the
-   hero line. It drifts left→right; hovering halts it so you can click to play/pause;
-   unhovering sends it on again. Ink by day (pale horizon), warm-white by night. */
-#audio-toggle {
+/* Decorative boat sailing the sea horizon, just below the hero line. Purely
+   atmospheric — no interaction, no state. Ink by day (pale horizon), warm-white
+   by night. */
+#hero-boat {
   position: fixed;
   top: 56.8vh;
   /* straddling the horizon line, not the near water */
   left: 0;
   z-index: 150;
-  border: 0;
-  background: none;
   padding: 8px;
   color: #6f5528;
-  /* day: bronze — one colour in every state (sailing, hovered, paused) */
-  cursor: var(--cursor-light), pointer;
-  transition: color 0.2s ease;
+  /* day: bronze */
+  pointer-events: none;
   animation: boatSail 110s linear infinite;
   /* slow, distant drift */
   will-change: transform;
 }
 
-.theme-night #audio-toggle {
+.theme-night #hero-boat {
   color: rgba(248, 244, 232, 0.92);
-  /* night: warm white — one colour in every state */
-  cursor: var(--cursor-dark), pointer;
+  /* night: warm white */
 }
 
-/* The boat sails by default (from load). It freezes only when the audio is
-   explicitly paused (.boat-stopped) or while hovered, resuming from the exact
-   spot it stopped. */
-#audio-toggle.boat-stopped,
-#audio-toggle:hover {
-  animation-play-state: paused;
-}
-
-/* The boat never changes hue — not on hover, not when paused. Stopping the sail
-   is the feedback; only the cursor swaps for legibility against the hull. */
-#audio-toggle:hover {
-  cursor: var(--cursor-dark), pointer;
-}
-
-.theme-night #audio-toggle:hover {
-  cursor: var(--cursor-light), pointer;
-}
-
-#audio-toggle .value {
+#hero-boat .value {
   display: grid;
   place-items: center;
   width: 28px;
@@ -1110,44 +1088,14 @@ body.has-letter .home-hero {
   /* gentle rock on the swell */
 }
 
-#audio-toggle:hover .value {
-  animation-play-state: paused;
-}
-
-#audio-toggle .value svg {
+#hero-boat .value svg {
   width: 28px;
   height: 28px;
   display: block;
 }
 
-/* Thin caption riding just under the boat; inherits the boat's per-theme color. */
-.audio-hint {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  margin-top: 5px;
-  white-space: nowrap;
-  font-family: var(--mono-font);
-  font-size: 9.5px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: inherit;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.6s ease;
-}
-
-/* Shown once (first visit), then dismissed and remembered. */
-#audio-toggle.show-hint .audio-hint {
-  opacity: 0.42;
-}
-
-#audio-toggle.show-hint:hover .audio-hint {
-  opacity: 0.7;
-}
-
-/* Start just inside the left edge — visible (with its caption) the moment the
-   page loads — and sail right across, then loop. */
+/* Start just inside the left edge — visible the moment the page loads — and
+   sail right across, then loop. */
 @keyframes boatSail {
   from {
     transform: translateX(12vw);
@@ -1172,19 +1120,18 @@ body.has-letter .home-hero {
 }
 
 /* The boat lives on the hero horizon — hide it while a letter is open. */
-body.has-letter #audio-toggle {
+body.has-letter #hero-boat {
   opacity: 0;
-  pointer-events: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  #audio-toggle {
+  #hero-boat {
     animation: none;
     left: 8vw;
   }
 
   /* park it — no drift */
-  #audio-toggle .value {
+  #hero-boat .value {
     animation: none;
   }
 }
