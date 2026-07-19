@@ -18,8 +18,8 @@ const STORAGE_KEY = 'rhine-lang';
 
 const STRINGS = {
   en: {
-    'hero': 'I watch, doubt, and {build}.',
-    'hero.build': 'build',
+    'hero': 'Get {build}, but don’t copy.',
+    'hero.build': 'inspired',
 
     'nav.work': 'Work',
     'nav.research': 'Research',
@@ -115,8 +115,8 @@ const STRINGS = {
   },
 
   de: {
-    'hero': 'Ich beobachte, zweifle und {build}.',
-    'hero.build': 'baue',
+    'hero': 'Lass dich {build}, aber kopiere nicht.',
+    'hero.build': 'inspirieren',
 
     'nav.work': 'Arbeit',
     'nav.research': 'Forschung',
@@ -212,8 +212,8 @@ const STRINGS = {
   },
 
   fr: {
-    'hero': 'J’observe, je doute et je {build}.',
-    'hero.build': 'construis',
+    'hero': 'Laisse-toi {build}, mais ne copie pas.',
+    'hero.build': 'inspirer',
 
     'nav.work': 'Travaux',
     'nav.research': 'Recherche',
@@ -309,8 +309,8 @@ const STRINGS = {
   },
 
   it: {
-    'hero': 'Osservo, dubito e {build}.',
-    'hero.build': 'costruisco',
+    'hero': 'Lasciati {build}, ma non copiare.',
+    'hero.build': 'ispirare',
 
     'nav.work': 'Lavori',
     'nav.research': 'Ricerca',
@@ -406,8 +406,8 @@ const STRINGS = {
   },
 
   zh: {
-    'hero': '我观察，我怀疑，我{build}。',
-    'hero.build': '建造',
+    'hero': '获得{build}，但请勿抄袭。',
+    'hero.build': '灵感',
 
     'nav.work': '作品',
     'nav.research': '研究',
