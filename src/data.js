@@ -6,7 +6,7 @@ import { t } from './i18n.js';
 
 // Names, principles, years and URLs are language-invariant; only prose is keyed.
 export const heroHtml = () =>
-  t('hero').replace('{build}', `<a class="home-hero-link" href="#work">${t('hero.build')}</a>`);
+  t('hero').replace('{build}', `<a class="home-hero-link" href="#photography">${t('hero.build')}</a>`);
 
 export const projects = [
   { name: 'Wu-Weism / MASA', principle: 'Ma', statusKey: '', url: 'https://wuweism.com' },
