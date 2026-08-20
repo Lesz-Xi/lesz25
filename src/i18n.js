@@ -18,8 +18,8 @@ const STORAGE_KEY = 'rhine-lang';
 
 const STRINGS = {
   en: {
-    'hero': 'Wake up, think different, {build}.',
-    'hero.build': 'build',
+    'hero': 'Wake up, {build}, build.',
+    'hero.build': 'think different',
 
     'nav.work': 'Work',
     'nav.research': 'Research',
@@ -115,8 +115,8 @@ const STRINGS = {
   },
 
   de: {
-    'hero': 'Wach auf, denk anders, {build}.',
-    'hero.build': 'baue',
+    'hero': 'Wach auf, {build}, baue.',
+    'hero.build': 'denk anders',
 
     'nav.work': 'Arbeit',
     'nav.research': 'Forschung',
@@ -212,8 +212,8 @@ const STRINGS = {
   },
 
   fr: {
-    'hero': 'Réveille-toi, pense différemment, {build}.',
-    'hero.build': 'construis',
+    'hero': 'Réveille-toi, {build}, construis.',
+    'hero.build': 'pense différemment',
 
     'nav.work': 'Travaux',
     'nav.research': 'Recherche',
@@ -309,8 +309,8 @@ const STRINGS = {
   },
 
   it: {
-    'hero': 'Svegliati, pensa diverso, {build}.',
-    'hero.build': 'costruisci',
+    'hero': 'Svegliati, {build}, costruisci.',
+    'hero.build': 'pensa diverso',
 
     'nav.work': 'Lavori',
     'nav.research': 'Ricerca',
@@ -406,8 +406,8 @@ const STRINGS = {
   },
 
   zh: {
-    'hero': '醒来，不同凡想，去{build}。',
-    'hero.build': '建造',
+    'hero': '醒来，{build}，去建造。',
+    'hero.build': '不同凡想',
 
     'nav.work': '作品',
     'nav.research': '研究',
