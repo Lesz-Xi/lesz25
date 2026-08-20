@@ -22,9 +22,9 @@ const LOGO_SVG_URL = (logo && logo.getAttribute('src')) || '/emblem.svg';
 
 const THEME_STORAGE_KEY = 'rhine-theme-mode';
 
-// Minimal sun / moon glyphs (stroke, currentColor) for the theme toggle.
+// Minimal sun / moon glyphs (currentColor) for the theme toggle.
 const MOON_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
-const SUN_SVG = '<svg viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M7.455 3.464A1 1 0 0 1 9.017 2.8l2.337 1.64a1 1 0 0 0 1.164-.01l2.306-1.682a1 1 0 0 1 1.574.635l.492 2.812a1 1 0 0 0 .831.816l2.82.441a1 1 0 0 1 .664 1.563l-1.64 2.336a1 1 0 0 0 .01 1.164l1.683 2.307a1 1 0 0 1-.635 1.574l-2.812.492a1 1 0 0 0-.816.83l-.441 2.821a1 1 0 0 1-1.563.664l-2.336-1.64a1 1 0 0 0-1.164.01l-2.307 1.683a1 1 0 0 1-1.574-.636l-.492-2.812a1 1 0 0 0-.83-.816l-2.821-.44a1 1 0 0 1-.664-1.563l1.64-2.337a1 1 0 0 0-.01-1.164L2.75 9.182a1 1 0 0 1 .636-1.574l2.812-.493a1 1 0 0 0 .815-.83zM16 12a4 4 0 1 1-8 0a4 4 0 0 1 8 0m1 0a5 5 0 1 1-10 0a5 5 0 0 1 10 0" clip-rule="evenodd"/></svg>';
+const SUN_SVG = '<svg viewBox="0 0 256 256"><path fill="currentColor" d="M240,152H199.55a73.54,73.54,0,0,0,.45-8,72,72,0,0,0-144,0,73.54,73.54,0,0,0,.45,8H16a8,8,0,0,0,0,16H240a8,8,0,0,0,0-16ZM72,144a56,56,0,1,1,111.41,8H72.59A56.13,56.13,0,0,1,72,144Zm144,56a8,8,0,0,1-8,8H48a8,8,0,0,1,0-16H208A8,8,0,0,1,216,200ZM72.84,43.58a8,8,0,0,1,14.32-7.16l8,16a8,8,0,0,1-14.32,7.16Zm-56,48.84a8,8,0,0,1,10.74-3.57l16,8a8,8,0,0,1-7.16,14.31l-16-8A8,8,0,0,1,16.84,92.42Zm192,15.16a8,8,0,0,1,3.58-10.73l16-8a8,8,0,1,1,7.16,14.31l-16,8a8,8,0,0,1-10.74-3.58Zm-48-55.16,8-16a8,8,0,0,1,14.32,7.16l-8,16a8,8,0,1,1-14.32-7.16Z"/></svg>';
 
 // Quality settings for slower computers
 const QUALITY_LEVELS = ['low', 'medium', 'high'];
