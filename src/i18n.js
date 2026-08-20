@@ -18,8 +18,8 @@ const STORAGE_KEY = 'rhine-lang';
 
 const STRINGS = {
   en: {
-    'hero': 'Get {build}, but don’t copy.',
-    'hero.build': 'inspired',
+    'hero': 'Wake up, think different, {build}.',
+    'hero.build': 'build',
 
     'nav.work': 'Work',
     'nav.research': 'Research',
@@ -115,8 +115,8 @@ const STRINGS = {
   },
 
   de: {
-    'hero': 'Lass dich {build}, aber kopiere nicht.',
-    'hero.build': 'inspirieren',
+    'hero': 'Wach auf, denk anders, {build}.',
+    'hero.build': 'baue',
 
     'nav.work': 'Arbeit',
     'nav.research': 'Forschung',
@@ -212,8 +212,8 @@ const STRINGS = {
   },
 
   fr: {
-    'hero': 'Laisse-toi {build}, mais ne copie pas.',
-    'hero.build': 'inspirer',
+    'hero': 'Réveille-toi, pense différemment, {build}.',
+    'hero.build': 'construis',
 
     'nav.work': 'Travaux',
     'nav.research': 'Recherche',
@@ -309,8 +309,8 @@ const STRINGS = {
   },
 
   it: {
-    'hero': 'Lasciati {build}, ma non copiare.',
-    'hero.build': 'ispirare',
+    'hero': 'Svegliati, pensa diverso, {build}.',
+    'hero.build': 'costruisci',
 
     'nav.work': 'Lavori',
     'nav.research': 'Ricerca',
@@ -406,8 +406,8 @@ const STRINGS = {
   },
 
   zh: {
-    'hero': '获得{build}，但请勿抄袭。',
-    'hero.build': '灵感',
+    'hero': '醒来，不同凡想，去{build}。',
+    'hero.build': '建造',
 
     'nav.work': '作品',
     'nav.research': '研究',
