@@ -17,13 +17,10 @@
 :root {
   --cursor-light: url('/cursor-light.svg') 12 12;
   --cursor-dark: url('/cursor-dark.svg') 12 12;
-  /* Japanese type doctrine (Relics four-voice, three used):
-     Serif = Shippori Mincho (mincho gravity, headlines + prose),
-     Body  = Zen Kaku Gothic New (legible reading),
-     Mono  = IBM Plex Mono (labels, nav, status). */
-  --mono-font: 'IBM Plex Mono', 'SFMono-Regular', ui-monospace, monospace;
-  --serif-font: 'Crimson Pro', 'PlantinNow', Georgia, serif;
-  --body-font: 'Crimson Pro', 'PlantinNow', Georgia, serif;
+  /* One voice: Hoover (ITF monolinear slab) for headlines, prose and labels. */
+  --mono-font: 'Hoover', Georgia, serif;
+  --serif-font: 'Hoover', Georgia, serif;
+  --body-font: 'Hoover', Georgia, serif;
 
   /* Auralis palette */
   --gold: #dbd5b5;
