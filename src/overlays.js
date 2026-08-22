@@ -25,7 +25,7 @@ function buildLetters() {
     overlay.hidden = false;
     overlay.innerHTML = `
       <div class="letter-card">
-        <button class="letter-dismiss" type="button" data-close aria-label="${t('ui.close')}"><svg viewBox="0 0 14 14" width="14" height="14" fill="none" aria-hidden="true"><path d="M1.5 1.5 L12.5 12.5 M12.5 1.5 L1.5 12.5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg></button>
+        <button class="letter-dismiss" type="button" data-close aria-label="${t('ui.close')}"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M5 12.5v-1h14v1z"/></svg></button>
         ${cfg.kicker() ? `<div class="letter-kicker">${cfg.kicker()}</div>` : ''}
         <h2 class="letter-title">${cfg.title()}</h2>
         <div class="letter-scroll">

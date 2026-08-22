@@ -132,8 +132,6 @@ canvas#canvas.shader-ready {
   font-style: italic;
   font-weight: 400;
   letter-spacing: 0.01em;
-  text-wrap: balance;
-  max-width: 22ch;
 }
 
 /* No underline. The operative word is set apart by warmth; on hover a warm sparkle
@@ -326,7 +324,7 @@ canvas#canvas.shader-ready {
   height: 36px;
   display: grid;
   place-items: center;
-  /* Icon is a 14px hairline SVG (stroke: currentColor) — micro, quiet. */
+  /* Icon is a 14px horizontal-rule SVG (fill: currentColor) — micro, quiet. */
   color: rgba(34, 30, 24, 0.4);
   cursor: var(--cursor-dark), pointer;
   transition: color 0.16s ease;
@@ -446,7 +444,7 @@ canvas#canvas.shader-ready {
   min-height: 32px;
   display: grid;
   place-items: center;
-  /* Hairline chevron SVGs (stroke-width 1) — micro, matching the close ✕. */
+  /* Hairline chevron SVGs (stroke-width 1) — micro, matching the close icon. */
   color: rgba(34, 30, 24, 0.4);
   cursor: var(--cursor-dark), pointer;
   transition: color 0.16s ease;
@@ -911,14 +909,14 @@ canvas#canvas.shader-ready {
   align-items: flex-end;
   gap: 8px;
   transition: opacity 0.3s ease;
-  /* Theme-aware nav voice. Day: warm ink + bronze (the hero-link accent) against
-     the pale cream sky — a light glow would vanish there, so day glow is off. */
+  /* Theme-aware nav voice. Day: warm ink against the pale cream sky; hover
+     deepens to solid ink — no yellow accent, and the glow stays off there. */
   --nav-ink: rgba(63, 52, 36, 0.82);
   --nav-ink-strong: rgba(63, 52, 36, 0.95);
   --nav-ink-dim: rgba(63, 52, 36, 0.45);
-  --nav-hover: #6f5528;
+  --nav-hover: var(--nav-ink-strong);
   --nav-glow: rgba(219, 213, 181, 0);
-  --nav-star: #8f6f3a;
+  --nav-star: var(--nav-ink-strong);
 }
 
 .theme-night .top-nav {
