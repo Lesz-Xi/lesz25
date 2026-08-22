@@ -1051,7 +1051,8 @@ body.has-letter .home-hero {
   border-radius: 999px;
   corner-shape: var(--corner-shape);
   background: var(--trigger-bg);
-  font-size: 14px;
+  /* Sized to the 90%-zoom feel at 100%: 14px * 0.9. */
+  font-size: 12.6px;
   letter-spacing: 0.02em;
   line-height: 1;
   cursor: var(--cursor-light), pointer;
@@ -1098,7 +1099,7 @@ body.has-letter .home-hero {
 
 .menu-chevron {
   display: inline-block;
-  font-size: 18px;
+  font-size: 16.2px;
   color: var(--nav-ink-dim);
   transform-origin: center;
   transition: transform 0.25s ease;
@@ -1122,7 +1123,8 @@ body.has-letter .home-hero {
   border-radius: 20px;
   corner-shape: var(--corner-shape);
   background: transparent;
-  font-size: 14px;
+  /* Matches the trigger: the 90%-zoom feel at 100%. */
+  font-size: 12.6px;
   pointer-events: none;
   isolation: isolate;
   cursor: var(--cursor-dark), auto;
