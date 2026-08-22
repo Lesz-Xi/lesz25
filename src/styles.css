@@ -17,10 +17,11 @@
 :root {
   --cursor-light: url('/cursor-light.svg') 12 12;
   --cursor-dark: url('/cursor-dark.svg') 12 12;
-  /* One voice: Hoover (ITF monolinear slab) for headlines, prose and labels. */
-  --mono-font: 'Hoover', Georgia, serif;
-  --serif-font: 'Hoover', Georgia, serif;
-  --body-font: 'Hoover', Georgia, serif;
+  /* Two registers: Newsreader (editorial serif, headlines + prose, true italics)
+     and IBM Plex Mono (labels, nav, status). The tension between them is the type system. */
+  --mono-font: 'IBM Plex Mono', 'SFMono-Regular', ui-monospace, monospace;
+  --serif-font: 'Newsreader', Georgia, serif;
+  --body-font: 'Newsreader', Georgia, serif;
 
   /* Auralis palette */
   --gold: #dbd5b5;
@@ -121,6 +122,12 @@ canvas#canvas.shader-ready {
   box-sizing: border-box;
   padding: 4vh 30px 0;
   text-align: center;
+  /* Day: warm deep ink (the nav's family) so the thesis line actually reads on
+     the cream sky; night keeps the pale gold-white below. */
+  color: rgba(63, 52, 36, 0.92);
+}
+
+.theme-night .home-hero {
   color: rgba(248, 244, 232, 0.96);
 }
 
@@ -324,7 +331,7 @@ canvas#canvas.shader-ready {
   height: 36px;
   display: grid;
   place-items: center;
-  /* Icon is a 14px horizontal-rule SVG (fill: currentColor) — micro, quiet. */
+  /* Icon is an 18px horizontal-rule SVG (fill: currentColor) — micro, quiet. */
   color: rgba(34, 30, 24, 0.4);
   cursor: var(--cursor-dark), pointer;
   transition: color 0.16s ease;
