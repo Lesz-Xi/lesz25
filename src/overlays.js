@@ -1,9 +1,11 @@
-// Letter overlays (hash-routed), chevron nav, and photography lightbox.
+// Letter overlays (hash-routed), liquid popover nav, and photography lightbox.
 // Mirrors earendil's :target letter mechanism with is-open/is-closing classes,
 // so the ocean canvas is never re-mounted.
 
 import { LETTERS, albums, albumTitle, albumPlace } from './data.js';
 import { t } from './i18n.js';
+import { initNavPopover } from './nav-popover.js';
+import { initNavFlyout } from './nav-flyout.js';
 
 const REDUCED_MOTION = window.matchMedia
   && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -25,7 +27,7 @@ function buildLetters() {
     overlay.hidden = false;
     overlay.innerHTML = `
       <div class="letter-card">
-        <button class="letter-dismiss" type="button" data-close aria-label="${t('ui.close')}"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M5 12.5v-1h14v1z"/></svg></button>
+        <button class="letter-dismiss" type="button" data-close aria-label="${t('ui.close')}"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M4 12.5v-1h16v1z"/></svg></button>
         ${cfg.kicker() ? `<div class="letter-kicker">${cfg.kicker()}</div>` : ''}
         <h2 class="letter-title">${cfg.title()}</h2>
         <div class="letter-scroll">
@@ -186,9 +188,10 @@ function openLetter(key) {
   document.body.classList.add('has-letter');
   // Photography always opens on the album grid, never a stale detail view.
   if (key === 'photography') showAlbumGrid();
-  // move focus to the dismiss button for a11y
+  // move focus to the dismiss button for a11y — focusVisible:false so the
+  // script-driven focus doesn't paint the :focus-visible ring on every open
   const dismiss = el.querySelector('[data-close]');
-  if (dismiss) dismiss.focus({ preventScroll: true });
+  if (dismiss) dismiss.focus({ preventScroll: true, focusVisible: false });
 }
 
 function closeLetter() {
@@ -221,38 +224,11 @@ function syncFromHash() {
   }
 }
 
-function wireChevronNav() {
-  const nav = document.querySelector('[data-chevron-menu]');
-  if (!nav) return;
-  const toggle = nav.querySelector('.menu-trigger-toggle');
-  const links = nav.querySelector('.menu-links');
-
-  function setOpen(open) {
-    nav.classList.toggle('is-open', open);
-    toggle.setAttribute('aria-expanded', String(open));
-    if (open) { links.hidden = false; }
-    else { links.hidden = true; }
-  }
-
-  toggle.addEventListener('click', (e) => {
-    e.stopPropagation();
-    setOpen(!nav.classList.contains('is-open'));
-  });
-
-  // Clicking a section link closes the menu; hashchange opens the letter.
-  links.querySelectorAll('a[href^="#"]').forEach((a) => {
-    a.addEventListener('click', () => setOpen(false));
-  });
-
-  // Click outside closes the menu.
-  document.addEventListener('click', (e) => {
-    if (!nav.contains(e.target)) setOpen(false);
-  });
-
-  // Escape closes menu, then letter.
+function wireNavEscape() {
+  // The liquid popover handles its own Escape (and preventDefaults it); when
+  // the menu is not open, Escape closes an open letter instead.
   document.addEventListener('keydown', (e) => {
-    if (e.key !== 'Escape') return;
-    if (nav.classList.contains('is-open')) { setOpen(false); return; }
+    if (e.key !== 'Escape' || e.defaultPrevented) return;
     if (activeKey) closeLetter();
   });
 }
@@ -304,7 +280,9 @@ export function rebuildLetters() {
 
 export function initOverlays() {
   buildLetters();
-  wireChevronNav();
+  initNavPopover();
+  initNavFlyout();
+  wireNavEscape();
   wireLightbox();
   wirePhotoViewer();
   // dismiss buttons

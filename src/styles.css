@@ -331,10 +331,21 @@ canvas#canvas.shader-ready {
   height: 36px;
   display: grid;
   place-items: center;
-  /* Icon is a 14px horizontal-rule SVG (fill: currentColor) — micro, quiet. */
+  /* Icon is a 16px horizontal-rule SVG (fill: currentColor) — micro, quiet. */
   color: rgba(34, 30, 24, 0.4);
   cursor: var(--cursor-dark), pointer;
   transition: color 0.16s ease;
+}
+
+/* The button is focused programmatically when a letter opens (a11y), so the UA
+   ring would show on every open — replace it with a quiet hairline square. */
+.letter-dismiss:focus {
+  outline: none;
+}
+
+.letter-dismiss:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 4px;
 }
 
 .letter-dismiss svg {
@@ -911,29 +922,24 @@ canvas#canvas.shader-ready {
   top: 75px;
   right: 75px;
   z-index: 200;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 8px;
+  display: inline-grid;
+  place-items: center;
+  isolation: isolate;
+  /* Never clip or transform: the liquid blob extends --blob-padding beyond the
+     panel and needs a clean containing block. */
+  overflow: visible;
   transition: opacity 0.3s ease;
-  /* Theme-aware nav voice. Day: warm ink against the pale cream sky; hover
-     lifts to warm white with a soft glow, and the star follows. */
+  /* Theme-aware trigger voice: warm ink by day, warm white by night. The popover
+     surface itself is themed on .menu-demo below. */
   --nav-ink: rgba(63, 52, 36, 0.82);
   --nav-ink-strong: rgba(63, 52, 36, 0.95);
   --nav-ink-dim: rgba(63, 52, 36, 0.45);
-  --nav-hover: rgba(248, 244, 232, 0.98);
-  --nav-glow: rgba(248, 244, 232, 0.55);
-  --nav-star: rgba(248, 244, 232, 0.98);
 }
 
 .theme-night .top-nav {
-  /* Night: the original warm-white + gold voice on the near-black sky. */
   --nav-ink: rgba(248, 244, 232, 0.95);
   --nav-ink-strong: rgba(248, 244, 232, 0.95);
   --nav-ink-dim: rgba(248, 244, 232, 0.45);
-  --nav-hover: var(--gold);
-  --nav-glow: rgba(219, 213, 181, 0.9);
-  --nav-star: #f4ecd0;
 }
 
 /* Hide the corner menu while a letter is open so it never collides with Close. */
@@ -949,113 +955,604 @@ body.has-letter .home-hero {
   transition: opacity 0.2s ease;
 }
 
-.menu-trigger-toggle {
-  appearance: none;
-  border: 0;
-  background: transparent;
+/* ---- Liquid popover (menu01) ----------------------------------------------
+   The corner trigger opens a spring-morphing SVG blob menu. Surfaces come from
+   the site palette: the letter paper by day, the night card by night. The
+   technique's prefers-color-scheme overrides live under body.theme-night here
+   because the site is class-themed. */
+
+.menu-demo {
+  --menu-gap: 12px;
+  --menu-bg: rgb(236, 230, 213);
+  --trigger-bg: var(--menu-bg);
+  --trigger-active-color: rgba(63, 52, 36, 0.95);
+  --item-color: rgba(34, 30, 24, 0.88);
+  --item-muted: rgba(34, 30, 24, 0.55);
+  --hover-bg: rgba(34, 30, 24, 0.07);
+  --blob-stroke: rgba(34, 30, 24, 0.1);
+  --focus-ring: rgba(34, 30, 24, 0.55);
+  --item-focus-ring: rgba(34, 30, 24, 0.28);
+  --blob-padding: 44px;
+  --viewport-padding: 20px;
+  --menu-item-height: 40px;
+  --menu-ease: cubic-bezier(0.19, 1, 0.22, 1);
+  --pop-y: 14px;
+  --corner-shape: superellipse(1.2);
+
+  /* Positioning comes from .top-nav (fixed): the root must stay a positioned,
+     non-clipping ancestor for the blob layer. */
+  font-family: var(--mono-font);
+}
+
+.menu-demo[data-placement="bottom"] {
+  --pop-y: -14px;
+}
+
+.menu-demo *,
+.menu-demo *::before,
+.menu-demo *::after {
+  box-sizing: border-box;
+}
+
+.menu-demo button {
   padding: 0;
-  margin: 0;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  background: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.menu-demo svg {
+  display: block;
+}
+
+.theme-night .menu-demo {
+  --menu-bg: rgb(13, 12, 10);
+  --trigger-active-color: rgba(248, 244, 232, 0.95);
+  --item-color: rgba(240, 236, 224, 0.88);
+  --item-muted: rgba(240, 236, 224, 0.55);
+  --hover-bg: rgba(240, 236, 224, 0.07);
+  --blob-stroke: rgba(199, 181, 128, 0.18);
+  --focus-ring: rgba(248, 244, 232, 0.68);
+  --item-focus-ring: rgba(248, 244, 232, 0.4);
+}
+
+.menu-blob {
+  position: absolute;
+  z-index: 1;
+  max-width: none;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.blob-shape {
+  fill: var(--menu-bg);
+  stroke: var(--blob-stroke);
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+}
+
+.menu-trigger {
+  position: relative;
+  z-index: 3;
   display: inline-flex;
-  align-items: baseline;
+  align-items: center;
+  justify-content: center;
   gap: 8px;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  corner-shape: var(--corner-shape);
+  background: var(--trigger-bg);
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  cursor: var(--cursor-light), pointer;
+  transition:
+    transform 0.3s var(--menu-ease),
+    color 0.2s ease;
+}
+
+.menu-trigger span {
+  opacity: 0.62;
+  transition: opacity 0.2s ease;
+}
+
+.menu-trigger:hover span,
+.menu-trigger:focus-visible span,
+.menu-demo.is-open .menu-trigger span {
+  opacity: 1;
+}
+
+.menu-trigger:hover {
+  cursor: var(--cursor-dark), pointer;
+}
+
+.theme-night .menu-trigger {
+  cursor: var(--cursor-dark), pointer;
+}
+
+.theme-night .menu-trigger:hover {
   cursor: var(--cursor-light), pointer;
 }
 
-.menu-about {
-  font: 14px/1 var(--mono-font);
-  letter-spacing: 0.02em;
-  color: var(--nav-ink);
-  transition: opacity 0.2s ease, color 0.2s ease;
+.menu-trigger:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 6px;
 }
 
-.top-nav.is-open .menu-about {
-  opacity: 0;
-  visibility: hidden;
+.menu-trigger:active {
+  transform: scale(0.96);
+}
+
+.menu-about {
+  color: var(--nav-ink);
 }
 
 .menu-chevron {
   display: inline-block;
-  position: relative;
-  top: 1px;
-  font: 20px/1 var(--mono-font);
+  font-size: 18px;
   color: var(--nav-ink-dim);
   transform-origin: center;
-  transition: transform 0.25s ease, color 0.25s ease;
+  transition: transform 0.25s ease;
 }
 
 .top-nav.is-open .menu-chevron {
   transform: rotate(90deg);
-  color: var(--nav-ink-strong);
 }
 
-.menu-links {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 9px;
+.menu-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  display: grid;
+  width: max-content;
+  min-width: 188px;
+  max-width: min(280px, calc(100vw - 40px));
+  padding: 4px;
+  border: 0;
+  border-radius: 20px;
+  corner-shape: var(--corner-shape);
+  background: transparent;
+  font-size: 14px;
+  pointer-events: none;
+  isolation: isolate;
+  cursor: var(--cursor-dark), auto;
 }
 
-.menu-links[hidden] {
+.theme-night .menu-panel {
+  cursor: var(--cursor-light), auto;
+}
+
+.menu-panel[hidden] {
   display: none;
 }
 
-.nav-link {
-  font: 14px/1 var(--mono-font);
-  letter-spacing: 0.02em;
-  color: var(--nav-ink);
-  text-decoration: none;
-  text-shadow: 0 0 4px rgba(219, 213, 181, 0);
-  transition: color 0.2s ease, text-shadow 0.3s ease;
-  cursor: var(--cursor-light), pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: none;
-  border: 0;
-}
-
-.nav-link::after {
+/* Traveling hover pill behind the hovered item. */
+.menu-panel::before {
   content: "";
-  width: 14px;
-  height: 14px;
-  /* Mask-tinted star (same technique as the hero sparkle) so it re-colors per theme. */
-  background-color: var(--nav-star);
-  -webkit-mask: url('/cursor-light.svg') center/contain no-repeat;
-  mask: url('/cursor-light.svg') center/contain no-repeat;
-  flex: 0 0 auto;
+  position: absolute;
+  top: 0;
+  right: 4px;
+  left: 4px;
+  z-index: 0;
+  height: var(--menu-item-height);
+  border-radius: 17px;
+  corner-shape: var(--corner-shape);
+  background: var(--hover-bg);
   opacity: 0;
-  transition: opacity 0.2s ease;
+  pointer-events: none;
+  transform: translate3d(0, var(--menu-hover-y, 4px), 0);
+  transition:
+    transform 0.32s var(--menu-ease),
+    opacity 0.16s ease;
 }
 
-.nav-link:hover {
-  color: var(--nav-hover);
-  text-shadow: 0 0 4px var(--nav-glow);
-  cursor: var(--cursor-dark), pointer;
+.menu-panel.is-hover-instant::before {
+  transition: none;
 }
 
-.nav-link:hover::after {
+.menu-panel.is-hover-visible::before {
   opacity: 1;
-  animation: navLinkStarSpin 0.85s linear infinite;
 }
 
-@keyframes navLinkStarSpin {
+.menu-panel.is-measuring {
+  visibility: hidden;
+  pointer-events: none;
+  clip-path: none !important;
+}
+
+.menu-panel.is-measuring > * {
+  animation: none !important;
+}
+
+.menu-demo.is-open .menu-panel {
+  pointer-events: auto;
+}
+
+.menu-panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+.menu-demo.is-open .menu-panel > * {
+  animation:
+    menu-pop-motion 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) both,
+    menu-pop-visual 0.22s var(--menu-ease) both;
+}
+
+.menu-demo.is-open .menu-panel > :nth-child(1),
+.menu-demo[data-placement="bottom"].is-open .menu-panel > :nth-last-child(1) {
+  animation-delay: 20ms;
+}
+
+.menu-demo.is-open .menu-panel > :nth-child(2),
+.menu-demo[data-placement="bottom"].is-open .menu-panel > :nth-last-child(2) {
+  animation-delay: 32ms;
+}
+
+.menu-demo.is-open .menu-panel > :nth-child(3),
+.menu-demo[data-placement="bottom"].is-open .menu-panel > :nth-last-child(3) {
+  animation-delay: 44ms;
+}
+
+.menu-demo.is-open .menu-panel > :nth-child(4),
+.menu-demo[data-placement="bottom"].is-open .menu-panel > :nth-last-child(4) {
+  animation-delay: 56ms;
+}
+
+.menu-demo.is-open .menu-panel > :nth-child(5),
+.menu-demo[data-placement="bottom"].is-open .menu-panel > :nth-last-child(5) {
+  animation-delay: 68ms;
+}
+
+.menu-demo.is-open .menu-panel > :nth-child(6),
+.menu-demo[data-placement="bottom"].is-open .menu-panel > :nth-last-child(6) {
+  animation-delay: 80ms;
+}
+
+.menu-demo.is-open .menu-panel > :nth-child(7),
+.menu-demo[data-placement="bottom"].is-open .menu-panel > :nth-last-child(7) {
+  animation-delay: 92ms;
+}
+
+.menu-demo.is-closing .menu-panel > :nth-last-child(1),
+.menu-demo[data-placement="bottom"].is-closing .menu-panel > :nth-child(1) {
+  animation: menu-pop-out 0.22s ease both;
+  animation-delay: 16ms;
+}
+
+.menu-demo.is-closing .menu-panel > :nth-last-child(2),
+.menu-demo[data-placement="bottom"].is-closing .menu-panel > :nth-child(2) {
+  animation: menu-pop-out 0.22s ease both;
+  animation-delay: 32ms;
+}
+
+.menu-demo.is-closing .menu-panel > :nth-last-child(3),
+.menu-demo[data-placement="bottom"].is-closing .menu-panel > :nth-child(3) {
+  animation: menu-pop-out 0.22s ease both;
+  animation-delay: 48ms;
+}
+
+.menu-demo.is-closing .menu-panel > :nth-last-child(4),
+.menu-demo[data-placement="bottom"].is-closing .menu-panel > :nth-child(4) {
+  animation: menu-pop-out 0.22s ease both;
+  animation-delay: 64ms;
+}
+
+.menu-demo.is-closing .menu-panel > :nth-last-child(5),
+.menu-demo[data-placement="bottom"].is-closing .menu-panel > :nth-child(5) {
+  animation: menu-pop-out 0.22s ease both;
+  animation-delay: 80ms;
+}
+
+.menu-demo.is-closing .menu-panel > :nth-last-child(6),
+.menu-demo[data-placement="bottom"].is-closing .menu-panel > :nth-child(6) {
+  animation: menu-pop-out 0.22s ease both;
+  animation-delay: 96ms;
+}
+
+.menu-demo.is-closing .menu-panel > :nth-last-child(7),
+.menu-demo[data-placement="bottom"].is-closing .menu-panel > :nth-child(7) {
+  animation: menu-pop-out 0.22s ease both;
+  animation-delay: 112ms;
+}
+
+@keyframes menu-pop-motion {
   from {
-    transform: rotate(0deg);
+    translate: 0 var(--pop-y);
   }
 
   to {
-    transform: rotate(360deg);
+    translate: 0 0;
   }
 }
 
-.theme-night .nav-link,
-.theme-night .menu-trigger-toggle {
+@keyframes menu-pop-visual {
+  from {
+    opacity: 0;
+    filter: blur(8px);
+  }
+
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes menu-pop-opacity {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes menu-pop-out {
+  from {
+    opacity: 1;
+    filter: blur(0);
+    translate: 0 0;
+  }
+
+  to {
+    opacity: 0;
+    filter: blur(8px);
+    translate: 0 var(--pop-y);
+  }
+}
+
+@keyframes menu-pop-out-mobile {
+  from {
+    opacity: 1;
+    translate: 0 0;
+  }
+
+  to {
+    opacity: 0;
+    translate: 0 var(--pop-y);
+  }
+}
+
+.menu-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+  width: 100%;
+  min-height: var(--menu-item-height);
+  padding: 0 14px;
+  border-radius: 17px;
+  color: var(--item-color);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  text-align: left;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.menu-panel a.menu-item {
+  color: var(--item-color);
   cursor: var(--cursor-dark), pointer;
 }
 
-.theme-night .nav-link:hover,
-.theme-night .menu-trigger-toggle:hover {
+.theme-night .menu-panel a.menu-item {
   cursor: var(--cursor-light), pointer;
+}
+
+.menu-item:focus-visible {
+  background: var(--hover-bg);
+  outline: 2px solid var(--item-focus-ring);
+  outline-offset: -2px;
+}
+
+.menu-item:active {
+  transform: scale(0.985);
+}
+
+@media (hover: none), (pointer: coarse) {
+  .menu-demo.is-open .menu-panel > * {
+    animation-name: menu-pop-motion, menu-pop-opacity;
+  }
+
+  .menu-demo.is-closing .menu-panel > * {
+    animation-name: menu-pop-out-mobile;
+  }
+}
+
+/* ---- Preview flyout (navigation01 mechanics, viewport-fixed) ---------------
+   Lives on <body>, never inside the clipped popover panel. The shared bg +
+   clipped viewport morph between links via --flyout-x/--flyout-y + size. */
+
+.nav-flyout--preview {
+  --ease-dropdown: linear(0, 0.005, 0.02 2.1%, 0.081 4.7%, 0.467 15.7%, 0.563, 0.645, 0.717, 0.778 28.5%, 0.829 32%, 0.872 35.8%, 0.909 40.1%, 0.938 44.9%, 0.961 50.3%, 0.977 56.5%, 0.987 63.6%, 0.994 72.3%, 1);
+  --duration-dropdown: 0.5s;
+  --ease-out-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --flyout-bg: rgb(236, 230, 213);
+  --flyout-stroke: rgba(34, 30, 24, 0.1);
+  --flyout-ink: rgba(34, 30, 24, 0.92);
+  --flyout-muted: rgba(34, 30, 24, 0.52);
+
+  position: fixed;
+  inset: 0;
+  z-index: 190;
+  visibility: hidden;
+  pointer-events: none;
+  transition: visibility 0ms linear 180ms;
+}
+
+.theme-night .nav-flyout--preview {
+  --flyout-bg: rgb(13, 12, 10);
+  --flyout-stroke: rgba(199, 181, 128, 0.18);
+  --flyout-ink: rgba(240, 236, 224, 0.92);
+  --flyout-muted: rgba(240, 236, 224, 0.52);
+}
+
+.nav-flyout--preview[hidden] {
+  display: block;
+}
+
+/* A letter covers everything; the preview never outlives its menu. */
+body.has-letter .nav-flyout--preview {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.nav-flyout--preview.is-open {
+  visibility: visible;
+  transition: visibility 0ms;
+}
+
+.nav-flyout--preview *,
+.nav-flyout--preview *::before,
+.nav-flyout--preview *::after {
+  box-sizing: border-box;
+}
+
+.nav-flyout--preview .nav-flyout__bg,
+.nav-flyout--preview .nav-flyout__viewport {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  border-radius: 16px;
+  corner-shape: var(--corner-shape);
+  --flyout-scale: 0.98;
+  transform: translate3d(var(--flyout-x, 0px), var(--flyout-y, 0px), 0) scale(var(--flyout-scale));
+  transition:
+    transform var(--duration-dropdown) var(--ease-dropdown),
+    width var(--duration-dropdown) var(--ease-dropdown),
+    height var(--duration-dropdown) var(--ease-dropdown);
+}
+
+.nav-flyout--preview.is-open .nav-flyout__bg,
+.nav-flyout--preview.is-open .nav-flyout__viewport {
+  --flyout-scale: 1;
+}
+
+.nav-flyout--preview .nav-flyout__bg {
+  z-index: 0;
+  will-change: width, height, transform;
+  border: 1px solid rgba(0, 0, 0, 0);
+  background-color: rgba(0, 0, 0, 0);
+  pointer-events: none;
+  transition:
+    transform var(--duration-dropdown) var(--ease-dropdown),
+    width var(--duration-dropdown) var(--ease-dropdown),
+    height var(--duration-dropdown) var(--ease-dropdown),
+    background-color 180ms var(--ease-out-quad),
+    border-color 180ms var(--ease-out-quad);
+}
+
+.nav-flyout--preview.is-open .nav-flyout__bg {
+  border-color: var(--flyout-stroke);
+  background-color: var(--flyout-bg);
+}
+
+/* Invisible hover bridge across the 12px gap toward the popover, so crossing
+   from menu item to preview never leaves the hover region. */
+.nav-flyout--preview .nav-flyout__bg::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  right: -12px;
+  bottom: -10px;
+  width: 12px;
+  pointer-events: none;
+}
+
+.nav-flyout--preview.is-open .nav-flyout__bg::before {
+  pointer-events: auto;
+}
+
+.nav-flyout--preview .nav-flyout__viewport {
+  z-index: 1;
+  overflow: hidden;
+}
+
+.nav-flyout--preview.is-open .nav-flyout__viewport {
+  pointer-events: auto;
+}
+
+.nav-flyout--preview .nav-flyout__bg.is-instant,
+.nav-flyout--preview .nav-flyout__viewport.is-instant {
+  transition:
+    transform 0s,
+    width 0s,
+    height 0s;
+}
+
+.nav-flyout--preview .nav-flyout__panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: max-content;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate3d(0, 0, 0);
+  transition:
+    transform var(--duration-dropdown) var(--ease-dropdown),
+    opacity 180ms var(--ease-out-quad);
+}
+
+.nav-flyout--preview .nav-flyout__panel.is-active {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.nav-flyout--preview .nav-flyout__panel.is-leaving-left,
+.nav-flyout--preview .nav-flyout__panel.is-enter-left {
+  opacity: 0;
+  transform: translate3d(-200px, 0, 0);
+}
+
+.nav-flyout--preview .nav-flyout__panel.is-leaving-right,
+.nav-flyout--preview .nav-flyout__panel.is-enter-right {
+  opacity: 0;
+  transform: translate3d(200px, 0, 0);
+}
+
+.nav-flyout--preview .nav-dropdown__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px 20px;
+  white-space: nowrap;
+}
+
+.nav-preview__kicker {
+  font: 11px/1.4 var(--mono-font);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--flyout-muted);
+}
+
+.nav-preview__title {
+  font: 500 22px/1.2 var(--serif-font);
+  color: var(--flyout-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-demo.is-open .menu-panel > *,
+  .menu-demo.is-closing .menu-panel > * {
+    animation: none;
+  }
+
+  .nav-flyout--preview .nav-flyout__bg,
+  .nav-flyout--preview .nav-flyout__viewport,
+  .nav-flyout--preview .nav-flyout__panel {
+    transition: none;
+  }
 }
 
 /* Theme toggle — top-left, over the sky, so it is theme-aware (ink by day). */
@@ -1229,10 +1726,6 @@ body.has-letter .home-hero {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .nav-link:hover::after {
-    animation: none;
-  }
-
   canvas#canvas,
   .letter-overlay,
   .letter-card,

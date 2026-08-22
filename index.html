@@ -41,21 +41,22 @@
   <!-- Layer 200: chrome -->
   <div id="fps">FPS: --</div>
 
-  <nav class="top-nav" data-chevron-menu>
-    <div class="menu-trigger">
-      <button class="menu-trigger-toggle" type="button" aria-expanded="false" aria-controls="site-menu-links" aria-label="Open menu">
-        <span class="menu-about" data-i18n="nav.about">About</span>
-        <span class="menu-chevron" aria-hidden="true">›</span>
-      </button>
-    </div>
-    <div class="menu-links" id="site-menu-links" hidden>
-      <a class="nav-link" href="#about" data-i18n="nav.about">About</a>
-      <a class="nav-link" href="#work" data-i18n="nav.work">Work</a>
-      <a class="nav-link" href="#research" data-i18n="nav.research">Research</a>
-      <a class="nav-link" href="#photography" data-i18n="nav.photography">Photography</a>
-      <a class="nav-link" href="#archive" data-i18n="nav.archive">Archive</a>
-      <a class="nav-link" href="#contact" data-i18n="nav.contact">Contact</a>
-      <a class="nav-link" href="#purpose" data-i18n="nav.purpose">Purpose</a>
+  <nav class="top-nav menu-demo" data-menu-01 data-placement="bottom" data-align="end" aria-label="Site sections">
+    <svg class="menu-blob" data-menu-blob aria-hidden="true" focusable="false">
+      <path class="blob-shape" data-menu-blob-path></path>
+    </svg>
+    <button class="menu-trigger" type="button" data-menu-trigger aria-label="Open menu" aria-haspopup="menu" aria-expanded="false" aria-controls="site-menu-panel">
+      <span class="menu-about" data-i18n="nav.about">About</span>
+      <span class="menu-chevron" aria-hidden="true">›</span>
+    </button>
+    <div class="menu-panel" id="site-menu-panel" data-menu-panel role="menu" aria-label="Sections" hidden inert>
+      <a class="menu-item" href="#about" role="menuitem" tabindex="-1" data-menu-item data-flyout="about" data-i18n="nav.about">About</a>
+      <a class="menu-item" href="#work" role="menuitem" tabindex="-1" data-menu-item data-flyout="work" data-i18n="nav.work">Work</a>
+      <a class="menu-item" href="#research" role="menuitem" tabindex="-1" data-menu-item data-flyout="research" data-i18n="nav.research">Research</a>
+      <a class="menu-item" href="#photography" role="menuitem" tabindex="-1" data-menu-item data-flyout="photography" data-i18n="nav.photography">Photography</a>
+      <a class="menu-item" href="#archive" role="menuitem" tabindex="-1" data-menu-item data-flyout="archive" data-i18n="nav.archive">Archive</a>
+      <a class="menu-item" href="#contact" role="menuitem" tabindex="-1" data-menu-item data-flyout="contact" data-i18n="nav.contact">Contact</a>
+      <a class="menu-item" href="#purpose" role="menuitem" tabindex="-1" data-menu-item data-flyout="purpose" data-i18n="nav.purpose">Purpose</a>
     </div>
   </nav>
 
