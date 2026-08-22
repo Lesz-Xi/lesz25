@@ -1039,7 +1039,7 @@ body.has-letter .home-hero {
   vector-effect: non-scaling-stroke;
 }
 
-.menu-trigger {
+.menu-demo .menu-trigger {
   position: relative;
   z-index: 3;
   display: inline-flex;
@@ -1051,7 +1051,8 @@ body.has-letter .home-hero {
   border-radius: 999px;
   corner-shape: var(--corner-shape);
   background: var(--trigger-bg);
-  /* Sized to the 90%-zoom feel at 100%: 14px * 0.9. */
+  /* Sized to the 90%-zoom feel at 100%: 14px * 0.9. Selector carries .menu-demo
+     so this beats the `font: inherit` reset on .menu-demo button. */
   font-size: 12.6px;
   letter-spacing: 0.02em;
   line-height: 1;
