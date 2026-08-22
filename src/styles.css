@@ -331,7 +331,7 @@ canvas#canvas.shader-ready {
   height: 36px;
   display: grid;
   place-items: center;
-  /* Icon is an 18px horizontal-rule SVG (fill: currentColor) — micro, quiet. */
+  /* Icon is a 14px horizontal-rule SVG (fill: currentColor) — micro, quiet. */
   color: rgba(34, 30, 24, 0.4);
   cursor: var(--cursor-dark), pointer;
   transition: color 0.16s ease;
@@ -917,13 +917,13 @@ canvas#canvas.shader-ready {
   gap: 8px;
   transition: opacity 0.3s ease;
   /* Theme-aware nav voice. Day: warm ink against the pale cream sky; hover
-     deepens to solid ink — no yellow accent, and the glow stays off there. */
+     lifts to warm white with a soft glow, and the star follows. */
   --nav-ink: rgba(63, 52, 36, 0.82);
   --nav-ink-strong: rgba(63, 52, 36, 0.95);
   --nav-ink-dim: rgba(63, 52, 36, 0.45);
-  --nav-hover: var(--nav-ink-strong);
-  --nav-glow: rgba(219, 213, 181, 0);
-  --nav-star: var(--nav-ink-strong);
+  --nav-hover: rgba(248, 244, 232, 0.98);
+  --nav-glow: rgba(248, 244, 232, 0.55);
+  --nav-star: rgba(248, 244, 232, 0.98);
 }
 
 .theme-night .top-nav {
