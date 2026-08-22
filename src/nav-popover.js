@@ -579,6 +579,34 @@ export function menu01(scope = document) {
     });
 
     if (finePointer.matches) {
+      // Hover intent: entering the trigger opens the menu; leaving the whole
+      // root (trigger + panel) closes it after a short grace period so the
+      // pointer can cross the gap between the two without a flicker.
+      let closeTimer = 0;
+      const cancelClose = () => {
+        if (!closeTimer) return;
+        window.clearTimeout(closeTimer);
+        closeTimer = 0;
+      };
+      const scheduleClose = () => {
+        cancelClose();
+        closeTimer = window.setTimeout(() => {
+          closeTimer = 0;
+          closeMenu();
+        }, 220);
+      };
+
+      root.addEventListener("pointerenter", (event) => {
+        if (event.pointerType === "touch") return;
+        cancelClose();
+        openMenu();
+      });
+
+      root.addEventListener("pointerleave", (event) => {
+        if (event.pointerType === "touch") return;
+        scheduleClose();
+      });
+
       getItems().forEach((item) => {
         item.addEventListener("pointerenter", () => {
           activateHover(item);

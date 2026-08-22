@@ -973,9 +973,11 @@ body.has-letter .home-hero {
   --blob-stroke: transparent;
   --focus-ring: rgba(34, 30, 24, 0.55);
   --item-focus-ring: rgba(34, 30, 24, 0.28);
+  /* Day: the hover ink is warm white, so the sparkle is too. */
+  --menu-star-color: rgba(248, 244, 232, 0.95);
   --blob-padding: 44px;
   --viewport-padding: 20px;
-  --menu-item-height: 40px;
+  --menu-item-height: 30px;
   --menu-ease: cubic-bezier(0.19, 1, 0.22, 1);
   --pop-y: 14px;
   --corner-shape: superellipse(1.2);
@@ -1018,6 +1020,8 @@ body.has-letter .home-hero {
   --blob-stroke: transparent;
   --focus-ring: rgba(248, 244, 232, 0.68);
   --item-focus-ring: rgba(248, 244, 232, 0.4);
+  /* Night: the same cream as the hero-word star. */
+  --menu-star-color: #f4ecd0;
 }
 
 .menu-blob {
@@ -1367,6 +1371,40 @@ body.has-letter .home-hero {
 
 .menu-item:active {
   transform: scale(0.985);
+}
+
+/* The hero-word sparkle, borrowed for menu rows: on hover a small star spins
+   just past the right-aligned label, vertically centred on the row. Same mask
+   as .home-hero-link::before; colour follows --menu-star-color per theme. */
+.menu-item::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 2px;
+  width: 9px;
+  height: 9px;
+  transform-origin: center;
+  background-color: var(--menu-star-color);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cg%20fill='%23000'%20opacity='0.95'%3E%3Cpath%20d='M12%200.6%20L13.1%2011.6%20L10.9%2011.6%20Z'/%3E%3Cpath%20d='M12%200.6%20L13.1%2011.6%20L10.9%2011.6%20Z'%20transform='rotate(180%2012%2012)'/%3E%3Cpath%20d='M23.2%2012%20L12.4%2012.9%20L12.4%2011.1%20Z'/%3E%3Cpath%20d='M23.2%2012%20L12.4%2012.9%20L12.4%2011.1%20Z'%20transform='rotate(180%2012%2012)'/%3E%3Cpath%20d='M12%205.8%20L12.9%2012%20L11.1%2012%20Z'%20transform='rotate(45%2012%2012)'/%3E%3Cpath%20d='M12%205.8%20L12.9%2012%20L11.1%2012%20Z'%20transform='rotate(135%2012%2012)'/%3E%3Cpath%20d='M12%205.8%20L12.9%2012%20L11.1%2012%20Z'%20transform='rotate(225%2012%2012)'/%3E%3Cpath%20d='M12%205.8%20L12.9%2012%20L11.1%2012%20Z'%20transform='rotate(315%2012%2012)'/%3E%3Cpath%20d='M12%209.4%20L13.1%2012%20L12%2014.6%20L10.9%2012%20Z'%20opacity='0.85'/%3E%3Ccircle%20cx='12'%20cy='12'%20r='0.6'%20opacity='0.85'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cg%20fill='%23000'%20opacity='0.95'%3E%3Cpath%20d='M12%200.6%20L13.1%2011.6%20L10.9%2011.6%20Z'/%3E%3Cpath%20d='M12%200.6%20L13.1%2011.6%20L10.9%2011.6%20Z'%20transform='rotate(180%2012%2012)'/%3E%3Cpath%20d='M23.2%2012%20L12.4%2012.9%20L12.4%2011.1%20Z'/%3E%3Cpath%20d='M23.2%2012%20L12.4%2012.9%20L12.4%2011.1%20Z'%20transform='rotate(180%2012%2012)'/%3E%3Cpath%20d='M12%205.8%20L12.9%2012%20L11.1%2012%20Z'%20transform='rotate(45%2012%2012)'/%3E%3Cpath%20d='M12%205.8%20L12.9%2012%20L11.1%2012%20Z'%20transform='rotate(135%2012%2012)'/%3E%3Cpath%20d='M12%205.8%20L12.9%2012%20L11.1%2012%20Z'%20transform='rotate(225%2012%2012)'/%3E%3Cpath%20d='M12%205.8%20L12.9%2012%20L11.1%2012%20Z'%20transform='rotate(315%2012%2012)'/%3E%3Cpath%20d='M12%209.4%20L13.1%2012%20L12%2014.6%20L10.9%2012%20Z'%20opacity='0.85'/%3E%3Ccircle%20cx='12'%20cy='12'%20r='0.6'%20opacity='0.85'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.menu-panel a.menu-item:hover::before {
+  opacity: 1;
+  animation: menuItemStarSpin 0.85s linear infinite;
+}
+
+@keyframes menuItemStarSpin {
+  from {
+    transform: translateY(-50%) rotate(0deg);
+  }
+
+  to {
+    transform: translateY(-50%) rotate(360deg);
+  }
 }
 
 @media (hover: none), (pointer: coarse) {
