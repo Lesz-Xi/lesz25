@@ -5,7 +5,6 @@
 import { LETTERS, albums, albumTitle, albumPlace } from './data.js';
 import { t } from './i18n.js';
 import { initNavPopover } from './nav-popover.js';
-import { initNavFlyout } from './nav-flyout.js';
 
 const REDUCED_MOTION = window.matchMedia
   && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -281,7 +280,6 @@ export function rebuildLetters() {
 export function initOverlays() {
   buildLetters();
   initNavPopover();
-  initNavFlyout();
   wireNavEscape();
   wireLightbox();
   wirePhotoViewer();

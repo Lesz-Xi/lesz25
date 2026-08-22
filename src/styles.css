@@ -956,20 +956,21 @@ body.has-letter .home-hero {
 }
 
 /* ---- Liquid popover (menu01) ----------------------------------------------
-   The corner trigger opens a spring-morphing SVG blob menu. Surfaces come from
-   the site palette: the letter paper by day, the night card by night. The
+   The corner trigger opens a spring-morphing SVG blob menu. Cardless: the blob
+   surface, trigger pill and hover wash stay invisible — the liquid clip reveal
+   and stagger carry the motion while plain type floats on the sky. The
    technique's prefers-color-scheme overrides live under body.theme-night here
    because the site is class-themed. */
 
 .menu-demo {
   --menu-gap: 12px;
-  --menu-bg: rgb(236, 230, 213);
+  --menu-bg: transparent;
   --trigger-bg: var(--menu-bg);
   --trigger-active-color: rgba(63, 52, 36, 0.95);
   --item-color: rgba(34, 30, 24, 0.88);
   --item-muted: rgba(34, 30, 24, 0.55);
-  --hover-bg: rgba(34, 30, 24, 0.07);
-  --blob-stroke: rgba(34, 30, 24, 0.1);
+  --hover-bg: transparent;
+  --blob-stroke: transparent;
   --focus-ring: rgba(34, 30, 24, 0.55);
   --item-focus-ring: rgba(34, 30, 24, 0.28);
   --blob-padding: 44px;
@@ -1009,12 +1010,12 @@ body.has-letter .home-hero {
 }
 
 .theme-night .menu-demo {
-  --menu-bg: rgb(13, 12, 10);
+  --menu-bg: transparent;
   --trigger-active-color: rgba(248, 244, 232, 0.95);
   --item-color: rgba(240, 236, 224, 0.88);
   --item-muted: rgba(240, 236, 224, 0.55);
-  --hover-bg: rgba(240, 236, 224, 0.07);
-  --blob-stroke: rgba(199, 181, 128, 0.18);
+  --hover-bg: transparent;
+  --blob-stroke: transparent;
   --focus-ring: rgba(248, 244, 232, 0.68);
   --item-focus-ring: rgba(248, 244, 232, 0.4);
 }
@@ -1331,7 +1332,7 @@ body.has-letter .home-hero {
   font-weight: 400;
   letter-spacing: 0.02em;
   line-height: 1;
-  text-align: left;
+  text-align: right;
   text-decoration: none;
   white-space: nowrap;
   transition:
@@ -1345,8 +1346,17 @@ body.has-letter .home-hero {
   cursor: var(--cursor-dark), pointer;
 }
 
+/* Cardless hover grammar: the item lifts to warm white by day, gold by night. */
+.menu-panel a.menu-item:hover {
+  color: rgba(248, 244, 232, 0.98);
+}
+
 .theme-night .menu-panel a.menu-item {
   cursor: var(--cursor-light), pointer;
+}
+
+.theme-night .menu-panel a.menu-item:hover {
+  color: var(--gold);
 }
 
 .menu-item:focus-visible {
@@ -1369,189 +1379,10 @@ body.has-letter .home-hero {
   }
 }
 
-/* ---- Preview flyout (navigation01 mechanics, viewport-fixed) ---------------
-   Lives on <body>, never inside the clipped popover panel. The shared bg +
-   clipped viewport morph between links via --flyout-x/--flyout-y + size. */
-
-.nav-flyout--preview {
-  --ease-dropdown: linear(0, 0.005, 0.02 2.1%, 0.081 4.7%, 0.467 15.7%, 0.563, 0.645, 0.717, 0.778 28.5%, 0.829 32%, 0.872 35.8%, 0.909 40.1%, 0.938 44.9%, 0.961 50.3%, 0.977 56.5%, 0.987 63.6%, 0.994 72.3%, 1);
-  --duration-dropdown: 0.5s;
-  --ease-out-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  --flyout-bg: rgb(236, 230, 213);
-  --flyout-stroke: rgba(34, 30, 24, 0.1);
-  --flyout-ink: rgba(34, 30, 24, 0.92);
-  --flyout-muted: rgba(34, 30, 24, 0.52);
-
-  position: fixed;
-  inset: 0;
-  z-index: 190;
-  visibility: hidden;
-  pointer-events: none;
-  transition: visibility 0ms linear 180ms;
-}
-
-.theme-night .nav-flyout--preview {
-  --flyout-bg: rgb(13, 12, 10);
-  --flyout-stroke: rgba(199, 181, 128, 0.18);
-  --flyout-ink: rgba(240, 236, 224, 0.92);
-  --flyout-muted: rgba(240, 236, 224, 0.52);
-}
-
-.nav-flyout--preview[hidden] {
-  display: block;
-}
-
-/* A letter covers everything; the preview never outlives its menu. */
-body.has-letter .nav-flyout--preview {
-  visibility: hidden;
-  pointer-events: none;
-}
-
-.nav-flyout--preview.is-open {
-  visibility: visible;
-  transition: visibility 0ms;
-}
-
-.nav-flyout--preview *,
-.nav-flyout--preview *::before,
-.nav-flyout--preview *::after {
-  box-sizing: border-box;
-}
-
-.nav-flyout--preview .nav-flyout__bg,
-.nav-flyout--preview .nav-flyout__viewport {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 0;
-  height: 0;
-  border-radius: 16px;
-  corner-shape: var(--corner-shape);
-  --flyout-scale: 0.98;
-  transform: translate3d(var(--flyout-x, 0px), var(--flyout-y, 0px), 0) scale(var(--flyout-scale));
-  transition:
-    transform var(--duration-dropdown) var(--ease-dropdown),
-    width var(--duration-dropdown) var(--ease-dropdown),
-    height var(--duration-dropdown) var(--ease-dropdown);
-}
-
-.nav-flyout--preview.is-open .nav-flyout__bg,
-.nav-flyout--preview.is-open .nav-flyout__viewport {
-  --flyout-scale: 1;
-}
-
-.nav-flyout--preview .nav-flyout__bg {
-  z-index: 0;
-  will-change: width, height, transform;
-  border: 1px solid rgba(0, 0, 0, 0);
-  background-color: rgba(0, 0, 0, 0);
-  pointer-events: none;
-  transition:
-    transform var(--duration-dropdown) var(--ease-dropdown),
-    width var(--duration-dropdown) var(--ease-dropdown),
-    height var(--duration-dropdown) var(--ease-dropdown),
-    background-color 180ms var(--ease-out-quad),
-    border-color 180ms var(--ease-out-quad);
-}
-
-.nav-flyout--preview.is-open .nav-flyout__bg {
-  border-color: var(--flyout-stroke);
-  background-color: var(--flyout-bg);
-}
-
-/* Invisible hover bridge across the 12px gap toward the popover, so crossing
-   from menu item to preview never leaves the hover region. */
-.nav-flyout--preview .nav-flyout__bg::before {
-  content: "";
-  position: absolute;
-  top: -10px;
-  right: -12px;
-  bottom: -10px;
-  width: 12px;
-  pointer-events: none;
-}
-
-.nav-flyout--preview.is-open .nav-flyout__bg::before {
-  pointer-events: auto;
-}
-
-.nav-flyout--preview .nav-flyout__viewport {
-  z-index: 1;
-  overflow: hidden;
-}
-
-.nav-flyout--preview.is-open .nav-flyout__viewport {
-  pointer-events: auto;
-}
-
-.nav-flyout--preview .nav-flyout__bg.is-instant,
-.nav-flyout--preview .nav-flyout__viewport.is-instant {
-  transition:
-    transform 0s,
-    width 0s,
-    height 0s;
-}
-
-.nav-flyout--preview .nav-flyout__panel {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: max-content;
-  opacity: 0;
-  pointer-events: none;
-  transform: translate3d(0, 0, 0);
-  transition:
-    transform var(--duration-dropdown) var(--ease-dropdown),
-    opacity 180ms var(--ease-out-quad);
-}
-
-.nav-flyout--preview .nav-flyout__panel.is-active {
-  opacity: 1;
-  transform: translate3d(0, 0, 0);
-}
-
-.nav-flyout--preview .nav-flyout__panel.is-leaving-left,
-.nav-flyout--preview .nav-flyout__panel.is-enter-left {
-  opacity: 0;
-  transform: translate3d(-200px, 0, 0);
-}
-
-.nav-flyout--preview .nav-flyout__panel.is-leaving-right,
-.nav-flyout--preview .nav-flyout__panel.is-enter-right {
-  opacity: 0;
-  transform: translate3d(200px, 0, 0);
-}
-
-.nav-flyout--preview .nav-dropdown__inner {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 16px 20px;
-  white-space: nowrap;
-}
-
-.nav-preview__kicker {
-  font: 11px/1.4 var(--mono-font);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--flyout-muted);
-}
-
-.nav-preview__title {
-  font: 500 22px/1.2 var(--serif-font);
-  color: var(--flyout-ink);
-}
-
 @media (prefers-reduced-motion: reduce) {
   .menu-demo.is-open .menu-panel > *,
   .menu-demo.is-closing .menu-panel > * {
     animation: none;
-  }
-
-  .nav-flyout--preview .nav-flyout__bg,
-  .nav-flyout--preview .nav-flyout__viewport,
-  .nav-flyout--preview .nav-flyout__panel {
-    transition: none;
   }
 }
 
