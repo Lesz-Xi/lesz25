@@ -70,8 +70,6 @@ const STRINGS = {
     'work.2.desc': 'A terminal-native AI workspace for structured execution, memory-aware routing, and companion-grade software work inside the command line.',
     'work.3.desc': 'An observational seismic interface — confirmed events, felt reports, elapsed windows, and watch cycles kept visibly separate.',
     'work.4.desc': 'A forensic academic-integrity surface for reducing AI false positives and defending student work.',
-    'work.5.desc': 'A many-worlds interaction model for branching decisions, probability, and speculative play.',
-    'work.6.desc': 'A private coaching system translating game-state reads into adaptive feedback loops.',
 
     'res.0.kind': 'Preprint · Computational Virology',
     'res.0.desc': 'HIV-1 eradication via thermodynamic targeting, using a TC-GAN approach.',
@@ -167,8 +165,6 @@ const STRINGS = {
     'work.2.desc': 'Ein terminal-nativer KI-Arbeitsraum für strukturierte Ausführung, gedächtnisbewusstes Routing und begleiterwürdige Softwarearbeit in der Kommandozeile.',
     'work.3.desc': 'Eine beobachtende seismische Oberfläche — bestätigte Ereignisse, Spürberichte, verstrichene Zeitfenster und Wachzyklen bleiben sichtbar getrennt.',
     'work.4.desc': 'Eine forensische Oberfläche für akademische Integrität — weniger KI-Fehlalarme, mehr Schutz für studentische Arbeiten.',
-    'work.5.desc': 'Ein Viele-Welten-Interaktionsmodell für verzweigte Entscheidungen, Wahrscheinlichkeit und spekulatives Spiel.',
-    'work.6.desc': 'Ein privates Coaching-System, das Lesungen des Spielzustands in adaptive Rückkopplungsschleifen übersetzt.',
 
     'res.0.kind': 'Preprint · Computergestützte Virologie',
     'res.0.desc': 'HIV-1-Eradikation durch thermodynamisches Targeting mit einem TC-GAN-Ansatz.',
@@ -264,8 +260,6 @@ const STRINGS = {
     'work.2.desc': 'Un espace de travail IA natif du terminal pour l’exécution structurée, le routage conscient de la mémoire et un travail logiciel de qualité compagnon, en ligne de commande.',
     'work.3.desc': 'Une interface sismique d’observation — événements confirmés, témoignages ressentis, fenêtres écoulées et cycles de veille tenus visiblement séparés.',
     'work.4.desc': 'Une surface médico-légale d’intégrité académique, pour réduire les faux positifs de l’IA et défendre le travail des étudiants.',
-    'work.5.desc': 'Un modèle d’interaction à mondes multiples pour les décisions ramifiées, la probabilité et le jeu spéculatif.',
-    'work.6.desc': 'Un système de coaching privé traduisant la lecture de l’état de jeu en boucles de rétroaction adaptatives.',
 
     'res.0.kind': 'Prépublication · Virologie computationnelle',
     'res.0.desc': 'Éradication du VIH-1 par ciblage thermodynamique, via une approche TC-GAN.',
@@ -361,8 +355,6 @@ const STRINGS = {
     'work.2.desc': 'Uno spazio di lavoro IA nativo del terminale per esecuzione strutturata, routing consapevole della memoria e lavoro software di livello compagno, dalla riga di comando.',
     'work.3.desc': 'Un’interfaccia sismica di osservazione — eventi confermati, segnalazioni percepite, finestre trascorse e cicli di sorveglianza mantenuti visibilmente distinti.',
     'work.4.desc': 'Una superficie forense per l’integrità accademica: meno falsi positivi dell’IA, più tutela del lavoro degli studenti.',
-    'work.5.desc': 'Un modello di interazione a molti mondi per decisioni ramificate, probabilità e gioco speculativo.',
-    'work.6.desc': 'Un sistema di coaching privato che traduce la lettura dello stato di gioco in cicli di feedback adattivi.',
 
     'res.0.kind': 'Preprint · Virologia computazionale',
     'res.0.desc': 'Eradicazione dell’HIV-1 tramite targeting termodinamico, con un approccio TC-GAN.',
@@ -458,8 +450,6 @@ const STRINGS = {
     'work.2.desc': '一个以终端为家的 AI 工作空间：结构化执行、具记忆意识的路由，以及命令行内的伴随级软件工作。',
     'work.3.desc': '一个观测式地震界面——已确认事件、有感报告、经过窗口与值守周期，始终清晰分列。',
     'work.4.desc': '一个用于学术诚信的取证界面：减少 AI 误报，捍卫学生的作品。',
-    'work.5.desc': '一个多世界交互模型，用于分叉决策、概率与思辨式游戏。',
-    'work.6.desc': '一个私有教练系统，将对局状态的读取转化为自适应反馈回路。',
 
     'res.0.kind': '预印本 · 计算病毒学',
     'res.0.desc': '以 TC-GAN 方法，通过热力学靶向实现 HIV-1 清除。',

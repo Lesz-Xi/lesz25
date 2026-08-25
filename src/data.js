@@ -14,8 +14,6 @@ export const projects = [
   { name: 'Aurelian', principle: 'Kanso', statusKey: 'status.dev', url: '' },
   { name: 'Seismic Observation / TSRA', principle: 'Kiroku', statusKey: '', url: 'https://tectonic-strain-ratchet-analyzer.vercel.app/' },
   { name: 'ThesisLens', principle: 'Shibui', statusKey: '', url: 'https://thesislens.space/' },
-  { name: 'Universe Splitter', principle: 'Wabi-sabi', statusKey: '', url: 'https://univ-spitter.vercel.app/' },
-  { name: 'SkillShift AI', principle: 'Shibui', statusKey: 'status.private', url: '' },
 ];
 
 export const research = [
