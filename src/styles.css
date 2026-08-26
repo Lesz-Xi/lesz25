@@ -450,8 +450,9 @@ canvas#canvas.shader-ready {
   display: flex;
   align-items: center;
   justify-content: center;
+  align-self: center;
   gap: 20px;
-  margin-top: 10px;
+  margin-top: 18px;
 }
 
 .photo-nav-btn {
@@ -783,7 +784,12 @@ canvas#canvas.shader-ready {
   border: 0;
   background: none;
   padding: 0;
-  margin-bottom: 14px;
+  margin-bottom: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  text-align: center;
   font: 12px/1 var(--mono-font);
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -822,6 +828,8 @@ canvas#canvas.shader-ready {
    also makes the detail card match the album grid card's footprint. */
 #letter-photography.is-album-detail .letter-card {
   height: calc(var(--viewport-height) - var(--overlay-top-safe-zone) - var(--overlay-bottom-safe-zone) - var(--overlay-border-gap));
+  padding-top: 36px;
+  padding-bottom: 30px;
 }
 
 #letter-photography.is-album-detail .letter-scroll {
@@ -1535,6 +1543,11 @@ body.has-letter .home-hero {
     padding: 54px 40px 48px;
   }
 
+  #letter-photography.is-album-detail .letter-card {
+    padding-top: 32px;
+    padding-bottom: 26px;
+  }
+
   /* Three covers across is too thin once the card narrows. */
   .photo-albums {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1565,6 +1578,11 @@ body.has-letter .home-hero {
   .letter-card {
     --letter-inline-padding: 26px;
     padding: 48px 26px 40px;
+  }
+
+  #letter-photography.is-album-detail .letter-card {
+    padding-top: 28px;
+    padding-bottom: 22px;
   }
 
   .ledger-row {
