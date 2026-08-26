@@ -46,9 +46,9 @@ npm run build
 
 The atmosphere — a raymarched ocean under a day/night sky, with content opening as
 letters over water that never restarts — was inspired by
-[Armin Roncher](https://github.com/mitsuhiko)'s [earendil.com](https://earendil.com).
+[Armin Ronacher](https://github.com/mitsuhiko)'s [earendil.com](https://earendil.com).
 No code from that site was used; the shader, palette, structure, and content here are
-Rhine's own, built from scratch in this repo.
+my own, built from scratch in this repo.
 
 Ocean shader based on [afl_ext](https://www.shadertoy.com/user/afl_ext)'s *Ocean* (MIT).
 
