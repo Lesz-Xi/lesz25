@@ -70,7 +70,6 @@ const STRINGS = {
     'work.2.desc': 'A terminal-native AI workspace for structured execution, memory-aware routing, and companion-grade software work inside the command line.',
     'work.3.desc': 'A frontend motion craftbench and landing template gallery shaped by a photographer’s eye — seeing first, building with care.',
     'work.4.desc': 'An observational seismic interface — confirmed events, felt reports, elapsed windows, and watch cycles kept visibly separate.',
-    'work.5.desc': 'A forensic academic-integrity surface for reducing AI false positives and defending student work.',
 
     'res.0.kind': 'Preprint · Computational Virology',
     'res.0.desc': 'HIV-1 eradication via thermodynamic targeting, using a TC-GAN approach.',
@@ -170,7 +169,6 @@ const STRINGS = {
     'work.2.desc': 'Ein terminal-nativer KI-Arbeitsraum für strukturierte Ausführung, gedächtnisbewusstes Routing und begleiterwürdige Softwarearbeit in der Kommandozeile.',
     'work.3.desc': 'Eine Frontend-Bewegungswerkbank und Galerie für Landingpage-Vorlagen, geprägt vom Blick des Fotografen — zuerst sehen, sorgfältig bauen.',
     'work.4.desc': 'Eine beobachtende seismische Oberfläche — bestätigte Ereignisse, Spürberichte, verstrichene Zeitfenster und Wachzyklen bleiben sichtbar getrennt.',
-    'work.5.desc': 'Eine forensische Oberfläche für akademische Integrität — weniger KI-Fehlalarme, mehr Schutz für studentische Arbeiten.',
 
     'res.0.kind': 'Preprint · Computergestützte Virologie',
     'res.0.desc': 'HIV-1-Eradikation durch thermodynamisches Targeting mit einem TC-GAN-Ansatz.',
@@ -270,7 +268,6 @@ const STRINGS = {
     'work.2.desc': 'Un espace de travail IA natif du terminal pour l’exécution structurée, le routage conscient de la mémoire et un travail logiciel de qualité compagnon, en ligne de commande.',
     'work.3.desc': 'Un atelier de mouvement frontend et une galerie de modèles de pages d’atterrissage façonnés par l’œil d’un photographe — voir d’abord, bâtir avec soin.',
     'work.4.desc': 'Une interface sismique d’observation — événements confirmés, témoignages ressentis, fenêtres écoulées et cycles de veille tenus visiblement séparés.',
-    'work.5.desc': 'Une surface médico-légale d’intégrité académique, pour réduire les faux positifs de l’IA et défendre le travail des étudiants.',
 
     'res.0.kind': 'Prépublication · Virologie computationnelle',
     'res.0.desc': 'Éradication du VIH-1 par ciblage thermodynamique, via une approche TC-GAN.',
@@ -370,7 +367,6 @@ const STRINGS = {
     'work.2.desc': 'Uno spazio di lavoro IA nativo del terminale per esecuzione strutturata, routing consapevole della memoria e lavoro software di livello compagno, dalla riga di comando.',
     'work.3.desc': 'Un banco di lavoro per il movimento frontend e una galleria di template per landing page modellati dall’occhio del fotografo — vedere prima, costruire con cura.',
     'work.4.desc': 'Un’interfaccia sismica di osservazione — eventi confermati, segnalazioni percepite, finestre trascorse e cicli di sorveglianza mantenuti visibilmente distinti.',
-    'work.5.desc': 'Una superficie forense per l’integrità accademica: meno falsi positivi dell’IA, più tutela del lavoro degli studenti.',
 
     'res.0.kind': 'Preprint · Virologia computazionale',
     'res.0.desc': 'Eradicazione dell’HIV-1 tramite targeting termodinamico, con un approccio TC-GAN.',
@@ -470,7 +466,6 @@ const STRINGS = {
     'work.2.desc': '一个以终端为家的 AI 工作空间：结构化执行、具记忆意识的路由，以及命令行内的伴随级软件工作。',
     'work.3.desc': '一个前端动效工坊与落地页模板合集，以摄影师之眼塑造——先看见，再审慎建造。',
     'work.4.desc': '一个观测式地震界面——已确认事件、有感报告、经过窗口与值守周期，始终清晰分列。',
-    'work.5.desc': '一个用于学术诚信的取证界面：减少 AI 误报，捍卫学生的作品。',
 
     'res.0.kind': '预印本 · 计算病毒学',
     'res.0.desc': '以 TC-GAN 方法，通过热力学靶向实现 HIV-1 清除。',
