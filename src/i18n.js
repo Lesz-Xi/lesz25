@@ -111,7 +111,7 @@ const STRINGS = {
     'contact.location': 'Location',
     'contact.locationVal': 'Davao City, Philippines',
 
-    'about.body': 'Developer, photographer, and researcher based in Davao City, Philippines. I work across three registers — <em>Photographer: see first · Developer: make it work · Researcher: ask why</em> — under a small set of principles: Ma, Shibui, Wabi-sabi, Kanso, Shinkei, Kiroku. Ultimately trying to understand how knowledge actually grows.',
+    'about.body': 'Designer, photographer, and researcher based in Davao City, Philippines. I work across three registers — <em>Photographer: see first · Designer: make it work · Researcher: ask why</em> — under a small set of principles: Ma, Shibui, Wabi-sabi, Kanso, Shinkei, Kiroku. Ultimately trying to understand how knowledge actually grows.',
     'photo.intro': 'Photography is my escape — a way to find beauty in the ordinary.',
     'contact.body': 'Open to research collaboration, photography, and quiet, careful software work.',
   },
@@ -210,7 +210,7 @@ const STRINGS = {
     'contact.location': 'Ort',
     'contact.locationVal': 'Davao City, Philippinen',
 
-    'about.body': 'Entwickler, Fotograf und Forscher mit Sitz in Davao City, Philippinen. Ich arbeite in drei Registern — <em>Fotograf: zuerst sehen · Entwickler: zum Laufen bringen · Forscher: nach dem Warum fragen</em> — unter wenigen Prinzipien: Ma, Shibui, Wabi-sabi, Kanso, Shinkei, Kiroku. Letztlich der Versuch zu verstehen, wie Wissen tatsächlich wächst.',
+    'about.body': 'Designer, Fotograf und Forscher mit Sitz in Davao City, Philippinen. Ich arbeite in drei Registern — <em>Fotograf: zuerst sehen · Designer: zum Laufen bringen · Forscher: nach dem Warum fragen</em> — unter wenigen Prinzipien: Ma, Shibui, Wabi-sabi, Kanso, Shinkei, Kiroku. Letztlich der Versuch zu verstehen, wie Wissen tatsächlich wächst.',
     'photo.intro': 'Die Fotografie ist mein Ausweg — eine Art, im Gewöhnlichen Schönheit zu finden.',
     'contact.body': 'Offen für Forschungskooperationen, Fotografie und ruhige, sorgfältige Softwarearbeit.',
   },
@@ -309,7 +309,7 @@ const STRINGS = {
     'contact.location': 'Lieu',
     'contact.locationVal': 'Davao City, Philippines',
 
-    'about.body': 'Développeur, photographe et chercheur basé à Davao City, aux Philippines. Je travaille sur trois registres — <em>Photographe : voir d’abord · Développeur : faire fonctionner · Chercheur : demander pourquoi</em> — sous quelques principes : Ma, Shibui, Wabi-sabi, Kanso, Shinkei, Kiroku. Au fond, chercher à comprendre comment le savoir grandit vraiment.',
+    'about.body': 'Designer, photographe et chercheur basé à Davao City, aux Philippines. Je travaille sur trois registres — <em>Photographe : voir d’abord · Designer : faire fonctionner · Chercheur : demander pourquoi</em> — sous quelques principes : Ma, Shibui, Wabi-sabi, Kanso, Shinkei, Kiroku. Au fond, chercher à comprendre comment le savoir grandit vraiment.',
     'photo.intro': 'La photographie est mon échappée — une façon de trouver la beauté dans l’ordinaire.',
     'contact.body': 'Ouvert à la collaboration de recherche, à la photographie et à un travail logiciel calme et soigné.',
   },
@@ -408,7 +408,7 @@ const STRINGS = {
     'contact.location': 'Luogo',
     'contact.locationVal': 'Davao City, Filippine',
 
-    'about.body': 'Sviluppatore, fotografo e ricercatore con base a Davao City, Filippine. Lavoro su tre registri — <em>Fotografo: vedere prima · Sviluppatore: farlo funzionare · Ricercatore: chiedere perché</em> — sotto pochi principi: Ma, Shibui, Wabi-sabi, Kanso, Shinkei, Kiroku. In fondo, cercare di capire come la conoscenza cresce davvero.',
+    'about.body': 'Designer, fotografo e ricercatore con base a Davao City, Filippine. Lavoro su tre registri — <em>Fotografo: vedere prima · Designer: farlo funzionare · Ricercatore: chiedere perché</em> — sotto pochi principi: Ma, Shibui, Wabi-sabi, Kanso, Shinkei, Kiroku. In fondo, cercare di capire come la conoscenza cresce davvero.',
     'photo.intro': 'La fotografia è la mia via di fuga — un modo di trovare bellezza nell’ordinario.',
     'contact.body': 'Aperto a collaborazioni di ricerca, fotografia e lavoro software quieto e accurato.',
   },
@@ -507,7 +507,7 @@ const STRINGS = {
     'contact.location': '所在地',
     'contact.locationVal': '菲律宾，达沃市',
 
-    'about.body': '开发者、摄影师与研究者，常驻菲律宾达沃市。我在三个音区之间工作——<em>摄影师：先看见 · 开发者：让它跑起来 · 研究者：追问为何</em>——遵循少数几条原则：Ma、Shibui、Wabi-sabi、Kanso、Shinkei、Kiroku。归根结底，是想理解知识究竟如何生长。',
+    'about.body': '设计师、摄影师与研究者，常驻菲律宾达沃市。我在三个音区之间工作——<em>摄影师：先看见 · 设计师：让它跑起来 · 研究者：追问为何</em>——遵循少数几条原则：Ma、Shibui、Wabi-sabi、Kanso、Shinkei、Kiroku。归根结底，是想理解知识究竟如何生长。',
     'photo.intro': '摄影是我的出口——一种在平凡中寻见美的方式。',
     'contact.body': '欢迎研究合作、摄影，以及安静而审慎的软件工作。',
   },
