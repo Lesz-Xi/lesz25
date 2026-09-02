@@ -81,6 +81,8 @@ const STRINGS = {
     'res.3.desc': 'A failed ecology of containment in Philippine school violence — moving past single-cause blame.',
     'res.4.kind': 'Boundary · Posture',
     'res.4.desc': 'Keeping each claim answerable — provenance, uncertainty, and boundary held visible.',
+    'res.5.kind': 'Preprint · AI Alignment',
+    'res.5.desc': 'Test-time latent-algebraic constraints that collapse unsafe reasoning branches before tool emission.',
 
     'career.0.note': 'Causal AI workbench',
     'career.1.note': 'Companion-agent runtime',

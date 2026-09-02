@@ -22,6 +22,7 @@ export const research = [
   { name: 'MASA — Methods of Automated Scientific Analysis', url: 'https://www.wuweism.com/masa-white-paper.html' },
   { name: 'Beyond Blame: School Violence & Containment', url: 'https://osf.io/preprints/socarxiv/hcdxq_v1' },
   { name: 'Claim discipline', url: '' },
+  { name: 'Higher-Order Epistemic Ghost States', url: 'https://zenodo.org/records/22260729' },
 ];
 
 export const career = [
