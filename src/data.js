@@ -11,7 +11,7 @@ export const heroHtml = () =>
 export const projects = [
   { name: 'Wu-Weism / MASA', principle: 'Ma', statusKey: '', url: 'https://www.wuweism.com/' },
   { name: 'Twin-Sparrow', principle: 'Shinkei', statusKey: 'status.dev', url: '' },
-  { name: 'Aurelian', principle: 'Kanso', statusKey: 'status.dev', url: '' },
+  { name: '2041', principle: 'Kanso', statusKey: 'status.dev', url: '' },
   { name: 'Odysxi', principle: 'Wabi-sabi', statusKey: '', url: 'https://www.odysxi.com/' },
   { name: 'Seismic Observation / TSRA', principle: 'Kiroku', statusKey: '', url: 'https://tectonic-strain-ratchet-analyzer.vercel.app/' },
 ];
@@ -28,7 +28,7 @@ export const research = [
 export const career = [
   { year: '2025–26', name: 'MASA / Wu-Weism' },
   { year: '2026', name: 'Twin-Sparrow' },
-  { year: '2026', name: 'Aurelian' },
+  { year: '2026', name: '2041' },
   { year: '2026', name: 'Odysxi' },
   { year: '2025', name: 'Seismic Observation (TSRA)' },
   { year: '2025', name: 'ThesisLens' },
