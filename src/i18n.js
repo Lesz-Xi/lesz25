@@ -19,7 +19,7 @@ const STORAGE_KEY = 'rhine-lang';
 const STRINGS = {
   en: {
     'hero': '{build}',
-    'hero.build': 'trying to exist',
+    'hero.build': 'expand consciousness',
 
     'nav.work': 'Work',
     'nav.research': 'Research',
@@ -120,7 +120,7 @@ const STRINGS = {
 
   de: {
     'hero': '{build}',
-    'hero.build': 'versuche zu existieren',
+    'hero.build': 'Bewusstsein erweitern',
 
     'nav.work': 'Arbeit',
     'nav.research': 'Forschung',
@@ -219,7 +219,7 @@ const STRINGS = {
 
   fr: {
     'hero': '{build}',
-    'hero.build': "essaie d'exister",
+    'hero.build': 'élargir la conscience',
 
     'nav.work': 'Travaux',
     'nav.research': 'Recherche',
@@ -318,7 +318,7 @@ const STRINGS = {
 
   it: {
     'hero': '{build}',
-    'hero.build': 'cerca di esistere',
+    'hero.build': 'espandere la coscienza',
 
     'nav.work': 'Lavori',
     'nav.research': 'Ricerca',
@@ -417,7 +417,7 @@ const STRINGS = {
 
   zh: {
     'hero': '{build}',
-    'hero.build': '试着存在',
+    'hero.build': '拓展意识',
 
     'nav.work': '作品',
     'nav.research': '研究',
