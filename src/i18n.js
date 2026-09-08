@@ -19,7 +19,7 @@ const STORAGE_KEY = 'rhine-lang';
 const STRINGS = {
   en: {
     'hero': '{build}',
-    'hero.build': 'expand consciousness',
+    'hero.build': 'curious mind',
 
     'nav.work': 'Work',
     'nav.research': 'Research',
