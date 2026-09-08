@@ -5,8 +5,23 @@
 import { t } from './i18n.js';
 
 // Names, principles, years and URLs are language-invariant; only prose is keyed.
-export const heroHtml = () =>
-  t('hero').replace('{build}', `<a class="home-hero-link" href="#photography">${t('hero.build')}</a>`);
+const escapeHtml = (value) => value.replace(/[&<>"']/g, (char) => ({
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;',
+}[char]));
+
+const heroWordHtml = (word) => Array.from(word).map((character) =>
+  `<span class="home-hero-letter" aria-hidden="true">${character === ' ' ? '&nbsp;' : escapeHtml(character)}</span>`,
+).join('');
+
+export const heroHtml = () => {
+  const heroWord = t('hero.build');
+  const heroLink = `<a class="home-hero-link" href="#photography" aria-label="${escapeHtml(heroWord)}"><span class="hero-word-star" aria-hidden="true"></span>${heroWordHtml(heroWord)}</a>`;
+  return t('hero').replace('{build}', heroLink);
+};
 
 export const projects = [
   { name: 'Wu-Weism / MASA', principle: 'Ma', statusKey: '', url: 'https://www.wuweism.com/' },
