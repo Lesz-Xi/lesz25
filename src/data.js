@@ -32,12 +32,11 @@ export const projects = [
 ];
 
 export const research = [
-  { name: 'The Entropic Vise', url: 'https://zenodo.org/records/18287138' },
+  { name: 'Higher-Order Epistemic Ghost States', url: 'https://zenodo.org/records/22260729' },
   { name: 'Continuous Valence-Corrected Intelligence', url: 'https://zenodo.org/records/20579513' },
   { name: 'MASA — Methods of Automated Scientific Analysis', url: 'https://www.wuweism.com/masa-white-paper.html' },
   { name: 'Beyond Blame: School Violence & Containment', url: 'https://osf.io/preprints/socarxiv/hcdxq_v1' },
   { name: 'Claim discipline', url: '' },
-  { name: 'Higher-Order Epistemic Ghost States', url: 'https://zenodo.org/records/22260729' },
 ];
 
 export const career = [
@@ -49,7 +48,6 @@ export const career = [
   { year: '2025', name: 'ThesisLens' },
   { year: '2025', name: 'SkillShift AI' },
   { year: '2025', name: 'Universe Splitter' },
-  { year: '2025', name: 'The Entropic Vise' },
   { year: '2026', name: 'Continuous Valence Research' },
   { year: '2026', name: 'Beyond Blame (SocArXiv)' },
   { year: '', nameKey: 'career.independent' }, // year comes from t('career.present')
