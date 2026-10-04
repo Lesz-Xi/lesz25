@@ -57,8 +57,8 @@ export function renderLightbox(locale) {
   const c = copyFor(locale);
   return `<dialog id="photo-preview" class="photo-lightbox" aria-labelledby="preview-title">
     <header class="lightbox-header"><h2 id="preview-title">${escapeHtml(c.previewImage)}</h2><button type="button" class="text-control" id="preview-close" data-i18n="ui.close" autofocus>${escapeHtml(t('ui.close'))}</button></header>
-    <div class="lightbox-stage" aria-busy="false"><img id="preview-image" alt="" hidden><p id="preview-status" role="status" data-copy="imageLoading">${escapeHtml(c.imageLoading)}</p></div>
-    <footer class="lightbox-footer"><span id="preview-count"></span><a id="preview-original" class="text-link" href="/img/switzerland.webp" target="_blank" rel="noopener noreferrer"><span data-copy="openImage">${escapeHtml(c.openImage)}</span>${ARROW}</a></footer>
+    <div class="lightbox-stage" aria-busy="false"><button type="button" id="preview-dismiss" class="preview-photo" aria-label="${escapeHtml(t('ui.close'))}" title="${escapeHtml(t('ui.close'))}" hidden><img id="preview-image" alt="" hidden></button><p id="preview-status" role="status" data-copy="imageLoading">${escapeHtml(c.imageLoading)}</p></div>
+    <footer class="lightbox-footer"><span id="preview-count" role="status" aria-live="polite"></span><div class="preview-navigation"><button type="button" class="icon-control" data-preview-prev aria-label="${escapeHtml(t('ui.prev'))}">${chevron(true)}</button><button type="button" class="icon-control" data-preview-next aria-label="${escapeHtml(t('ui.next'))}">${chevron(false)}</button></div><div class="preview-source"><a id="preview-original" class="text-link" href="/img/switzerland.webp" target="_blank" rel="noopener noreferrer"><span data-copy="openImage">${escapeHtml(c.openImage)}</span>${ARROW}</a></div></footer>
   </dialog>`;
 }
 

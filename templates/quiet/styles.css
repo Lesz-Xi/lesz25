@@ -181,10 +181,14 @@ h3 { font-size: 15px; line-height: 1.5; }
 .lightbox-header { border-bottom: 1px solid var(--rule); }
 .lightbox-header h2 { font-size: 15px; }
 .lightbox-footer { color: var(--muted); }
-#preview-count { font-variant-numeric: tabular-nums; }
-.lightbox-stage { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; padding: 24px; }
+#preview-count { flex: 1; min-width: 0; font-variant-numeric: tabular-nums; }
+.preview-navigation { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+.preview-source { flex: 1; min-width: 0; display: flex; justify-content: flex-end; }
+#preview-original { min-width: 0; }
+.lightbox-stage { position: relative; flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; padding: 24px; }
+.preview-photo { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; min-height: 0; border: 0; padding: 0; background: transparent; cursor: zoom-out; touch-action: manipulation; }
 .lightbox-stage img { width: 100%; height: 100%; object-fit: contain; }
-#preview-status { color: var(--muted); font-size: 14px; }
+#preview-status { position: absolute; bottom: 4px; left: 12px; right: 12px; text-align: center; color: var(--muted); background: var(--page); font-size: 12px; pointer-events: none; }
 /* The reading page shares the Quiet chrome, not the portfolio's row density. */
 .reader-topbar { padding-left: 0; }
 .reader-topbar .name { min-height: 44px; display: inline-flex; align-items: center; }
@@ -278,6 +282,8 @@ h3 { font-size: 15px; line-height: 1.5; }
   .photo-lightbox { width: calc(100% - 24px); height: calc(100dvh - 24px); }
   .lightbox-header, .lightbox-footer { gap: 16px; padding: 8px 12px; }
   .lightbox-header h2 { font-size: 13px; }
+  .lightbox-footer { gap: 4px; }
+  .lightbox-footer .text-link { font-size: 12px; gap: 4px; }
   .lightbox-stage { padding: 12px; }
   .footer { gap: 16px; flex-wrap: wrap; }
   .reader-topbar { flex-wrap: wrap; }

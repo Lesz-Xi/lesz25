@@ -64,6 +64,7 @@ async function context(options = {}) {
 const check = (name) => { report.checks.push(name); console.log(`PASS ${name}`); };
 const waitImage = async (page, selector) => {
   if (selector === '#album-image') await page.waitForFunction(() => document.querySelector('.viewer-stage')?.getAttribute('aria-busy') === 'false');
+  if (selector === '#preview-image') await page.waitForFunction(() => document.querySelector('#photo-preview')?.open && document.querySelector('.lightbox-stage')?.getAttribute('aria-busy') === 'false' && !document.querySelector('#preview-image').hidden);
   return page.locator(selector).evaluate((image) => image.decode());
 };
 const screenshot = async (page, name, fullPage = true) => {
@@ -800,6 +801,104 @@ try {
   assert.deepEqual(interactionErrors, []);
   check('Preview exit fades while retaining native modality, restores state once, skips reduced motion and cannot undo a route change');
   await interactions.close();
+
+  const previewNavigation = await context({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+  await previewNavigation.addInitScript(() => Object.defineProperty(navigator, 'connection', { value: { saveData: true }, configurable: true }));
+  const navigationPage = await previewNavigation.newPage();
+  const navigationErrors = [];
+  navigationPage.on('pageerror', error => navigationErrors.push(error.message));
+  await navigationPage.goto(`${origin}/#album-switzerland`);
+  for (const { code } of LANGUAGES) {
+    await navigationPage.selectOption('#language', code);
+    await waitImage(navigationPage, '#album-image');
+    for (const width of [320, 390, 768, 1440]) {
+      await navigationPage.setViewportSize({ width, height: 844 });
+      for (const theme of ['light', 'dark']) {
+        if (await navigationPage.locator('html').getAttribute('data-theme') !== theme) await navigationPage.locator('#quiet-theme').click();
+        await navigationPage.locator('#album-image').click();
+        await waitImage(navigationPage, '#preview-image');
+        const geometry = await navigationPage.evaluate(() => {
+          const dialog = document.querySelector('#photo-preview').getBoundingClientRect();
+          const nav = document.querySelector('.preview-navigation').getBoundingClientRect();
+          const buttons = [...document.querySelectorAll('.preview-navigation button')].map(button => ({ width: button.getBoundingClientRect().width, height: button.getBoundingClientRect().height, label: button.getAttribute('aria-label') }));
+          return { offset: Math.abs(nav.x + nav.width / 2 - dialog.x - dialog.width / 2), overflow: document.querySelector('#photo-preview').scrollWidth > dialog.width + 1, buttons };
+        });
+        assert.ok(geometry.offset <= 1, `Preview navigation is centered: ${code}/${width}/${theme}`);
+        assert.equal(geometry.overflow, false, `Preview has no horizontal overflow: ${code}/${width}/${theme}`);
+        assert.ok(geometry.buttons.every(button => button.width >= 44 && button.height >= 44 && button.label));
+        await navigationPage.locator('#preview-close').click();
+        await navigationPage.waitForFunction(() => !document.querySelector('#photo-preview').open);
+      }
+    }
+  }
+  check('Preview previous/next stay centered with 44px localized targets across five languages, four widths and both themes');
+  await navigationPage.selectOption('#language', 'en');
+  await waitImage(navigationPage, '#album-image');
+  await navigationPage.setViewportSize({ width: 390, height: 844 });
+  await navigationPage.locator('#album-image').click();
+  await waitImage(navigationPage, '#preview-image');
+  const navigationHash = await navigationPage.evaluate(() => location.hash);
+  await navigationPage.locator('[data-preview-prev]').click();
+  await waitImage(navigationPage, '#preview-image');
+  assert.equal(await navigationPage.locator('#preview-count').textContent(), '13 / 13');
+  await navigationPage.keyboard.press('ArrowRight');
+  await waitImage(navigationPage, '#preview-image');
+  assert.equal(await navigationPage.locator('#preview-count').textContent(), '01 / 13');
+  await navigationPage.locator('[data-preview-next]').click();
+  await waitImage(navigationPage, '#preview-image');
+  assert.equal(await navigationPage.locator('#preview-count').textContent(), '02 / 13');
+  assert.equal(await navigationPage.locator('#preview-original').getAttribute('href'), await navigationPage.locator('#preview-image').getAttribute('src'));
+  assert.equal(await navigationPage.evaluate(() => location.hash), navigationHash);
+  const navigationScroll = await navigationPage.evaluate(() => scrollY);
+  await navigationPage.locator('#preview-image').click();
+  await navigationPage.waitForFunction(() => !document.querySelector('#photo-preview').open);
+  assert.equal(await navigationPage.locator('#photo-count').textContent(), '02 / 13');
+  assert.equal(await navigationPage.evaluate(() => scrollY), navigationScroll);
+  assert.equal(await navigationPage.evaluate(() => document.activeElement.hasAttribute('data-photo-preview')), true);
+  await navigationPage.locator('#album-image').click();
+  await waitImage(navigationPage, '#preview-image');
+  await navigationPage.keyboard.press('ArrowRight');
+  await waitImage(navigationPage, '#preview-image');
+  await navigationPage.locator('#preview-dismiss').focus();
+  await navigationPage.keyboard.press('Space');
+  await navigationPage.waitForFunction(() => !document.querySelector('#photo-preview').open);
+  assert.equal(await navigationPage.locator('#photo-count').textContent(), '03 / 13');
+  check('Preview buttons/arrows share album state and wrap; photo click and Space close with the latest photo, hash, focus and scroll intact');
+
+  await previewNavigation.route('**/img/switzerland/switz-port-2.webp', async route => { await new Promise(resolve => setTimeout(resolve, 350)); await route.fallback(); });
+  await navigationPage.locator('#album-image').click();
+  await waitImage(navigationPage, '#preview-image');
+  const pendingPreview = await navigationPage.evaluate(() => { const source = document.querySelector('#preview-image').getAttribute('src'); document.querySelector('[data-preview-next]').click(); return { retained: source === document.querySelector('#preview-image').getAttribute('src'), busy: document.querySelector('.lightbox-stage').getAttribute('aria-busy') }; });
+  assert.deepEqual(pendingPreview, { retained: true, busy: 'true' });
+  await navigationPage.locator('[data-preview-next]').click();
+  await waitImage(navigationPage, '#preview-image');
+  await navigationPage.waitForTimeout(400);
+  assert.ok((await navigationPage.locator('#preview-image').getAttribute('src')).endsWith('/switz-landsc-2.webp'));
+  assert.equal(await navigationPage.locator('#preview-count').textContent(), '05 / 13');
+  await previewNavigation.route('**/img/switzerland/switz-port-3.webp', route => route.fulfill({ status: 404, body: '' }));
+  await navigationPage.locator('#preview-dismiss').focus();
+  await navigationPage.keyboard.press('ArrowRight');
+  await navigationPage.waitForFunction(() => document.querySelector('.lightbox-stage').getAttribute('aria-busy') === 'false' && !document.querySelector('#preview-status').hidden);
+  assert.equal(await navigationPage.locator('#preview-dismiss').isVisible(), false);
+  assert.equal(await navigationPage.locator('#preview-original').isVisible(), false);
+  assert.equal(await navigationPage.evaluate(() => document.activeElement.hasAttribute('data-preview-next')), true);
+  await navigationPage.keyboard.press('Escape');
+  await navigationPage.waitForFunction(() => !document.querySelector('#photo-preview').open);
+  assert.equal(await navigationPage.evaluate(() => document.activeElement.hasAttribute('data-photo-next')), true);
+  await navigationPage.locator('[data-photo-prev]').click();
+  await waitImage(navigationPage, '#album-image');
+  await navigationPage.locator('#album-image').click();
+  await waitImage(navigationPage, '#preview-image');
+  await navigationPage.locator('[data-preview-next]').click();
+  await navigationPage.waitForFunction(() => document.querySelector('.lightbox-stage').getAttribute('aria-busy') === 'false' && !document.querySelector('#preview-status').hidden);
+  await navigationPage.locator('[data-preview-next]').click();
+  await waitImage(navigationPage, '#preview-image');
+  assert.equal(await navigationPage.locator('#preview-count').textContent(), '07 / 13');
+  await navigationPage.keyboard.press('Escape');
+  await navigationPage.waitForFunction(() => !document.querySelector('#photo-preview').open);
+  assert.deepEqual(navigationErrors, []);
+  check('Preview loading retains the photo; rapid navigation rejects stale results and failed images recover without reopening the dialog');
+  await previewNavigation.close();
 
   const alias = await context();
   const aliasPage = await alias.newPage();

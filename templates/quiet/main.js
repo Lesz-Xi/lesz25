@@ -9,7 +9,7 @@ import { initDevMode } from './dev-mode.js';
 import { createPhotoLoader } from './photo-loader.js';
 
 const { refresh: refreshPreferences, setTheme } = initPreferences();
-const preview = initPhotoPreview();
+const preview = initPhotoPreview({ navigate: navigatePhoto });
 let activeAlbum = null;
 let photoIndex = 0;
 let lastAlbumTrigger = null;
@@ -39,6 +39,7 @@ async function paintPhoto() {
   trigger.setAttribute('aria-disabled', 'true');
   document.querySelector('#photo-count').textContent = `${String(index + 1).padStart(2, '0')} / ${String(images.length).padStart(2, '0')}`;
   document.querySelector('#album-heading').textContent = `${title} / ${activeAlbum.year}`;
+  preview.refresh();
   try {
     const loaded = await photoLoader.load(source);
     if (current !== photoRequest || activeAlbum?.id !== albumId || !photo.isConnected) return;
@@ -72,7 +73,14 @@ async function paintPhoto() {
     error.hidden = false;
     document.querySelector('#full-image').hidden = true;
     stage.setAttribute('aria-busy', 'false');
+    preview.refresh();
   }
+}
+
+function navigatePhoto(offset) {
+  if (!activeAlbum) return;
+  photoIndex += offset;
+  paintPhoto();
 }
 
 function syncAlbum({ focus = false } = {}) {
@@ -135,11 +143,9 @@ document.querySelector('#main').addEventListener('click', (event) => {
   } else if (event.target.closest('[data-album-close]')) {
     closeAlbum();
   } else if (event.target.closest('[data-photo-prev]')) {
-    photoIndex -= 1;
-    paintPhoto();
+    navigatePhoto(-1);
   } else if (event.target.closest('[data-photo-next]')) {
-    photoIndex += 1;
-    paintPhoto();
+    navigatePhoto(1);
   }
 });
 document.addEventListener('keydown', (event) => {
@@ -149,8 +155,7 @@ document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape') { event.preventDefault(); closeAlbum(); }
   if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
     event.preventDefault();
-    photoIndex += event.key === 'ArrowRight' ? 1 : -1;
-    paintPhoto();
+    navigatePhoto(event.key === 'ArrowRight' ? 1 : -1);
   }
 });
 function navigatePortfolio(href) {

@@ -14,7 +14,7 @@ globalThis.document = { documentElement: {}, querySelector: () => null, querySel
 const { projects, research, albums, socials, renderArchive, renderPurpose, renderContact } = await import('../src/data.js');
 const { catalogFor, runCommand } = await import('../templates/quiet/commands.js');
 const { renderPreferences, renderDevMode } = await import('../templates/quiet/controls.js');
-const { LANGUAGES, setLang } = await import('../src/i18n.js');
+const { LANGUAGES, setLang, t } = await import('../src/i18n.js');
 const { renderHero, renderSections, renderNote, renderLightbox, renderApproach, escapeHtml } = await import('../templates/quiet/render.js');
 const { default: config } = await import('../vite.config.js');
 
@@ -256,6 +256,11 @@ test('the photo preview is a labelled native dialog and Read the note stays card
     assert.ok(dialog.includes('<dialog id="photo-preview"'));
     assert.ok(dialog.includes('aria-labelledby="preview-title"'));
     assert.ok(dialog.includes('id="preview-close"'));
+    assert.ok(dialog.includes('id="preview-dismiss"'));
+    assert.ok(dialog.includes(`data-preview-prev aria-label="${t('ui.prev')}"`));
+    assert.ok(dialog.includes(`data-preview-next aria-label="${t('ui.next')}"`));
+    assert.ok(dialog.includes('class="preview-navigation"'));
+    assert.ok(dialog.includes('id="preview-count" role="status" aria-live="polite"'));
     assert.ok(!dialog.includes('<dialog open'));
     assert.ok(sections.includes('data-photo-preview aria-haspopup="dialog"'));
     assert.ok(sections.includes('class="text-link note-read-link"'));

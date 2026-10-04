@@ -67,9 +67,9 @@
     {
       "name": "Gallery navigation",
       "kind": "button",
-      "description": "44px authored-chevron control with manipulation touch handling. A pending image selection retains the decoded photograph and stable field with localized status; only adjacent photos are prepared in a bounded cache, unless Save Data or a known slow connection is active.",
+      "description": "44px authored-chevron control with manipulation touch handling. Centered previous/next in the native preview share the inline album index and wraparound; the photograph is also a keyboard-operable Close button. A pending image selection retains the decoded photograph and stable field with localized status; only adjacent photos are prepared in a bounded cache, unless Save Data or a known slow connection is active.",
       "html": "<button class=\"ds-gallery-nav\" aria-label=\"Next image\"><svg viewBox=\"0 0 16 16\" width=\"16\" height=\"16\" fill=\"none\" aria-hidden=\"true\"><path d=\"m6 3 5 5-5 5\" stroke=\"currentColor\" stroke-width=\"1.2\"/></svg></button>",
-      "css": ".ds-gallery-nav { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; background: transparent; color: var(--ink, #242424); border: 0; border-radius: 0; cursor: pointer; } .ds-gallery-nav:hover { background: var(--surface, #ebebeb); } .ds-gallery-nav:focus-visible { outline: 2px solid var(--accent, #b94708); outline-offset: 5px; }"
+      "css": ".ds-gallery-nav { touch-action: manipulation; display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; background: transparent; color: var(--ink, #242424); border: 0; border-radius: 0; cursor: pointer; } .ds-gallery-nav:hover { background: var(--surface, #ebebeb); } .ds-gallery-nav:focus-visible { outline: 2px solid var(--accent, #b94708); outline-offset: 5px; }"
     }
   ],
   "narrative": {
