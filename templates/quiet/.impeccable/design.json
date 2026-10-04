@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 2,
+  "title": "Design System: Rhine Tague — Quiet",
+  "extensions": {
+    "shadows": [],
+    "motion": [{ "name": "control-feedback", "value": "150ms ease", "purpose": "Colour/background and active-underline opacity feedback; disabled for reduced motion." }],
+    "breakpoints": [{ "name": "compact-rail", "value": "1040px" }, { "name": "stacked", "value": "700px" }]
+  },
+  "components": [
+    {
+      "name": "Identity portrait",
+      "kind": "custom",
+      "description": "User-supplied full-square portrait above the name: 80px desktop, 64px mobile, 4px corners, no badge, shadow or new interaction. Adjacent name supplies identity; empty alt avoids repetition.",
+      "html": "<img class=\"ds-portrait\" src=\"/quiet/xi-profile.webp\" width=\"160\" height=\"160\" alt=\"\" decoding=\"async\">",
+      "css": ".ds-portrait { display: block; width: 80px; height: 80px; flex: 0 0 auto; object-fit: cover; border-radius: 4px; background: var(--surface, #ebebeb); } @media (max-width: 700px) { .ds-portrait { width: 64px; height: 64px; margin-bottom: 8px; } }"
+    },
+    {
+      "name": "Primary button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Square action: slate/white in light, warm sand/charcoal in dark, and accessible orange hover in both.",
+      "html": "<button class=\"ds-button\">Explore the work</button>",
+      "css": ".ds-button { font: 12px ui-monospace, monospace; border: 0; border-radius: 0; padding: 12px 20px; min-height: 44px; background: var(--button, #4b5563); color: var(--button-ink, #fff); cursor: pointer; transition: background-color 150ms ease, color 150ms ease; } .ds-button:hover, .ds-button:focus-visible { background: var(--orange, #fb923c); color: var(--orange-ink, #211f1c); } .ds-button:focus-visible { outline: 2px solid var(--accent, #b94708); outline-offset: 5px; } @media (prefers-reduced-motion: reduce) { .ds-button { transition: none; } }"
+    },
+    {
+      "name": "Text link",
+      "kind": "nav",
+      "description": "Underlined on hover, with a visible focus outline.",
+      "html": "<a class=\"ds-link\" href=\"#work\">Selected work</a>",
+      "css": ".ds-link { display: inline-flex; align-items: center; min-height: 44px; font: 12px ui-monospace, monospace; color: var(--ink, #242424); text-decoration: none; text-underline-offset: 5px; } .ds-link:hover { color: var(--accent, #b94708); text-decoration: underline; } .ds-link:focus-visible { outline: 2px solid var(--accent, #b94708); outline-offset: 5px; }"
+    },
+    {
+      "name": "Language selector",
+      "kind": "input",
+      "description": "Native select with a compact visual footprint and 44px target.",
+      "html": "<select class=\"ds-language\" aria-label=\"Language\"><option>EN</option><option>DE</option><option>FR</option><option>IT</option><option>中文</option></select>",
+      "css": ".ds-language { font: 12px ui-monospace, monospace; color: var(--ink, #242424); background: transparent; border: 0; min-width: 52px; min-height: 44px; padding: 0 4px; cursor: pointer; } .ds-language:focus-visible { outline: 2px solid var(--accent, #b94708); outline-offset: 5px; }"
+    },
+    {
+      "name": "Cardless view selection",
+      "kind": "button",
+      "description": "Separate GUI and Dev Mode native buttons explicitly select a view. Complementary pressed states, thin active underline, 12px mono labels and 44px minimum targets; no slider geometry.",
+      "html": "<div class=\"ds-views\" role=\"group\" aria-label=\"Portfolio view\"><button class=\"ds-view\" type=\"button\" aria-pressed=\"true\">GUI</button><button class=\"ds-view\" type=\"button\" aria-pressed=\"false\">Dev Mode</button></div>",
+      "css": ".ds-views { display: flex; align-items: center; gap: 8px; } .ds-view { position: relative; display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding: 0 4px; background: transparent; border: 0; border-radius: 0; color: var(--muted, #656461); font: 12px ui-monospace, monospace; cursor: pointer; } .ds-view::after { content: ''; position: absolute; left: 4px; right: 4px; bottom: 7px; height: 1px; background: currentColor; opacity: 0; transition: opacity 150ms ease; } .ds-view[aria-pressed='true'] { color: var(--ink, #242424); } .ds-view[aria-pressed='true']::after { opacity: 1; } .ds-view:hover { color: var(--accent, #b94708); } .ds-view:focus-visible { outline: 2px solid var(--accent, #b94708); outline-offset: 5px; } @media (prefers-reduced-motion: reduce) { .ds-view::after { transition: none; } }"
+    },
+    {
+      "name": "Single theme icon",
+      "kind": "button",
+      "description": "One current-state sun/moon icon; pressed means dark, accessible name stays stable and tooltip names the next theme. Shared by portfolio and readers; 44px target and accent focus.",
+      "html": "<button class=\"ds-theme\" type=\"button\" aria-pressed=\"false\" aria-label=\"Colour theme: Dark\" title=\"Colour theme: Dark\"><svg viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" fill=\"none\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"4\" stroke=\"currentColor\" stroke-width=\"1.4\"/><path d=\"M12 2v3m0 14v3M2 12h3m14 0h3M5 5l2 2m10 10 2 2M5 19l2-2M17 7l2-2\" stroke=\"currentColor\" stroke-width=\"1.4\" stroke-linecap=\"round\"/></svg></button>",
+      "css": ".ds-theme { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; padding: 0; background: transparent; border: 0; border-radius: 0; color: var(--muted, #656461); cursor: pointer; } .ds-theme[aria-pressed='true'] { color: var(--button, #d8c8b4); } .ds-theme:hover { color: var(--accent, #b94708); } .ds-theme:focus-visible { outline: 2px solid var(--accent, #b94708); outline-offset: 5px; }"
+    },
+    {
+      "name": "Portfolio command input",
+      "kind": "input",
+      "description": "Native text editing inside the finite command view, not a shell. Accent caret/focus, 44px target, shared page plane.",
+      "html": "<label class=\"ds-command-label\" for=\"ds-command\">Portfolio command</label><input class=\"ds-command\" id=\"ds-command\" type=\"text\" maxlength=\"256\" autocomplete=\"off\" spellcheck=\"false\">",
+      "css": ".ds-command-label { display: block; font: 12px ui-monospace, monospace; color: var(--surface-accent, #af4207); } .ds-command { min-height: 44px; min-width: 0; font: 15px ui-monospace, monospace; color: var(--ink, #242424); background: var(--page, #f4f4f5); border: 0; border-radius: 0; padding: 8px; caret-color: var(--accent, #b94708); } .ds-command:focus-visible { outline: 2px solid var(--accent, #b94708); outline-offset: 5px; }"
+    },
+    {
+      "name": "Development status",
+      "kind": "custom",
+      "description": "Plain metadata, not a pill or an unavailable fake link.",
+      "html": "<span class=\"ds-status\">In development</span>",
+      "css": ".ds-status { font: 11px/1.7 ui-monospace, monospace; color: var(--muted, #656461); }"
+    },
+    {
+      "name": "Gallery navigation",
+      "kind": "button",
+      "description": "44px authored-chevron control for the inline album viewer.",
+      "html": "<button class=\"ds-gallery-nav\" aria-label=\"Next image\"><svg viewBox=\"0 0 16 16\" width=\"16\" height=\"16\" fill=\"none\" aria-hidden=\"true\"><path d=\"m6 3 5 5-5 5\" stroke=\"currentColor\" stroke-width=\"1.2\"/></svg></button>",
+      "css": ".ds-gallery-nav { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; background: transparent; color: var(--ink, #242424); border: 0; border-radius: 0; cursor: pointer; } .ds-gallery-nav:hover { background: var(--surface, #ebebeb); } .ds-gallery-nav:focus-visible { outline: 2px solid var(--accent, #b94708); outline-offset: 5px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Quiet portfolio",
+    "overview": "This document applies to the default Quiet portfolio at /, its /templates/quiet/ alias and its readers. The preserved /templates/ocean/ edition keeps its own visual system. The approved synthesis uses Ellipsis's label/content composition, Conductor-informed neutral planes, and Readman's wide photographic framing.",
+    "keyCharacteristics": ["Thin rules instead of enclosing project cards.", "Compact mono typography and generous intervals.", "Real photography as the primary visual material.", "Native scrolling with hidden scrollbars and immediately visible content."],
+    "rules": [{ "name": "The Contrast Rule", "body": "Keep button foreground and fill paired. White on the orange hover fill does not meet the normal-text contrast target. Text on the lighter command surface uses its darker orange tone: the normal page accent measured 4.44:1 there; the surface accent measures 4.89:1. Dark command text keeps the existing orange.", "section": "colors" }],
+    "dos": ["Do preserve the label/content alignment and readable mobile reflow.", "Do keep publication types, development status, and uncertainty visible.", "Do use the user's photographs with recorded provenance.", "Do keep the static English snapshot synchronized with the renderer."],
+    "donts": ["Don't import this stylesheet into the original ocean entry.", "Don't add card shells, shadows, loaders, or decorative animation to this template without a new brief.", "Don't put white text on the orange button state.", "Don't turn a research proposal into a claim of demonstrated performance."]
+  }
+}

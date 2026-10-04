@@ -1,0 +1,19 @@
+{
+  "prompt": "Existing user portfolio photograph from public/img/flowers.webp, reused for Quiet. Center crop to 600x450, WebP quality 82. Not AI-generated. Original source unchanged.",
+  "source": "public/img/flowers.webp",
+  "sourceSha256": "905390d13a57af216f7812be8a8ec192411d445b55605ca59e6e8be96608890a",
+  "command": [
+    "magick",
+    "public/img/flowers.webp",
+    "-resize",
+    "600x450^",
+    "-gravity",
+    "center",
+    "-extent",
+    "600x450",
+    "-quality",
+    "82",
+    "public/quiet/flowers-thumb.webp"
+  ],
+  "createdAt": "2026-10-04T02:14:13.760Z"
+}

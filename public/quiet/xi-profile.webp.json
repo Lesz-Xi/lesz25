@@ -1,0 +1,21 @@
+{
+  "prompt": "Chief-supplied profile photograph from xi_profile.png. Full square image resized to 160×160, WebP quality 85; no extra crop or retouching; metadata stripped. Not AI-generated. Original source unchanged.",
+  "source": "xi_profile.png",
+  "sourceSha256": "693963a229e899b90bb411e8b26eec784761c137d356a6f6c87d2d437550dfda",
+  "width": 160,
+  "height": 160,
+  "command": [
+    "cwebp",
+    "-quiet",
+    "-q",
+    "85",
+    "-metadata",
+    "none",
+    "-resize",
+    "160",
+    "160",
+    "xi_profile.png",
+    "-o",
+    "public/quiet/xi-profile.webp"
+  ]
+}

@@ -12,3 +12,6 @@ dist
 /Tony Ann*.mp3
 .claude
 .vscode
+
+# Local browser verification captures/reports (not deployed assets).
+.impeccable/review/

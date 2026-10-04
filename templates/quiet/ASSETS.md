@@ -1,0 +1,27 @@
+# Quiet — asset and reference provenance
+
+## Portfolio photography
+
+All photography is user-supplied: the existing portfolio photographs and Chief's subsequently supplied `xi_profile.png`. No stock, scraped reference imagery, or generated imagery was introduced. Original files under `public/img/` are unchanged.
+
+| New asset in `public/quiet/` | Existing source | Transformation |
+| --- | --- | --- |
+| `switzerland-wide.webp` | `public/img/switzerland.webp` | 1440×720 center crop; WebP quality 84 |
+| `switzerland-wide-small.webp` | `switzerland-wide.webp` above | 768×384; WebP quality 82 |
+| `switzerland-thumb.webp` | `public/img/switzerland.webp` | 600×450 center crop; WebP quality 82 |
+| `paris-thumb.webp` | `public/img/paris.webp` | 600×450 center crop; WebP quality 82 |
+| `philippines-thumb.webp` | `public/img/philippines.webp` | 600×450 center crop; WebP quality 82 |
+| `nature-thumb.webp` | `public/img/nature.webp` | 600×450 center crop; WebP quality 82 |
+| `sunset-thumb.webp` | `public/img/sunset.webp` | 600×450 center crop; WebP quality 82 |
+| `flowers-thumb.webp` | `public/img/flowers.webp` | 600×450 center crop; WebP quality 82 |
+| `xi-profile.webp` | `xi_profile.png` | Full square resized 800×800 → 160×160; WebP quality 85; metadata removed; no extra crop or retouching |
+
+Each derivative carries an adjacent `.webp.json` provenance sidecar. The album viewer uses the unchanged `src/data.js` manifest and original gallery files on demand. Existing album labels and dates are reused; no more specific location is invented for individual photographs.
+
+## Reference mechanisms and exclusions
+
+- **Ellipsis** (`ellipsis-venture.com--2026-09-05-1641`): label/content alignment, mono-led hierarchy, thin rules, slate resting buttons and orange hover fill. Source HTML and captured states, not the export's misclassified orange background, determine colour roles. Chief's supplied Ellipsis screenshot initially informed rectangular sun/moon and GUI/Dev switches, overriding the older export's rounded toggles. Latest feedback supersedes both sliders with Quiet-native text view buttons and a single theme icon; tracks and thumbs are removed. The controls and finite browser-only portfolio grammar are independently implemented, not imported reference scripts. Quiet keeps its own neutral palette and truthful data/status.
+- **Conductor**, user-supplied screenshot: neutral light surfaces and warm charcoal dark ground. Exact final values are authored synthesis, not a claim to source CSS tokens. No app sidebar, dashboard, pixel logo, or product branding copied.
+- **Philip Readman** (`www.philipreadman.com--2026-10-04-0821`): broad photographic frame on a neutral surrounding plane, image-led pacing. No source photographs, floating toolbar, project copy, fonts, scripts, or video copied.
+
+No captured `source.html`, analytics, third-party runtime, origin font, or logo ships in this template. The source-native system mono stack needs no font download. Arrow, theme, and gallery controls use small authored SVG geometry. The favicon uses Chief's supplied `web_profile_code.svg`, shared by the ocean entry, Quiet, Notes and Approach. The original source stays unchanged; the served `public/web_profile_code.svg` uses a tighter `126 128 752 752` viewBox to enlarge the mark by about 36% within the browser's fixed icon area, without altering paths, circles or colours. Versioned icon references (`?v=2`) avoid reusing the earlier padded favicon. `public/web_profile_code.png` is a transparent 32×32 fallback rasterized from that same SVG with Chromium Canvas; its adjacent `.png.json` records source provenance. The former star assets remain on disk but are no longer referenced as favicons.

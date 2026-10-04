@@ -1,0 +1,19 @@
+{
+  "prompt": "Existing user portfolio photograph from public/img/nature.webp, reused for Quiet. Center crop to 600x450, WebP quality 82. Not AI-generated. Original source unchanged.",
+  "source": "public/img/nature.webp",
+  "sourceSha256": "ab541f608b244d8c5f6771e5b502af730efcdc47a49a88dfb44f5f524fb4d15a",
+  "command": [
+    "magick",
+    "public/img/nature.webp",
+    "-resize",
+    "600x450^",
+    "-gravity",
+    "center",
+    "-extent",
+    "600x450",
+    "-quality",
+    "82",
+    "public/quiet/nature-thumb.webp"
+  ],
+  "createdAt": "2026-10-04T02:14:13.641Z"
+}

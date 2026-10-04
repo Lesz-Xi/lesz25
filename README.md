@@ -1,57 +1,65 @@
-# Rhine Tague — Portfolio
+# Rhine Tague
 
-![Rhine Tague — I watch, doubt, and build.](public/cover.jpg)
+I build to understand.
 
-> I watch, doubt, and build.
+A minimal portfolio of software, research, and photography.
 
-A portfolio built as a place rather than a page: a full-viewport WebGL ocean under a
-day/night sky, with the work opening as paper letters over water that never restarts.
+[lesz25.com](https://lesz25.com)
 
-Live: **[lesz25.com](https://lesz25.com)**
+## Direction
 
----
+Work first. Simple typography, thin rules, neutral light and dark themes, and room
+for the photographs. Native scrolling, without loaders or decorative animation.
 
-## What's here
+Selected projects and papers keep their source links and development status.
+Notes and Approach are dedicated reading pages. The authored essay stays in English;
+the portfolio and interface support English, German, French, Italian, and Chinese.
 
-- **Work** — causal AI, companion-agent runtimes, observational interfaces.
-- **Research** — preprints and white papers.
-- **Photography** — six albums, shot across Switzerland, Paris, and the Philippines.
-- **Archive** — field notes. Currently: *What My Hands Knew First*.
-- **Purpose** — the ground under the work.
+GUI is the default view. Dev Mode offers a small set of commands for finding and
+opening the same work—it is a browser interface, not a shell.
 
-## The ocean
+## Run locally
 
-A raymarched WebGL sea (based on afl_ext's *Ocean*, MIT) retuned to a warm two-tone
-palette. Day and night are one shader: the entire palette resolves from two anchor
-colours in a duotone post-process, so the two themes are the same geometry seen under
-different light.
+Use Node.js 22. From the repository root:
 
-**Day** — an Interstellar-warm sea: cream sky, sun-path glints, clear water.
-**Night** — a Milky Way band overhead, and bioluminescent plankton blooms lighting the
-crests of breaking waves.
-
-A boat sails the horizon — purely atmospheric.
-
-## Stack
-
-Vanilla — no framework. Vite, WebGL2, ES modules. Five languages (EN/DE/FR/IT/ZH).
-
-```bash
+```sh
 npm install
-npm run dev     # localhost:5174
-npm run build
+npm run dev
 ```
 
-## Credits
+Open the local URL printed by Vite. The new portfolio is at `/`.
 
-The atmosphere — a raymarched ocean under a day/night sky, with content opening as
-letters over water that never restarts — was inspired by
-[Armin Ronacher](https://github.com/mitsuhiko)'s [earendil.com](https://earendil.com).
-No code from that site was used; the shader, palette, structure, and content here are
-my own, built from scratch in this repo.
+```sh
+npm run build
+npm run preview
+```
 
-Ocean shader based on [afl_ext](https://www.shadertoy.com/user/afl_ext)'s *Ocean* (MIT).
+Vite writes the production site to `dist/`.
 
-## Licence
+## Structure
 
-Apache 2.0.
+- `templates/quiet/` — portfolio, readers, styles, and interaction code.
+- `src/data.js` and `src/i18n.js` — shared records and translations.
+- `public/quiet/` — optimized images with provenance sidecars.
+- `public/img/` — original portfolio photographs.
+- `scripts/sync-quiet.mjs` — English fallbacks and synchronized root homepage.
+- `tests/` — content, navigation, accessibility, and browser checks.
+
+Quiet serves at `/`. The existing `/templates/quiet/` URL remains available.
+Notes and Approach retain their URLs under `/templates/quiet/` and return to the
+homepage. The earlier ocean portfolio is preserved at `/templates/ocean/`, with
+its own visual system and runtime.
+
+## Checks
+
+After changing copy, records, or rendering:
+
+```sh
+node scripts/sync-quiet.mjs
+npm test
+npm run check:quiet
+```
+
+Browser checks use an existing Playwright installation; they do not install packages
+or start a server. See `tests/quiet.browser.mjs` for source, live-server, and compiled
+`dist/` verification options.

@@ -1,0 +1,19 @@
+{
+  "prompt": "Existing user portfolio photograph from public/img/sunset.webp, reused for Quiet. Center crop to 600x450, WebP quality 82. Not AI-generated. Original source unchanged.",
+  "source": "public/img/sunset.webp",
+  "sourceSha256": "8102287bf62b7a4b243974f4a83e376186af9c868b0ce007e53c5b5824af8421",
+  "command": [
+    "magick",
+    "public/img/sunset.webp",
+    "-resize",
+    "600x450^",
+    "-gravity",
+    "center",
+    "-extent",
+    "600x450",
+    "-quality",
+    "82",
+    "public/quiet/sunset-thumb.webp"
+  ],
+  "createdAt": "2026-10-04T02:14:13.705Z"
+}

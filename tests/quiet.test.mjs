@@ -1,0 +1,351 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync, existsSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+import { COPY, copyFor } from '../templates/quiet/copy.js';
+import { albumFromHash, galleryImages, wrapIndex } from '../templates/quiet/gallery.js';
+
+const root = fileURLToPath(new URL('../', import.meta.url));
+const storage = new Map();
+Object.defineProperty(globalThis, 'navigator', { value: { languages: ['en'], language: 'en' }, configurable: true });
+globalThis.localStorage = { getItem: (key) => storage.get(key) || null, setItem: (key, value) => storage.set(key, value) };
+globalThis.document = { documentElement: {}, querySelector: () => null, querySelectorAll: () => [] };
+const { projects, research, albums, socials, renderArchive, renderPurpose, renderContact } = await import('../src/data.js');
+const { catalogFor, runCommand } = await import('../templates/quiet/commands.js');
+const { renderPreferences, renderDevMode } = await import('../templates/quiet/controls.js');
+const { LANGUAGES, setLang } = await import('../src/i18n.js');
+const { renderHero, renderSections, renderNote, renderLightbox, renderApproach, escapeHtml } = await import('../templates/quiet/render.js');
+const { default: config } = await import('../vite.config.js');
+
+const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
+
+test('all five locales have complete new copy and all current project descriptions', () => {
+  const keys = Object.keys(COPY.en).sort();
+  assert.deepEqual(Object.keys(COPY).sort(), LANGUAGES.map(({ code }) => code).sort());
+  for (const [locale, copy] of Object.entries(COPY)) {
+    assert.deepEqual(Object.keys(copy).sort(), keys, locale);
+    assert.equal(copy.projects.length, projects.length);
+    assert.equal(copy.papers.length, research.filter(({ url }) => url).length);
+    for (const value of Object.values(copy)) {
+      assert.ok(typeof value === 'string' ? value.length > 0 : value.every((entry) => entry.length > 0));
+    }
+  }
+  assert.equal(copyFor('unknown'), COPY.en);
+});
+
+test('localized renderers keep every source URL and in-development status', () => {
+  for (const { code } of LANGUAGES) {
+    setLang(code);
+    const content = renderHero(code) + renderSections(code);
+    assert.ok(content.includes(escapeHtml(COPY[code].title)));
+    assert.ok(!content.includes('undefined'));
+    assert.ok(!content.includes('href=""'));
+    for (const record of [...projects, ...research].filter(({ url }) => url)) assert.ok(content.includes(record.url));
+    assert.equal((content.match(/class="status"/g) || []).length, 2);
+    for (const id of ['work', 'research', 'photography', 'about', 'notes', 'contact']) assert.ok(content.includes(`id="${id}"`));
+    for (const album of albums) assert.ok(content.includes(`data-album="${album.id}"`));
+    assert.ok(content.includes('href="https://x.com/leszxix"'));
+    assert.ok(renderContact().includes('href="https://x.com/leszxix"'));
+    assert.ok(renderContact().includes('@leszxix'));
+    assert.ok(!content.includes('https://x.com/codefar1'));
+    assert.ok(!renderContact().includes('@codefar1'));
+  }
+  assert.equal(socials.find(({ key }) => key === 'X')?.url, 'https://x.com/leszxix');
+  setLang('en');
+});
+
+test('Quiet portrait precedes the name in every locale and has local provenance', () => {
+  for (const { code } of LANGUAGES) {
+    const hero = renderHero(code);
+    assert.equal((hero.match(/class="identity-portrait"/g) || []).length, 1);
+    assert.ok(hero.includes('src="/quiet/xi-profile.webp" width="160" height="160" alt="" decoding="async"'));
+    assert.ok(hero.indexOf('class="identity-portrait"') < hero.indexOf('class="name"'));
+  }
+  assert.ok(existsSync(`${root}public/quiet/xi-profile.webp`));
+  const provenance = JSON.parse(read('public/quiet/xi-profile.webp.json'));
+  assert.equal(provenance.source, 'xi_profile.png');
+  assert.equal(provenance.width, 160);
+  assert.equal(provenance.height, 160);
+  assert.ok(provenance.prompt.includes('Not AI-generated'));
+  assert.ok(read('index.html').includes('identity-portrait'));
+  assert.ok(!read('templates/ocean/index.html').includes('identity-portrait'));
+});
+
+test('Quiet footer is author-only, with no old-portfolio link or unused localized copy', () => {
+  const page = read('templates/quiet/index.html');
+  assert.ok(page.includes('<footer class="footer"><span>Rhine Tague</span></footer>'));
+  assert.ok(!page.includes('data-copy="original"'));
+  assert.ok(!page.includes('Original portfolio'));
+  for (const { code } of LANGUAGES) assert.ok(!Object.hasOwn(COPY[code], 'original'), code);
+});
+
+test('readers have one article-end return and an author-only page footer', () => {
+  for (const name of ['notes', 'approach']) {
+    const page = read(`templates/quiet/${name}.html`);
+    assert.equal((page.match(/>Back to portfolio<\/a>/g) || []).length, 1, name);
+    assert.ok(page.includes('<footer class="footer reader-footer"><span>Rhine Tague</span></footer>'), name);
+    assert.equal((page.match(/class="reading-end"/g) || []).length, 1, name);
+  }
+});
+
+test('all portfolio entries use the supplied SVG icon and matching PNG fallback', () => {
+  for (const path of ['index.html', 'templates/ocean/index.html', 'templates/quiet/index.html', 'templates/quiet/notes.html', 'templates/quiet/approach.html']) {
+    const html = read(path);
+    const icons = [...html.matchAll(/<link\b[^>]*\brel="icon"[^>]*>/g)].map(([tag]) => tag);
+    assert.equal(icons.length, 2, path);
+    assert.ok(icons.some((tag) => tag.includes('type="image/svg+xml"') && tag.includes('sizes="any"') && tag.includes('href="/web_profile_code.svg?v=2"')), path);
+    assert.ok(icons.some((tag) => tag.includes('type="image/png"') && tag.includes('sizes="32x32"') && tag.includes('href="/web_profile_code.png?v=2"')), path);
+    assert.ok(!icons.some((tag) => tag.includes('cartoon-power-up-star')), path);
+  }
+  const svg = read('public/web_profile_code.svg');
+  assert.ok(svg.includes('viewBox="126 128 752 752"'));
+  const png = readFileSync(new URL('../public/web_profile_code.png', import.meta.url));
+  assert.equal(png.subarray(0, 8).toString('hex'), '89504e470d0a1a0a');
+  assert.equal(png.readUInt32BE(16), 32);
+  assert.equal(png.readUInt32BE(20), 32);
+});
+
+test('HTML escaping protects names, text, and attribute values', () => {
+  assert.equal(escapeHtml('<a title="&\'">'), '&lt;a title=&quot;&amp;&#39;&quot;&gt;');
+});
+
+test('album hashes resolve only known albums and navigation wraps', () => {
+  assert.equal(albumFromHash('#album-switzerland', albums)?.id, 'switzerland');
+  assert.equal(albumFromHash('#album-unknown', albums), null);
+  assert.equal(albumFromHash('#work', albums), null);
+  assert.equal(albumFromHash('#album-%3Cscript%3E', albums), null);
+  assert.equal(wrapIndex(-1, 13), 12);
+  assert.equal(wrapIndex(13, 13), 0);
+  assert.equal(wrapIndex(4, 0), 0);
+  for (const album of albums) {
+    const images = galleryImages(album);
+    assert.equal(images[0], album.cover);
+    assert.deepEqual(images.slice(1), album.images);
+    for (const image of images) assert.ok(existsSync(`${root}public${image}`), `Missing ${image}`);
+  }
+});
+
+test('Vite declares the Quiet homepage, template alias, readers and preserved ocean', () => {
+  assert.equal(config.build.rollupOptions.input.home, `${root}index.html`);
+  assert.equal(config.build.rollupOptions.input.ocean, `${root}templates/ocean/index.html`);
+  assert.equal(config.build.rollupOptions.input.quiet, `${root}templates/quiet/index.html`);
+  assert.equal(config.build.rollupOptions.input.quietNotes, `${root}templates/quiet/notes.html`);
+  assert.equal(config.build.rollupOptions.input.quietApproach, `${root}templates/quiet/approach.html`);
+  for (const file of Object.values(config.build.rollupOptions.input)) assert.ok(existsSync(file));
+  assert.ok(read('templates/ocean/index.html').includes('src="/src/main.js"'));
+  assert.ok(read('templates/ocean/index.html').includes('<canvas id="canvas">'));
+  assert.ok(read('index.html').includes('src="/templates/quiet/main.js"'));
+  assert.ok(!read('index.html').includes('<canvas'));
+});
+
+test('root homepage mirrors Quiet with valid asset paths and canonical reader returns', () => {
+  const template = read('templates/quiet/index.html');
+  assert.equal(read('index.html'), template.replace('href="./styles.css"', 'href="/templates/quiet/styles.css"')
+    .replace('src="./main.js"', 'src="/templates/quiet/main.js"'));
+  for (const { code } of LANGUAGES) {
+    assert.ok(renderHero(code).includes('class="name" href="/"'));
+    assert.ok(renderNote(code).includes('href="/#notes"'));
+    assert.ok(renderApproach(code).includes('href="/#about"'));
+  }
+  for (const name of ['notes', 'approach']) {
+    assert.ok(read(`templates/quiet/${name}.html`).includes('class="name" href="/"'));
+    assert.ok(!read(`templates/quiet/${name}.html`).includes('href="/templates/quiet/#'));
+  }
+});
+
+test('Quiet import graph cannot load the ocean, overlays, or old CSS', () => {
+  const seen = new Set();
+  function visit(file) {
+    if (seen.has(file)) return;
+    seen.add(file);
+    assert.doesNotMatch(file, /\/(ocean|overlays|nav-popover)\.js$|\/src\/styles\.css$/);
+    const source = readFileSync(file, 'utf8');
+    for (const [, specifier] of source.matchAll(/(?:from\s*|import\s*)['"]([^'"]+)['"]/g)) {
+      assert.ok(specifier.startsWith('.'), `Unexpected runtime dependency ${specifier}`);
+      visit(fileURLToPath(new URL(specifier, `file://${file}`)));
+    }
+  }
+  visit(`${root}templates/quiet/main.js`);
+  visit(`${root}templates/quiet/notes.js`);
+  visit(`${root}templates/quiet/approach.js`);
+  assert.ok(seen.has(`${root}src/data.js`));
+  assert.ok(seen.has(`${root}src/i18n.js`));
+  assert.ok(!read('templates/quiet/main.js').includes('rhine-theme-mode'));
+});
+
+test('English fallback is complete, accessible without scripts, and synchronized', () => {
+  execFileSync(process.execPath, ['scripts/sync-quiet.mjs', '--check'], { cwd: root });
+  const html = read('templates/quiet/index.html');
+  assert.equal((html.match(/<h1\b/g) || []).length, 2);
+  assert.ok(html.includes('id="quiet-dev" class="dev-surface" aria-labelledby="dev-title" hidden'));
+  for (const id of ['work', 'research', 'photography', 'about', 'notes', 'contact']) assert.ok(html.includes(`id="${id}"`));
+  assert.ok(html.includes('class="preferences" hidden'));
+  assert.ok(html.includes('href="/#photography"'));
+  assert.ok(html.includes('href="/templates/quiet/notes.html"'));
+  assert.ok(html.includes('href="/templates/quiet/approach.html"'));
+  assert.ok(!html.includes('href="/#purpose"'));
+  for (const [, source] of html.matchAll(/\bsrc="(\/(?:quiet|img)\/[^"\s]+)"/g)) assert.ok(existsSync(`${root}public${source}`));
+});
+
+test('all six albums have image previews and local provenance; Notes has its own entry', () => {
+  setLang('en');
+  const content = renderSections('en');
+  assert.equal((content.match(/class="album-card"/g) || []).length, 6);
+  assert.ok(!content.includes('album-links'));
+  for (const album of albums) {
+    const source = `/quiet/${album.id}-thumb.webp`;
+    assert.ok(content.includes(`src="${source}"`));
+    assert.ok(existsSync(`${root}public${source}`));
+    const provenance = JSON.parse(read(`public${source}.json`));
+    assert.ok(provenance.prompt.includes(`public/img/${album.id}.webp`));
+  }
+  assert.ok(content.includes('id="notes"'));
+  assert.ok(!content.includes('href="/#archive"'));
+  assert.ok(renderHero('en').includes('cinematic-frame'));
+  assert.ok(!read('templates/quiet/styles.css').includes('cinematic-mat'));
+});
+
+test('Notes reframes every authored paragraph and source link without changing the essay', () => {
+  const source = renderArchive();
+  const original = [...source.matchAll(/<p class="letter-body[^"]*">([\s\S]*?)<\/p>/g)].map(([, html]) => html);
+  assert.equal(original.length, 18);
+  for (const { code } of LANGUAGES) {
+    const note = renderNote(code);
+    const actual = [...note.matchAll(/<p(?: class="[^"]*")?>([\s\S]*?)<\/p>/g)].map(([, html]) => html);
+    assert.deepEqual(actual, original);
+    assert.ok(note.includes('<article class="reading-article" lang="en"'));
+    assert.ok(note.includes('What My Hands Knew First'));
+    assert.ok(note.includes('Field Note — Jul 2026'));
+    assert.ok(note.includes(escapeHtml(COPY[code].backPortfolio)));
+    assert.ok(!note.includes('undefined'));
+  }
+  const page = read('templates/quiet/notes.html');
+  assert.equal((page.match(/<h1\b/g) || []).length, 1);
+  assert.ok(page.includes('class="preferences" hidden'));
+  assert.ok(page.includes('href="/#notes"'));
+});
+
+test('the photo preview is a labelled native dialog and Read the note stays cardless', () => {
+  for (const { code } of LANGUAGES) {
+    setLang(code);
+    const dialog = renderLightbox(code);
+    const sections = renderSections(code);
+    assert.ok(dialog.includes('<dialog id="photo-preview"'));
+    assert.ok(dialog.includes('aria-labelledby="preview-title"'));
+    assert.ok(dialog.includes('id="preview-close"'));
+    assert.ok(!dialog.includes('<dialog open'));
+    assert.ok(sections.includes('data-photo-preview aria-haspopup="dialog"'));
+    assert.ok(sections.includes('class="text-link note-read-link"'));
+    assert.ok(sections.includes('data-read-note'));
+    assert.ok(!sections.includes('class="button" href="/templates/quiet/notes.html"'));
+  }
+  setLang('en');
+});
+
+function luminance(hex) {
+  const channels = [1, 3, 5].map((offset) => parseInt(hex.slice(offset, offset + 2), 16) / 255)
+    .map((value) => value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4);
+  return channels.reduce((sum, value, index) => sum + value * [0.2126, 0.7152, 0.0722][index], 0);
+}
+function contrast(a, b) {
+  const [low, high] = [luminance(a), luminance(b)].sort((x, y) => x - y);
+  return (high + 0.05) / (low + 0.05);
+}
+
+test('cardless view buttons and single theme icon have native pressed-state semantics', () => {
+  for (const { code } of LANGUAGES) {
+    const controls = renderPreferences(code, true);
+    assert.equal((controls.match(/aria-pressed="/g) || []).length, 3);
+    assert.ok(!controls.includes('role="switch"'));
+    assert.ok(!controls.includes('switch-track'));
+    assert.ok(!controls.includes('switch-thumb'));
+    assert.ok(controls.includes('id="quiet-gui-control" aria-pressed="true"'));
+    assert.ok(controls.includes('role="group" aria-label="' + escapeHtml(COPY[code].viewLabel) + '"'));
+    assert.ok(controls.includes('aria-label="' + escapeHtml(COPY[code].devLabel) + '"'));
+    assert.ok(controls.includes('aria-controls="quiet-dev"'));
+    assert.ok(controls.includes('theme-icon-light'));
+    assert.ok(controls.includes('theme-icon-dark'));
+    assert.ok(!renderPreferences(code).includes('id="quiet-mode"'));
+    const mode = renderDevMode(code);
+    assert.ok(mode.includes('role="log"'));
+    assert.ok(mode.includes('maxlength="256"'));
+    assert.ok(!mode.includes('undefined'));
+  }
+});
+
+test('approach preserves all three original paragraphs and six localized principles', () => {
+  for (const { code } of LANGUAGES) {
+    setLang(code);
+    const original = [...renderPurpose().matchAll(/<p class="letter-body">([\s\S]*?)<\/p>/g)].map(([, text]) => text);
+    const actual = [...renderApproach(code).matchAll(/<p>([\s\S]*?)<\/p>/g)].map(([, text]) => text);
+    assert.deepEqual(actual, original);
+    assert.equal(actual.length, 3);
+    assert.equal((renderApproach(code).match(/<li>/g) || []).length, 6);
+    assert.ok(renderApproach(code).includes('href="/#about"'));
+  }
+  setLang('en');
+});
+
+test('command catalog preserves source links, statuses, publication kinds and album destinations', () => {
+  for (const { code } of LANGUAGES) {
+    setLang(code);
+    const records = catalogFor(code);
+    assert.equal(new Set(records.map(({ id }) => id)).size, records.length);
+    assert.equal(records.filter(({ category }) => category === 'work').length, projects.length);
+    for (const record of [...projects, ...research].filter(({ url }) => url)) assert.ok(records.some(({ href }) => href === record.url));
+    for (const album of albums) assert.equal(records.find(({ id }) => id === album.id).href, `#album-${album.id}`);
+    assert.equal(records.find(({ id }) => id === 'twin-sparrow').href, '');
+    assert.ok(records.find(({ id }) => id === 'twin-sparrow').status);
+    assert.ok(records.find(({ id }) => id === 'hoegs').status);
+    assert.equal(records.find(({ id }) => id === 'hoegs').description, COPY[code].papers[0]);
+  }
+  setLang('en');
+});
+
+test('finite command grammar navigates only known content and never interprets shell or URLs', () => {
+  assert.equal(runCommand(' help ', 'en').kind, 'help');
+  assert.equal(runCommand('ls work', 'en').records.length, 5);
+  assert.equal(runCommand('ls albums', 'en').records.length, 6);
+  assert.equal(runCommand('find Twin', 'en').records[0].id, 'twin-sparrow');
+  assert.equal(runCommand('open twin-sparrow', 'en').records[0].href, '');
+  assert.equal(runCommand('open switzerland', 'en').record.href, '#album-switzerland');
+  assert.equal(runCommand('OPEN "My approach"', 'en').record.href, '/templates/quiet/approach.html');
+  assert.equal(runCommand('open hoegs', 'en').records[0].href, research[0].url);
+  assert.deepEqual(runCommand('theme DARK', 'en'), { kind: 'theme', theme: 'dark' });
+  for (const input of ['rm -rf /', 'curl https://example.com', 'open javascript:alert(1)', 'open https://example.com', '<img src=x onerror=alert(1)>', 'theme dark; exit', 'open switzerland && exit', 'ls __proto__', 'open __proto__', 'find', 'x'.repeat(257)]) {
+    assert.equal(runCommand(input, 'en').kind, 'message', input);
+  }
+  assert.equal(runCommand('', 'en').kind, 'noop');
+  assert.equal(runCommand('clear', 'en').kind, 'clear');
+  assert.equal(runCommand('exit', 'en').kind, 'exit');
+});
+
+test('Quiet hides scrollbars without disabling native scrolling or retaining slider geometry', () => {
+  const css = read('templates/quiet/styles.css');
+  assert.ok(css.includes('scrollbar-width: none'));
+  assert.ok(css.includes('*::-webkit-scrollbar { display: none; width: 0; height: 0; }'));
+  assert.ok(css.includes('overflow-y: auto'));
+  assert.ok(!css.includes('switch-track'));
+  assert.ok(!css.includes('switch-thumb'));
+  assert.ok(!css.includes('scroll-behavior: smooth'));
+});
+
+test('actual stylesheet text and button tokens meet AA in both themes', () => {
+  const css = read('templates/quiet/styles.css');
+  const lightBlock = css.match(/:root \{([^}]+)\}/)[1];
+  const darkBlock = css.match(/:root\[data-theme='dark'\] \{([^}]+)\}/)[1];
+  const tokens = (block) => Object.fromEntries([...block.matchAll(/--([\w-]+):\s*(#[\da-f]{6})/g)].map(([, key, value]) => [key, value]));
+  const light = tokens(lightBlock);
+  const dark = { ...light, ...tokens(darkBlock) };
+  for (const theme of [light, dark]) {
+    for (const ink of ['ink', 'muted', 'accent']) {
+      assert.ok(contrast(theme[ink], theme.page) >= 4.5, `${ink} on page`);
+    }
+    for (const ink of ['ink', 'muted', 'surface-accent']) assert.ok(contrast(theme[ink], theme.surface) >= 4.5, `${ink} on command surface`);
+    assert.ok(contrast(theme.muted, theme.page) >= 3, 'Switch track/thumb affordance');
+    assert.ok(contrast(theme['button-ink'], theme.button) >= 4.5);
+    assert.ok(contrast(theme['orange-ink'], theme.orange) >= 4.5);
+  }
+  assert.ok(css.includes('@media (prefers-reduced-motion: reduce)'));
+});

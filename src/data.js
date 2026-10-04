@@ -113,7 +113,7 @@ export const socials = [
   { keyLabel: '', key: 'GitHub', label: 'github.com/Lesz-Xi', url: 'https://github.com/Lesz-Xi' },
   { keyLabel: '', key: 'LinkedIn', label: 'in/rhine-lesther-tague', url: 'https://linkedin.com/in/rhine-lesther-tague-4b604a246' },
   { keyLabel: '', key: 'Instagram', label: '@ichrhin3y', url: 'https://instagram.com/ichrhin3y' },
-  { keyLabel: '', key: 'X', label: '@codefar1', url: 'https://x.com/codefar1' },
+  { keyLabel: '', key: 'X', label: '@leszxix', url: 'https://x.com/leszxix' },
 ];
 
 // ---- renderers (return HTML strings; content is static + trusted) ----
