@@ -28,6 +28,7 @@ Make Rhine's work, publications, photographs, notes, and contact details availab
 - The new template must not import the ocean renderer or letter-overlay runtime.
 - Chief authorized this homepage migration, production checks, commit and push. Do not install dependencies or start a development server automatically.
 - Keep root HTML synchronized from Quiet, and distinguish a successful push from a verified deployment.
+- Chief's latest explicit exception is one optional, skippable Philippine-SVG welcome sequence, replacing the inline country flag. Preserve native scrolling and fail-open/no-script content; reduced motion bypasses it. This is not resource progress and must not delay initialization or repeat on reader returns. The prior inline-flag commit/push was paused when this scope changed; Chief subsequently approved the completed welcome with its 1500ms greeting hold and authorized committing/pushing it. A push does not establish deployment.
 
 ## Brand Commitments
 

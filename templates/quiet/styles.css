@@ -69,6 +69,18 @@ section, #album-heading { scroll-margin-top: 32px; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .skip-link { position: absolute; top: 8px; left: 16px; padding: 12px 16px; z-index: 2; background: var(--page); transform: translateY(-180%); }
 .skip-link:focus { transform: none; }
+/* A finite welcome, not resource progress. Hidden by default; no inert/scroll lock.
+   CSS independently removes the cover if its JS controller fails mid-sequence. */
+.entry-intro { position: fixed; inset: 0; z-index: 10; display: flex; align-items: center; justify-content: center; padding: 32px; background: var(--page); color: var(--ink); animation: entry-fail-open 4s step-end forwards; }
+.entry-composition { display: flex; flex-direction: column; align-items: center; gap: 28px; text-align: center; }
+.entry-artwork { width: clamp(176px, 26vw, 240px); max-width: calc(100vw - 64px); aspect-ratio: 946 / 685; }
+.entry-artwork svg { display: block; width: 100%; height: 100%; }
+.entry-caption { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.entry-greeting { font-size: clamp(21px, 4vw, 26px); line-height: 1.3; letter-spacing: -0.025em; }
+.entry-description { font-size: 12px; color: var(--muted); }
+.entry-skip { position: absolute; right: max(24px, env(safe-area-inset-right)); bottom: max(24px, env(safe-area-inset-bottom)); min-height: 44px; padding: 8px 12px; }
+@keyframes entry-fail-open { to { opacity: 0; visibility: hidden; pointer-events: none; } }
+@media (prefers-reduced-motion: reduce) { .entry-intro { display: none !important; } }
 .page-shell { width: min(1200px, calc(100% - 80px)); margin-inline: auto; }
 .topbar { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 100px; padding-left: calc(var(--rail) + var(--gutter)); border-bottom: 1px solid var(--rule); }
 .section-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 28px; }

@@ -30,9 +30,15 @@
   OWN-WORLD: Ellipsis label/content grid, 1px rules, mono typography, slate-to-orange controls; Conductor-informed neutral themes.
   STORY: Meet Rhine, inspect the work, explore the photographs, examine the papers, read the notes, then make contact.
   FIRST VIEWPORT: 1200px shell, 180px identity rail, 32px introduction, and one 2:1 photograph; action beside the introduction.
-  FORM: User-approved synthesis overrides seed 9df07a23. Readman supplies the wide framed image, not its toolbar. Native scroll; no reveals or loops.
+  FORM: User-approved synthesis overrides seed 9df07a23. Readman supplies the wide framed image, not its toolbar. Native scroll; one explicitly requested, skippable SVG welcome sequence; no section reveals or loops.
   FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
   -->
+  <!-- quiet:entry:start -->
+<div id="entry-intro" class="entry-intro" role="region" aria-label="Welcome" hidden data-state="idle">
+    <div class="entry-composition"><div class="entry-artwork" aria-hidden="true"></div><div class="entry-caption"><p class="entry-greeting" lang="fil">Magandang araw!</p><p class="entry-description" lang="en">Good day. Welcome.</p></div></div>
+    <button type="button" class="entry-skip text-control">Skip introduction</button>
+  </div>
+        <!-- quiet:entry:end -->
   <a class="skip-link" href="#main" data-copy="skip">Skip to content</a>
   <div class="page-shell">
     <header class="topbar">

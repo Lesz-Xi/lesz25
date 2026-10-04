@@ -11,6 +11,14 @@ const chevron = (previous) => `<svg viewBox="0 0 16 16" width="16" height="16" f
 const external = (url, label, className = 'text-link') => `<a class="${className}" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)}${ARROW}</a>`;
 const section = (id, heading, body) => `<section class="section-grid" id="${id}" aria-labelledby="${id}-heading"><h2 id="${id}-heading" class="section-label">${escapeHtml(heading)}</h2><div class="section-content">${body}</div></section>`;
 
+export function renderEntryIntro(locale) {
+  const c = copyFor(locale);
+  return `<div id="entry-intro" class="entry-intro" role="region" aria-label="${escapeHtml(c.entryWelcome)}" hidden data-state="idle">
+    <div class="entry-composition"><div class="entry-artwork" aria-hidden="true"></div><div class="entry-caption"><p class="entry-greeting" lang="fil">Magandang araw!</p><p class="entry-description" lang="${escapeHtml(locale)}">${escapeHtml(c.entryDescription)}</p></div></div>
+    <button type="button" class="entry-skip text-control">${escapeHtml(c.entrySkip)}</button>
+  </div>`;
+}
+
 export function renderHero(locale) {
   const c = copyFor(locale);
   return `<section class="hero section-grid" aria-labelledby="intro-heading">

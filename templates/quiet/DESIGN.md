@@ -165,6 +165,12 @@ Quiet's portfolio footer contains only the author signature, matching Notes and 
 
 Chief's supplied `xi_profile.png` sits directly above the name in Quiet's existing identity rail, left-aligned with the name. It is 80×80px desktop and 64×64px below 700px, with 4px corners and no card, border, shadow, badge or added interaction. A 160×160 WebP derivative preserves the complete square source and supplies 2× desktop pixels for about 5.6KB. Explicit dimensions reserve the square footprint; empty alt avoids repeating the adjacent name to screen readers. Mobile adds 8px image-to-name spacing on top of the existing 4px stack gap. The source PNG, ocean hero, reader headers and favicon are unchanged by this addition. Cost: one small eager image and additional identity-rail height, not a new content block.
 
+### SVG welcome sequence
+
+Chief explicitly replaced the inline country decoration with one skippable welcome sequence inside the existing Quiet world. The country is text-only again. Latest Paper node `7M-0` supplies the full pole flag, already blue above red; its colors, paths, gradients and orientation stay intact. A centered 176–240px contained SVG reserves its complete aspect ratio, with a 28px interval to the caption below: “Magandang araw!” (`lang="fil"`), then localized “Good day. Welcome.” A cardless 44px-minimum Skip action rests at the bottom-right. Use the page's existing neutral ground, mono type and readable theme roles; flag colors are artwork, not new UI palette tokens.
+
+Entry behavior is one finite native Web Animations sequence: pole → six stroke-drawn stripes → sun → three sequential stars → greeting → brief completed hold → opacity exit. Its nominal duration is 3350ms, including Chief's explicitly requested 1500ms hold after the completed caption is fully visible, with a 3700ms JS deadline and independent 4s CSS visibility/pointer fail-open. Actual animation completion drives each next stage. No GSAP dependency, extra ticker, inert state, modal, body scroll lock or smoother is added. The optional module is dynamically imported so its failure cannot disable portfolio controls. It plays once per tab on a healthy fresh non-hash arrival; reduced motion, hidden/late/returning pages, unavailable storage, slow/missing artwork and existing interaction bypass it. Skip, keyboard, pointer/touch/wheel input, route changes, page departure and live reduced-motion changes retire the work and preserve native input. Static/no-script content remains immediately available. Cut: persistent country flag and any progress fiction. Tradeoff: a short first-visit welcome before the underlying ready page, never repeated page-load choreography.
+
 ### Buttons and links
 
 Primary buttons have a 44px minimum target, slate/light or warm-sand/dark rest state, and orange hover/focus fill. Links use a thin underline on hover; small authored SVG arrows clarify destinations. Keyboard focus is a 2px accent outline with 5px offset. Selection uses orange with dark ink.
@@ -197,7 +203,7 @@ Dev Mode replaces the GUI content field, not its document or data. The theme's s
 
 ### Motion
 
-Colour/background and active-underline opacity feedback last 150ms with CSS ease. Touch-only devices omit colour/background transitions. The protected-focus photo preview has the bounded exit described above; image changes themselves do not add slide effects or artificial delay. Reduced motion disables transitions and exit animation. There is no scroll manipulation, entry animation, autoplay, or idle render loop.
+Colour/background and active-underline opacity feedback last 150ms with CSS ease. Touch-only devices omit colour/background transitions. The protected-focus photo preview has the bounded exit described above; image changes themselves do not add slide effects or artificial delay. Reduced motion disables transitions and exit animation. There is no scroll manipulation, media autoplay or idle render loop. The explicitly requested, once-per-tab SVG welcome is the sole page-entry exception described above.
 
 ## Do's and Don'ts
 

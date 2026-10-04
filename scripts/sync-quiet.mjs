@@ -5,10 +5,10 @@ import { readFile, writeFile } from 'node:fs/promises';
 Object.defineProperty(globalThis, 'navigator', {
   value: { languages: ['en'], language: 'en' }, configurable: true,
 });
-const { renderHero, renderSections, renderNote, renderLightbox, renderApproach } = await import('../templates/quiet/render.js');
+const { renderHero, renderSections, renderNote, renderLightbox, renderApproach, renderEntryIntro } = await import('../templates/quiet/render.js');
 const { renderPreferences, renderDevMode } = await import('../templates/quiet/controls.js');
 const pages = [
-  ['index.html', [['preferences', (locale) => renderPreferences(locale, true)], ['hero', renderHero], ['sections', renderSections], ['lightbox', renderLightbox], ['dev', renderDevMode]]],
+  ['index.html', [['entry', renderEntryIntro], ['preferences', (locale) => renderPreferences(locale, true)], ['hero', renderHero], ['sections', renderSections], ['lightbox', renderLightbox], ['dev', renderDevMode]]],
   ['notes.html', [['preferences', renderPreferences], ['note', renderNote]]],
   ['approach.html', [['preferences', renderPreferences], ['approach', renderApproach]]],
 ];

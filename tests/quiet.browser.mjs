@@ -103,6 +103,10 @@ try {
   const portraitSource = await page.locator('.identity-portrait').evaluate((image) => ({ width: image.naturalWidth, height: image.naturalHeight }));
   assert.deepEqual(portraitSource, { width: 160, height: 160 });
   check('Portrait loads locally above the name, with a reserved square footprint and no added control');
+  assert.equal(await page.locator('.location-flag').count(), 0);
+  assert.equal(await page.locator('#entry-intro').count(), 1);
+  await page.waitForFunction(() => document.querySelector('#entry-intro').hidden);
+  check('Country has no inline flag; the separate bounded welcome releases the unchanged portfolio');
   if (profileCapture) {
     for (const width of [1440, 390]) {
       await page.setViewportSize({ width, height: width === 390 ? 844 : 900 });
@@ -195,6 +199,7 @@ try {
         assert.ok(portrait.bottom < portrait.nameY);
         assert.equal(portrait.radius, '4px');
         assert.equal(portrait.shadow, 'none');
+        assert.equal(await page.locator('.location-flag').count(), 0);
         const emptyFrame = await page.locator('.cinematic-frame').evaluate((element) => {
           const host = element.getBoundingClientRect();
           const img = element.querySelector('img').getBoundingClientRect();
@@ -679,6 +684,8 @@ try {
   await waitImage(nojsPage, '.identity-portrait');
   assert.deepEqual(await nojsPage.locator('#quiet-sections > section').evaluateAll(nodes => nodes.map(node => node.id)), ['about', 'work', 'photography', 'research', 'notes', 'contact']);
   assert.equal(await nojsPage.locator('.identity-portrait').count(), 1);
+  assert.equal(await nojsPage.locator('.location-flag').count(), 0);
+  assert.equal(await nojsPage.locator('#entry-intro').isVisible(), false);
   assert.equal(await nojsPage.locator('.page-shell > .footer a').count(), 0);
   assert.equal(await nojsPage.locator('.page-shell > .footer').textContent(), 'Rhine Tague');
   assert.equal(await nojsPage.locator('.preferences').isVisible(), false);
@@ -738,6 +745,7 @@ try {
   interactionPage.on('pageerror', error => interactionErrors.push(error.message));
   await interactionPage.goto(`${origin}/`);
   await interactionPage.locator('.preferences:not([hidden])').waitFor();
+  await interactionPage.waitForFunction(() => document.querySelector('#entry-intro').hidden);
   assert.equal(await interactionPage.locator('#contact a[href="https://substack.com/@les1587833"]').count(), 1);
   const themeChanges = await interactionPage.evaluate(async () => {
     let body = 0; let content = 0;

@@ -179,3 +179,7 @@ onLangChange(paintPage);
 paintPage();
 devMode = initDevMode({ navigate: navigatePortfolio, setTheme, beforeEnter: () => preview.close({ restoreFocus: false }) });
 if (albumFromHash(location.hash, albums)) syncAlbum({ focus: true });
+// Optional motion must not gate the portfolio module, rendering or image readiness.
+import('./entry-intro.js').then(({ initEntryIntro }) => initEntryIntro({ locale: getLang() })).catch(() => {
+  // The static hidden cover stays hidden; normal portfolio controls still initialize.
+});

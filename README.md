@@ -9,8 +9,12 @@ A minimal portfolio of software, research, and photography.
 ## Direction
 
 A short introduction, then the work. Simple typography, thin rules, neutral light
-and dark themes, and room for the photographs. Native scrolling, without decorative loaders
-or scroll effects.
+and dark themes, and room for the photographs. Native scrolling, without scroll effects.
+
+A short, skippable first-tab welcome draws the supplied Philippine SVG flag, then
+reveals “Magandang araw!” below it. It is not a loading-progress indicator. Reduced
+motion, deep links and reader returns bypass it; failures keep the page usable.
+The country label itself remains text-only.
 
 Page order: About → Selected Work → Photography → Research → Notes → Contact.
 
@@ -65,4 +69,6 @@ npm run check:quiet
 
 Browser checks use an existing Playwright installation; they do not install packages
 or start a server. See `tests/quiet.browser.mjs` for source, live-server, and compiled
-`dist/` verification options.
+`dist/` verification options. `tests/entry-intro.browser.mjs` checks the welcome
+sequence on an existing live Vite server, including interruption and failure paths;
+`ENTRY_CAPTURE=1` records a bounded desktop/mobile light/dark capture batch.

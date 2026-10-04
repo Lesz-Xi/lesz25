@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { createHash } from 'node:crypto';
 import { COPY, copyFor } from '../templates/quiet/copy.js';
 import { albumFromHash, galleryImages, wrapIndex } from '../templates/quiet/gallery.js';
 
@@ -15,7 +16,7 @@ const { projects, research, albums, socials, renderArchive, renderPurpose, rende
 const { catalogFor, runCommand } = await import('../templates/quiet/commands.js');
 const { renderPreferences, renderDevMode } = await import('../templates/quiet/controls.js');
 const { LANGUAGES, setLang, t } = await import('../src/i18n.js');
-const { renderHero, renderSections, renderNote, renderLightbox, renderApproach, escapeHtml } = await import('../templates/quiet/render.js');
+const { renderHero, renderSections, renderNote, renderLightbox, renderApproach, renderEntryIntro, escapeHtml } = await import('../templates/quiet/render.js');
 const { default: config } = await import('../vite.config.js');
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
@@ -92,6 +93,37 @@ test('Quiet portrait precedes the name in every locale and has local provenance'
   assert.ok(provenance.prompt.includes('Not AI-generated'));
   assert.ok(read('index.html').includes('identity-portrait'));
   assert.ok(!read('templates/ocean/index.html').includes('identity-portrait'));
+});
+
+test('Paper pole flag is reserved for the hidden welcome sequence, never the country label', () => {
+  for (const { code } of LANGUAGES) {
+    setLang(code);
+    const hero = renderHero(code);
+    assert.ok(hero.includes(`<span>${escapeHtml(t('contact.locationVal'))}</span>`));
+    assert.ok(!hero.includes('location-flag'));
+    assert.ok(!renderSections(code).includes('location-flag'));
+    const entry = renderEntryIntro(code);
+    assert.ok(entry.includes('hidden data-state="idle"'));
+    assert.ok(entry.includes('lang="fil">Magandang araw!</p>'));
+    assert.ok(entry.includes(escapeHtml(COPY[code].entryDescription)));
+    assert.ok(entry.includes(escapeHtml(COPY[code].entrySkip)));
+    assert.ok(entry.includes('class="entry-artwork" aria-hidden="true"'));
+  }
+  setLang('en');
+  const original = read('templates/quiet/assets/philippines-flag-source.svg');
+  const served = read('public/quiet/philippines-flag.svg');
+  const provenance = JSON.parse(read('public/quiet/philippines-flag.svg.json'));
+  const expected = original.replace('width="1024" height="876" viewBox="0 0 1024 876"', `width="${provenance.width}" height="${provenance.height}" viewBox="${provenance.viewBox}"`);
+  assert.equal(served, expected, 'Only the empty viewport changes; all artwork and supplied colors stay intact');
+  assert.ok(served.includes('<g id="_c1u96v6">'), 'The complete pole group remains');
+  assert.ok(served.includes('stroke="#5C5D5B" stroke-width="1.6"'));
+  assert.deepEqual([...served.matchAll(/stop-color="(#[a-f0-9]+)"/gi)].map(match => match[1]), ['#626361', '#696a68', '#60615f', '#0052bf', '#0050bb', '#e50920', '#e6091e', '#ffc92a', '#ffc218']);
+  assert.equal(provenance.sourceSha256, createHash('sha256').update(original).digest('hex'));
+  assert.equal(provenance.servedSha256, createHash('sha256').update(served).digest('hex'));
+  assert.ok(provenance.sourceUrl.endsWith('/p-1-0/7M-0'));
+  assert.ok(!served.includes('<script'));
+  for (const path of ['templates/ocean/index.html', 'templates/quiet/notes.html', 'templates/quiet/approach.html']) assert.ok(!read(path).includes('entry-intro'));
+  assert.ok(!read('templates/quiet/styles.css').includes('.location-flag'));
 });
 
 test('Quiet footer is author-only, with no old-portfolio link or unused localized copy', () => {
