@@ -87,16 +87,16 @@ spacing:
   section-mobile: "40px"
   section-desktop: "64px"
 components:
-  button-primary:
-    backgroundColor: "{colors.button-slate}"
-    textColor: "{colors.button-ink}"
-    rounded: "{rounded.control}"
-    padding: "12px 20px"
-    typography: "{typography.label}"
-  button-primary-hover:
-    backgroundColor: "{colors.orange}"
-    textColor: "{colors.orange-ink}"
-    rounded: "{rounded.control}"
+  cardless-action:
+    backgroundColor: "transparent"
+    textColor: "{colors.ink-light}"
+    fontSize: "13px"
+    minHeight: "44px"
+    textDecoration: "underline"
+    textDecorationColor: "{colors.muted-light}"
+  cardless-action-hover:
+    textColor: "{colors.accent-light}"
+    textDecorationColor: "currentColor"
 ---
 
 # Design System: Rhine Tague — Quiet
@@ -117,7 +117,7 @@ This document applies to the default portfolio at `/`, its `/templates/quiet/` a
 
 ### Primary
 
-Orange is interaction feedback, not a page field. Light primary actions pair slate with white. At Chief's explicit request, dark actions pair warm sand (`#d8c8b4`) with charcoal (`#211f1c`) rather than carrying the cool slate into the warm dark surface. Both themes switch to orange with charcoal text on hover/focus. Light-theme text accents use the darker orange tone for readability. All six header navigation links share Dev Mode's existing `--accent` on hover and keyboard `:focus-visible`: `#fb923c` in dark mode, `#b94708` in light mode. Rest stays muted; hover/focus adds an underline and the existing focus outline remains. No filled nav treatment, persistent orange state, new color token or layout change.
+Orange is interaction feedback, not a page field. Slate/white and warm-sand/charcoal remain palette pairs for incumbent controls; the hero and Contact now use cardless underlined text actions instead of filled rectangles. These text actions use the existing accent on hover/focus, not an orange background. Light-theme text accents use the darker orange tone for readability. All six header navigation links share Dev Mode's existing `--accent` on hover and keyboard `:focus-visible`: `#fb923c` in dark mode, `#b94708` in light mode. Rest stays muted; hover/focus adds label-bound square brackets and the existing focus outline remains. No filled nav treatment, persistent orange state, new color token or layout change.
 
 ### Neutral
 
@@ -159,7 +159,7 @@ Controls and content rows are square. The small identity portrait has subtly sof
 
 ### Mobile navigation
 
-At <=700px, one compact Menu / language / theme row replaces the always-visible wrapped links. A 1.2px-stroke SVG accompanies the localized Menu/Close label; the button and other controls retain 44px targets. The non-modal disclosure opens in document flow with six left-aligned destinations and a thin-rule View group. Existing GUI/Dev buttons move into that group and return to the original preferences above the breakpoint, preserving identity, listeners and pressed-state underline. Desktop uses display: contents for the navigation wrapper and remains visually incumbent. No new card, blur, fullscreen overlay, fixed shell, scroll lock, focus trap, animation or dependency.
+At <=700px, one compact Menu / language / theme row replaces the always-visible wrapped links. A 1.2px-stroke SVG accompanies the localized Menu/Close label; the button and other controls retain 44px targets. The non-modal disclosure opens in document flow with six left-aligned destinations and a thin-rule View group. Existing GUI/Dev buttons move into that group and return to the original preferences above the breakpoint, preserving identity, listeners and pressed state; brackets now replace the underline. Desktop uses display: contents for the navigation wrapper and remains visually incumbent. No new card, blur, fullscreen overlay, fixed shell, scroll lock, focus trap, animation or dependency.
 
 Language and theme stay available while closed or open; translation/theme changes preserve open state. Selection, Escape, outside activation, route/Back and breakpoint changes close coherently, preserving a visible focus destination and Dev transcript/GUI state. Plain native links remain visible with no JavaScript or missing enhancement; only the usable enhancement exposes Menu. Cut: scattered mobile rows and GUI/Dev competing in the opening bar. Tradeoff: a disclosure tap and in-flow expansion; the hero's direct work link remains outside it.
 
@@ -195,11 +195,11 @@ Use native Web Animations, not a new GSAP/SplitText dependency or frame schedule
 
 ### Buttons and links
 
-The hero's “Explore the work” is a native `.text-link.hero-work-link` to `#work`, not a filled button. At Chief's request it has no background, border, shadow or horizontal padding: the 12px mono label aligns with the heading, retains the existing arrow and sits over a thin muted underline. Its 44px minimum height and previous 8px top interval remain. Hover and keyboard focus change only text/underline to the existing accent, with the global 2px focus outline and 5px offset. Copy and all six translations stay unchanged. Cut: the hero's enclosing rectangle. Tradeoff: quieter emphasis, with the underline and arrow preserving recognizability. Contact still uses the original 44px slate/light or warm-sand/dark primary button and accessible orange hover/focus fill. Other links keep their existing behavior. Selection uses orange with dark ink.
+The hero's “Explore the work” is a native `.text-link.hero-work-link` to `#work`, not a filled button. At Chief's request it has no background, border, shadow or horizontal padding: the 12px mono label aligns with the heading, retains the existing arrow and sits over a thin muted underline. Its 44px minimum height and previous 8px top interval remain. Hover and keyboard focus change only text/underline to the existing accent, with the global 2px focus outline and 5px offset. Copy and all six translations stay unchanged. Cut: the hero's enclosing rectangle. Tradeoff: quieter emphasis, with the underline and arrow preserving recognizability. Contact's Email me now matches Read the note: a 13px cardless underlined native mailto action with the same arrow, gap, 44px minimum height, muted resting underline and accent text/underline on hover or keyboard focus. No background, border, padding or shadow; unused filled-button CSS is removed, while theme/icon palette tokens remain. Other links keep their existing behavior. Selection uses orange with dark ink.
 
 ### Preferences
 
-The language picker remains a native select. Chief's latest feedback replaces both reference sliders with bespoke cardless controls: separate GUI and Dev Mode text buttons, 12px in both desktop and mobile layouts, with a 1px active underline and complementary `aria-pressed` states. They explicitly select a view rather than toggle ambiguously. The single 44×44px theme button displays the current sun or moon SVG; its pressed state denotes dark mode, its localized accessible name stays stable (Colour theme: Dark), and its tooltip identifies the next theme. Dark uses warm sand; hover uses the existing accent. Every button retains a minimum 44px target and visible keyboard focus. No tracks, thumbs or travel animation remain. Theme preference stays isolated from the ocean edition and follows the OS until a deliberate choice. Controls are hidden until enhancement is ready. Theme-only changes update the palette and theme control without refreshing language content. Touch-only devices omit colour/background hover transitions; theme and image-navigation controls use manipulation touch handling.
+The language picker remains a native select. Chief's latest feedback replaces both reference sliders with bespoke cardless controls: separate GUI and Dev Mode text buttons, 12px in both desktop and mobile layouts, with resting selected-view brackets and complementary `aria-pressed` states. They explicitly select a view rather than toggle ambiguously. The single 44×44px theme button displays the current sun or moon SVG; its pressed state denotes dark mode, its localized accessible name stays stable (Colour theme: Dark), and its tooltip identifies the next theme. Dark uses warm sand; hover uses the existing accent. Every button retains a minimum 44px target and visible keyboard focus. No tracks, thumbs or travel animation remain. Theme preference stays isolated from the ocean edition and follows the OS until a deliberate choice. Controls are hidden until enhancement is ready. Theme-only changes update the palette and theme control without refreshing language content. Touch-only devices omit colour/background hover transitions; theme and image-navigation controls use manipulation touch handling.
 
 Scrollbars are hidden throughout the Quiet stylesheet, including the command transcript. Native wheel, touch and keyboard scrolling remain enabled; the transcript remains a focusable native scroller. Cost: the scrollbar no longer advertises scroll position or provides a drag handle. This is scoped to Quiet, not the original ocean edition.
 
@@ -235,7 +235,7 @@ Dev Mode replaces the GUI content field, not its document or data. The theme's s
 
 ### Motion
 
-Colour/background and active-underline opacity feedback last 150ms with CSS ease. Touch-only devices omit colour/background transitions. The protected-focus photo preview has the bounded exit described above; image changes themselves do not add slide effects or artificial delay. Reduced motion disables transitions and exit animation. There is no scroll manipulation, media autoplay or idle render loop. The explicitly requested first-visit/reload SVG welcome is the sole page-entry exception described above; there is no scroll animation or persistent scroll owner.
+Header nav/view feedback is a symmetric square-bracket gather, authored for this scope under XI Base Motion System. Empty, pointer-transparent pseudo-elements hug an intrinsic label span (not the mobile link row): 1px stroke, 3px caps, 16px height, 6px side offset. They translate 2px inward and fade over 240ms, then outward over 160ms with XI cubic-out cubic-bezier(0.215, 0.61, 0.355, 1); state reversal uses current CSS transition progress. No text movement/duplication, spring, idle loop, new JS scheduler or dependency. Active GUI/Dev retains neutral-ink brackets at rest; hover/keyboard focus accents the same frame, with the global focus outline intact. Unselected nav has no persistent frame or underline. Touch and reduced motion are immediate. Other colour/background feedback remains 150ms with the incumbent CSS ease. Touch-only devices omit colour/background transitions. The protected-focus photo preview has the bounded exit described above; image changes themselves do not add slide effects or artificial delay. Reduced motion disables transitions and exit animation. There is no scroll manipulation, media autoplay or idle render loop. The explicitly requested first-visit/reload SVG welcome is the sole page-entry exception described above; there is no scroll animation or persistent scroll owner.
 
 ## Do's and Don'ts
 

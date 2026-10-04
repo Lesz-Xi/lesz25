@@ -219,6 +219,12 @@ try {
           return style.color === muted && style.textDecorationLine === 'none' && node.getBoundingClientRect().height >= 44;
         }), theme === 'dark' ? 'rgb(170, 166, 160)' : 'rgb(101, 100, 97)'), true, `${lang} ${width} ${theme}: neutral nav and 44px targets`);
         const c = COPY[lang];
+        assert.equal(await page.locator('.email-link').textContent(), c.email);
+        assert.equal(await page.locator('.email-link').getAttribute('href'), 'mailto:rhinelesther@gmail.com');
+        assert.deepEqual(await page.locator('.email-link, .note-read-link').evaluateAll(nodes => nodes.map(node => {
+          const style = getComputedStyle(node);
+          return [style.backgroundColor, style.fontSize, style.textDecorationLine, style.textDecorationThickness, style.textUnderlineOffset, style.paddingLeft, style.paddingRight, style.borderWidth, style.boxShadow, node.getBoundingClientRect().height >= 44];
+        })), [['rgba(0, 0, 0, 0)', '13px', 'underline', 'auto', '5px', '0px', '0px', '0px', 'none', true], ['rgba(0, 0, 0, 0)', '13px', 'underline', 'auto', '5px', '0px', '0px', '0px', 'none', true]], `${lang} ${width} ${theme}: email/read parity`);
         assert.deepEqual(await page.locator('#about .about-copy > p').allTextContents(), [c.aboutBody, c.designBody, c.purpose]);
         assert.equal(await page.locator('#about [data-read-approach]').getAttribute('href'), '/templates/quiet/approach.html');
         assert.equal(await page.locator('.work-row').count(), 6);
@@ -434,7 +440,7 @@ try {
   assert.equal(await page.locator('#album-viewer').isVisible(), false);
   check('Album deep links, back/forward, and unknown-hash recovery work');
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  assert.equal(await page.locator('#contact .button').evaluate((element) => getComputedStyle(element).transitionDuration), '0s');
+  assert.equal(await page.locator('#contact .email-link').evaluate((element) => getComputedStyle(element).transitionDuration), '0s');
   await page.goto(`${origin}/`);
   await page.locator('.preferences:not([hidden])').waitFor();
   await page.keyboard.press('Tab');
@@ -448,22 +454,22 @@ try {
   check('Reduced motion, skip link, and visible keyboard focus work');
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await page.mouse.move(0, 0);
-  const restingColors = {};
   for (const theme of ['light', 'dark']) {
     if (await page.locator('html').getAttribute('data-theme') !== theme) await page.locator('#quiet-theme').click();
     await page.waitForTimeout(180);
-    restingColors[theme] = await page.locator('#contact .button').evaluate((element) => ({ fill: getComputedStyle(element).backgroundColor, ink: getComputedStyle(element).color }));
+    const email = await page.locator('#contact .email-link').evaluate(element => {
+      const style = getComputedStyle(element);
+      return { fill: style.backgroundColor, ink: style.color, underline: style.textDecorationLine, border: style.borderWidth, padding: [style.paddingLeft, style.paddingRight], size: style.fontSize, height: element.getBoundingClientRect().height, href: element.getAttribute('href'), arrow: element.querySelector('svg')?.getAttribute('aria-hidden') };
+    });
+    assert.deepEqual({ ...email, height: 44 }, { fill: 'rgba(0, 0, 0, 0)', ink: theme === 'dark' ? 'rgb(244, 243, 240)' : 'rgb(36, 36, 36)', underline: 'underline', border: '0px', padding: ['0px', '0px'], size: '13px', height: 44, href: 'mailto:rhinelesther@gmail.com', arrow: 'true' });
+    assert.ok(email.height >= 44);
   }
-  assert.deepEqual(restingColors.light, { fill: 'rgb(75, 85, 99)', ink: 'rgb(255, 255, 255)' });
-  assert.deepEqual(restingColors.dark, { fill: 'rgb(216, 200, 180)', ink: 'rgb(33, 31, 28)' });
-  check('Light buttons keep slate; dark buttons use warm sand with charcoal labels');
-  await page.locator('#contact .button').hover();
+  check('Email me matches the cardless underlined reading action in both themes, retaining its native mailto, arrow and 44px target');
+  await page.locator('#contact .email-link').hover();
   await page.waitForTimeout(180);
-  const hoverColors = await page.locator('#contact .button').evaluate((element) => ({
-    fill: getComputedStyle(element).backgroundColor, ink: getComputedStyle(element).color,
-  }));
-  assert.deepEqual(hoverColors, { fill: 'rgb(251, 146, 60)', ink: 'rgb(33, 31, 28)' });
-  check('Rendered contact button hover retains Ellipsis orange with the accessible dark label');
+  const hoverColors = await page.locator('#contact .email-link').evaluate(element => ({ fill: getComputedStyle(element).backgroundColor, ink: getComputedStyle(element).color, underline: getComputedStyle(element).textDecorationLine, line: getComputedStyle(element).textDecorationColor }));
+  assert.deepEqual(hoverColors, { fill: 'rgba(0, 0, 0, 0)', ink: 'rgb(251, 146, 60)', underline: 'underline', line: 'rgb(251, 146, 60)' });
+  check('Email hover accents text and underline without adding a filled button');
   for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: width === 390 ? 844 : 900 });
     for (const theme of ['light', 'dark']) {
@@ -478,7 +484,7 @@ try {
         const link = page.locator(`.section-nav a[href="#${id}"]`);
         await link.hover();
         await page.waitForTimeout(180);
-        assert.deepEqual(await link.evaluate(el => ({ color: getComputedStyle(el).color, underline: getComputedStyle(el).textDecorationLine, fill: getComputedStyle(el).backgroundColor })), { color: accent, underline: 'underline', fill: 'rgba(0, 0, 0, 0)' });
+        assert.deepEqual(await link.evaluate(el => ({ color: getComputedStyle(el).color, underline: getComputedStyle(el).textDecorationLine, fill: getComputedStyle(el).backgroundColor })), { color: accent, underline: 'none', fill: 'rgba(0, 0, 0, 0)' });
         if (navCapture && id === 'about' && width === 1440) {
           const name = `nav-accent-${width}-${theme}.png`;
           await page.screenshot({ path: resolve(output, name), animations: 'disabled' });
@@ -489,7 +495,7 @@ try {
         await page.keyboard.press('Tab');
         await page.keyboard.press('Shift+Tab');
         await page.waitForTimeout(180);
-        assert.deepEqual(await link.evaluate(el => ({ focused: el === document.activeElement && el.matches(':focus-visible'), color: getComputedStyle(el).color, underline: getComputedStyle(el).textDecorationLine, outline: getComputedStyle(el).outlineStyle, outlineColor: getComputedStyle(el).outlineColor })), { focused: true, color: accent, underline: 'underline', outline: 'solid', outlineColor: accent });
+        assert.deepEqual(await link.evaluate(el => ({ focused: el === document.activeElement && el.matches(':focus-visible'), color: getComputedStyle(el).color, underline: getComputedStyle(el).textDecorationLine, outline: getComputedStyle(el).outlineStyle, outlineColor: getComputedStyle(el).outlineColor })), { focused: true, color: accent, underline: 'none', outline: 'solid', outlineColor: accent });
         if (navCapture && id === 'about' && width === 390) {
           const name = `nav-accent-${width}-${theme}.png`;
           await page.screenshot({ path: resolve(output, name), animations: 'disabled' });
@@ -505,7 +511,7 @@ try {
       await page.waitForFunction(() => ['done', 'bypassed'].includes(document.documentElement.dataset.entryBoot));
     }
   }
-  check('All six nav links match Dev Mode accent on hover and keyboard focus at desktop/mobile in both themes, retain neutral rest/underline/outline, and Enter reaches native headings');
+  check('All six nav links match Dev Mode accent on hover and keyboard focus, replace underline with brackets, preserve global focus and native Enter destinations');
   for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: 900 });
     for (const theme of ['light', 'dark']) {

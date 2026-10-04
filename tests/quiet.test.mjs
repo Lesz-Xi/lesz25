@@ -153,12 +153,12 @@ test('About carries the LinkedIn voice and design foundation as three localized 
   }
 });
 
-test('hero work action is a cardless native link in every locale without changing Contact', () => {
+test('hero work and email actions are cardless native links in every locale', () => {
   for (const { code } of LANGUAGES) {
     const hero = renderHero(code);
     assert.ok(hero.includes(`<a class="text-link hero-work-link" href="#work">${escapeHtml(COPY[code].viewWork)}${ARROW}</a>`), code);
     assert.ok(!hero.includes('class="button"'), code);
-    assert.ok(renderSections(code).includes(`<a class="button" href="${escapeHtml(socials[0].url)}">`), code);
+    assert.ok(renderSections(code).includes(`<a class="text-link email-link" href="${escapeHtml(socials[0].url)}">${escapeHtml(COPY[code].email)}${ARROW}</a>`), code);
   }
   const css = read('templates/quiet/styles.css');
   assert.ok(!css.includes('.intro .button'));
@@ -515,8 +515,29 @@ test('section navigation shares the existing accent on hover and keyboard focus'
   assert.ok(rest?.includes('min-height: 44px'));
   const feedback = css.match(/\.section-nav a:hover, \.section-nav a:focus-visible \{([^}]+)\}/)?.[1];
   assert.ok(feedback?.includes('color: var(--accent)'));
-  assert.ok(feedback?.includes('text-decoration: underline'));
+  assert.ok(feedback?.includes('text-decoration: none'));
   assert.ok(css.includes(':focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }'));
+});
+
+test('navigation/view bracket motion is label-bound, reversible, decorative and has reduced/touch fallbacks', () => {
+  for (const { code } of LANGUAGES) {
+    const nav = renderNavigation(code);
+    assert.equal((nav.match(/class="bracket-label"/g) || []).length, 6);
+    assert.equal((renderPreferences(code, true).match(/class="bracket-label"/g) || []).length, 2);
+    assert.ok(nav.includes(`<span class="bracket-label" data-copy="work">${escapeHtml(COPY[code].work)}</span>`));
+  }
+  const css = read('templates/quiet/styles.css');
+  assert.ok(css.includes('--bracket-offset: 2px; --bracket-opacity: 0; --bracket-time: 160ms;'));
+  assert.ok(css.includes('--bracket-offset: 0px; --bracket-opacity: 1; --bracket-time: 240ms;'));
+  assert.ok(css.includes('--bracket-ease: cubic-bezier(0.215, 0.61, 0.355, 1)'));
+  assert.ok(css.includes("content: ''; position: absolute; top: 50%; width: 3px; height: 16px;"));
+  assert.ok(css.includes('pointer-events: none'));
+  assert.ok(css.includes('.view-control[aria-pressed=\'true\'] .bracket-label'));
+  assert.ok(!css.includes('.view-control::after'));
+  assert.ok(css.includes('--bracket-time: 0ms !important'));
+  assert.ok(css.includes('transition: none !important; animation: none !important'));
+  assert.ok(css.includes('.note-read-link, .email-link { font-size: 13px; text-decoration: underline;'));
+  assert.ok(!css.includes('.button {'));
 });
 
 test('mobile disclosure preserves one native section index and localized controls with a visible static fallback', () => {

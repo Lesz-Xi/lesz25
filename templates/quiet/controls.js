@@ -11,7 +11,7 @@ export function renderNavigation(locale) {
   const links = [['about', c.about], ['work', c.work], ['photography', c.photography], ['research', c.research], ['notes', c.notesHeading], ['contact', c.contact]];
   return `<button type="button" id="quiet-menu" class="menu-control" aria-expanded="false" aria-controls="quiet-navigation" hidden><svg class="menu-icon" viewBox="0 0 18 18" width="18" height="18" fill="none" aria-hidden="true"><path d="M3 6h12M3 12h12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><svg class="menu-close-icon" viewBox="0 0 18 18" width="18" height="18" fill="none" aria-hidden="true"><path d="m4 4 10 10M14 4 4 14" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><span data-menu-label>${escapeHtml(c.menu)}</span></button>
       <div id="quiet-navigation" class="navigation-panel">
-        <nav class="section-nav" aria-label="Portfolio">${links.map(([id, label]) => `<a href="#${id}" data-copy="${id === 'notes' ? 'notesHeading' : id}">${escapeHtml(label)}</a>`).join('')}</nav>
+        <nav class="section-nav" aria-label="Portfolio">${links.map(([id, label]) => `<a href="#${id}"><span class="bracket-label" data-copy="${id === 'notes' ? 'notesHeading' : id}">${escapeHtml(label)}</span></a>`).join('')}</nav>
         <div class="mobile-view" hidden><span data-copy="menuView">${escapeHtml(c.menuView)}</span></div>
       </div>`;
 }
@@ -21,7 +21,7 @@ export function renderPreferences(locale, dev = false) {
   return `<label class="language-control"><span class="sr-only" data-language-label>Language</span><select id="language" name="language" aria-label="Language">
     ${LANGUAGES.map(({ code, label, short }) => `<option value="${escapeHtml(code)}" lang="${escapeHtml(code)}">${escapeHtml(code === 'zh' || code === 'ja' ? label : short)}</option>`).join('')}
   </select></label>
-${dev ? `<div class="mode-controls" role="group" aria-label="${escapeHtml(c.viewLabel)}"><button type="button" class="view-control" id="quiet-gui-control" aria-pressed="true" aria-controls="quiet-gui" aria-label="${escapeHtml(c.guiLabel)}">GUI</button><button type="button" class="view-control" id="quiet-mode" aria-pressed="false" aria-controls="quiet-dev" aria-label="${escapeHtml(c.devLabel)}">Dev Mode</button></div>` : ''}
+${dev ? `<div class="mode-controls" role="group" aria-label="${escapeHtml(c.viewLabel)}"><button type="button" class="view-control" id="quiet-gui-control" aria-pressed="true" aria-controls="quiet-gui" aria-label="${escapeHtml(c.guiLabel)}"><span class="bracket-label">GUI</span></button><button type="button" class="view-control" id="quiet-mode" aria-pressed="false" aria-controls="quiet-dev" aria-label="${escapeHtml(c.devLabel)}"><span class="bracket-label">Dev Mode</span></button></div>` : ''}
   <button type="button" class="theme-control" id="quiet-theme" aria-pressed="false" aria-label="${escapeHtml(c.theme)}: ${escapeHtml(c.dark)}"><span class="theme-icon-light" aria-hidden="true">${sun}</span><span class="theme-icon-dark" aria-hidden="true">${moon}</span><span class="sr-only" data-theme-label>${escapeHtml(c.light)}</span></button>`;
 }
 

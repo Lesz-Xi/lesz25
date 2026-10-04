@@ -60,7 +60,7 @@ export function renderSections(locale) {
       </div>`)
     + section('research', c.research, `<p class="section-intro">${escapeHtml(c.researchIntro)}</p><ul class="paper-list">${papers}</ul><p class="research-boundary">${escapeHtml(c.claim)}</p>`)
     + section('notes', c.notesHeading, `<article class="note-entry"><h3 lang="en"><a class="note-title" href="/templates/quiet/notes.html">What My Hands Knew First</a></h3><p class="meta">${escapeHtml(c.notes)}</p><p class="note-preview" lang="en">I only discover what I believe after I build it.</p><div class="note-actions"><a class="text-link note-read-link" href="/templates/quiet/notes.html" data-read-note>${escapeHtml(c.readNote)}${ARROW}</a><span class="meta" lang="en">Jul 2026</span></div></article>`)
-    + section('contact', c.contact, `<p class="contact-intro">${escapeHtml(c.contactBody)}</p><a class="button" href="${escapeHtml(socials[0].url)}">${escapeHtml(c.email)}${ARROW}</a><ul class="social-links">${contacts}</ul>`);
+    + section('contact', c.contact, `<p class="contact-intro">${escapeHtml(c.contactBody)}</p><a class="text-link email-link" href="${escapeHtml(socials[0].url)}">${escapeHtml(c.email)}${ARROW}</a><ul class="social-links">${contacts}</ul>`);
 }
 
 export function renderLightbox(locale) {
