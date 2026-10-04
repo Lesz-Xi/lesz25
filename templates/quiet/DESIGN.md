@@ -141,6 +141,8 @@ Titles precede supporting publication types and note introductions. Metadata mus
 
 ## Layout
 
+The body sequence after the unchanged hero photograph is **About → Selected Work → Photography → Research → Notes → Contact**. Header navigation and Dev Mode's section list follow the same order. It is encoded in the DOM/renderers rather than CSS visual order, keeping keyboard, screen-reader and no-JavaScript reading coherent. About is moved, not repeated; copy and spacing are unchanged. All six header links use the existing wrapping and touch-target rules. The hero's Explore the work action still bypasses the introduction when desired.
+
 The shell is at most 1200px wide. Desktop uses a 180px label column and a 32px gutter. At 1040px and below, the label column becomes 140px with a 24px gutter. At 700px and below, sections stack and the shell has 20px side gutters.
 
 Work uses text rows. Papers form two columns on desktop and one on mobile. All six albums have photographic previews: three columns on desktop, two at intermediate widths, one on mobile. Notes is a separate section after About. Sections use 64px vertical padding on desktop and 40px on mobile. The dedicated Notes page uses the same rail, a 68ch reading column, 16px body at 1.85 line height (15px on mobile), and a larger two-line title.

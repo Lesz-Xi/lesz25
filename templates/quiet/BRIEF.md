@@ -14,6 +14,7 @@ Primary mode: Experience, with a bounded Read function. Visitors can inspect sof
 
 ## Direction and behaviour
 
+- Chief's latest explicit order is About → Selected Work → Photography → Research → Notes → Contact, immediately after the unchanged hero/photo. Actual section DOM, header links and Dev catalog use that same sequence in every locale; no CSS-order trick or duplicate About block is added. About and Contact are now native header destinations. Existing responsive wrapping and 44px targets remain. Cut: the work-first sequence. Tradeoff: a short introduction precedes project evidence, and the complete navigation wraps on narrow screens. Explore the work still jumps straight to projects.
 - Narrow desktop labels beside a broad content field; single-column mobile reflow. Chief subsequently requested the supplied `xi_profile.png` above the name. Quiet's identity rail now includes one left-aligned full-square portrait, 80px desktop/64px mobile with 4px corners, no enclosing card, border, shadow, badge or new interaction. A 160px WebP derivative is about 5.6KB; explicit dimensions reserve its footprint and adjacent name text avoids redundant alt. Original PNG, ocean hero and reader headers remain untouched. Cost: a little more hero height and one small image request; cut: profile-card chrome and repeated portraits elsewhere.
 - One unobstructed Swiss photograph, 2:1, with caption/link outside the image and no padded surround. All six albums have matching image previews.
 - Native document/transcript scrolling with hidden scrollbars, verified with wheel, PageDown and mobile touch. No loader, smoothing, progress decoration, autoplay, WebGL, or idle animation. Cut: visible scrollbar chrome and drag handles. Tradeoff: less visible position/scrollability feedback; keyboard-focusable transcript, normal document navigation and native scrolling remain.
@@ -49,10 +50,12 @@ The new operation is direct typed lookup/navigation rather than scanning a long 
 - `scripts/sync-quiet.mjs`: deterministic portfolio, Notes, approach, preference and Dev English snapshots; run after content changes.
 - `styles.css` / `DESIGN.md`: this template only, not authority for the original design.
 - `ASSETS.md`: image provenance and named reference exclusions.
-- `tests/quiet.test.mjs`: twenty-one automated tests covering copy completeness, rendering, links, six image previews/provenance, multi-entry config, isolation, fallbacks, unchanged essay, native pressed-state controls, hidden-scrollbar CSS and text/button contrast.
+- `tests/quiet.test.mjs`: twenty-two automated tests covering copy completeness, rendering, links, six image previews/provenance, multi-entry config, isolation, fallbacks, unchanged essay, native pressed-state controls, hidden-scrollbar CSS and text/button contrast.
 - `tests/quiet.browser.mjs`: Chromium checks by request interception by default; `QUIET_BASE_URL` tests an already-running Vite server. Neither starts a server. Optional batched desktop/mobile light/dark screenshots in `.impeccable/review/`.
 
 ## Verification boundary
+
+Latest section reorder: 22 Node tests, synchronized root/template snapshots and 28 live-Vite Chromium groups pass. Exact GUI and navigation order is checked across five languages/four widths/two themes, plus the no-JavaScript fallback. Desktop/mobile light/dark captures show About directly before Selected work; focused checks verify About and Explore-work heading focus after native hash navigation. Styles/copy/reader URLs/ocean are unchanged. The layout detector remains degraded to regex, so its empty report is not a quality certificate. Chief subsequently authorized committing and pushing this follow-up. The production build and all 28 compiled-output Chromium groups pass with the new order. Hosted deployment is checked separately after push.
 
 Homepage migration: 21 Node tests and 28 live-Vite Chromium groups pass at `/`, including canonical reader returns, template-alias compatibility and the preserved ocean route. Four desktop/mobile light/dark root captures were inspected in-thread. Production build succeeds; compiled-output checks and deployment status are recorded separately in the local release review. Historical verification follows.
 

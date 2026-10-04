@@ -8,8 +8,11 @@ A minimal portfolio of software, research, and photography.
 
 ## Direction
 
-Work first. Simple typography, thin rules, neutral light and dark themes, and room
-for the photographs. Native scrolling, without loaders or decorative animation.
+A short introduction, then the work. Simple typography, thin rules, neutral light
+and dark themes, and room for the photographs. Native scrolling, without loaders
+or decorative animation.
+
+Page order: About → Selected Work → Photography → Research → Notes → Contact.
 
 Selected projects and papers keep their source links and development status.
 Notes and Approach are dedicated reading pages. The authored essay stays in English;

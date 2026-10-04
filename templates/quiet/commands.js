@@ -8,7 +8,7 @@ export function catalogFor(locale) {
   const projectIds = ['wuweism', 'twin-sparrow', '2041', 'odysxi', 'tsra'];
   const paperIds = ['hoegs', 'valence', 'masa', 'beyond-blame'];
   return [
-    ...['work', 'research', 'photography', 'about', 'notes', 'contact'].map((id) => ({
+    ...['about', 'work', 'photography', 'research', 'notes', 'contact'].map((id) => ({
       id, name: c[id === 'notes' ? 'notesHeading' : id], description: '', category: 'pages', kind: 'section', href: `#${id}`,
     })),
     { id: 'approach', name: c.approachHeading, description: c.purpose, category: 'pages', kind: 'page', href: '/templates/quiet/approach.html' },

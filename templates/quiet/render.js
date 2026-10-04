@@ -39,8 +39,8 @@ export function renderSections(locale) {
     <span class="album-name">${escapeHtml(t(`album.${album.id}.title`))}${ARROW}</span><span class="meta">${escapeHtml(t(`album.${album.id}.place`))} / ${album.year}</span>
   </a></li>`).join('');
   const contacts = socials.filter((social) => social.url && !social.url.startsWith('mailto:')).map((social) => `<li>${external(social.url, social.key)}</li>`).join('');
-  return section('work', c.work, `<p class="section-intro">${escapeHtml(c.workIntro)}</p><ul class="work-list">${work}</ul>`)
-    + section('research', c.research, `<p class="section-intro">${escapeHtml(c.researchIntro)}</p><ul class="paper-list">${papers}</ul><p class="research-boundary">${escapeHtml(c.claim)}</p>`)
+  return section('about', c.about, `<div class="about-copy"><p>${escapeHtml(c.aboutBody)}</p><p>${escapeHtml(c.purpose)}</p><a class="text-link" href="/templates/quiet/approach.html" data-read-approach>${escapeHtml(c.fullPurpose)}${ARROW}</a></div>`)
+    + section('work', c.work, `<p class="section-intro">${escapeHtml(c.workIntro)}</p><ul class="work-list">${work}</ul>`)
     + section('photography', c.photography, `<p class="section-intro">${escapeHtml(c.photoIntro)}</p><ul class="album-grid" aria-label="${escapeHtml(c.allAlbums)}">${photos}</ul>
       <div class="album-viewer" id="album-viewer" hidden>
         <div class="viewer-heading"><h3 id="album-heading" tabindex="-1"></h3><button type="button" class="text-control" data-album-close>${escapeHtml(t('ui.close'))}</button></div>
@@ -48,7 +48,7 @@ export function renderSections(locale) {
           <figcaption class="viewer-controls"><button type="button" class="icon-control" data-photo-prev aria-label="${escapeHtml(t('ui.prev'))}">${chevron(true)}</button><span id="photo-count" role="status" aria-live="polite"></span><button type="button" class="icon-control" data-photo-next aria-label="${escapeHtml(t('ui.next'))}">${chevron(false)}</button><a id="full-image" class="text-link" target="_blank" rel="noopener noreferrer">${escapeHtml(c.openImage)}${ARROW}</a></figcaption>
         </figure>
       </div>`)
-    + section('about', c.about, `<div class="about-copy"><p>${escapeHtml(c.aboutBody)}</p><p>${escapeHtml(c.purpose)}</p><a class="text-link" href="/templates/quiet/approach.html" data-read-approach>${escapeHtml(c.fullPurpose)}${ARROW}</a></div>`)
+    + section('research', c.research, `<p class="section-intro">${escapeHtml(c.researchIntro)}</p><ul class="paper-list">${papers}</ul><p class="research-boundary">${escapeHtml(c.claim)}</p>`)
     + section('notes', c.notesHeading, `<article class="note-entry"><h3 lang="en"><a class="note-title" href="/templates/quiet/notes.html">What My Hands Knew First</a></h3><p class="meta">${escapeHtml(c.notes)}</p><p class="note-preview" lang="en">I only discover what I believe after I build it.</p><div class="note-actions"><a class="text-link note-read-link" href="/templates/quiet/notes.html" data-read-note>${escapeHtml(c.readNote)}${ARROW}</a><span class="meta" lang="en">Jul 2026</span></div></article>`)
     + section('contact', c.contact, `<p class="contact-intro">${escapeHtml(c.contactBody)}</p><a class="button" href="${escapeHtml(socials[0].url)}">${escapeHtml(c.email)}${ARROW}</a><ul class="social-links">${contacts}</ul>`);
 }

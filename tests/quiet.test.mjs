@@ -55,6 +55,26 @@ test('localized renderers keep every source URL and in-development status', () =
   setLang('en');
 });
 
+test('About-first order agrees across renderers, static pages, navigation and command catalog', () => {
+  const order = ['about', 'work', 'photography', 'research', 'notes', 'contact'];
+  const sectionIds = (html) => [...html.matchAll(/<section\b[^>]*\bid="([^"]+)"/g)].map(([, id]) => id);
+  for (const { code } of LANGUAGES) {
+    assert.deepEqual(sectionIds(renderSections(code)), order, code);
+    assert.deepEqual(catalogFor(code).filter(({ kind }) => kind === 'section').map(({ id }) => id), order, code);
+  }
+  for (const path of ['index.html', 'templates/quiet/index.html']) {
+    const html = read(path);
+    // Dev Mode is a separate section outside the GUI content sequence.
+    const content = html.match(/<!-- quiet:sections:start -->([\s\S]*?)<!-- quiet:sections:end -->/)?.[1];
+    assert.ok(content, path);
+    assert.deepEqual(sectionIds(content), order, path);
+    const nav = html.match(/<nav class="section-nav"[^>]*>([\s\S]*?)<\/nav>/)?.[1];
+    assert.ok(nav, path);
+    assert.deepEqual([...nav.matchAll(/href="#([^"]+)"/g)].map(([, id]) => id), order, path);
+    assert.ok(html.includes('class="button" href="#work"'), path);
+  }
+});
+
 test('Quiet portrait precedes the name in every locale and has local provenance', () => {
   for (const { code } of LANGUAGES) {
     const hero = renderHero(code);

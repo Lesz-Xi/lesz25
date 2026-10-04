@@ -170,6 +170,8 @@ try {
         if (await page.locator('html').getAttribute('data-theme') !== theme) await page.locator('#quiet-theme').click();
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, `${lang} ${width} ${theme} overflow`);
         assert.ok(!(await page.locator('body').textContent()).includes('undefined'));
+        assert.deepEqual(await page.locator('#quiet-sections > section').evaluateAll(nodes => nodes.map(node => node.id)), ['about', 'work', 'photography', 'research', 'notes', 'contact']);
+        assert.deepEqual(await page.locator('.section-nav a').evaluateAll(nodes => nodes.map(node => node.getAttribute('href'))), ['#about', '#work', '#photography', '#research', '#notes', '#contact']);
         assert.equal(await page.locator('.work-row').count(), 5);
         assert.equal(await page.locator('.paper-row').count(), 4);
         assert.equal(await page.locator('.album-card').count(), 6);
@@ -671,6 +673,7 @@ try {
   assert.equal(await nojsPage.locator('#intro-heading').textContent(), 'I build to understand.');
   assert.equal(await nojsPage.locator('.work-row').count(), 5);
   await waitImage(nojsPage, '.identity-portrait');
+  assert.deepEqual(await nojsPage.locator('#quiet-sections > section').evaluateAll(nodes => nodes.map(node => node.id)), ['about', 'work', 'photography', 'research', 'notes', 'contact']);
   assert.equal(await nojsPage.locator('.identity-portrait').count(), 1);
   assert.equal(await nojsPage.locator('.page-shell > .footer a').count(), 0);
   assert.equal(await nojsPage.locator('.page-shell > .footer').textContent(), 'Rhine Tague');
