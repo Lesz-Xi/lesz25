@@ -638,7 +638,7 @@ try {
   await page.locator('#dev-input').press('ArrowDown');
   assert.equal(await page.locator('#dev-input').inputValue(), 'find draft');
   await page.locator('#dev-input').press('Tab');
-  assert.equal(await page.locator('#dev-form button').evaluate((element) => element === document.activeElement), true);
+  assert.deepEqual(await page.locator('#dev-form button').evaluate(element => ({ focused: element === document.activeElement && element.matches(':focus-visible'), width: getComputedStyle(element).outlineWidth, offset: getComputedStyle(element).outlineOffset })), { focused: true, width: '2px', offset: '5px' });
   await page.keyboard.press('Shift+Tab');
   assert.equal(await page.locator('#dev-input').evaluate((element) => element === document.activeElement), true);
   await command('<img src=x onerror=window.__quietInjected=1>');
@@ -672,13 +672,24 @@ try {
       for (const theme of ['light', 'dark']) {
         if (await page.locator('html').getAttribute('data-theme') !== theme) await page.locator('#quiet-theme').click();
         assert.equal(await page.locator('#quiet-theme').getAttribute('aria-pressed'), String(theme === 'dark'));
+        await page.locator('#dev-input').focus();
+        assert.deepEqual(await page.locator('#dev-input').evaluate(element => {
+          const style = getComputedStyle(element);
+          const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+          const swatch = document.createElement('span');
+          swatch.style.color = accent;
+          document.body.append(swatch);
+          const color = getComputedStyle(swatch).color;
+          swatch.remove();
+          return { focused: element === document.activeElement && element.matches(':focus-visible'), width: style.outlineWidth, offset: style.outlineOffset, solid: style.outlineStyle === 'solid', accent: style.outlineColor === color && style.caretColor === color, target: element.getBoundingClientRect().height >= 44 };
+        }), { focused: true, width: '1px', offset: '2px', solid: true, accent: true, target: true }, `Dev focus ${lang} ${width} ${theme}`);
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, `Dev ${lang} ${width} ${theme} overflow`);
         assert.equal(await page.locator('#photo-count').textContent(), savedGui.count);
         assert.ok(!(await page.locator('#dev-output').textContent()).includes('undefined'));
       }
     }
   }
-  check('Minimal view/theme controls and Dev Mode work in all six languages at 320/390/768/1440px without overflow or album resets');
+  check('Dev input keeps a 1px/2px accent focus hairline and 44px target across six locales/four widths/both themes; other controls retain 2px/5px focus, without overflow or album resets');
   await page.selectOption('#language', 'en');
   await command('clear');
   await command('help');
@@ -689,7 +700,9 @@ try {
         if (await page.locator('html').getAttribute('data-theme') !== theme) await page.locator('#quiet-theme').click();
         await page.evaluate(() => scrollTo(0, 0));
         if (width === 390) assert.ok(await page.locator('#dev-form').evaluate((element) => element.getBoundingClientRect().bottom <= innerHeight), 'Mobile command prompt stays in the initial viewport');
-        await screenshot(page, `dev-${width}-${theme}.png`, false);
+        await page.locator('#dev-input').focus();
+        await page.waitForTimeout(180);
+        await screenshot(page, `dev-focus-${width}-${theme}.png`, false);
       }
     }
   }

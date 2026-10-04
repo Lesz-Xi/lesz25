@@ -519,6 +519,17 @@ test('section navigation shares the existing accent on hover and keyboard focus'
   assert.ok(css.includes(':focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }'));
 });
 
+test('Dev command focus is a tight hairline without changing the global focus indicator', () => {
+  const css = read('templates/quiet/styles.css');
+  const focus = css.match(/#dev-input:focus-visible \{([^}]+)\}/)?.[1];
+  assert.ok(focus?.includes('outline-width: 1px'));
+  assert.ok(focus?.includes('outline-offset: 2px'));
+  assert.ok(css.includes(':focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }'));
+  const input = css.match(/#dev-input \{([^}]+)\}/)?.[1];
+  assert.ok(input?.includes('min-height: 44px'));
+  assert.ok(input?.includes('caret-color: var(--accent)'));
+});
+
 test('Quiet hides scrollbars without disabling native scrolling or retaining slider geometry', () => {
   const css = read('templates/quiet/styles.css');
   assert.ok(css.includes('scrollbar-width: none'));
