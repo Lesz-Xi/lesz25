@@ -144,6 +144,13 @@ h3 { font-size: 15px; line-height: 1.5; }
 .photo-preview-trigger { position: absolute; inset: 24px 32px; width: calc(100% - 64px); height: calc(100% - 48px); cursor: zoom-in; }
 .viewer-stage img { width: 100%; height: 100%; object-fit: contain; }
 #image-error { padding: 32px; }
+#image-loading { position: absolute; bottom: 4px; left: 12px; right: 12px; text-align: center; font-size: 11px; color: var(--muted); background: var(--surface); }
+.theme-control, .icon-control, [data-photo-prev], [data-photo-next], #preview-close { touch-action: manipulation; }
+@media (hover: none) {
+  a, button { transition: none; }
+  .theme-control:hover { color: var(--muted); }
+  :root[data-theme='dark'] .theme-control:hover { color: var(--button); }
+}
 .viewer-controls { display: flex; align-items: center; gap: 16px; padding-top: 12px; font-size: 12px; }
 .icon-control { display: inline-flex; align-items: center; justify-content: center; background: transparent; width: 44px; height: 44px; }
 .icon-control:hover { background: var(--surface); }
@@ -164,6 +171,9 @@ h3 { font-size: 15px; line-height: 1.5; }
 .footer { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-block: 28px; color: var(--muted); font-size: 12px; }
 .noscript-note { color: var(--muted); font-size: 12px; padding-bottom: 24px; }
 /* Temporary protected-focus image preview; the album remains unchanged underneath. */
+.photo-lightbox.is-closing { animation: quiet-preview-exit 120ms ease-out both; }
+.photo-lightbox.is-closing::backdrop { animation: quiet-preview-exit 120ms ease-out both; }
+@keyframes quiet-preview-exit { to { opacity: 0; } }
 .photo-lightbox { position: fixed; inset: 0; width: calc(100% - 64px); height: calc(100dvh - 64px); max-width: 1600px; max-height: none; margin: auto; padding: 0; border: 0; background: var(--page); color: var(--ink); overflow: hidden; }
 .photo-lightbox[open] { display: flex; flex-direction: column; }
 .photo-lightbox::backdrop { background: rgb(0 0 0 / 0.65); }
@@ -289,5 +299,5 @@ h3 { font-size: 15px; line-height: 1.5; }
   .dev-form { gap: 8px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { transition: none !important; scroll-behavior: auto !important; }
+  *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
 }

@@ -9,8 +9,8 @@ A minimal portfolio of software, research, and photography.
 ## Direction
 
 A short introduction, then the work. Simple typography, thin rules, neutral light
-and dark themes, and room for the photographs. Native scrolling, without loaders
-or decorative animation.
+and dark themes, and room for the photographs. Native scrolling, without decorative loaders
+or scroll effects.
 
 Page order: About → Selected Work → Photography → Research → Notes → Contact.
 

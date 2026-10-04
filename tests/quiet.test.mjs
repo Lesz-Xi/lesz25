@@ -45,6 +45,8 @@ test('localized renderers keep every source URL and in-development status', () =
     assert.equal((content.match(/class="status"/g) || []).length, 2);
     for (const id of ['work', 'research', 'photography', 'about', 'notes', 'contact']) assert.ok(content.includes(`id="${id}"`));
     for (const album of albums) assert.ok(content.includes(`data-album="${album.id}"`));
+    assert.ok(content.includes('href="https://substack.com/@les1587833"'));
+    assert.ok(renderContact().includes('href="https://substack.com/@les1587833"'));
     assert.ok(content.includes('href="https://x.com/leszxix"'));
     assert.ok(renderContact().includes('href="https://x.com/leszxix"'));
     assert.ok(renderContact().includes('@leszxix'));

@@ -114,6 +114,7 @@ export const socials = [
   { keyLabel: '', key: 'LinkedIn', label: 'in/rhine-lesther-tague', url: 'https://linkedin.com/in/rhine-lesther-tague-4b604a246' },
   { keyLabel: '', key: 'Instagram', label: '@ichrhin3y', url: 'https://instagram.com/ichrhin3y' },
   { keyLabel: '', key: 'X', label: '@leszxix', url: 'https://x.com/leszxix' },
+  { keyLabel: '', key: 'Substack', label: '@les1587833', url: 'https://substack.com/@les1587833' },
 ];
 
 // ---- renderers (return HTML strings; content is static + trusted) ----

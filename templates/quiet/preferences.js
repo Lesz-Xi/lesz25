@@ -14,15 +14,20 @@ export function initPreferences() {
     if (saved === 'light' || saved === 'dark') explicitTheme = saved;
   } catch { /* A blocked store must not prevent controls from working. */ }
 
-  function refresh() {
-    const locale = getLang();
-    const c = copyFor(locale);
+  function refreshTheme() {
+    const c = copyFor(getLang());
     const theme = explicitTheme || (systemTheme.matches ? 'dark' : 'light');
-    root.dataset.theme = theme;
+    if (root.dataset.theme !== theme) root.dataset.theme = theme;
     themeButton.querySelector('[data-theme-label]').textContent = c[theme];
     themeButton.setAttribute('aria-label', `${c.theme}: ${c.dark}`);
     themeButton.setAttribute('aria-pressed', String(theme === 'dark'));
     themeButton.title = `${c.theme}: ${c[theme === 'dark' ? 'light' : 'dark']}`;
+  }
+
+  function refresh() {
+    const locale = getLang();
+    const c = copyFor(locale);
+    refreshTheme();
     language.value = locale;
     language.setAttribute('aria-label', t('ui.language'));
     document.querySelector('[data-language-label]').textContent = t('ui.language');
@@ -37,10 +42,10 @@ export function initPreferences() {
     if (theme !== 'light' && theme !== 'dark') return;
     explicitTheme = theme;
     try { localStorage.setItem(themeKey, explicitTheme); } catch { /* Use the choice for this visit. */ }
-    refresh();
+    refreshTheme();
   }
   themeButton.addEventListener('click', () => setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark'));
-  systemTheme.addEventListener('change', () => { if (!explicitTheme) refresh(); });
+  systemTheme.addEventListener('change', () => { if (!explicitTheme) refreshTheme(); });
   function restorePreferences() {
     try {
       const saved = localStorage.getItem(themeKey);

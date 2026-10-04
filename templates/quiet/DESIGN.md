@@ -171,17 +171,17 @@ Primary buttons have a 44px minimum target, slate/light or warm-sand/dark rest s
 
 ### Preferences
 
-The language picker remains a native select. Chief's latest feedback replaces both reference sliders with bespoke cardless controls: separate GUI and Dev Mode text buttons, 12px in both desktop and mobile layouts, with a 1px active underline and complementary `aria-pressed` states. They explicitly select a view rather than toggle ambiguously. The single 44×44px theme button displays the current sun or moon SVG; its pressed state denotes dark mode, its localized accessible name stays stable (Colour theme: Dark), and its tooltip identifies the next theme. Dark uses warm sand; hover uses the existing accent. Every button retains a minimum 44px target and visible keyboard focus. No tracks, thumbs or travel animation remain. Theme preference stays isolated from the ocean edition and follows the OS until a deliberate choice. Controls are hidden until enhancement is ready.
+The language picker remains a native select. Chief's latest feedback replaces both reference sliders with bespoke cardless controls: separate GUI and Dev Mode text buttons, 12px in both desktop and mobile layouts, with a 1px active underline and complementary `aria-pressed` states. They explicitly select a view rather than toggle ambiguously. The single 44×44px theme button displays the current sun or moon SVG; its pressed state denotes dark mode, its localized accessible name stays stable (Colour theme: Dark), and its tooltip identifies the next theme. Dark uses warm sand; hover uses the existing accent. Every button retains a minimum 44px target and visible keyboard focus. No tracks, thumbs or travel animation remain. Theme preference stays isolated from the ocean edition and follows the OS until a deliberate choice. Controls are hidden until enhancement is ready. Theme-only changes update the palette and theme control without refreshing language content. Touch-only devices omit colour/background hover transitions; theme and image-navigation controls use manipulation touch handling.
 
 Scrollbars are hidden throughout the Quiet stylesheet, including the command transcript. Native wheel, touch and keyboard scrolling remain enabled; the transcript remains a focusable native scroller. Cost: the scrollbar no longer advertises scroll position or provides a drag handle. This is scoped to Quiet, not the original ocean edition.
 
 ### Album viewer
 
-An inline, initially hidden viewer opens from album links or a known album hash. Chief's final spacing choice replaces the briefly tested close-fitting mat: a 2:1 desktop field leaves deliberate side breathing room around complete photos. It uses a 4:3 mobile field to keep them legible, with `object-fit: contain` in both. Interior safety gutters are 24px vertical / 32px horizontal on desktop, 16px / 12px on mobile; remaining space follows the original photograph's aspect ratio. Controls are 44px, the count uses tabular numerals, arrow keys work within the viewer, and Escape closes it and restores focus. An image error is reported while navigation remains available.
+An inline, initially hidden viewer opens from album links or a known album hash. Chief's final spacing choice replaces the briefly tested close-fitting mat: a 2:1 desktop field leaves deliberate side breathing room around complete photos. It uses a 4:3 mobile field to keep them legible, with `object-fit: contain` in both. Interior safety gutters are 24px vertical / 32px horizontal on desktop, 16px / 12px on mobile; remaining space follows the original photograph's aspect ratio. Controls are 44px, the count uses tabular numerals, arrow keys work within the viewer, and Escape closes it and restores focus. An image error is reported while navigation remains available. A pending selection retains the preceding decoded photograph and stable field, with localized loading status and `aria-busy`. Preview is temporarily unavailable until the selected photo is ready; failed selections hide the original-image link until recovery. Only adjacent photographs are prepared, with at most three cached images; Save Data and known slow connections disable preparation. Cost: limited extra bandwidth and decoded-image memory rather than fetching an entire album.
 
 ### Large photo preview
 
-At Chief's explicit request, clicking the open album photograph creates a temporary native `<dialog>` preview, not a new gallery route. It uses the active Quiet theme, a contained full photograph, album title/count, original-image link, and a 44px Close control. Close, Escape, or an outside click returns to the same inline image, hash, focus, and scroll position. Native modal inertness protects the background; an explicit two-control Tab cycle prevents Chromium's focus escape to BODY. Loading/error feedback and late-event invalidation prevent stale previews from reappearing. Hash changes dismiss the layer without forcing the old scroll position. Cost: one transient focus layer, admitted for viewing the photograph larger rather than navigating the portfolio.
+At Chief's explicit request, clicking the open album photograph creates a temporary native `<dialog>` preview, not a new gallery route. It uses the active Quiet theme, a contained full photograph, album title/count, original-image link, and a 44px Close control. Close, Escape, or an outside click returns to the same inline image, hash, focus, and scroll position. Native modal inertness protects the background; an explicit two-control Tab cycle prevents Chromium's focus escape to BODY. Loading/error feedback and late-event invalidation prevent stale previews from reappearing. Hash changes dismiss the layer without forcing the old scroll position. A brief opacity-only exit (120ms, with a 160ms fallback) keeps native modality until close and restores document scrolling before focus returns. Reduced motion and route changes close immediately; cleanup is idempotent, and late image events cannot alter an exiting preview. Cost: one transient focus layer, admitted for viewing the photograph larger rather than navigating the portfolio.
 
 ### Notes reader
 
@@ -197,7 +197,7 @@ Dev Mode replaces the GUI content field, not its document or data. The theme's s
 
 ### Motion
 
-Colour/background and active-underline opacity feedback last 150ms with CSS ease. Reduced motion disables them. There is no scroll manipulation, entry animation, autoplay, or idle render loop.
+Colour/background and active-underline opacity feedback last 150ms with CSS ease. Touch-only devices omit colour/background transitions. The protected-focus photo preview has the bounded exit described above; image changes themselves do not add slide effects or artificial delay. Reduced motion disables transitions and exit animation. There is no scroll manipulation, entry animation, autoplay, or idle render loop.
 
 ## Do's and Don'ts
 
@@ -209,6 +209,6 @@ Colour/background and active-underline opacity feedback last 150ms with CSS ease
 
 ### Don't:
 - **Don't** import this stylesheet into the original ocean entry.
-- **Don't** add card shells, shadows, loaders, or decorative animation to this template without a new brief.
+- **Don't** add card shells, shadows, page loaders, or decorative animation to this template without a new brief.
 - **Don't** put white text on the orange button state.
 - **Don't** turn a research proposal into a claim of demonstrated performance.

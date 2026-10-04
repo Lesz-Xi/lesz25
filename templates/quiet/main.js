@@ -6,6 +6,7 @@ import { albumFromHash, galleryImages, wrapIndex } from './gallery.js';
 import { initPreferences } from './preferences.js';
 import { initPhotoPreview } from './lightbox.js';
 import { initDevMode } from './dev-mode.js';
+import { createPhotoLoader } from './photo-loader.js';
 
 const { refresh: refreshPreferences, setTheme } = initPreferences();
 const preview = initPhotoPreview();
@@ -13,30 +14,65 @@ let activeAlbum = null;
 let photoIndex = 0;
 let lastAlbumTrigger = null;
 let devMode = null;
+let photoRequest = 0;
+const photoLoader = createPhotoLoader();
 
-function paintPhoto() {
+async function paintPhoto() {
   if (!activeAlbum) return;
   const images = galleryImages(activeAlbum);
   photoIndex = wrapIndex(photoIndex, images.length);
+  const index = photoIndex;
+  const albumId = activeAlbum.id;
+  const source = images[index];
+  const current = ++photoRequest;
   const photo = document.querySelector('#album-image');
+  const stage = document.querySelector('.viewer-stage');
+  const loading = document.querySelector('#image-loading');
   const error = document.querySelector('#image-error');
   const trigger = document.querySelector('[data-photo-preview]');
-  const title = t(`album.${activeAlbum.id}.title`);
+  const title = t(`album.${albumId}.title`);
   const c = copyFor(getLang());
-  photo.hidden = false;
-  trigger.hidden = false;
   error.hidden = true;
-  photo.alt = `${title} — ${c.photoNumber} ${photoIndex + 1} / ${images.length}`;
-  trigger.href = images[photoIndex];
-  trigger.setAttribute('aria-label', c.previewImage);
-  trigger.title = c.previewImage;
-  photo.onerror = () => { photo.hidden = true; trigger.hidden = true; error.hidden = false; };
-  photo.onload = () => { photo.hidden = false; trigger.hidden = false; error.hidden = true; };
-  photo.src = images[photoIndex];
-  document.querySelector('#full-image').href = images[photoIndex];
-  document.querySelector('#photo-count').textContent = `${String(photoIndex + 1).padStart(2, '0')} / ${String(images.length).padStart(2, '0')}`;
+  loading.textContent = c.imageLoading;
+  loading.hidden = false;
+  stage.setAttribute('aria-busy', 'true');
+  trigger.setAttribute('aria-disabled', 'true');
+  document.querySelector('#photo-count').textContent = `${String(index + 1).padStart(2, '0')} / ${String(images.length).padStart(2, '0')}`;
   document.querySelector('#album-heading').textContent = `${title} / ${activeAlbum.year}`;
-  preview.refresh();
+  try {
+    const loaded = await photoLoader.load(source);
+    if (current !== photoRequest || activeAlbum?.id !== albumId || !photo.isConnected) return;
+    // Commit an already-decoded image: the preceding photograph stays intact
+    // while loading, and late results cannot overwrite a newer selection.
+    loaded.id = 'album-image';
+    loaded.width = 1600;
+    loaded.height = 1200;
+    loaded.alt = `${title} — ${c.photoNumber} ${index + 1} / ${images.length}`;
+    loaded.hidden = false;
+    if (loaded !== photo) photo.replaceWith(loaded);
+    trigger.hidden = false;
+    trigger.href = source;
+    trigger.setAttribute('aria-disabled', 'false');
+    trigger.setAttribute('aria-label', c.previewImage);
+    trigger.title = c.previewImage;
+    document.querySelector('#full-image').href = source;
+    document.querySelector('#full-image').hidden = false;
+    loading.hidden = true;
+    stage.setAttribute('aria-busy', 'false');
+    preview.refresh();
+    const connection = navigator.connection;
+    if (!connection?.saveData && !['slow-2g', '2g'].includes(connection?.effectiveType)) {
+      for (const offset of [1, -1]) photoLoader.load(images[wrapIndex(index + offset, images.length)]).catch(() => {});
+    }
+  } catch {
+    if (current !== photoRequest || activeAlbum?.id !== albumId || !photo.isConnected) return;
+    photo.hidden = true;
+    trigger.hidden = true;
+    loading.hidden = true;
+    error.hidden = false;
+    document.querySelector('#full-image').hidden = true;
+    stage.setAttribute('aria-busy', 'false');
+  }
 }
 
 function syncAlbum({ focus = false } = {}) {
@@ -45,7 +81,11 @@ function syncAlbum({ focus = false } = {}) {
   activeAlbum = album;
   const viewer = document.querySelector('#album-viewer');
   viewer.hidden = !album;
-  if (!album) return;
+  if (!album) {
+    ++photoRequest;
+    photoLoader.clear();
+    return;
+  }
   paintPhoto();
   if (focus) {
     const heading = document.querySelector('#album-heading');
@@ -85,7 +125,7 @@ document.querySelector('#main').addEventListener('click', (event) => {
   const previewTrigger = event.target.closest('[data-photo-preview]');
   if (previewTrigger && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey && event.button === 0) {
     event.preventDefault();
-    preview.open(previewTrigger);
+    if (previewTrigger.getAttribute('aria-disabled') !== 'true') preview.open(previewTrigger);
   } else if (albumLink && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey && event.button === 0) {
     event.preventDefault();
     lastAlbumTrigger = albumLink;

@@ -62,7 +62,10 @@ async function context(options = {}) {
   return ctx;
 }
 const check = (name) => { report.checks.push(name); console.log(`PASS ${name}`); };
-const waitImage = async (page, selector) => page.locator(selector).evaluate((image) => image.decode());
+const waitImage = async (page, selector) => {
+  if (selector === '#album-image') await page.waitForFunction(() => document.querySelector('.viewer-stage')?.getAttribute('aria-busy') === 'false');
+  return page.locator(selector).evaluate((image) => image.decode());
+};
 const screenshot = async (page, name, fullPage = true) => {
   await page.mouse.move(0, 0);
   await page.screenshot({ path: resolve(output, name), fullPage, animations: 'disabled' });
@@ -719,11 +722,84 @@ try {
   const failedPage = await failed.newPage();
   await failedPage.goto(`${origin}/#album-switzerland`);
   await failedPage.locator('#image-error:not([hidden])').waitFor();
+  assert.equal(await failedPage.locator('#full-image').isVisible(), false);
   await failedPage.locator('[data-photo-next]').click();
   await waitImage(failedPage, '#album-image');
   assert.equal(await failedPage.locator('#image-error').isVisible(), false);
+  assert.equal(await failedPage.locator('#full-image').isVisible(), true);
   check('Album image failure is explained and next-image navigation recovers');
   await failed.close();
+
+  const interactions = await context({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+  await interactions.addInitScript(() => Object.defineProperty(navigator, 'connection', { value: { saveData: true, effectiveType: '4g' }, configurable: true }));
+  const interactionPage = await interactions.newPage();
+  const interactionErrors = [];
+  interactionPage.on('pageerror', error => interactionErrors.push(error.message));
+  await interactionPage.goto(`${origin}/`);
+  await interactionPage.locator('.preferences:not([hidden])').waitFor();
+  assert.equal(await interactionPage.locator('#contact a[href="https://substack.com/@les1587833"]').count(), 1);
+  const themeChanges = await interactionPage.evaluate(async () => {
+    let body = 0; let content = 0;
+    const a = new MutationObserver(records => { body += records.length; });
+    const b = new MutationObserver(records => { content += records.length; });
+    const options = { subtree: true, childList: true, characterData: true, attributes: true };
+    a.observe(document.body, options); b.observe(document.querySelector('#quiet-sections'), options);
+    document.querySelector('#quiet-theme').click();
+    await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    a.disconnect(); b.disconnect();
+    return { body, content, transition: getComputedStyle(document.querySelector('#quiet-theme')).transitionDuration, touch: getComputedStyle(document.querySelector('#quiet-theme')).touchAction };
+  });
+  assert.equal(themeChanges.content, 0);
+  assert.ok(themeChanges.body <= 8);
+  assert.equal(themeChanges.transition, '0s');
+  assert.equal(themeChanges.touch, 'manipulation');
+  check('Substack contact is explicit; touch-theme changes avoid translated-content rewrites and hover transitions');
+
+  const speculative = [];
+  interactionPage.on('request', request => { if (request.url().includes('/img/switzerland/')) speculative.push(request.url()); });
+  await interactionPage.locator('[data-album="switzerland"]').first().click();
+  await waitImage(interactionPage, '#album-image');
+  assert.equal(speculative.length, 0, 'Save-Data disables adjacent-image requests');
+  await interactions.route('**/img/switzerland/switz-landsc-1.webp', async route => { await new Promise(resolve => setTimeout(resolve, 350)); await route.fallback(); });
+  const retained = await interactionPage.evaluate(() => {
+    const image = document.querySelector('#album-image'); const source = image.getAttribute('src');
+    const height = document.querySelector('.viewer-stage').getBoundingClientRect().height;
+    document.querySelector('[data-photo-next]').click();
+    return { retained: source === image.getAttribute('src'), busy: document.querySelector('.viewer-stage').getAttribute('aria-busy'), disabled: document.querySelector('[data-photo-preview]').getAttribute('aria-disabled'), height, nextHeight: document.querySelector('.viewer-stage').getBoundingClientRect().height };
+  });
+  assert.equal(retained.retained, true); assert.equal(retained.busy, 'true'); assert.equal(retained.disabled, 'true'); assert.equal(retained.height, retained.nextHeight);
+  await interactionPage.locator('[data-photo-next]').click();
+  await waitImage(interactionPage, '#album-image');
+  assert.ok((await interactionPage.locator('#album-image').getAttribute('src')).endsWith('/switz-port-1.webp'));
+  await interactionPage.waitForTimeout(400);
+  assert.ok((await interactionPage.locator('#album-image').getAttribute('src')).endsWith('/switz-port-1.webp'));
+  check('Delayed album loads retain the decoded photo and frame; rapid input rejects stale results; Save-Data prevents speculation');
+
+  await interactionPage.locator('#album-image').click();
+  await interactionPage.locator('#photo-preview[open]').waitFor();
+  const beforeClose = await interactionPage.evaluate(() => ({ scroll: scrollY, source: document.querySelector('#album-image').getAttribute('src') }));
+  const exit = await interactionPage.evaluate(() => { document.querySelector('#preview-close').click(); const dialog = document.querySelector('#photo-preview'); return { open: dialog.open, closing: dialog.classList.contains('is-closing') }; });
+  assert.deepEqual(exit, { open: true, closing: true });
+  await interactionPage.waitForFunction(() => !document.querySelector('#photo-preview').open);
+  assert.equal(await interactionPage.evaluate(() => scrollY), beforeClose.scroll);
+  assert.equal(await interactionPage.locator('#album-image').getAttribute('src'), beforeClose.source);
+  assert.equal(await interactionPage.evaluate(() => document.activeElement.hasAttribute('data-photo-preview')), true);
+  await interactionPage.emulateMedia({ reducedMotion: 'reduce' });
+  await interactionPage.locator('#album-image').click();
+  await interactionPage.locator('#photo-preview[open]').waitFor();
+  assert.equal(await interactionPage.evaluate(() => { document.querySelector('#preview-close').click(); return document.querySelector('#photo-preview').open; }), false);
+  await interactionPage.emulateMedia({ reducedMotion: 'no-preference' });
+  await interactionPage.locator('#album-image').click();
+  await interactionPage.locator('#photo-preview[open]').waitFor();
+  await interactionPage.evaluate(() => { document.querySelector('#preview-close').click(); location.hash = '#research'; });
+  await interactionPage.waitForFunction(() => !document.querySelector('#photo-preview').open && document.activeElement.id === 'research-heading');
+  const routeScroll = await interactionPage.evaluate(() => scrollY);
+  await interactionPage.waitForTimeout(200);
+  assert.equal(await interactionPage.evaluate(() => scrollY), routeScroll);
+  assert.equal(await interactionPage.evaluate(() => document.documentElement.style.overflow === 'hidden'), false);
+  assert.deepEqual(interactionErrors, []);
+  check('Preview exit fades while retaining native modality, restores state once, skips reduced motion and cannot undo a route change');
+  await interactions.close();
 
   const alias = await context();
   const aliasPage = await alias.newPage();

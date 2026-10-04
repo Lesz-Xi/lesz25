@@ -13,6 +13,10 @@ export function initPhotoPreview() {
   let request = 0;
   let failed = false;
   let restoreFocus = true;
+  let closing = false;
+  let closeTimer = null;
+  let sessionOpen = false;
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 
   function refresh() {
     if (!dialog.open) return;
@@ -25,7 +29,7 @@ export function initPhotoPreview() {
 
   function open(sourceTrigger) {
     const photo = sourceTrigger.querySelector('img');
-    if (!photo || !photo.getAttribute('src') || photo.hidden || dialog.open) return;
+    if (!photo || !photo.getAttribute('src') || photo.hidden || dialog.open || sourceTrigger.getAttribute('aria-disabled') === 'true') return;
     // A regular image link remains available if native dialogs are unsupported.
     if (typeof dialog.showModal !== 'function') {
       window.open(sourceTrigger.href, '_blank', 'noopener,noreferrer');
@@ -33,6 +37,11 @@ export function initPhotoPreview() {
     }
     trigger = sourceTrigger;
     restoreFocus = true;
+    sessionOpen = true;
+    closing = false;
+    clearTimeout(closeTimer);
+    closeTimer = null;
+    dialog.classList.remove('is-closing');
     scrollPosition = { x: scrollX, y: scrollY };
     overflow = document.documentElement.style.overflow;
     failed = false;
@@ -42,13 +51,13 @@ export function initPhotoPreview() {
     stage.setAttribute('aria-busy', 'true');
     const current = ++request;
     image.onload = () => {
-      if (current !== request || !dialog.open) return;
+      if (current !== request || !dialog.open || closing) return;
       image.hidden = false;
       status.hidden = true;
       stage.setAttribute('aria-busy', 'false');
     };
     image.onerror = () => {
-      if (current !== request || !dialog.open) return;
+      if (current !== request || !dialog.open || closing) return;
       failed = true;
       image.hidden = true;
       status.hidden = false;
@@ -62,11 +71,30 @@ export function initPhotoPreview() {
     image.src = photo.src;
   }
 
+  function finishClose() {
+    clearTimeout(closeTimer);
+    closeTimer = null;
+    // Restore the document before native focus returns; finish within one task
+    // rather than leaving scroll-lock cleanup to a later close event.
+    document.documentElement.style.overflow = overflow;
+    dialog.close();
+    cleanup();
+  }
   function close({ restoreFocus: shouldRestore = true } = {}) {
     if (!dialog.open) return;
     restoreFocus = shouldRestore;
-    dialog.close();
+    if (!shouldRestore || reducedMotion.matches) { finishClose(); return; }
+    if (closing) return;
+    closing = true;
+    dialog.classList.add('is-closing');
+    // Fallback covers missing animationend, background tabs and interrupted CSS.
+    closeTimer = setTimeout(finishClose, 160);
   }
+  dialog.addEventListener('animationend', (event) => {
+    if (closing && event.target === dialog && event.animationName === 'quiet-preview-exit') finishClose();
+  });
+  dialog.addEventListener('cancel', (event) => { event.preventDefault(); close(); });
+  reducedMotion.addEventListener('change', () => { if (closing && reducedMotion.matches) finishClose(); });
   document.querySelector('#preview-close').addEventListener('click', () => close());
   dialog.addEventListener('click', (event) => {
     if (event.target !== dialog) return;
@@ -87,7 +115,13 @@ export function initPhotoPreview() {
       first.focus();
     }
   });
-  dialog.addEventListener('close', () => {
+  function cleanup() {
+    if (!sessionOpen) return;
+    sessionOpen = false;
+    closing = false;
+    clearTimeout(closeTimer);
+    closeTimer = null;
+    dialog.classList.remove('is-closing');
     ++request; // Late load/error events cannot resurrect a closed preview.
     image.onload = null;
     image.onerror = null;
@@ -98,9 +132,11 @@ export function initPhotoPreview() {
     if (restoreFocus) {
       const target = trigger?.isConnected ? trigger : document.querySelector('[data-photo-preview]');
       target?.focus({ preventScroll: true });
-      scrollTo(scrollPosition.x, scrollPosition.y);
+      if (scrollX !== scrollPosition.x || scrollY !== scrollPosition.y) scrollTo(scrollPosition.x, scrollPosition.y);
     }
-  });
+  }
+  // A queued native close event must not clean up a newly reopened preview.
+  dialog.addEventListener('close', () => { if (!dialog.open) cleanup(); });
   // Native dialog owns Escape and background inertness; the cycle above handles Tab edges.
   return { open, close, refresh, isOpen: () => dialog.open };
 }
