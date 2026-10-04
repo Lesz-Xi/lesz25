@@ -132,6 +132,7 @@ h3 { font-size: 15px; line-height: 1.5; }
 .work-row p { color: var(--muted); font-size: 14px; }
 .row-action { justify-self: end; font-size: 12px; }
 .row-action .text-link { min-height: 24px; }
+.row-action .relics-link { min-height: 44px; }
 .status { display: block; color: var(--muted); text-align: right; font-size: 11px; line-height: 1.7; }
 .paper-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 40px; }
 .paper-row { padding-block: 28px; border-top: 1px solid var(--rule); }

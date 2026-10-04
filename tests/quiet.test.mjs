@@ -15,6 +15,7 @@ globalThis.localStorage = { getItem: (key) => storage.get(key) || null, setItem:
 globalThis.document = { documentElement: {}, querySelector: () => null, querySelectorAll: () => [] };
 const { projects, research, albums, socials, renderArchive, renderPurpose, renderContact } = await import('../src/data.js');
 const { catalogFor, runCommand } = await import('../templates/quiet/commands.js');
+const { workFor } = await import('../templates/quiet/work.js');
 const { renderPreferences, renderDevMode } = await import('../templates/quiet/controls.js');
 const { LANGUAGES, setLang, t } = await import('../src/i18n.js');
 const { renderHero, renderSections, renderNote, renderLightbox, renderApproach, renderEntryIntro, escapeHtml, ARROW } = await import('../templates/quiet/render.js');
@@ -435,12 +436,50 @@ test('approach preserves all three original paragraphs and six localized princip
   setLang('en');
 });
 
+test('Relics belongs once in Selected work and Dev Mode, never in Approach or ocean', () => {
+  const href = 'https://relics.quest/#top';
+  const ids = ['wuweism', 'twin-sparrow', '2041', 'relics', 'odysxi', 'tsra'];
+  for (const { code } of LANGUAGES) {
+    setLang(code);
+    const records = workFor(code);
+    assert.deepEqual(records.map(({ id }) => id), ids);
+    const relics = records.find(({ id }) => id === 'relics');
+    assert.equal(relics.description, COPY[code].relicsBody);
+    assert.equal(relics.principle, 'Ex-formation');
+    assert.ok(!('relicsKind' in COPY[code]));
+    assert.ok(!('relicsLink' in COPY[code]));
+    assert.equal(relics.url, href);
+    const markup = renderSections(code);
+    const row = markup.match(/<li class="work-row" data-work-id="relics">[\s\S]*?<\/li>/)?.[0];
+    assert.ok(row, code);
+    assert.equal((markup.match(/data-work-id="relics"/g) || []).length, 1);
+    assert.ok(row.includes(escapeHtml(COPY[code].relicsBody)));
+    assert.ok(row.includes('<span class="meta">Ex-formation</span>'));
+    assert.ok(row.includes(`href="${href}" target="_blank" rel="noopener noreferrer"`));
+    assert.ok(row.includes(`${escapeHtml(t('ui.visit').replace(' →', ''))}${ARROW}</a>`));
+    for (const name of ['Twin-Sparrow', '2041', 'Aurelian']) assert.ok(relics.description.includes(name));
+    const catalog = catalogFor(code).filter(({ category }) => category === 'work');
+    assert.deepEqual(catalog.map(({ id }) => id), ids);
+    assert.equal(catalog.find(({ id }) => id === 'relics').description, relics.description);
+    assert.equal(runCommand('open relics', code).records[0].href, href);
+    assert.ok(!renderApproach(code).includes('Relics'));
+    assert.ok(!renderApproach(code).includes('approach-direction'));
+  }
+  setLang('en');
+  assert.ok(COPY.en.relicsBody.includes('A developing reference'));
+  assert.ok(COPY.en.relicsBody.includes('planned manuscript-based podcast'));
+  assert.ok(COPY.en.relicsBody.includes('brittle AI and self-correcting intelligence'));
+  assert.ok(COPY.en.relicsBody.length < 240);
+  for (const path of ['index.html', 'templates/quiet/index.html']) assert.ok(read(path).includes('data-work-id="relics"'));
+  for (const path of ['templates/quiet/approach.html', 'templates/quiet/notes.html', 'templates/ocean/index.html']) assert.ok(!read(path).includes('relics.quest'));
+});
+
 test('command catalog preserves source links, statuses, publication kinds and album destinations', () => {
   for (const { code } of LANGUAGES) {
     setLang(code);
     const records = catalogFor(code);
     assert.equal(new Set(records.map(({ id }) => id)).size, records.length);
-    assert.equal(records.filter(({ category }) => category === 'work').length, projects.length);
+    assert.equal(records.filter(({ category }) => category === 'work').length, projects.length + 1);
     for (const record of [...projects, ...research].filter(({ url }) => url)) assert.ok(records.some(({ href }) => href === record.url));
     for (const album of albums) assert.equal(records.find(({ id }) => id === album.id).href, `#album-${album.id}`);
     assert.equal(records.find(({ id }) => id === 'twin-sparrow').href, '');
@@ -453,7 +492,7 @@ test('command catalog preserves source links, statuses, publication kinds and al
 
 test('finite command grammar navigates only known content and never interprets shell or URLs', () => {
   assert.equal(runCommand(' help ', 'en').kind, 'help');
-  assert.equal(runCommand('ls work', 'en').records.length, 5);
+  assert.equal(runCommand('ls work', 'en').records.length, 6);
   assert.equal(runCommand('ls albums', 'en').records.length, 6);
   assert.equal(runCommand('find Twin', 'en').records[0].id, 'twin-sparrow');
   assert.equal(runCommand('open twin-sparrow', 'en').records[0].href, '');

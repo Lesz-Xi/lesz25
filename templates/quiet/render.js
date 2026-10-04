@@ -1,6 +1,7 @@
-import { projects, research, albums, socials, renderArchive } from '../../src/data.js';
+import { research, albums, socials, renderArchive } from '../../src/data.js';
 import { t } from '../../src/i18n.js';
 import { copyFor } from './copy.js';
+import { workFor } from './work.js';
 
 export const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (character) => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
@@ -32,10 +33,10 @@ export function renderHero(locale) {
 
 export function renderSections(locale) {
   const c = copyFor(locale);
-  const work = projects.map((project, index) => `<li class="work-row">
+  const work = workFor(locale).map((project) => `<li class="work-row" data-work-id="${escapeHtml(project.id)}">
     <div class="work-title"><h3>${escapeHtml(project.name)}</h3><span class="meta">${escapeHtml(project.principle)}</span></div>
-    <p>${escapeHtml(c.projects[index])}</p>
-    <div class="row-action">${project.url ? external(project.url, t('ui.visit').replace(' →', '')) : `<span class="status">${escapeHtml(t(project.statusKey))}</span>`}</div>
+    <p>${escapeHtml(project.description)}</p>
+    <div class="row-action">${project.url ? external(project.url, t('ui.visit').replace(' →', ''), project.id === 'relics' ? 'text-link relics-link' : 'text-link') : `<span class="status">${escapeHtml(t(project.statusKey))}</span>`}</div>
   </li>`).join('');
   const papers = research.filter((paper) => paper.url).map((paper, index) => `<li class="paper-row">
     <div><h3>${external(paper.url, paper.name, 'paper-link')}</h3><span class="meta">${escapeHtml(t(`res.${index}.kind`))}</span><p>${escapeHtml(c.papers[index])}</p></div>

@@ -1,11 +1,11 @@
 // A finite portfolio grammar, not a shell. Input never becomes code or a URL.
-import { projects, research, albums } from '../../src/data.js';
+import { research, albums } from '../../src/data.js';
 import { t } from '../../src/i18n.js';
 import { copyFor } from './copy.js';
+import { workFor } from './work.js';
 
 export function catalogFor(locale) {
   const c = copyFor(locale);
-  const projectIds = ['wuweism', 'twin-sparrow', '2041', 'odysxi', 'tsra'];
   const paperIds = ['hoegs', 'valence', 'masa', 'beyond-blame'];
   return [
     ...['about', 'work', 'photography', 'research', 'notes', 'contact'].map((id) => ({
@@ -13,8 +13,8 @@ export function catalogFor(locale) {
     })),
     { id: 'approach', name: c.approachHeading, description: c.purpose, category: 'pages', kind: 'page', href: '/templates/quiet/approach.html' },
     { id: 'note', name: 'What My Hands Knew First', description: c.noteLanguage, category: 'pages', kind: 'page', href: '/templates/quiet/notes.html', lang: 'en' },
-    ...projects.map((project, index) => ({
-      id: projectIds[index] || `project-${index + 1}`, name: project.name, description: c.projects[index], category: 'work', kind: 'source',
+    ...workFor(locale).map((project) => ({
+      id: project.id, name: project.name, description: project.description, category: 'work', kind: 'source',
       href: project.url || '', status: project.statusKey ? t(project.statusKey) : '',
     })),
     ...research.filter(({ url }) => url).map((paper, index) => ({

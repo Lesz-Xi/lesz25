@@ -27,6 +27,8 @@ const devOnlyCapture = process.env.QUIET_CAPTURE === 'dev';
 const profileCapture = process.env.QUIET_CAPTURE === 'profile';
 const heroCapture = process.env.QUIET_CAPTURE === 'hero';
 const aboutCapture = process.env.QUIET_CAPTURE === 'about';
+const relicsCapture = ['relics', 'relics-copy'].includes(process.env.QUIET_CAPTURE);
+const relicsUrl = 'https://relics.quest/#top';
 const built = Boolean(process.env.QUIET_DIST);
 const assetRoot = built ? resolve(root, process.env.QUIET_DIST) : root;
 const live = Boolean(process.env.QUIET_BASE_URL);
@@ -77,7 +79,7 @@ const screenshot = async (page, name, fullPage = true) => {
 };
 
 try {
-  if (previewCapture || controlsCapture || profileCapture || heroCapture || aboutCapture) await mkdir(output, { recursive: true });
+  if (previewCapture || controlsCapture || profileCapture || heroCapture || aboutCapture || relicsCapture) await mkdir(output, { recursive: true });
   const ctx = await context({ colorScheme: 'light' });
   const page = await ctx.newPage();
   const errors = [];
@@ -207,7 +209,19 @@ try {
         const c = COPY[lang];
         assert.deepEqual(await page.locator('#about .about-copy > p').allTextContents(), [c.aboutBody, c.designBody, c.purpose]);
         assert.equal(await page.locator('#about [data-read-approach]').getAttribute('href'), '/templates/quiet/approach.html');
-        assert.equal(await page.locator('.work-row').count(), 5);
+        assert.equal(await page.locator('.work-row').count(), 6);
+        assert.deepEqual(await page.locator('.work-row').evaluateAll(rows => rows.map(row => row.dataset.workId)), ['wuweism', 'twin-sparrow', '2041', 'relics', 'odysxi', 'tsra']);
+        assert.equal(await page.locator('[data-work-id="relics"] > p').textContent(), COPY[lang].relicsBody);
+        assert.equal(await page.locator('[data-work-id="relics"] .meta').textContent(), 'Ex-formation');
+        assert.equal(await page.locator('.relics-link').textContent(), await page.locator('[data-work-id="wuweism"] .text-link').textContent());
+        assert.equal(await page.locator('.relics-link').getAttribute('href'), relicsUrl);
+        assert.equal(await page.locator('.relics-link').getAttribute('rel'), 'noopener noreferrer');
+        assert.ok((await page.locator('.relics-link').boundingBox()).height >= 44);
+        await page.locator('.relics-link').focus();
+        await page.keyboard.press('Shift+Tab');
+        await page.keyboard.press('Tab');
+        assert.equal(await page.locator('.relics-link').evaluate(el => el === document.activeElement), true);
+        assert.equal(await page.locator('.relics-link').evaluate(el => getComputedStyle(el).outlineStyle), 'solid');
         assert.equal(await page.locator('.paper-row').count(), 4);
         assert.equal(await page.locator('.album-card').count(), 6);
         assert.equal(await page.locator('.page-shell > .footer a').count(), 0);
@@ -243,6 +257,34 @@ try {
   assert.equal(await page.locator('html').getAttribute('data-theme'), 'dark');
   assert.equal(await page.evaluate(() => localStorage.getItem('rhine-theme-mode')), null);
   check('Language/theme persist; new theme never writes the ocean preference');
+  await page.selectOption('#language', 'en');
+  if (relicsCapture) {
+    for (const width of [1440, 390]) {
+      await page.setViewportSize({ width, height: width === 390 ? 844 : 900 });
+      for (const theme of ['light', 'dark']) {
+        if (await page.locator('html').getAttribute('data-theme') !== theme) await page.locator('#quiet-theme').click();
+        const captureName = process.env.QUIET_CAPTURE === 'relics-copy' ? 'relics-copy' : 'relics-work';
+        const name = `${captureName}-${width}-${theme}.png`;
+        await page.locator('#work').screenshot({ path: resolve(output, name), animations: 'disabled' });
+        report.screenshots.push(name);
+      }
+    }
+  }
+  // Native activation uses a bounded fixture; live Relics was inspected separately.
+  // URL fragments are not sent in HTTP requests, so route the destination origin.
+  await ctx.route('https://relics.quest/**', (route) => route.fulfill({ contentType: 'text/html', body: '<title>Relics destination</title>' }));
+  const relicsPopup = page.waitForEvent('popup');
+  await page.locator('.relics-link').focus();
+  await page.keyboard.press('Enter');
+  const relicsPage = await relicsPopup;
+  await relicsPage.waitForLoadState('domcontentloaded');
+  assert.equal(relicsPage.url(), relicsUrl);
+  await relicsPage.close();
+  await page.locator('.relics-link').hover();
+  await page.waitForTimeout(180);
+  assert.equal(await page.locator('.relics-link').evaluate((element) => getComputedStyle(element).textDecorationLine), 'underline');
+  assert.equal(await page.locator('.relics-link').evaluate((element) => getComputedStyle(element).color), 'rgb(251, 146, 60)');
+  check('Relics appears once in Selected work across six locales/four widths/both themes; 44px target, visible focus and native external activation work');
   await page.selectOption('#language', 'en');
   await page.locator('.cinematic [data-album]').click();
   await page.waitForURL('**/#album-switzerland');
@@ -537,7 +579,8 @@ try {
   await page.waitForFunction(() => document.querySelector('#dev-output').scrollTop > 0);
   await command('clear');
   await command('ls work');
-  assert.equal(await page.locator('.dev-records > li').count(), 5);
+  assert.equal(await page.locator('.dev-records > li').count(), 6);
+  assert.equal(await page.locator('.dev-records a[href="https://relics.quest/#top"]').count(), 1);
   assert.equal(await page.locator('.dev-records a[href=""]').count(), 0);
   assert.ok((await page.locator('.dev-records').textContent()).includes('In development'));
   await page.locator('#dev-input').fill('find draft');
@@ -648,6 +691,8 @@ try {
         const source = approachSources[lang];
         assert.deepEqual(await page.locator('.approach-body > p').allTextContents(), source.paragraphs);
         assert.deepEqual(await page.locator('.approach-principles li').allTextContents(), source.principles);
+        assert.equal(await page.locator('.approach-direction, .design-colophon').count(), 0);
+        assert.equal(await page.locator('a[href="https://relics.quest/#top"]').count(), 0);
         assert.equal(await page.locator('.reading-end a').count(), 1);
         assert.equal(await page.locator('.reader-footer a').count(), 0);
       }
@@ -722,6 +767,7 @@ try {
   assert.equal(await deniedPage.locator('html').getAttribute('data-theme'), 'light');
   assert.equal(await deniedPage.locator('.approach-body > p').count(), 3);
   assert.equal(await deniedPage.locator('.approach-principles li').count(), 6);
+  assert.equal(await deniedPage.locator('a[href="https://relics.quest/#top"]').count(), 0);
   assert.deepEqual(deniedErrors, []);
   check('Blocked storage falls back to OS theme; portfolio, Dev Mode, Notes and approach controls still work');
   await denied.close();
@@ -730,7 +776,9 @@ try {
   const nojsPage = await nojs.newPage();
   await nojsPage.goto(`${origin}/`);
   assert.equal(await nojsPage.locator('#intro-heading').textContent(), 'I build to understand.');
-  assert.equal(await nojsPage.locator('.work-row').count(), 5);
+  assert.equal(await nojsPage.locator('.work-row').count(), 6);
+  assert.equal(await nojsPage.locator('[data-work-id="relics"] > p').textContent(), COPY.en.relicsBody);
+  assert.equal(await nojsPage.locator('.relics-link').getAttribute('href'), relicsUrl);
   await waitImage(nojsPage, '.identity-portrait');
   assert.deepEqual(await nojsPage.locator('#quiet-sections > section').evaluateAll(nodes => nodes.map(node => node.id)), ['about', 'work', 'photography', 'research', 'notes', 'contact']);
   assert.equal(await nojsPage.locator('.identity-portrait').count(), 1);
@@ -755,6 +803,7 @@ try {
   await nojsPage.waitForURL('**/approach.html');
   assert.equal(await nojsPage.locator('.approach-body > p').count(), 3);
   assert.equal(await nojsPage.locator('.approach-principles li').count(), 6);
+  assert.equal(await nojsPage.locator('a[href="https://relics.quest/#top"]').count(), 0);
   assert.equal(await nojsPage.locator('.preferences').isVisible(), false);
   assert.equal(await nojsPage.locator('body').evaluate((element) => getComputedStyle(element).backgroundColor), 'rgb(33, 31, 28)');
   assert.equal(await nojsPage.locator('.reader-footer a').count(), 0);
