@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import { runInNewContext } from 'node:vm';
 import { COPY, copyFor } from '../templates/quiet/copy.js';
+import { DEV_SHORTCUTS, devPathLabel } from '../templates/quiet/dev-labels.js';
 import { albumFromHash, galleryImages, wrapIndex } from '../templates/quiet/gallery.js';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
@@ -490,6 +491,25 @@ test('command catalog preserves source links, statuses, publication kinds and al
   setLang('en');
 });
 
+test('Dev paths are display-only labels over the existing commands and record identifiers', () => {
+  assert.deepEqual(DEV_SHORTCUTS.map(({ command, label }) => [command, label]), [['help', '~/help'], ['ls work', '~/ls --work'], ['ls research', '~/ls --research'], ['ls albums', '~/ls --albums']]);
+  assert.equal(devPathLabel('relics', 'open'), '~/relics --open');
+  assert.equal(devPathLabel('twin-sparrow'), '~/twin-sparrow');
+  for (const { code } of LANGUAGES) {
+    const markup = renderDevMode(code);
+    for (const { command, label } of DEV_SHORTCUTS) {
+      assert.ok(markup.includes(`data-command="${command}"`));
+      assert.ok(markup.includes(`title="${command}">${label}</button>`));
+      assert.ok(['help', 'records'].includes(runCommand(command, code).kind));
+      assert.equal(runCommand(label, code).kind, 'message');
+    }
+    for (const record of catalogFor(code)) assert.equal(devPathLabel(record.id, record.href ? 'open' : ''), `~/${record.id}${record.href ? ' --open' : ''}`);
+  }
+  const css = read('templates/quiet/styles.css');
+  assert.ok(css.includes('.dev-path { text-decoration: none; }'));
+  assert.ok(css.includes('.dev-records a.dev-path { display: inline-flex; align-items: center; min-height: 44px; }'));
+});
+
 test('finite command grammar navigates only known content and never interprets shell or URLs', () => {
   assert.equal(runCommand(' help ', 'en').kind, 'help');
   assert.equal(runCommand('ls work', 'en').records.length, 6);
@@ -564,6 +584,17 @@ test('Dev command focus is a tight hairline without changing the global focus in
   const input = css.match(/#dev-input \{([^}]+)\}/)?.[1];
   assert.ok(input?.includes('min-height: 44px'));
   assert.ok(input?.includes('caret-color: var(--accent)'));
+});
+
+test('language selector replaces its focus frame with an underline while preserving native and high-contrast focus', () => {
+  const css = read('templates/quiet/styles.css');
+  assert.ok(css.includes('.language-control select:focus-visible { outline: none; box-shadow: inset 0 -2px 0 var(--accent); }'));
+  assert.ok(css.includes('@media (forced-colors: active) {\n  .language-control select:focus-visible { outline: 2px solid Highlight; box-shadow: none; }'));
+  assert.ok(css.includes(':focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }'));
+  const select = css.match(/\.language-control select \{([^}]+)\}/)?.[1];
+  assert.ok(select?.includes('min-height: 44px'));
+  assert.ok(select?.includes('border: 0'));
+  assert.ok(!select?.includes('appearance: none'));
 });
 
 test('Quiet hides scrollbars without disabling native scrolling or retaining slider geometry', () => {

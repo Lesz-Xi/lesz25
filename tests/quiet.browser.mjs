@@ -8,6 +8,7 @@ import { readFile, stat, mkdir, writeFile } from 'node:fs/promises';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { resolve, extname, sep } from 'node:path';
 import { COPY } from '../templates/quiet/copy.js';
+import { DEV_SHORTCUTS } from '../templates/quiet/dev-labels.js';
 
 const modulePath = process.env.PLAYWRIGHT_MODULE;
 const { chromium } = await import(modulePath ? pathToFileURL(modulePath).href : 'playwright');
@@ -147,6 +148,62 @@ try {
   await page.keyboard.press('Space');
   assert.equal(await page.locator('html').getAttribute('data-theme'), 'light');
   check('Cardless GUI/Dev buttons expose selected state; one theme icon is visible; all controls retain 44px targets and Space-key operation');
+  // Native selects can match :focus-visible after a mouse choice. Do not
+  // replace the native picker or blur it to hide the enclosing focus frame.
+  const languageCue = async (targetPage) => targetPage.locator('#language').evaluate(element => {
+    const style = getComputedStyle(element);
+    return { focused: element === document.activeElement, visible: element.matches(':focus-visible'), outline: style.outlineStyle, shadow: style.boxShadow, accent: getComputedStyle(document.documentElement).getPropertyValue('--accent').trim(), height: element.getBoundingClientRect().height, tag: element.tagName };
+  });
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: 900 });
+    for (const view of ['dev', 'gui']) {
+      await revealMobileNavigation(page);
+      await page.locator(view === 'dev' ? '#quiet-mode' : '#quiet-gui-control').click();
+      for (const theme of ['light', 'dark']) {
+        if (await page.locator('html').getAttribute('data-theme') !== theme) await page.locator('#quiet-theme').click();
+        const before = await page.locator('#language').boundingBox();
+        await page.locator('#language').click();
+        // Confirm the native choice, not Escape (which intentionally exits Dev).
+        await page.keyboard.press('Enter');
+        const pointerCue = await languageCue(page);
+        assert.equal(pointerCue.focused, true);
+        assert.equal(pointerCue.outline, 'none');
+        assert.equal(pointerCue.tag, 'SELECT');
+        assert.ok(pointerCue.height >= 44);
+        assert.deepEqual(await page.locator('#language').boundingBox(), before);
+        await page.keyboard.press('Tab');
+        await page.keyboard.press('Shift+Tab');
+        const keyboardCue = await languageCue(page);
+        assert.equal(keyboardCue.visible && keyboardCue.focused, true);
+        assert.equal(keyboardCue.outline, 'none');
+        assert.equal(keyboardCue.shadow, `${theme === 'dark' ? 'rgb(251, 146, 60)' : 'rgb(185, 71, 8)'} 0px -2px 0px 0px inset`);
+        // Exercise native select change dispatch separately from keyboard focus;
+        // headless macOS Chromium does not drive the OS picker with ArrowDown.
+        await page.selectOption('#language', 'de');
+        await page.waitForFunction(() => document.documentElement.lang === 'de');
+        assert.equal(await page.evaluate(() => localStorage.getItem('rhine-lang')), 'de');
+        assert.equal(await page.locator('#quiet-dev').isVisible(), view === 'dev');
+        await page.selectOption('#language', 'en');
+        if (process.env.LANGUAGE_FOCUS_CAPTURE === '1' && view === 'dev') {
+          await mkdir(output, { recursive: true });
+          await page.locator('.topbar').screenshot({ path: resolve(output, `language-focus-${width}-${theme}.png`) });
+          report.screenshots.push(`language-focus-${width}-${theme}.png`);
+        }
+      }
+    }
+  }
+  await page.emulateMedia({ forcedColors: 'active' });
+  await page.locator('#language').focus();
+  await page.keyboard.press('Tab');
+  await page.keyboard.press('Shift+Tab');
+  const systemCue = await languageCue(page);
+  assert.equal(systemCue.outline, 'solid');
+  assert.equal(systemCue.shadow, 'none');
+  await page.emulateMedia({ forcedColors: 'none' });
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.selectOption('#language', 'en');
+  if (await page.locator('html').getAttribute('data-theme') !== 'light') await page.locator('#quiet-theme').click();
+  check('Language picker has no enclosing pointer/keyboard frame in GUI/Dev across desktop/mobile and both themes; native select changes, saved locale, 44px geometry, underline cue and forced-colors focus work');
   assert.equal(await page.locator('html').evaluate((element) => getComputedStyle(element).scrollbarWidth), 'none');
   assert.equal(await page.locator('html').evaluate((element) => getComputedStyle(element, '::-webkit-scrollbar').display), 'none');
   await page.evaluate(() => scrollTo(0, 0));
@@ -218,6 +275,11 @@ try {
           const style = getComputedStyle(node);
           return style.color === muted && style.textDecorationLine === 'none' && node.getBoundingClientRect().height >= 44;
         }), theme === 'dark' ? 'rgb(170, 166, 160)' : 'rgb(101, 100, 97)'), true, `${lang} ${width} ${theme}: neutral nav and 44px targets`);
+        await page.locator('#language').focus();
+        const pickerCue = await languageCue(page);
+        assert.equal(pickerCue.outline, 'none', `${lang} ${width} ${theme}: no language focus frame`);
+        assert.ok(pickerCue.height >= 44);
+        assert.equal(pickerCue.shadow, `${theme === 'dark' ? 'rgb(251, 146, 60)' : 'rgb(185, 71, 8)'} 0px -2px 0px 0px inset`);
         const c = COPY[lang];
         assert.equal(await page.locator('.email-link').textContent(), c.email);
         assert.equal(await page.locator('.email-link').getAttribute('href'), 'mailto:rhinelesther@gmail.com');
@@ -635,6 +697,7 @@ try {
   await page.locator('[data-photo-preview]').focus();
   await page.locator('#quiet-mode').evaluate((button) => button.click());
   await command('ls');
+  assert.equal(await page.locator('.dev-records a[href="/templates/quiet/notes.html"]').getAttribute('lang'), 'en');
   assert.equal(await page.locator('#dev-output').evaluate((element) => getComputedStyle(element).scrollbarWidth), 'none');
   await page.locator('#dev-output').evaluate((element) => { element.scrollTop = 0; element.focus(); });
   await page.keyboard.press('PageDown');
@@ -665,6 +728,91 @@ try {
   assert.deepEqual(restoredGui, savedGui);
   assert.equal(await page.locator('[data-photo-preview]').evaluate((element) => element === document.activeElement), true);
   check('Dev Mode has safe literal output, bounded grammar, history, normal Tab navigation, and exact GUI album/focus/scroll restoration');
+
+  // Keep locale repaint coverage outside the exact original-node restoration scenario.
+  await page.locator('#quiet-mode').evaluate((button) => button.click());
+  for (const width of [320, 390, 768, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    for (const { code: locale } of LANGUAGES) {
+      await page.selectOption('#language', locale);
+      for (const theme of ['light', 'dark']) {
+        if (await page.locator('html').getAttribute('data-theme') !== theme) await page.locator('#quiet-theme').click();
+        for (const { command: payload, label } of DEV_SHORTCUTS) {
+          const shortcut = page.locator(`[data-command="${payload}"]`);
+          assert.equal(await shortcut.textContent(), label);
+          assert.equal(await shortcut.getAttribute('title'), payload);
+          await shortcut.hover();
+          assert.equal(await shortcut.evaluate(e => getComputedStyle(e).textDecorationLine), 'none');
+        }
+        await page.locator('[data-command="ls work"]').click();
+        assert.equal(await page.locator('.dev-command').last().textContent(), 'rhine / ls work');
+        const rows = page.locator('.dev-entry').last().locator('.dev-records > li');
+        assert.equal(await rows.count(), 6);
+        const paths = await rows.evaluateAll(nodes => nodes.map(row => {
+          const path = row.querySelector('.dev-path'), title = row.querySelector('.dev-record-name');
+          return { label: path.textContent, href: path.getAttribute('href'), name: title.textContent, linked: path.tagName === 'A', target: path.getAttribute('target'), rel: path.getAttribute('rel'), underline: getComputedStyle(path).textDecorationLine, height: path.getBoundingClientRect().height, kind: path.dataset.portfolioTarget };
+        }));
+        assert.deepEqual(paths.map(({ label }) => label), ['~/wuweism --open', '~/twin-sparrow', '~/2041', '~/relics --open', '~/odysxi --open', '~/tsra --open']);
+        for (const path of paths) {
+          assert.equal(path.underline, 'none');
+          if (path.linked) { assert.ok(path.height >= 44); assert.equal(path.kind, 'source'); assert.equal(path.target, '_blank'); assert.equal(path.rel, 'noopener noreferrer'); }
+          else assert.equal(path.href, null);
+        }
+        assert.equal(paths[3].name, 'Relics');
+        assert.equal(paths[3].href, relicsUrl);
+        assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+        if (process.env.DEV_PATH_CAPTURE === '1' && locale === 'en' && [1440, 390].includes(width)) {
+          await mkdir(output, { recursive: true });
+          await page.locator('#dev-output').evaluate(e => { e.scrollTop = 0; });
+          await page.mouse.move(0, 0);
+          const name = `dev-path-${width}-${theme}.png`;
+          await page.locator('.dev-surface').screenshot({ path: resolve(output, name) });
+          report.screenshots.push(name);
+        }
+      }
+    }
+  }
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.selectOption('#language', 'en');
+  await command('clear');
+  await command('ls work');
+  const relicsPath = page.locator('.dev-records a[href="https://relics.quest/#top"]');
+  await relicsPath.focus();
+  await page.keyboard.press('Tab');
+  await page.keyboard.press('Shift+Tab');
+  assert.equal(await relicsPath.evaluate(e => e.matches(':focus-visible') && getComputedStyle(e).outlineWidth === '2px' && getComputedStyle(e).textDecorationLine === 'none'), true);
+  check('Dev path labels preserve shortcut payloads, record names, truthful unavailable state, source URLs and native keyboard targets across six locales/four widths/both themes without underline or overflow');
+  await command('clear');
+  await command('exit');
+
+  const pathTouch = await context({ reducedMotion: 'reduce', hasTouch: true, isMobile: true, viewport: { width: 390, height: 844 } });
+  try {
+    const touchPage = await pathTouch.newPage();
+    for (const [id, href] of [['about', '#about'], ['approach', '/templates/quiet/approach.html'], ['note', '/templates/quiet/notes.html'], ['switzerland', '#album-switzerland']]) {
+      await touchPage.goto(`${origin}/`);
+      await touchPage.locator('.menu-ready').waitFor();
+      await touchPage.locator('#quiet-menu').tap();
+      await touchPage.locator('#quiet-mode').tap();
+      await touchPage.locator('#dev-input').fill('ls');
+      await touchPage.locator('#dev-input').press('Enter');
+      const path = touchPage.locator(`a.dev-path[href="${href}"]`);
+      assert.equal(await path.textContent(), `~/${id} --open`);
+      await path.tap();
+      await touchPage.waitForURL(`${origin}${href.startsWith('#') ? '/' : ''}${href}`);
+      if (href.startsWith('#')) assert.equal(await touchPage.locator('#quiet-dev').isVisible(), false);
+    }
+    for (const route of ['/', '/templates/quiet/', '/templates/quiet/notes.html', '/templates/quiet/approach.html']) {
+      await touchPage.goto(`${origin}${route}`);
+      await touchPage.locator('.preferences:not([hidden])').waitFor();
+      await touchPage.locator('#language').tap();
+      await touchPage.selectOption('#language', 'ja');
+      const cue = await languageCue(touchPage);
+      assert.equal(cue.outline, 'none');
+      assert.ok(cue.height >= 44);
+      assert.equal(await touchPage.locator('html').getAttribute('lang'), 'ja');
+    }
+  } finally { await pathTouch.close(); }
+  check('Emulated touch path links activate native sections, readers and album; shared language picker changes locale without a frame at root, alias and both readers');
 
   await page.locator('#quiet-mode').evaluate((button) => button.click());
   await command('theme dark');

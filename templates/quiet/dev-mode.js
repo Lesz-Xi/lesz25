@@ -2,6 +2,7 @@
 import { getLang, onLangChange } from '../../src/i18n.js';
 import { copyFor } from './copy.js';
 import { runCommand } from './commands.js';
+import { devPathLabel } from './dev-labels.js';
 
 export function initDevMode({ navigate, beforeEnter, setTheme }) {
   const gui = document.querySelector('#quiet-gui');
@@ -69,14 +70,15 @@ export function initDevMode({ navigate, beforeEnter, setTheme }) {
       list.className = 'dev-records';
       for (const record of result.kind === 'records' ? result.records : [result.record]) {
         const row = document.createElement('li');
-        addText(row, 'span', record.id, 'dev-id');
+        const path = addText(row, record.href ? 'a' : 'span', devPathLabel(record.id, record.href ? 'open' : ''), 'dev-id dev-path');
         const body = document.createElement('div');
-        const name = addText(body, record.href ? 'a' : 'span', record.name, 'dev-record-name');
-        if (record.lang) name.lang = record.lang;
+        const name = addText(body, 'span', record.name, 'dev-record-name');
+        if (record.lang) { name.lang = record.lang; path.lang = record.lang; }
         if (record.href) {
-          name.href = record.href;
-          name.dataset.portfolioTarget = record.kind;
-          if (record.kind === 'source') { name.target = '_blank'; name.rel = 'noopener noreferrer'; }
+          path.href = record.href;
+          path.setAttribute('aria-label', `${path.textContent}: ${record.name}`);
+          path.dataset.portfolioTarget = record.kind;
+          if (record.kind === 'source') { path.target = '_blank'; path.rel = 'noopener noreferrer'; }
         }
         if (record.status) addText(body, 'span', record.status, 'dev-record-status');
         if (record.description) addText(body, 'p', record.description, 'dev-record-description');

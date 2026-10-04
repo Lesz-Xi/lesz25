@@ -107,6 +107,12 @@ section, #album-heading { scroll-margin-top: 32px; }
 }
 .preferences { display: flex; align-items: center; flex: 0 0 auto; gap: 16px; }
 .language-control select { border: 0; background: transparent; min-width: 52px; min-height: 44px; padding: 0 4px; font-size: 12px; cursor: pointer; }
+/* Native selects can retain :focus-visible after pointer selection. Keep a
+   visible cue without the enclosing frame or changing the native picker. */
+.language-control select:focus-visible { outline: none; box-shadow: inset 0 -2px 0 var(--accent); }
+@media (forced-colors: active) {
+  .language-control select:focus-visible { outline: 2px solid Highlight; box-shadow: none; }
+}
 .mode-controls { display: flex; align-items: center; gap: 8px; }
 .view-control { position: relative; display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding: 0 4px; background: transparent; color: var(--muted); font-size: 12px; white-space: nowrap; }
 .view-control[aria-pressed='true'] { color: var(--ink); }
@@ -253,7 +259,11 @@ h3 { font-size: 15px; line-height: 1.5; }
 .dev-entry > ul:not(.dev-records) { display: flex; flex-direction: column; gap: 8px; }
 .dev-records { display: flex; flex-direction: column; gap: 20px; }
 .dev-records > li { display: flex; align-items: baseline; gap: 20px; }
-.dev-id { flex: 0 0 14ch; color: var(--surface-accent); }
+.dev-id { flex: 0 0 22ch; color: var(--surface-accent); }
+.dev-path { text-decoration: none; }
+.dev-shortcuts .dev-path:hover, .dev-shortcuts .dev-path:focus-visible,
+.dev-records a.dev-path:hover, .dev-records a.dev-path:focus-visible { color: var(--surface-accent); text-decoration: none; }
+.dev-records a.dev-path { display: inline-flex; align-items: center; min-height: 44px; }
 .dev-records > li > div { min-width: 0; }
 .dev-record-name { font-weight: 500; }
 .dev-records a:hover { color: var(--surface-accent); }
