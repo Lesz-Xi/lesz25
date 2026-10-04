@@ -439,7 +439,7 @@ test('approach preserves all three original paragraphs and six localized princip
 
 test('Relics belongs once in Selected work and Dev Mode, never in Approach or ocean', () => {
   const href = 'https://relics.quest/#top';
-  const ids = ['wuweism', 'twin-sparrow', '2041', 'relics', 'odysxi', 'tsra'];
+  const ids = ['wuweism', 'twin-sparrow', '2041', 'relics', 'odysxi', 'tsra', 'thesislens'];
   for (const { code } of LANGUAGES) {
     setLang(code);
     const records = workFor(code);
@@ -475,12 +475,45 @@ test('Relics belongs once in Selected work and Dev Mode, never in Approach or oc
   for (const path of ['templates/quiet/approach.html', 'templates/quiet/notes.html', 'templates/ocean/index.html']) assert.ok(!read(path).includes('relics.quest'));
 });
 
+test('ThesisLens is localized once in Selected work and shared Dev records without changing ocean', () => {
+  const href = 'https://thesislens.space/';
+  for (const { code } of LANGUAGES) {
+    setLang(code);
+    const records = workFor(code);
+    assert.equal(records.length, 7);
+    assert.equal(records.at(-1).id, 'thesislens');
+    const project = records.find(({ id }) => id === 'thesislens');
+    assert.equal(project.name, 'ThesisLens');
+    assert.equal(project.url, href);
+    assert.equal(project.principle, COPY[code].thesislensKind);
+    assert.equal(project.description, COPY[code].thesislensBody);
+    assert.equal(project.statusKey, '');
+    const markup = renderSections(code);
+    const row = markup.match(/<li class="work-row" data-work-id="thesislens">[\s\S]*?<\/li>/)?.[0];
+    assert.ok(row?.includes('<h3>ThesisLens</h3>'));
+    assert.ok(row.includes(escapeHtml(project.description)));
+    assert.ok(row.includes(escapeHtml(project.principle)));
+    assert.ok(row.includes(`href="${href}" target="_blank" rel="noopener noreferrer"`));
+    assert.ok(row.includes(`${escapeHtml(t('ui.visit').replace(' →', ''))}${ARROW}</a>`));
+    assert.equal((markup.match(/data-work-id="thesislens"/g) || []).length, 1);
+    assert.equal(catalogFor(code).filter(({ id }) => id === 'thesislens').length, 1);
+    assert.equal(runCommand('find thesislens', code).records[0].href, href);
+    assert.equal(runCommand('open thesislens', code).records[0].href, href);
+    assert.equal(runCommand('open ThesisLens', code).records[0].description, project.description);
+    assert.ok(!renderApproach(code).includes(href));
+  }
+  setLang('en');
+  assert.ok(!projects.some(({ url }) => url === href));
+  for (const path of ['index.html', 'templates/quiet/index.html']) assert.ok(read(path).includes('data-work-id="thesislens"'));
+  for (const path of ['templates/quiet/notes.html', 'templates/quiet/approach.html', 'templates/ocean/index.html']) assert.ok(!read(path).includes(href));
+});
+
 test('command catalog preserves source links, statuses, publication kinds and album destinations', () => {
   for (const { code } of LANGUAGES) {
     setLang(code);
     const records = catalogFor(code);
     assert.equal(new Set(records.map(({ id }) => id)).size, records.length);
-    assert.equal(records.filter(({ category }) => category === 'work').length, projects.length + 1);
+    assert.equal(records.filter(({ category }) => category === 'work').length, projects.length + 2);
     for (const record of [...projects, ...research].filter(({ url }) => url)) assert.ok(records.some(({ href }) => href === record.url));
     for (const album of albums) assert.equal(records.find(({ id }) => id === album.id).href, `#album-${album.id}`);
     assert.equal(records.find(({ id }) => id === 'twin-sparrow').href, '');
@@ -512,7 +545,7 @@ test('Dev paths are display-only labels over the existing commands and record id
 
 test('finite command grammar navigates only known content and never interprets shell or URLs', () => {
   assert.equal(runCommand(' help ', 'en').kind, 'help');
-  assert.equal(runCommand('ls work', 'en').records.length, 6);
+  assert.equal(runCommand('ls work', 'en').records.length, 7);
   assert.equal(runCommand('ls albums', 'en').records.length, 6);
   assert.equal(runCommand('find Twin', 'en').records[0].id, 'twin-sparrow');
   assert.equal(runCommand('open twin-sparrow', 'en').records[0].href, '');

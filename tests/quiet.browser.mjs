@@ -30,6 +30,7 @@ const heroCapture = process.env.QUIET_CAPTURE === 'hero';
 const aboutCapture = process.env.QUIET_CAPTURE === 'about';
 const navCapture = process.env.QUIET_CAPTURE === 'nav';
 const relicsCapture = ['relics', 'relics-copy'].includes(process.env.QUIET_CAPTURE);
+const thesislensCapture = process.env.QUIET_CAPTURE === 'thesislens';
 const relicsUrl = 'https://relics.quest/#top';
 const built = Boolean(process.env.QUIET_DIST);
 const assetRoot = built ? resolve(root, process.env.QUIET_DIST) : root;
@@ -85,7 +86,7 @@ const screenshot = async (page, name, fullPage = true) => {
 };
 
 try {
-  if (previewCapture || controlsCapture || profileCapture || heroCapture || aboutCapture || relicsCapture || navCapture) await mkdir(output, { recursive: true });
+  if (previewCapture || controlsCapture || profileCapture || heroCapture || aboutCapture || relicsCapture || thesislensCapture || navCapture) await mkdir(output, { recursive: true });
   const ctx = await context({ colorScheme: 'light' });
   const page = await ctx.newPage();
   const errors = [];
@@ -289,8 +290,16 @@ try {
         })), [['rgba(0, 0, 0, 0)', '13px', 'underline', 'auto', '5px', '0px', '0px', '0px', 'none', true], ['rgba(0, 0, 0, 0)', '13px', 'underline', 'auto', '5px', '0px', '0px', '0px', 'none', true]], `${lang} ${width} ${theme}: email/read parity`);
         assert.deepEqual(await page.locator('#about .about-copy > p').allTextContents(), [c.aboutBody, c.designBody, c.purpose]);
         assert.equal(await page.locator('#about [data-read-approach]').getAttribute('href'), '/templates/quiet/approach.html');
-        assert.equal(await page.locator('.work-row').count(), 6);
-        assert.deepEqual(await page.locator('.work-row').evaluateAll(rows => rows.map(row => row.dataset.workId)), ['wuweism', 'twin-sparrow', '2041', 'relics', 'odysxi', 'tsra']);
+        assert.equal(await page.locator('.work-row').count(), 7);
+        assert.deepEqual(await page.locator('.work-row').evaluateAll(rows => rows.map(row => row.dataset.workId)), ['wuweism', 'twin-sparrow', '2041', 'relics', 'odysxi', 'tsra', 'thesislens']);
+        const thesisRow = page.locator('[data-work-id="thesislens"]');
+        assert.equal(await thesisRow.locator('h3').textContent(), 'ThesisLens');
+        assert.equal(await thesisRow.locator('p').textContent(), c.thesislensBody);
+        assert.equal(await thesisRow.locator('.meta').textContent(), c.thesislensKind);
+        assert.equal(await thesisRow.locator('a').getAttribute('href'), 'https://thesislens.space/');
+        assert.equal(await thesisRow.locator('a').getAttribute('target'), '_blank');
+        assert.equal(await thesisRow.locator('a').getAttribute('rel'), 'noopener noreferrer');
+        assert.ok((await thesisRow.locator('a').boundingBox()).height >= 44);
         assert.equal(await page.locator('[data-work-id="relics"] > p').textContent(), COPY[lang].relicsBody);
         assert.equal(await page.locator('[data-work-id="relics"] .meta').textContent(), 'Ex-formation');
         assert.equal(await page.locator('.relics-link').textContent(), await page.locator('[data-work-id="wuweism"] .text-link').textContent());
@@ -338,12 +347,12 @@ try {
   assert.equal(await page.evaluate(() => localStorage.getItem('rhine-theme-mode')), null);
   check('Language/theme persist; new theme never writes the ocean preference');
   await page.selectOption('#language', 'en');
-  if (relicsCapture) {
+  if (relicsCapture || thesislensCapture) {
     for (const width of [1440, 390]) {
       await page.setViewportSize({ width, height: width === 390 ? 844 : 900 });
       for (const theme of ['light', 'dark']) {
         if (await page.locator('html').getAttribute('data-theme') !== theme) await page.locator('#quiet-theme').click();
-        const captureName = process.env.QUIET_CAPTURE === 'relics-copy' ? 'relics-copy' : 'relics-work';
+        const captureName = thesislensCapture ? 'thesislens-work' : process.env.QUIET_CAPTURE === 'relics-copy' ? 'relics-copy' : 'relics-work';
         const name = `${captureName}-${width}-${theme}.png`;
         await page.locator('#work').screenshot({ path: resolve(output, name), animations: 'disabled' });
         report.screenshots.push(name);
@@ -367,6 +376,20 @@ try {
   assert.equal(await page.locator('.relics-link').evaluate((element) => getComputedStyle(element).textDecorationLine), 'underline');
   assert.equal(await page.locator('.relics-link').evaluate((element) => getComputedStyle(element).color), 'rgb(251, 146, 60)');
   check('Relics appears once in Selected work across six locales/four widths/both themes; 44px target, visible focus and native external activation work');
+  const thesisLink = page.locator('[data-work-id="thesislens"] a');
+  await ctx.route('https://thesislens.space/**', route => route.fulfill({ contentType: 'text/html', body: '<title>ThesisLens destination fixture</title>' }));
+  const thesisPopup = page.waitForEvent('popup');
+  await thesisLink.focus();
+  await page.keyboard.press('Tab');
+  await page.keyboard.press('Shift+Tab');
+  assert.equal(await thesisLink.evaluate(e => e.matches(':focus-visible') && getComputedStyle(e).outlineStyle === 'solid'), true);
+  await page.keyboard.press('Enter');
+  const thesisPage = await thesisPopup;
+  await thesisPage.waitForLoadState('domcontentloaded');
+  assert.equal(thesisPage.url(), 'https://thesislens.space/');
+  assert.equal(await thesisPage.evaluate(() => window.opener), null);
+  await thesisPage.close();
+  check('ThesisLens appears once after TSRA across six locales/four widths/both themes; native keyboard Visit opens its exact URL safely in a new tab');
   await page.selectOption('#language', 'en');
   await page.locator('.cinematic [data-album]').click();
   await page.waitForURL('**/#album-switzerland');
@@ -704,7 +727,7 @@ try {
   await page.waitForFunction(() => document.querySelector('#dev-output').scrollTop > 0);
   await command('clear');
   await command('ls work');
-  assert.equal(await page.locator('.dev-records > li').count(), 6);
+  assert.equal(await page.locator('.dev-records > li').count(), 7);
   assert.equal(await page.locator('.dev-records a[href="https://relics.quest/#top"]').count(), 1);
   assert.equal(await page.locator('.dev-records a[href=""]').count(), 0);
   assert.ok((await page.locator('.dev-records').textContent()).includes('In development'));
@@ -747,12 +770,12 @@ try {
         await page.locator('[data-command="ls work"]').click();
         assert.equal(await page.locator('.dev-command').last().textContent(), 'rhine / ls work');
         const rows = page.locator('.dev-entry').last().locator('.dev-records > li');
-        assert.equal(await rows.count(), 6);
+        assert.equal(await rows.count(), 7);
         const paths = await rows.evaluateAll(nodes => nodes.map(row => {
           const path = row.querySelector('.dev-path'), title = row.querySelector('.dev-record-name');
           return { label: path.textContent, href: path.getAttribute('href'), name: title.textContent, linked: path.tagName === 'A', target: path.getAttribute('target'), rel: path.getAttribute('rel'), underline: getComputedStyle(path).textDecorationLine, height: path.getBoundingClientRect().height, kind: path.dataset.portfolioTarget };
         }));
-        assert.deepEqual(paths.map(({ label }) => label), ['~/wuweism --open', '~/twin-sparrow', '~/2041', '~/relics --open', '~/odysxi --open', '~/tsra --open']);
+        assert.deepEqual(paths.map(({ label }) => label), ['~/wuweism --open', '~/twin-sparrow', '~/2041', '~/relics --open', '~/odysxi --open', '~/tsra --open', '~/thesislens --open']);
         for (const path of paths) {
           assert.equal(path.underline, 'none');
           if (path.linked) { assert.ok(path.height >= 44); assert.equal(path.kind, 'source'); assert.equal(path.target, '_blank'); assert.equal(path.rel, 'noopener noreferrer'); }
@@ -760,6 +783,8 @@ try {
         }
         assert.equal(paths[3].name, 'Relics');
         assert.equal(paths[3].href, relicsUrl);
+        assert.equal(paths[6].name, 'ThesisLens');
+        assert.equal(paths[6].href, 'https://thesislens.space/');
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
         if (process.env.DEV_PATH_CAPTURE === '1' && locale === 'en' && [1440, 390].includes(width)) {
           await mkdir(output, { recursive: true });
@@ -782,6 +807,28 @@ try {
   await page.keyboard.press('Shift+Tab');
   assert.equal(await relicsPath.evaluate(e => e.matches(':focus-visible') && getComputedStyle(e).outlineWidth === '2px' && getComputedStyle(e).textDecorationLine === 'none'), true);
   check('Dev path labels preserve shortcut payloads, record names, truthful unavailable state, source URLs and native keyboard targets across six locales/four widths/both themes without underline or overflow');
+  await command('clear');
+  await command('find thesislens');
+  assert.equal(await page.locator('.dev-records > li').count(), 1);
+  assert.equal(await page.locator('.dev-record-name').textContent(), 'ThesisLens');
+  await command('open thesislens');
+  const thesisResult = page.locator('.dev-entry').last();
+  assert.equal(await thesisResult.locator('a').textContent(), '~/thesislens --open');
+  assert.equal(await thesisResult.locator('a').getAttribute('href'), 'https://thesislens.space/');
+  assert.equal(await page.locator('#quiet-dev').isVisible(), true);
+  check('Dev find/open ThesisLens use the shared work record and explicit native source link without automatic external navigation');
+  if (thesislensCapture) {
+    for (const width of [1440, 390]) {
+      await page.setViewportSize({ width, height: 900 });
+      for (const theme of ['light', 'dark']) {
+        if (await page.locator('html').getAttribute('data-theme') !== theme) await page.locator('#quiet-theme').click();
+        const name = `thesislens-dev-${width}-${theme}.png`;
+        await thesisResult.screenshot({ path: resolve(output, name) });
+        report.screenshots.push(name);
+      }
+    }
+    await page.setViewportSize({ width: 1440, height: 900 });
+  }
   await command('clear');
   await command('exit');
 
@@ -999,7 +1046,9 @@ try {
   const nojsPage = await nojs.newPage();
   await nojsPage.goto(`${origin}/`);
   assert.equal(await nojsPage.locator('#intro-heading').textContent(), 'I build to understand.');
-  assert.equal(await nojsPage.locator('.work-row').count(), 6);
+  assert.equal(await nojsPage.locator('.work-row').count(), 7);
+  assert.equal(await nojsPage.locator('[data-work-id="thesislens"] > p').textContent(), COPY.en.thesislensBody);
+  assert.equal(await nojsPage.locator('[data-work-id="thesislens"] a').getAttribute('href'), 'https://thesislens.space/');
   assert.equal(await nojsPage.locator('[data-work-id="relics"] > p').textContent(), COPY.en.relicsBody);
   assert.equal(await nojsPage.locator('.relics-link').getAttribute('href'), relicsUrl);
   await waitImage(nojsPage, '.identity-portrait');

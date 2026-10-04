@@ -14,6 +14,12 @@ export function workFor(locale) {
     id: 'relics', name: 'Relics', principle: 'Ex-formation', description: c.relicsBody,
     url: 'https://relics.quest/#top', statusKey: '',
   };
-  // Keep the template beside the two projects it presents, without changing shared data.
-  return [...original.slice(0, 3), relics, ...original.slice(3)];
+  const thesislens = {
+    // Public site presents drafting, revision and writing-process records;
+    // its authorship-proof claims are not independently validated here.
+    id: 'thesislens', name: 'ThesisLens', principle: c.thesislensKind, description: c.thesislensBody,
+    url: 'https://thesislens.space/', statusKey: '',
+  };
+  // Preserve existing order, including Relics after 2041; append the omitted project.
+  return [...original.slice(0, 3), relics, ...original.slice(3), thesislens];
 }
