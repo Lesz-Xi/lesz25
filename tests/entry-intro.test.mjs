@@ -123,7 +123,8 @@ test('no-script and CSS failure paths preserve page input without a modal or ine
   assert.ok(css.includes('animation: entry-fail-open 4s step-end forwards'));
   assert.ok(css.includes('visibility: hidden; pointer-events: none;'));
   assert.ok(css.includes('.entry-intro { display: none !important; }'));
-  assert.ok(main.includes('initEntryIntro({ locale: getLang() })'));
+  assert.ok(main.includes('initEntryIntro({ locale: getLang(), onExit: () => heroReveal?.prepare() })'));
+  assert.ok(main.includes("if (played && reason === 'complete') heroReveal?.play()"));
   assert.ok(main.includes('requestAnimationFrame(start)'));
   assert.ok(!motion.includes('requestAnimationFrame') && !motion.includes('setInterval') && !motion.includes('showModal'));
   assert.ok(!motion.includes("setAttribute('inert'"));

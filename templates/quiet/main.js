@@ -14,6 +14,7 @@ let activeAlbum = null;
 let photoIndex = 0;
 let lastAlbumTrigger = null;
 let devMode = null;
+let heroReveal = null;
 let photoRequest = 0;
 const photoLoader = createPhotoLoader();
 
@@ -110,6 +111,7 @@ function closeAlbum() {
 }
 
 function paintPage() {
+  heroReveal?.dispose('language'); // Never animate a detached or freshly translated hero.
   const locale = getLang();
   const c = copyFor(locale);
   const oldAlbum = activeAlbum;
@@ -177,11 +179,22 @@ window.addEventListener('hashchange', () => {
 });
 onLangChange(paintPage);
 paintPage();
-devMode = initDevMode({ navigate: navigatePortfolio, setTheme, beforeEnter: () => preview.close({ restoreFocus: false }) });
+devMode = initDevMode({ navigate: navigatePortfolio, setTheme, beforeEnter: () => { heroReveal?.dispose('mode'); preview.close({ restoreFocus: false }); } });
 if (albumFromHash(location.hash, albums)) syncAlbum({ focus: true });
+// Load in parallel under the welcome. A missing/late hero module never gates
+// the page or welcome, and never collapses an already-exposed photograph.
+import('./hero-reveal.js').then(({ createHeroReveal }) => {
+  if (['pending', 'playing'].includes(document.documentElement.dataset.entryBoot)) heroReveal = createHeroReveal();
+}).catch(() => {});
 // Optional motion must not gate the portfolio module, rendering or image readiness.
 import('./entry-intro.js').then(({ initEntryIntro }) => {
-  const start = () => initEntryIntro({ locale: getLang() });
+  const start = () => {
+    const entry = initEntryIntro({ locale: getLang(), onExit: () => heroReveal?.prepare() });
+    entry.finished.then(({ played, reason }) => {
+      if (played && reason === 'complete') heroReveal?.play();
+      else heroReveal?.dispose(`entry-${reason}`);
+    }).catch(() => heroReveal?.dispose('failure'));
+  };
   if (performance.getEntriesByType('navigation')[0]?.type !== 'reload') { start(); return; }
   // Only the optional welcome waits for reload's native restoration/layout frame.
   const afterLoad = () => requestAnimationFrame(start);
@@ -189,5 +202,6 @@ import('./entry-intro.js').then(({ initEntryIntro }) => {
   else window.addEventListener('load', afterLoad, { once: true });
 }).catch(() => {
   // Optional module failure releases the early ground; normal controls still initialize.
+  heroReveal?.dispose('entry-module');
   if (document.documentElement.dataset.entryBoot === 'pending') document.documentElement.dataset.entryBoot = 'bypassed';
 });

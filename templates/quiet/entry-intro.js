@@ -17,7 +17,7 @@ export function shouldPlayEntry({ hash = '', reduced = false, hidden = false, se
   return !hash && !reduced && !hidden && (!seen || reload) && !returning;
 }
 
-export function initEntryIntro({ locale = 'en' } = {}) {
+export function initEntryIntro({ locale = 'en', onExit } = {}) {
   const root = document.documentElement;
   const cover = document.querySelector('#entry-intro');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
@@ -183,6 +183,7 @@ export function initEntryIntro({ locale = 'en' } = {}) {
     await new Promise(resolve => { resolveHold = resolve; holdTimer = setTimeout(resolve, ENTRY_HOLD); });
     if (stopped) return;
     cover.dataset.phase = 'exit';
+    try { onExit?.(); } catch { /* Optional hero preparation must not interrupt the welcome. */ }
     await animate(cover, [{ opacity: 1 }, { opacity: 0 }], 150);
     dispose('complete');
   }
