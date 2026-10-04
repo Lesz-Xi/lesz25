@@ -117,7 +117,7 @@ This document applies to the default portfolio at `/`, its `/templates/quiet/` a
 
 ### Primary
 
-Orange is interaction feedback, not a page field. Light primary actions pair slate with white. At Chief's explicit request, dark actions pair warm sand (`#d8c8b4`) with charcoal (`#211f1c`) rather than carrying the cool slate into the warm dark surface. Both themes switch to orange with charcoal text on hover/focus. Light-theme text accents use the darker orange tone for readability.
+Orange is interaction feedback, not a page field. Light primary actions pair slate with white. At Chief's explicit request, dark actions pair warm sand (`#d8c8b4`) with charcoal (`#211f1c`) rather than carrying the cool slate into the warm dark surface. Both themes switch to orange with charcoal text on hover/focus. Light-theme text accents use the darker orange tone for readability. All six header navigation links share Dev Mode's existing `--accent` on hover and keyboard `:focus-visible`: `#fb923c` in dark mode, `#b94708` in light mode. Rest stays muted; hover/focus adds an underline and the existing focus outline remains. No filled nav treatment, persistent orange state, new color token or layout change.
 
 ### Neutral
 

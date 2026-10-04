@@ -84,7 +84,7 @@ section, #album-heading { scroll-margin-top: 32px; }
 .topbar { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 100px; padding-left: calc(var(--rail) + var(--gutter)); border-bottom: 1px solid var(--rule); }
 .section-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 28px; }
 .section-nav a { font-size: 12px; color: var(--muted); text-decoration: none; display: inline-flex; align-items: center; min-height: 44px; }
-.section-nav a:hover { color: var(--ink); text-decoration: underline; }
+.section-nav a:hover, .section-nav a:focus-visible { color: var(--accent); text-decoration: underline; }
 .preferences { display: flex; align-items: center; flex: 0 0 auto; gap: 16px; }
 .language-control select { border: 0; background: transparent; min-width: 52px; min-height: 44px; padding: 0 4px; font-size: 12px; cursor: pointer; }
 .mode-controls { display: flex; align-items: center; gap: 8px; }

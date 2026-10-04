@@ -27,6 +27,7 @@ const devOnlyCapture = process.env.QUIET_CAPTURE === 'dev';
 const profileCapture = process.env.QUIET_CAPTURE === 'profile';
 const heroCapture = process.env.QUIET_CAPTURE === 'hero';
 const aboutCapture = process.env.QUIET_CAPTURE === 'about';
+const navCapture = process.env.QUIET_CAPTURE === 'nav';
 const relicsCapture = ['relics', 'relics-copy'].includes(process.env.QUIET_CAPTURE);
 const relicsUrl = 'https://relics.quest/#top';
 const built = Boolean(process.env.QUIET_DIST);
@@ -79,7 +80,7 @@ const screenshot = async (page, name, fullPage = true) => {
 };
 
 try {
-  if (previewCapture || controlsCapture || profileCapture || heroCapture || aboutCapture || relicsCapture) await mkdir(output, { recursive: true });
+  if (previewCapture || controlsCapture || profileCapture || heroCapture || aboutCapture || relicsCapture || navCapture) await mkdir(output, { recursive: true });
   const ctx = await context({ colorScheme: 'light' });
   const page = await ctx.newPage();
   const errors = [];
@@ -206,6 +207,12 @@ try {
         assert.ok(heroLink.height >= 44, `${lang} ${width} ${theme}: hero link target`);
         assert.deepEqual(await page.locator('#quiet-sections > section').evaluateAll(nodes => nodes.map(node => node.id)), ['about', 'work', 'photography', 'research', 'notes', 'contact']);
         assert.deepEqual(await page.locator('.section-nav a').evaluateAll(nodes => nodes.map(node => node.getAttribute('href'))), ['#about', '#work', '#photography', '#research', '#notes', '#contact']);
+        // Theme changes retain the existing 150ms color transition; inspect its settled state.
+        await page.waitForTimeout(180);
+        assert.equal(await page.locator('.section-nav a').evaluateAll((nodes, muted) => nodes.every(node => {
+          const style = getComputedStyle(node);
+          return style.color === muted && style.textDecorationLine === 'none' && node.getBoundingClientRect().height >= 44;
+        }), theme === 'dark' ? 'rgb(170, 166, 160)' : 'rgb(101, 100, 97)'), true, `${lang} ${width} ${theme}: neutral nav and 44px targets`);
         const c = COPY[lang];
         assert.deepEqual(await page.locator('#about .about-copy > p').allTextContents(), [c.aboutBody, c.designBody, c.purpose]);
         assert.equal(await page.locator('#about [data-read-approach]').getAttribute('href'), '/templates/quiet/approach.html');
@@ -452,6 +459,46 @@ try {
   }));
   assert.deepEqual(hoverColors, { fill: 'rgb(251, 146, 60)', ink: 'rgb(33, 31, 28)' });
   check('Rendered contact button hover retains Ellipsis orange with the accessible dark label');
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: width === 390 ? 844 : 900 });
+    for (const theme of ['light', 'dark']) {
+      if (await page.locator('html').getAttribute('data-theme') !== theme) await page.locator('#quiet-theme').click();
+      await page.locator('#quiet-mode').hover();
+      await page.waitForTimeout(180);
+      const accent = await page.locator('#quiet-mode').evaluate(el => getComputedStyle(el).color);
+      assert.equal(accent, theme === 'dark' ? 'rgb(251, 146, 60)' : 'rgb(185, 71, 8)');
+      for (const id of ['about', 'work', 'photography', 'research', 'notes', 'contact']) {
+        const link = page.locator(`.section-nav a[href="#${id}"]`);
+        await link.hover();
+        await page.waitForTimeout(180);
+        assert.deepEqual(await link.evaluate(el => ({ color: getComputedStyle(el).color, underline: getComputedStyle(el).textDecorationLine, fill: getComputedStyle(el).backgroundColor })), { color: accent, underline: 'underline', fill: 'rgba(0, 0, 0, 0)' });
+        if (navCapture && id === 'about' && width === 1440) {
+          const name = `nav-accent-${width}-${theme}.png`;
+          await page.screenshot({ path: resolve(output, name), animations: 'disabled' });
+          report.screenshots.push(name);
+        }
+        await page.mouse.move(0, 0);
+        await link.focus();
+        await page.keyboard.press('Tab');
+        await page.keyboard.press('Shift+Tab');
+        await page.waitForTimeout(180);
+        assert.deepEqual(await link.evaluate(el => ({ focused: el === document.activeElement && el.matches(':focus-visible'), color: getComputedStyle(el).color, underline: getComputedStyle(el).textDecorationLine, outline: getComputedStyle(el).outlineStyle, outlineColor: getComputedStyle(el).outlineColor })), { focused: true, color: accent, underline: 'underline', outline: 'solid', outlineColor: accent });
+        if (navCapture && id === 'about' && width === 390) {
+          const name = `nav-accent-${width}-${theme}.png`;
+          await page.screenshot({ path: resolve(output, name), animations: 'disabled' });
+          report.screenshots.push(name);
+        }
+        await page.keyboard.press('Enter');
+        await page.waitForFunction(id => location.hash === `#${id}` && document.activeElement.id === `${id}-heading`, id);
+        await page.waitForTimeout(180);
+        assert.equal(await link.evaluate(el => getComputedStyle(el).color), theme === 'dark' ? 'rgb(170, 166, 160)' : 'rgb(101, 100, 97)');
+      }
+      await page.goto(`${origin}/`);
+      await page.locator('.preferences:not([hidden])').waitFor();
+      await page.waitForFunction(() => ['done', 'bypassed'].includes(document.documentElement.dataset.entryBoot));
+    }
+  }
+  check('All six nav links match Dev Mode accent on hover and keyboard focus at desktop/mobile in both themes, retain neutral rest/underline/outline, and Enter reaches native headings');
   for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: 900 });
     for (const theme of ['light', 'dark']) {

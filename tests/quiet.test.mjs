@@ -508,6 +508,17 @@ test('finite command grammar navigates only known content and never interprets s
   assert.equal(runCommand('exit', 'en').kind, 'exit');
 });
 
+test('section navigation shares the existing accent on hover and keyboard focus', () => {
+  const css = read('templates/quiet/styles.css');
+  const rest = css.match(/\.section-nav a \{([^}]+)\}/)?.[1];
+  assert.ok(rest?.includes('color: var(--muted)'));
+  assert.ok(rest?.includes('min-height: 44px'));
+  const feedback = css.match(/\.section-nav a:hover, \.section-nav a:focus-visible \{([^}]+)\}/)?.[1];
+  assert.ok(feedback?.includes('color: var(--accent)'));
+  assert.ok(feedback?.includes('text-decoration: underline'));
+  assert.ok(css.includes(':focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }'));
+});
+
 test('Quiet hides scrollbars without disabling native scrolling or retaining slider geometry', () => {
   const css = read('templates/quiet/styles.css');
   assert.ok(css.includes('scrollbar-width: none'));
