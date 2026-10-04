@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import { runInNewContext } from 'node:vm';
 import { FLAG_STEPS, ENTRY_HOLD, ENTRY_DURATION, ENTRY_SAFETY, ENTRY_KEY, shouldPlayEntry } from '../templates/quiet/entry-intro.js';
 
 test('entry is finite, sequential, and ends with the greeting after all artwork', () => {
@@ -15,9 +16,53 @@ test('entry is finite, sequential, and ends with the greeting after all artwork'
   assert.equal(ENTRY_KEY, 'rhine-quiet-welcome-v1');
 });
 
-test('deep links, reduced motion, hidden pages, repeat visits and Back bypass entry', () => {
+test('explicit reload replays a seen welcome without bypassing reduced motion or other safeguards', () => {
   assert.equal(shouldPlayEntry({}), true);
-  for (const input of [{ hash: '#about' }, { hash: '#album-paris' }, { reduced: true }, { hidden: true }, { seen: true }, { returning: true }]) assert.equal(shouldPlayEntry(input), false);
+  assert.equal(shouldPlayEntry({ seen: true, reload: true }), true);
+  for (const input of [{ hash: '#about' }, { hash: '#album-paris' }, { reduced: true }, { hidden: true }, { returning: true }]) {
+    assert.equal(shouldPlayEntry(input), false);
+    assert.equal(shouldPlayEntry({ ...input, seen: true, reload: true }), false);
+  }
+  assert.equal(shouldPlayEntry({ seen: true }), false, 'Normal reader returns still bypass the welcome');
+});
+
+test('early reload policy clears only the fragment and suppresses restoration only during this arrival', () => {
+  const html = readFileSync(new URL('../templates/quiet/index.html', import.meta.url), 'utf8');
+  const script = html.match(/<script>([\s\S]*?)<\/script>/)[1];
+  assert.ok(html.indexOf('<script>') < html.indexOf('<link rel="stylesheet"'));
+  for (const type of ['reload', 'navigate', 'back_forward', undefined]) {
+    const calls = [];
+    const events = new Map();
+    const state = { retained: true };
+    const history = { state, scrollRestoration: 'auto', replaceState: (...args) => calls.push(args) };
+    const scrolls = [];
+    const frames = [];
+    runInNewContext(script, {
+      requestAnimationFrame: callback => frames.push(callback),
+      performance: { getEntriesByType: () => type ? [{ type }] : [] }, history,
+      location: { hash: '#album-paris', pathname: '/templates/quiet/', search: '?lang=de' },
+      window: { scrollTo: value => scrolls.push(value), addEventListener: (name, handler, options) => events.set(name, { handler, options }) },
+      localStorage: { getItem: () => null }, document: { documentElement: { dataset: {} }, addEventListener: (name, handler, options) => events.set(name, { handler, options }) }, matchMedia: () => ({ matches: false }),
+    });
+    if (type === 'reload') {
+      assert.deepEqual(calls, [[state, '', '/templates/quiet/?lang=de']]);
+      assert.equal(history.scrollRestoration, 'manual');
+      assert.equal(scrolls.length, 0, 'Do not attempt a scroll reset before a body exists');
+      assert.equal(events.get('DOMContentLoaded').options.once, true);
+      events.get('DOMContentLoaded').handler();
+      assert.equal(scrolls.length, 1);
+      assert.equal(scrolls[0].top, 0); assert.equal(scrolls[0].left, 0); assert.equal(scrolls[0].behavior, 'instant');
+      assert.equal(events.get('load').options.once, true);
+      events.get('load').handler();
+      assert.equal(history.scrollRestoration, 'manual', 'Hold restoration through the first settled layout frame');
+      assert.equal(frames.length, 1);
+      frames[0]();
+      assert.equal(history.scrollRestoration, 'auto');
+    } else {
+      assert.deepEqual(calls, []); assert.deepEqual(scrolls, []);
+      assert.equal(history.scrollRestoration, 'auto'); assert.equal(events.size, 0);
+    }
+  }
 });
 
 test('no-script and CSS failure paths preserve page input without a modal or inert trap', () => {
@@ -28,6 +73,7 @@ test('no-script and CSS failure paths preserve page input without a modal or ine
   assert.ok(css.includes('visibility: hidden; pointer-events: none;'));
   assert.ok(css.includes('.entry-intro { display: none !important; }'));
   assert.ok(main.includes('initEntryIntro({ locale: getLang() })'));
+  assert.ok(main.includes('requestAnimationFrame(start)'));
   assert.ok(!motion.includes('requestAnimationFrame') && !motion.includes('setInterval') && !motion.includes('showModal'));
   assert.ok(!motion.includes("setAttribute('inert'"));
 });

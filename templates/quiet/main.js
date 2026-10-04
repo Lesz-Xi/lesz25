@@ -180,6 +180,13 @@ paintPage();
 devMode = initDevMode({ navigate: navigatePortfolio, setTheme, beforeEnter: () => preview.close({ restoreFocus: false }) });
 if (albumFromHash(location.hash, albums)) syncAlbum({ focus: true });
 // Optional motion must not gate the portfolio module, rendering or image readiness.
-import('./entry-intro.js').then(({ initEntryIntro }) => initEntryIntro({ locale: getLang() })).catch(() => {
+import('./entry-intro.js').then(({ initEntryIntro }) => {
+  const start = () => initEntryIntro({ locale: getLang() });
+  if (performance.getEntriesByType('navigation')[0]?.type !== 'reload') { start(); return; }
+  // Only the optional welcome waits for reload's native restoration/layout frame.
+  const afterLoad = () => requestAnimationFrame(start);
+  if (document.readyState === 'complete') afterLoad();
+  else window.addEventListener('load', afterLoad, { once: true });
+}).catch(() => {
   // The static hidden cover stays hidden; normal portfolio controls still initialize.
 });

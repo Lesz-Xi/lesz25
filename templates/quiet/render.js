@@ -15,7 +15,6 @@ export function renderEntryIntro(locale) {
   const c = copyFor(locale);
   return `<div id="entry-intro" class="entry-intro" role="region" aria-label="${escapeHtml(c.entryWelcome)}" hidden data-state="idle">
     <div class="entry-composition"><div class="entry-artwork" aria-hidden="true"></div><div class="entry-caption"><p class="entry-greeting" lang="fil">Magandang araw!</p><p class="entry-description" lang="${escapeHtml(locale)}">${escapeHtml(c.entryDescription)}</p></div></div>
-    <button type="button" class="entry-skip text-control">${escapeHtml(c.entrySkip)}</button>
   </div>`;
 }
 

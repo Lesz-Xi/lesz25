@@ -14,6 +14,24 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/web_profile_code.png?v=2">
   <link rel="icon" type="image/svg+xml" sizes="any" href="/web_profile_code.svg?v=2">
   <script>
+    // An explicit reload starts at the hero, before native fragment/scroll restoration.
+    // Keep the current route/query; normal arrivals, reader returns and Back stay native.
+    if (performance.getEntriesByType('navigation')[0]?.type === 'reload') {
+      const restoration = history.scrollRestoration;
+      history.scrollRestoration = 'manual';
+      if (location.hash) history.replaceState(history.state, '', location.pathname + location.search);
+      // The head has no scrollable body yet; reset once the actual page is laid out.
+      document.addEventListener('DOMContentLoaded', () => {
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      }, { once: true });
+      window.addEventListener('load', () => {
+        // Reset after native restoration and a layout frame, then release normal history.
+        requestAnimationFrame(() => {
+          window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+          history.scrollRestoration = restoration;
+        });
+      }, { once: true });
+    }
     // Apply before paint. This preference never changes the ocean page's theme.
     (() => {
       let preference;
@@ -36,7 +54,6 @@
   <!-- quiet:entry:start -->
 <div id="entry-intro" class="entry-intro" role="region" aria-label="Welcome" hidden data-state="idle">
     <div class="entry-composition"><div class="entry-artwork" aria-hidden="true"></div><div class="entry-caption"><p class="entry-greeting" lang="fil">Magandang araw!</p><p class="entry-description" lang="en">Good day. Welcome.</p></div></div>
-    <button type="button" class="entry-skip text-control">Skip introduction</button>
   </div>
         <!-- quiet:entry:end -->
   <a class="skip-link" href="#main" data-copy="skip">Skip to content</a>

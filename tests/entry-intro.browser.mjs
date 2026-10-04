@@ -40,7 +40,13 @@ async function scenario(label, options, exercise) {
     pass(label);
   } finally { await context.close(); }
 }
-const playing = page => page.waitForFunction(() => !document.querySelector('#entry-intro').hidden);
+const playing = async page => {
+  try { await page.waitForFunction(() => !document.querySelector('#entry-intro').hidden, undefined, { timeout: 6000 }); }
+  catch (error) {
+    const state = await page.evaluate(() => ({ url: location.href, scroll: scrollY, navigation: performance.getEntriesByType('navigation')[0]?.type, entry: { ...document.querySelector('#entry-intro').dataset }, phases: window.__entryPhases, focus: document.activeElement?.id }));
+    throw new Error(`Expected welcome to play: ${JSON.stringify(state)}`, { cause: error });
+  }
+};
 const retired = page => page.waitForFunction(() => document.querySelector('#entry-intro').hidden && document.querySelector('#entry-intro').dataset.state === 'done');
 try {
   for (const width of [1440, 390]) for (const theme of ['light', 'dark']) {
@@ -58,13 +64,13 @@ try {
         const nodes = svg => [...svg.querySelectorAll('*')].map(node => [node.localName, [...node.attributes].filter(attr => !(attr.name === 'style' && !attr.value.trim())).map(attr => [attr.name, attr.value]).sort()]);
         const art = entry.querySelector('.entry-artwork').getBoundingClientRect();
         const greeting = entry.querySelector('.entry-greeting').getBoundingClientRect();
-        const skip = entry.querySelector('.entry-skip').getBoundingClientRect();
-        return { fidelity: JSON.stringify(nodes(actual)) === JSON.stringify(nodes(expected)), greeting: entry.querySelector('.entry-greeting').textContent, below: greeting.top > art.bottom, center: Math.abs(greeting.x + greeting.width / 2 - art.x - art.width / 2), skipHeight: skip.height, overflow: document.documentElement.scrollWidth > innerWidth, locked: Boolean(document.querySelector('[inert]')), opacity: getComputedStyle(entry.querySelector('.entry-caption')).opacity };
+        const buttons = entry.querySelectorAll('button').length;
+        return { fidelity: JSON.stringify(nodes(actual)) === JSON.stringify(nodes(expected)), greeting: entry.querySelector('.entry-greeting').textContent, below: greeting.top > art.bottom, center: Math.abs(greeting.x + greeting.width / 2 - art.x - art.width / 2), buttons, overflow: document.documentElement.scrollWidth > innerWidth, locked: Boolean(document.querySelector('[inert]')), opacity: getComputedStyle(entry.querySelector('.entry-caption')).opacity };
       }, source);
       assert.equal(state.fidelity, true, 'Completed SVG has original paths, colors, transforms, gradients and pole stroke');
       assert.equal(state.greeting, 'Magandang araw!');
       assert.equal(state.below, true); assert.ok(state.center < 0.5);
-      assert.ok(state.skipHeight >= 44); assert.equal(state.overflow, false); assert.equal(state.locked, false); assert.equal(state.opacity, '1');
+      assert.equal(state.buttons, 0); assert.equal(state.overflow, false); assert.equal(state.locked, false); assert.equal(state.opacity, '1');
       if (process.env.ENTRY_CAPTURE === '1') {
         const name = `entry-${width}-${theme}.png`;
         await page.screenshot({ path: new URL(name, output).pathname, animations: 'allow' });
@@ -90,20 +96,91 @@ try {
       assert.equal(await page.locator('.entry-artwork svg, .location-flag').count(), 0);
       await page.reload();
       await page.locator('.preferences:not([hidden])').waitFor();
-      assert.equal(await page.locator('#entry-intro').isVisible(), false);
+      await playing(page);
+      assert.equal(await page.evaluate(() => performance.getEntriesByType('navigation')[0].type), 'reload');
+      assert.equal(await page.evaluate(() => scrollY), 0);
+      await retired(page);
+      assert.equal(await page.locator('#entry-intro').getAttribute('data-reason'), 'complete');
     });
   }
-  await scenario('Skip and keyboard focus retire the SVG and preserve native page controls', {}, async page => {
+  await scenario('No Skip button; Tab dismisses the welcome and follows native page focus', {}, async page => {
     await playing(page);
-    await page.locator('.entry-skip').focus();
-    await page.keyboard.press('Enter');
+    assert.equal(await page.locator('#entry-intro button, .entry-skip').count(), 0);
+    await page.keyboard.press('Tab');
     await retired(page);
-    assert.equal(await page.locator('#main').evaluate(element => element === document.activeElement), true);
+    assert.equal(await page.locator('#entry-intro').getAttribute('data-reason'), 'input');
+    assert.equal(await page.locator('.skip-link').evaluate(element => element === document.activeElement), true);
     assert.equal(await page.evaluate(() => scrollY), 0);
     await page.locator('#quiet-theme').click();
     assert.equal(await page.locator('html').getAttribute('data-theme'), 'dark');
     await page.locator('.button[href="#work"]').click();
     await page.waitForURL('**/#work');
+  });
+  for (const [width, url] of [[1440, '/?arrival=reload'], [390, '/templates/quiet/?arrival=reload']]) {
+    await scenario(`Repeated reload from a section, album or hashless scroll resets hero; Back stays native at ${width}px`, {
+      url, viewport: { width, height: width === 390 ? 844 : 900 },
+    }, async page => {
+      await playing(page);
+      await page.mouse.click(10, 10); await retired(page);
+      for (const hash of ['#contact', '#album-paris', '']) {
+        await page.evaluate(fragment => {
+          if (fragment) location.hash = fragment;
+          else { history.replaceState(history.state, '', location.pathname + location.search); window.scrollTo(0, document.documentElement.scrollHeight); }
+        }, hash);
+        if (hash === '#album-paris') await page.locator('#album-viewer:not([hidden])').waitFor();
+        await page.waitForFunction(() => scrollY > 200);
+        await page.reload();
+        await page.locator('.preferences:not([hidden])').waitFor();
+        await playing(page);
+        assert.equal(await page.evaluate(() => location.hash), '');
+        assert.equal(await page.evaluate(() => location.search), '?arrival=reload');
+        assert.equal(await page.evaluate(() => scrollY), 0);
+        assert.equal(await page.locator('#album-viewer').isVisible(), false);
+        await retired(page);
+        assert.equal(await page.locator('#entry-intro').getAttribute('data-reason'), 'complete');
+        assert.equal(await page.evaluate(() => scrollY), 0);
+        assert.equal(await page.evaluate(() => history.scrollRestoration), 'auto');
+        assert.equal(await page.locator('#quiet-hero').isVisible(), true);
+      }
+      await page.locator('.section-nav a[href="#contact"]').click();
+      await page.waitForFunction(() => scrollY > 200);
+      const before = await page.evaluate(() => scrollY);
+      await page.goto(new URL('/templates/quiet/notes.html', origin).href);
+      await page.locator('.preferences:not([hidden])').waitFor();
+      await page.goBack();
+      await page.locator('.preferences:not([hidden])').waitFor();
+      assert.equal(await page.evaluate(() => location.hash), '#contact');
+      await page.waitForFunction(y => Math.abs(scrollY - y) <= 2, before);
+      assert.equal(await page.locator('#entry-intro').isVisible(), false);
+      await page.goto(new URL(url, origin).href);
+      await page.locator('.preferences:not([hidden])').waitFor();
+      await page.waitForTimeout(200);
+      assert.equal(await page.locator('#entry-intro').isVisible(), false, 'Normal seen arrivals do not replay');
+    });
+  }
+  for (const [label, options] of [
+    ['Reduced motion', { reducedMotion: 'reduce' }],
+    ['Missing optional module', { setup: context => context.route('**/templates/quiet/entry-intro.js*', route => route.abort()) }],
+    ['Blocked session storage', { setup: context => context.addInitScript(() => { const read = Storage.prototype.getItem; Storage.prototype.getItem = function(key) { if (this === sessionStorage) throw new Error('Denied'); return read.call(this, key); }; }) }],
+  ]) await scenario(`${label} still reloads to hero without an animation gate`, { url: '/#contact', ...options }, async page => {
+    await page.waitForFunction(() => scrollY > 200);
+    await page.reload();
+    await page.locator('.preferences:not([hidden])').waitFor();
+    await page.waitForTimeout(450);
+    assert.equal(await page.evaluate(() => location.hash), '');
+    assert.equal(await page.evaluate(() => scrollY), 0);
+    assert.equal(await page.locator('#entry-intro').isVisible(), false);
+    await page.locator('#quiet-theme').click();
+  });
+  for (const input of ['click', 'wheel', 'touch']) await scenario(`${input} input dismisses the welcome without a Skip button`, {
+    hasTouch: input === 'touch',
+  }, async page => {
+    await playing(page);
+    if (input === 'click') await page.locator('#entry-intro').dispatchEvent('click');
+    else if (input === 'wheel') await page.mouse.wheel(0, 200);
+    else await page.touchscreen.tap(10, 10);
+    await retired(page);
+    assert.equal(await page.locator('#entry-intro').getAttribute('data-reason'), 'input');
   });
   await scenario('Denied session-storage writes bypass entry rather than replaying on every arrival', {
     setup: context => context.addInitScript(() => {
@@ -175,14 +252,14 @@ try {
     assert.equal(await page.locator('.entry-artwork svg').count(), 0);
     await page.locator('#quiet-theme').click();
   });
-  for (const locale of ['de', 'fr', 'it', 'zh']) await scenario(`Localized welcome description and Skip: ${locale}`, {
+  for (const locale of ['de', 'fr', 'it', 'zh']) await scenario(`Localized welcome description without Skip: ${locale}`, {
     setup: context => context.addInitScript(value => localStorage.setItem('rhine-lang', value), locale),
   }, async page => {
     await playing(page);
     assert.equal(await page.locator('.entry-description').textContent(), COPY[locale].entryDescription);
-    assert.equal(await page.locator('.entry-skip').textContent(), COPY[locale].entrySkip);
+    assert.equal(await page.locator('#entry-intro button, .entry-skip').count(), 0);
     assert.equal(await page.locator('.entry-greeting').getAttribute('lang'), 'fil');
-    await page.locator('.entry-skip').click(); await retired(page);
+    await page.mouse.click(10, 10); await retired(page);
   });
 } finally {
   await browser.close();

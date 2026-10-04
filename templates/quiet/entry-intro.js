@@ -12,26 +12,31 @@ export const FLAG_STEPS = Object.freeze([
 export const ENTRY_HOLD = 1500;
 export const ENTRY_DURATION = FLAG_STEPS.reduce((sum, step) => sum + step.duration, 0) + 220 + ENTRY_HOLD + 150;
 export const ENTRY_SAFETY = ENTRY_DURATION + 350;
-export function shouldPlayEntry({ hash = '', reduced = false, hidden = false, seen = false, returning = false }) {
-  return !hash && !reduced && !hidden && !seen && !returning;
+export function shouldPlayEntry({ hash = '', reduced = false, hidden = false, seen = false, returning = false, reload = false }) {
+  return !hash && !reduced && !hidden && (!seen || reload) && !returning;
 }
 
 export function initEntryIntro({ locale = 'en' } = {}) {
   const cover = document.querySelector('#entry-intro');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  let seen = true; // If once-per-tab storage is unavailable, prefer no interruption.
-  try { seen = sessionStorage.getItem(ENTRY_KEY) === 'seen'; } catch { /* fail open */ }
-  const returning = performance.getEntriesByType('navigation')[0]?.type === 'back_forward';
-  const allowed = cover && performance.now() < 1200 && scrollY === 0 && scrollX === 0
+  let seen = true;
+  let storageAvailable = false;
+  try {
+    seen = sessionStorage.getItem(ENTRY_KEY) === 'seen';
+    storageAvailable = true;
+  } catch { /* Unavailable session storage always bypasses motion, including reload. */ }
+  const navigation = performance.getEntriesByType('navigation')[0]?.type;
+  const returning = navigation === 'back_forward';
+  const reload = navigation === 'reload';
+  const allowed = cover && storageAvailable && performance.now() < 1200 && scrollY === 0 && scrollX === 0
     && typeof Element.prototype.animate === 'function'
-    && shouldPlayEntry({ hash: location.hash, reduced: reduced.matches, hidden: document.hidden, seen, returning });
+    && shouldPlayEntry({ hash: location.hash, reduced: reduced.matches, hidden: document.hidden, seen, returning, reload });
   if (!allowed) return { dispose() {}, finished: Promise.resolve({ played: false, reason: 'bypassed' }) };
 
   const c = copyFor(locale);
   cover.setAttribute('aria-label', c.entryWelcome);
   cover.querySelector('.entry-description').textContent = c.entryDescription;
   cover.querySelector('.entry-description').lang = locale;
-  cover.querySelector('.entry-skip').textContent = c.entrySkip;
   const host = cover.querySelector('.entry-artwork');
   const caption = cover.querySelector('.entry-caption');
   const controller = new AbortController();
@@ -46,7 +51,7 @@ export function initEntryIntro({ locale = 'en' } = {}) {
   let resolveFinished;
   const finished = new Promise(resolve => { resolveFinished = resolve; });
   try { sessionStorage.setItem(ENTRY_KEY, 'seen'); } catch {
-    dispose('storage'); // Without a durable per-tab marker, avoid repeated interruption.
+    dispose('storage'); // Without a durable visit marker, prefer no interruption.
     return { dispose, finished };
   }
 
@@ -79,7 +84,7 @@ export function initEntryIntro({ locale = 'en' } = {}) {
     snapshots.clear();
     cover.dataset.state = 'done';
     cover.dataset.reason = reason;
-    // Never leave keyboard focus on the now-hidden Skip button; keep scroll intact.
+    // If focus entered the transient region, return it to the page without scrolling.
     if (focusedInside) document.querySelector('#main')?.focus({ preventScroll: true });
     resolveFinished({ played, reason });
   }
@@ -100,7 +105,6 @@ export function initEntryIntro({ locale = 'en' } = {}) {
   listen(window, 'pageshow', event => { if (event.persisted) dispose('return'); });
   listen(document, 'visibilitychange', () => { if (document.hidden) dispose('hidden'); });
   listen(reduced, 'change', () => { if (reduced.matches) dispose('reduced-motion'); });
-  listen(cover.querySelector('.entry-skip'), 'click', interrupt);
   deadline = setTimeout(() => dispose('asset-timeout'), 350);
 
   async function animate(element, keyframes, duration) {

@@ -106,7 +106,8 @@ test('Paper pole flag is reserved for the hidden welcome sequence, never the cou
     assert.ok(entry.includes('hidden data-state="idle"'));
     assert.ok(entry.includes('lang="fil">Magandang araw!</p>'));
     assert.ok(entry.includes(escapeHtml(COPY[code].entryDescription)));
-    assert.ok(entry.includes(escapeHtml(COPY[code].entrySkip)));
+    assert.ok(!entry.includes('entry-skip') && !entry.includes('<button'));
+    assert.ok(!Object.hasOwn(COPY[code], 'entrySkip'));
     assert.ok(entry.includes('class="entry-artwork" aria-hidden="true"'));
   }
   setLang('en');

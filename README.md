@@ -11,10 +11,14 @@ A minimal portfolio of software, research, and photography.
 A short introduction, then the work. Simple typography, thin rules, neutral light
 and dark themes, and room for the photographs. Native scrolling, without scroll effects.
 
-A short, skippable first-tab welcome draws the supplied Philippine SVG flag, then
-reveals “Magandang araw!” below it. It is not a loading-progress indicator. Reduced
-motion, deep links and reader returns bypass it; failures keep the page usable.
-The country label itself remains text-only.
+A short welcome draws the supplied Philippine SVG flag, then reveals “Magandang
+araw!” below it with a 1.5-second completed greeting hold. It plays on a healthy
+first-tab arrival and on explicit reload. Reload returns to the hero, clearing the
+fragment but preserving the route and query; ordinary deep links, reader returns
+and Back keep their native destinations. There is no “Skip introduction” button;
+keyboard, click, touch and wheel input still dismiss it immediately. Reduced
+motion and failures keep the page usable. This is not a loading-progress indicator,
+and the country label itself remains text-only.
 
 Page order: About → Selected Work → Photography → Research → Notes → Contact.
 

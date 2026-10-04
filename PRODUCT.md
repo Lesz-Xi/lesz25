@@ -30,6 +30,8 @@ Make Rhine's work, publications, photographs, notes, and contact details availab
 - Keep root HTML synchronized from Quiet, and distinguish a successful push from a verified deployment.
 - Chief's latest explicit exception is one optional, skippable Philippine-SVG welcome sequence, replacing the inline country flag. Preserve native scrolling and fail-open/no-script content; reduced motion bypasses it. This is not resource progress and must not delay initialization or repeat on reader returns. The prior inline-flag commit/push was paused when this scope changed; Chief subsequently approved the completed welcome with its 1500ms greeting hold and authorized committing/pushing it. A push does not establish deployment.
 
+- Chief's reload refinement: Command–R/browser reload of Quiet returns to its hero and replays eligible welcome motion; clear only the fragment, preserve the route/query, and do not alter ordinary deep links, reader returns or Back navigation. Remove the visible “Skip introduction” button while retaining immediate keyboard/click/touch/wheel dismissal and all reduced-motion/failure safeguards. Chief subsequently authorized committing and pushing this follow-up; deployment is verified separately.
+
 ## Brand Commitments
 
 Rhine Tague is a designer, photographer, and researcher based in the Philippines. Work is a form of inquiry: building to understand, preserving provenance and uncertainty, and making systems inspectable. Photography is part of that practice, not stock decoration.

@@ -3,7 +3,7 @@
   "title": "Design System: Rhine Tague — Quiet",
   "extensions": {
     "shadows": [],
-    "motion": [{ "name": "control-feedback", "value": "150ms ease", "purpose": "Colour/background and active-underline opacity feedback; reduced motion disables both, touch-only devices omit colour/background transitions." }, { "name": "svg-welcome", "value": "3350ms", "purpose": "Explicitly requested once-per-tab native SVG sequence, cubic-out easing; full greeting holds 1500ms, with a 3700ms JS deadline and independent 4s CSS fail-open. Reduced motion bypasses it; no loop, ticker, modal or scroll lock." }],
+    "motion": [{ "name": "control-feedback", "value": "150ms ease", "purpose": "Colour/background and active-underline opacity feedback; reduced motion disables both, touch-only devices omit colour/background transitions." }, { "name": "svg-welcome", "value": "3350ms", "purpose": "Explicitly requested first-tab/explicit-reload native SVG sequence, cubic-out easing; full greeting holds 1500ms, with a 3700ms JS deadline and independent 4s CSS fail-open. Reload returns to the hero; normal deep links, reader returns and Back stay native. No visible Skip button; input still dismisses motion immediately. Reduced motion bypasses it; no loop, ticker, modal or scroll lock." }],
     "breakpoints": [{ "name": "compact-rail", "value": "1040px" }, { "name": "stacked", "value": "700px" }]
   },
   "components": [
@@ -17,7 +17,7 @@
     {
       "name": "SVG welcome",
       "kind": "custom",
-      "description": "Completed-state specimen of the user-requested welcome, not a loading-progress widget. Runtime entry-intro.js draws the pole and six stripes, reveals sun/three stars, then the caption below. Original Paper colors/geometry stay intact. One finite, skippable, reduced-motion-aware first-tab entry; no persistent country decoration.",
+      "description": "Completed-state specimen of the user-requested welcome, not a loading-progress widget. Runtime entry-intro.js draws the pole and six stripes, reveals sun/three stars, then the caption below. Original Paper colors/geometry stay intact. One finite, input-interruptible, reduced-motion-aware first-tab/explicit-reload entry, with no visible Skip button or persistent country decoration.",
       "html": "<div class=\"ds-welcome\"><img src=\"/quiet/philippines-flag.svg\" width=\"946\" height=\"685\" alt=\"\" aria-hidden=\"true\"><div class=\"ds-entry-caption\"><p class=\"ds-greeting\" lang=\"fil\">Magandang araw!</p><p class=\"ds-description\">Good day. Welcome.</p></div></div>",
       "css": ".ds-welcome { display: flex; flex-direction: column; align-items: center; gap: 28px; padding: 32px; background: var(--page, #f4f4f5); color: var(--ink, #242424); font-family: ui-monospace, monospace; text-align: center; } .ds-welcome img { display: block; width: min(240px, 100%); height: auto; } .ds-entry-caption { display: flex; flex-direction: column; align-items: center; gap: 8px; } .ds-greeting { font-size: 26px; line-height: 1.3; letter-spacing: -0.025em; } .ds-description { font-size: 12px; color: var(--muted, #656461); }"
     },
