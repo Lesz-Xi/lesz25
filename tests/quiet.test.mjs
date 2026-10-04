@@ -17,7 +17,7 @@ const { projects, research, albums, socials, renderArchive, renderPurpose, rende
 const { catalogFor, runCommand } = await import('../templates/quiet/commands.js');
 const { renderPreferences, renderDevMode } = await import('../templates/quiet/controls.js');
 const { LANGUAGES, setLang, t } = await import('../src/i18n.js');
-const { renderHero, renderSections, renderNote, renderLightbox, renderApproach, renderEntryIntro, escapeHtml } = await import('../templates/quiet/render.js');
+const { renderHero, renderSections, renderNote, renderLightbox, renderApproach, renderEntryIntro, escapeHtml, ARROW } = await import('../templates/quiet/render.js');
 const { default: config } = await import('../vite.config.js');
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
@@ -130,8 +130,38 @@ test('About-first order agrees across renderers, static pages, navigation and co
     const nav = html.match(/<nav class="section-nav"[^>]*>([\s\S]*?)<\/nav>/)?.[1];
     assert.ok(nav, path);
     assert.deepEqual([...nav.matchAll(/href="#([^"]+)"/g)].map(([, id]) => id), order, path);
-    assert.ok(html.includes('class="button" href="#work"'), path);
+    assert.ok(html.includes('class="text-link hero-work-link" href="#work"'), path);
   }
+});
+
+test('About carries the LinkedIn voice and design foundation as three localized paragraphs', () => {
+  assert.ok(COPY.en.designBody.startsWith('Design is the foundation of my work.'));
+  assert.ok(COPY.en.designBody.includes('imagination'));
+  assert.ok(COPY.en.purpose.startsWith('I’m building toward'));
+  assert.ok(COPY.en.purpose.includes('human judgment'));
+  for (const { code } of LANGUAGES) {
+    const c = COPY[code];
+    const about = renderSections(code).match(/<div class="about-copy">([\s\S]*?)<\/div>/)?.[1];
+    assert.ok(about, code);
+    assert.deepEqual([...about.matchAll(/<p>([\s\S]*?)<\/p>/g)].map(([, text]) => text), [c.aboutBody, c.designBody, c.purpose].map(escapeHtml), code);
+    assert.ok(about.includes('href="/templates/quiet/approach.html"'), code);
+  }
+  for (const path of ['index.html', 'templates/quiet/index.html']) {
+    const html = read(path);
+    for (const value of [COPY.en.aboutBody, COPY.en.designBody, COPY.en.purpose]) assert.ok(html.includes(escapeHtml(value)), path);
+  }
+});
+
+test('hero work action is a cardless native link in every locale without changing Contact', () => {
+  for (const { code } of LANGUAGES) {
+    const hero = renderHero(code);
+    assert.ok(hero.includes(`<a class="text-link hero-work-link" href="#work">${escapeHtml(COPY[code].viewWork)}${ARROW}</a>`), code);
+    assert.ok(!hero.includes('class="button"'), code);
+    assert.ok(renderSections(code).includes(`<a class="button" href="${escapeHtml(socials[0].url)}">`), code);
+  }
+  const css = read('templates/quiet/styles.css');
+  assert.ok(!css.includes('.intro .button'));
+  assert.ok(css.includes('.intro .hero-work-link { margin-top: 8px; font-size: 12px; text-decoration: underline;'));
 });
 
 test('Quiet portrait precedes the name in every locale and has local provenance', () => {

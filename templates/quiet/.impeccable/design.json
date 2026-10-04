@@ -25,9 +25,17 @@
       "name": "Primary button",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "Square action: slate/white in light, warm sand/charcoal in dark, and accessible orange hover in both.",
-      "html": "<button class=\"ds-button\">Explore the work</button>",
+      "description": "Contact action: slate/white in light, warm sand/charcoal in dark, and accessible orange hover in both. The hero uses the separate cardless work link.",
+      "html": "<button class=\"ds-button\">Email me</button>",
       "css": ".ds-button { font: 12px ui-monospace, monospace; border: 0; border-radius: 0; padding: 12px 20px; min-height: 44px; background: var(--button, #4b5563); color: var(--button-ink, #fff); cursor: pointer; transition: background-color 150ms ease, color 150ms ease; } .ds-button:hover, .ds-button:focus-visible { background: var(--orange, #fb923c); color: var(--orange-ink, #211f1c); } .ds-button:focus-visible { outline: 2px solid var(--accent, #b94708); outline-offset: 5px; } @media (prefers-reduced-motion: reduce) { .ds-button { transition: none; } }"
+    },
+    {
+      "name": "Hero work link",
+      "kind": "nav",
+      "description": "Cardless native work destination. Heading-aligned 12px label, existing arrow, thin muted underline, 44px height, no fill or inset padding; accent-only hover and visible keyboard focus.",
+      "html": "<a class=\"ds-hero-link\" href=\"#work\">Explore the work<svg viewBox=\"0 0 16 16\" width=\"16\" height=\"16\" fill=\"none\" aria-hidden=\"true\"><path d=\"M4 12 12 4M4 4h8v8\" stroke=\"currentColor\" stroke-width=\"1.2\"/></svg></a>",
+      "css": ".ds-hero-link { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; margin-top: 8px; padding: 0; background: transparent; border: 0; box-shadow: none; color: var(--ink, #242424); font: 12px ui-monospace, monospace; text-decoration: underline; text-decoration-color: var(--muted, #656461); text-decoration-thickness: 1px; text-underline-offset: 5px; } .ds-hero-link:hover, .ds-hero-link:focus-visible { color: var(--accent, #b94708); text-decoration-color: currentColor; } .ds-hero-link:focus-visible { outline: 2px solid var(--accent, #b94708); outline-offset: 5px; }",
+      "tags": ["hero", "cardless", "native-link"]
     },
     {
       "name": "Text link",

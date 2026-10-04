@@ -45,6 +45,8 @@ The user approved Ellipsis's label/content structure and hairlines, Conductor-in
 
 The user additionally requested concise, simple, pragmatic section wording, grounded in existing work and personal principles. New wording must not invent experience, credentials, research validation, or commercial results.
 
+Chief supplied his LinkedIn About text and clarified that design is the foundation of his creative work, imagination and software building. Quiet's About now connects AI engineering, causal reasoning and research tools, gives design its own central paragraph, and keeps explainable/remembering/causal intelligence as a direction being built toward—not a completed capability claim. Sources, evidence, uncertainty, correction and human judgment remain explicit. This copy refinement applies across all six Quiet languages; the English essay, original ocean copy and hero introduction remain unchanged. Chief authorized committing and pushing it with the cardless hero-action refinement on 2026-10-04; deployment is verified separately.
+
 ## Evidence on Hand
 
 - `src/data.js`: project/research/album/contact records and authored archive essay.

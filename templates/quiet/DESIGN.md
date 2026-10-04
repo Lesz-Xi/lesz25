@@ -161,6 +161,10 @@ Controls and content rows are square. The small identity portrait has subtly sof
 
 Quiet's portfolio footer contains only the author signature, matching Notes and Approach. At Chief's request, the “Original portfolio” link is removed rather than hidden with CSS; unused translations are also removed. Contact/social actions stay in the preceding Contact section. No replacement footer action is introduced. The subsequent homepage migration makes Quiet the root entry; readers return to the corresponding root section.
 
+### About narrative
+
+The About section keeps its existing label/content rail, 68ch text field, 20px gaps and single native Approach link. Chief's LinkedIn About and his explicit design-foundation clarification inform three paragraphs: current practice, design as the way imagination becomes buildable/questionable/refinable form, then the intelligent-systems direction and accountability standard. All six Quiet locales carry the same sequence. Treat explanation, memory and causal reasoning as the direction being built toward; do not turn aspiration into proven capabilities. No Design badge, new section, decorative quote, larger type or card is added. Photography and nature remain influences on framing/restraint, not invented biographical milestones. The authored essay and original ocean narrative stay untouched.
+
 ### Identity portrait
 
 Chief's supplied `xi_profile.png` sits directly above the name in Quiet's existing identity rail, left-aligned with the name. It is 80×80px desktop and 64×64px below 700px, with 4px corners and no card, border, shadow, badge or added interaction. A 160×160 WebP derivative preserves the complete square source and supplies 2× desktop pixels for about 5.6KB. Explicit dimensions reserve the square footprint; empty alt avoids repeating the adjacent name to screen readers. Mobile adds 8px image-to-name spacing on top of the existing 4px stack gap. The source PNG, ocean hero, reader headers and favicon are unchanged by this addition. Cost: one small eager image and additional identity-rail height, not a new content block.
@@ -175,7 +179,7 @@ The first-paint refinement reserves the same Quiet ground before modules or artw
 
 ### Buttons and links
 
-Primary buttons have a 44px minimum target, slate/light or warm-sand/dark rest state, and orange hover/focus fill. Links use a thin underline on hover; small authored SVG arrows clarify destinations. Keyboard focus is a 2px accent outline with 5px offset. Selection uses orange with dark ink.
+The hero's “Explore the work” is a native `.text-link.hero-work-link` to `#work`, not a filled button. At Chief's request it has no background, border, shadow or horizontal padding: the 12px mono label aligns with the heading, retains the existing arrow and sits over a thin muted underline. Its 44px minimum height and previous 8px top interval remain. Hover and keyboard focus change only text/underline to the existing accent, with the global 2px focus outline and 5px offset. Copy and all six translations stay unchanged. Cut: the hero's enclosing rectangle. Tradeoff: quieter emphasis, with the underline and arrow preserving recognizability. Contact still uses the original 44px slate/light or warm-sand/dark primary button and accessible orange hover/focus fill. Other links keep their existing behavior. Selection uses orange with dark ink.
 
 ### Preferences
 

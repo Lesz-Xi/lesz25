@@ -7,6 +7,7 @@ import assert from 'node:assert/strict';
 import { readFile, stat, mkdir, writeFile } from 'node:fs/promises';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { resolve, extname, sep } from 'node:path';
+import { COPY } from '../templates/quiet/copy.js';
 
 const modulePath = process.env.PLAYWRIGHT_MODULE;
 const { chromium } = await import(modulePath ? pathToFileURL(modulePath).href : 'playwright');
@@ -24,6 +25,8 @@ const previewCapture = ['1', 'preview'].includes(process.env.QUIET_CAPTURE);
 const controlsCapture = ['controls', 'dev'].includes(process.env.QUIET_CAPTURE);
 const devOnlyCapture = process.env.QUIET_CAPTURE === 'dev';
 const profileCapture = process.env.QUIET_CAPTURE === 'profile';
+const heroCapture = process.env.QUIET_CAPTURE === 'hero';
+const aboutCapture = process.env.QUIET_CAPTURE === 'about';
 const built = Boolean(process.env.QUIET_DIST);
 const assetRoot = built ? resolve(root, process.env.QUIET_DIST) : root;
 const live = Boolean(process.env.QUIET_BASE_URL);
@@ -74,7 +77,7 @@ const screenshot = async (page, name, fullPage = true) => {
 };
 
 try {
-  if (previewCapture || controlsCapture || profileCapture) await mkdir(output, { recursive: true });
+  if (previewCapture || controlsCapture || profileCapture || heroCapture || aboutCapture) await mkdir(output, { recursive: true });
   const ctx = await context({ colorScheme: 'light' });
   const page = await ctx.newPage();
   const errors = [];
@@ -107,13 +110,14 @@ try {
   assert.equal(await page.locator('#entry-intro').count(), 1);
   await page.waitForFunction(() => document.querySelector('#entry-intro').hidden);
   check('Country has no inline flag; the separate bounded welcome releases the unchanged portfolio');
-  if (profileCapture) {
+  if (profileCapture || heroCapture) {
     for (const width of [1440, 390]) {
       await page.setViewportSize({ width, height: width === 390 ? 844 : 900 });
       for (const theme of ['light', 'dark']) {
         if (await page.locator('html').getAttribute('data-theme') !== theme) await page.locator('#quiet-theme').click();
         await page.evaluate(() => scrollTo(0, 0));
-        await screenshot(page, `profile-${width}-${theme}.png`, false);
+        await page.mouse.move(0, 0);
+        await screenshot(page, `${heroCapture ? 'hero-link' : 'profile'}-${width}-${theme}.png`, false);
       }
     }
     await page.setViewportSize({ width: 1440, height: 900 });
@@ -169,6 +173,19 @@ try {
     report.screenshots.push('photography-mobile.png');
   }
 
+  if (aboutCapture) {
+    for (const width of [1440, 390]) {
+      await page.setViewportSize({ width, height: width === 390 ? 844 : 900 });
+      for (const theme of ['light', 'dark']) {
+        if (await page.locator('html').getAttribute('data-theme') !== theme) await page.locator('#quiet-theme').click();
+        await page.mouse.move(0, 0);
+        const name = `about-copy-${width}-${theme}.png`;
+        await page.locator('#about').screenshot({ path: resolve(output, name), animations: 'disabled' });
+        report.screenshots.push(name);
+      }
+    }
+    await page.setViewportSize({ width: 1440, height: 900 });
+  }
   for (const width of [320, 390, 768, 1440]) {
     await page.setViewportSize({ width, height: 900 });
     for (const { code: lang } of LANGUAGES) {
@@ -178,8 +195,18 @@ try {
         if (await page.locator('html').getAttribute('data-theme') !== theme) await page.locator('#quiet-theme').click();
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, `${lang} ${width} ${theme} overflow`);
         assert.ok(!(await page.locator('body').textContent()).includes('undefined'));
+        const heroLink = await page.locator('.hero-work-link').evaluate(element => {
+          const style = getComputedStyle(element);
+          const rect = element.getBoundingClientRect();
+          return { fill: style.backgroundColor, border: style.borderWidth, shadow: style.boxShadow, padding: [style.paddingLeft, style.paddingRight], underline: style.textDecorationLine, height: rect.height, offset: rect.left - element.parentElement.querySelector('h1').getBoundingClientRect().left, href: element.getAttribute('href'), arrow: element.querySelector('svg')?.getAttribute('aria-hidden') };
+        });
+        assert.deepEqual({ ...heroLink, height: 44 }, { fill: 'rgba(0, 0, 0, 0)', border: '0px', shadow: 'none', padding: ['0px', '0px'], underline: 'underline', height: 44, offset: 0, href: '#work', arrow: 'true' });
+        assert.ok(heroLink.height >= 44, `${lang} ${width} ${theme}: hero link target`);
         assert.deepEqual(await page.locator('#quiet-sections > section').evaluateAll(nodes => nodes.map(node => node.id)), ['about', 'work', 'photography', 'research', 'notes', 'contact']);
         assert.deepEqual(await page.locator('.section-nav a').evaluateAll(nodes => nodes.map(node => node.getAttribute('href'))), ['#about', '#work', '#photography', '#research', '#notes', '#contact']);
+        const c = COPY[lang];
+        assert.deepEqual(await page.locator('#about .about-copy > p').allTextContents(), [c.aboutBody, c.designBody, c.purpose]);
+        assert.equal(await page.locator('#about [data-read-approach]').getAttribute('href'), '/templates/quiet/approach.html');
         assert.equal(await page.locator('.work-row').count(), 5);
         assert.equal(await page.locator('.paper-row').count(), 4);
         assert.equal(await page.locator('.album-card').count(), 6);
@@ -351,7 +378,7 @@ try {
   assert.equal(await page.locator('#album-viewer').isVisible(), false);
   check('Album deep links, back/forward, and unknown-hash recovery work');
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  assert.equal(await page.locator('.button').first().evaluate((element) => getComputedStyle(element).transitionDuration), '0s');
+  assert.equal(await page.locator('#contact .button').evaluate((element) => getComputedStyle(element).transitionDuration), '0s');
   await page.goto(`${origin}/`);
   await page.locator('.preferences:not([hidden])').waitFor();
   await page.keyboard.press('Tab');
@@ -369,18 +396,41 @@ try {
   for (const theme of ['light', 'dark']) {
     if (await page.locator('html').getAttribute('data-theme') !== theme) await page.locator('#quiet-theme').click();
     await page.waitForTimeout(180);
-    restingColors[theme] = await page.locator('.button').first().evaluate((element) => ({ fill: getComputedStyle(element).backgroundColor, ink: getComputedStyle(element).color }));
+    restingColors[theme] = await page.locator('#contact .button').evaluate((element) => ({ fill: getComputedStyle(element).backgroundColor, ink: getComputedStyle(element).color }));
   }
   assert.deepEqual(restingColors.light, { fill: 'rgb(75, 85, 99)', ink: 'rgb(255, 255, 255)' });
   assert.deepEqual(restingColors.dark, { fill: 'rgb(216, 200, 180)', ink: 'rgb(33, 31, 28)' });
   check('Light buttons keep slate; dark buttons use warm sand with charcoal labels');
-  await page.locator('.button').first().hover();
+  await page.locator('#contact .button').hover();
   await page.waitForTimeout(180);
-  const hoverColors = await page.locator('.button').first().evaluate((element) => ({
+  const hoverColors = await page.locator('#contact .button').evaluate((element) => ({
     fill: getComputedStyle(element).backgroundColor, ink: getComputedStyle(element).color,
   }));
   assert.deepEqual(hoverColors, { fill: 'rgb(251, 146, 60)', ink: 'rgb(33, 31, 28)' });
-  check('Rendered button hover retains Ellipsis orange with the accessible dark label');
+  check('Rendered contact button hover retains Ellipsis orange with the accessible dark label');
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: 900 });
+    for (const theme of ['light', 'dark']) {
+      if (await page.locator('html').getAttribute('data-theme') !== theme) await page.locator('#quiet-theme').click();
+      const link = page.locator('.hero-work-link');
+      await link.hover();
+      await page.waitForTimeout(180);
+      assert.deepEqual(await link.evaluate(element => ({ fill: getComputedStyle(element).backgroundColor, ink: getComputedStyle(element).color, accent: getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() })), {
+        fill: 'rgba(0, 0, 0, 0)', ink: theme === 'dark' ? 'rgb(251, 146, 60)' : 'rgb(185, 71, 8)', accent: theme === 'dark' ? '#fb923c' : '#b94708',
+      });
+      await link.focus();
+      await page.keyboard.press('Tab');
+      await page.keyboard.press('Shift+Tab');
+      assert.equal(await link.evaluate(element => element === document.activeElement && element.matches(':focus-visible') && getComputedStyle(element).outlineStyle === 'solid'), true);
+      assert.equal(await link.evaluate(element => getComputedStyle(element).backgroundColor), 'rgba(0, 0, 0, 0)');
+      await page.keyboard.press('Enter');
+      await page.waitForFunction(() => location.hash === '#work' && document.activeElement.id === 'work-heading');
+      await page.goto(`${origin}/`);
+      await page.locator('.preferences:not([hidden])').waitFor();
+      await page.waitForFunction(() => document.querySelector('#entry-intro').hidden);
+    }
+  }
+  check('Hero work link stays cardless across all six locales/four widths/both themes; desktop/mobile hover and visible keyboard focus retain native Work navigation');
   await page.selectOption('#language', 'en');
   await page.mouse.move(0, 0);
   for (const theme of ['light', 'dark']) {

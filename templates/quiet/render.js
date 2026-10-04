@@ -22,7 +22,7 @@ export function renderHero(locale) {
   const c = copyFor(locale);
   return `<section class="hero section-grid" aria-labelledby="intro-heading">
     <div class="identity"><img class="identity-portrait" src="/quiet/xi-profile.webp" width="160" height="160" alt="" decoding="async"><a class="name" href="/">Rhine Tague</a><p>${escapeHtml(c.role)}</p><span>${escapeHtml(t('contact.locationVal'))}</span></div>
-    <div class="intro"><h1 id="intro-heading">${escapeHtml(c.title)}</h1><p>${escapeHtml(c.intro)}</p><a class="button" href="#work">${escapeHtml(c.viewWork)}${ARROW}</a></div>
+    <div class="intro"><h1 id="intro-heading">${escapeHtml(c.title)}</h1><p>${escapeHtml(c.intro)}</p><a class="text-link hero-work-link" href="#work">${escapeHtml(c.viewWork)}${ARROW}</a></div>
   </section>
   <figure class="cinematic">
     <div class="cinematic-frame"><img src="/quiet/switzerland-wide.webp" srcset="/quiet/switzerland-wide-small.webp 768w, /quiet/switzerland-wide.webp 1440w" sizes="(max-width: 700px) calc(100vw - 40px), (max-width: 1040px) calc(100vw - 212px), (max-width: 1280px) calc(100vw - 292px), 988px" width="1440" height="720" alt="${escapeHtml(c.heroAlt)}" fetchpriority="high" decoding="async"></div>
@@ -46,7 +46,7 @@ export function renderSections(locale) {
     <span class="album-name">${escapeHtml(t(`album.${album.id}.title`))}${ARROW}</span><span class="meta">${escapeHtml(t(`album.${album.id}.place`))} / ${album.year}</span>
   </a></li>`).join('');
   const contacts = socials.filter((social) => social.url && !social.url.startsWith('mailto:')).map((social) => `<li>${external(social.url, social.key)}</li>`).join('');
-  return section('about', c.about, `<div class="about-copy"><p>${escapeHtml(c.aboutBody)}</p><p>${escapeHtml(c.purpose)}</p><a class="text-link" href="/templates/quiet/approach.html" data-read-approach>${escapeHtml(c.fullPurpose)}${ARROW}</a></div>`)
+  return section('about', c.about, `<div class="about-copy"><p>${escapeHtml(c.aboutBody)}</p><p>${escapeHtml(c.designBody)}</p><p>${escapeHtml(c.purpose)}</p><a class="text-link" href="/templates/quiet/approach.html" data-read-approach>${escapeHtml(c.fullPurpose)}${ARROW}</a></div>`)
     + section('work', c.work, `<p class="section-intro">${escapeHtml(c.workIntro)}</p><ul class="work-list">${work}</ul>`)
     + section('photography', c.photography, `<p class="section-intro">${escapeHtml(c.photoIntro)}</p><ul class="album-grid" aria-label="${escapeHtml(c.allAlbums)}">${photos}</ul>
       <div class="album-viewer" id="album-viewer" hidden>

@@ -137,7 +137,7 @@ try {
   }, async page => {
     await page.waitForFunction(() => document.documentElement.dataset.entryBoot === 'bypassed');
     assert.equal(await page.locator('#entry-intro').isVisible(), false);
-    await page.locator('.button[href="#work"]').click();
+    await page.locator('.hero-work-link[href="#work"]').click();
     await page.waitForURL('**/#work');
     assert.equal(await page.locator('#work').isVisible(), true);
   });
@@ -217,7 +217,7 @@ try {
     assert.equal(await page.evaluate(() => scrollY), 0);
     await page.locator('#quiet-theme').click();
     assert.equal(await page.locator('html').getAttribute('data-theme'), 'dark');
-    await page.locator('.button[href="#work"]').click();
+    await page.locator('.hero-work-link[href="#work"]').click();
     await page.waitForURL('**/#work');
   });
   for (const [width, url] of [[1440, '/?arrival=reload'], [390, '/templates/quiet/?arrival=reload']]) {
