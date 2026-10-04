@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
 import { COPY } from '../templates/quiet/copy.js';
+import { entryGreeting } from '../templates/quiet/entry-greeting.js';
 import { FLAG_STEPS, ENTRY_HOLD, ENTRY_SAFETY } from '../templates/quiet/entry-intro.js';
 const { chromium } = await import(process.env.PLAYWRIGHT_MODULE ? pathToFileURL(process.env.PLAYWRIGHT_MODULE).href : 'playwright');
 const origin = process.env.QUIET_BASE_URL || 'http://localhost:5174';
@@ -13,7 +14,7 @@ const browser = await chromium.launch({ headless: true });
 const report = { boundary: 'Existing live-Vite Chromium, including emulated mobile and injected failure cases; not production, physical-device, other-engine or independent review.', checks: [], screenshots: [], greetingHolds: [] };
 const pass = label => { report.checks.push(label); console.log(`PASS ${label}`); };
 async function scenario(label, options, exercise) {
-  const { setup, url = '/', enhanced = true, ...contextOptions } = options;
+  const { setup, clock, url = '/', enhanced = true, ...contextOptions } = options;
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, ...contextOptions });
   const errors = [];
   try {
@@ -32,6 +33,19 @@ async function scenario(label, options, exercise) {
     });
     if (setup) await setup(context);
     const page = await context.newPage();
+    if (clock) await page.addInitScript(instant => {
+      // Mock only Date. Playwright's general clock also instruments timing APIs;
+      // native Web Animations, performance.now and watchdog timers must remain real.
+      const NativeDate = Date;
+      const key = 'quiet-test-greeting-clock';
+      let fixed = NativeDate.parse(sessionStorage.getItem(key) || instant);
+      window.Date = new Proxy(NativeDate, {
+        construct(target, args) { return Reflect.construct(target, args.length ? args : [fixed]); },
+        apply() { return new NativeDate(fixed).toString(); },
+        get(target, property) { return property === 'now' ? () => fixed : Reflect.get(target, property); },
+      });
+      window.__setGreetingTime = value => { fixed = NativeDate.parse(value); sessionStorage.setItem(key, value); };
+    }, clock);
     page.on('pageerror', error => errors.push(error.message));
     await page.goto(new URL(url, origin).href);
     if (enhanced) await page.locator('.preferences:not([hidden])').waitFor();
@@ -162,9 +176,14 @@ try {
     await retired(page);
     assert.equal(await page.locator('#entry-intro').getAttribute('data-reason'), 'complete');
   });
-  for (const width of [1440, 390]) for (const theme of ['light', 'dark']) {
-    await scenario(`Sequential SVG → sun → three stars → greeting → clean exit at ${width}px/${theme}`, {
-      viewport: { width, height: width === 390 ? 844 : 900 }, colorScheme: theme,
+  for (const [width, theme, hour, clock] of [
+    [1440, 'light', 7, '2026-10-03T23:00:00Z'],
+    [1440, 'dark', 13, '2026-10-04T05:00:00Z'],
+    [390, 'light', 19, '2026-10-04T11:00:00Z'],
+    [390, 'dark', 7, '2026-10-03T23:00:00Z'],
+  ]) {
+    await scenario(`Sequential SVG → sun → three stars → ${entryGreeting('en', hour).period} greeting → clean exit at ${width}px/${theme}`, {
+      clock, timezoneId: 'Asia/Manila', viewport: { width, height: width === 390 ? 844 : 900 }, colorScheme: theme,
       setup: context => context.addInitScript(value => localStorage.setItem('rhine-quiet-theme', value), theme),
     }, async page => {
       await page.waitForFunction(() => document.querySelector('#entry-intro').dataset.phase === 'complete' && !document.querySelector('#entry-intro').hidden);
@@ -181,11 +200,13 @@ try {
         return { fidelity: JSON.stringify(nodes(actual)) === JSON.stringify(nodes(expected)), greeting: entry.querySelector('.entry-greeting').textContent, below: greeting.top > art.bottom, center: Math.abs(greeting.x + greeting.width / 2 - art.x - art.width / 2), buttons, overflow: document.documentElement.scrollWidth > innerWidth, locked: Boolean(document.querySelector('[inert]')), opacity: getComputedStyle(entry.querySelector('.entry-caption')).opacity };
       }, source);
       assert.equal(state.fidelity, true, 'Completed SVG has original paths, colors, transforms, gradients and pole stroke');
-      assert.equal(state.greeting, 'Magandang araw!');
+      assert.equal(state.greeting, entryGreeting('en', hour).text);
+      assert.equal(await page.locator('.entry-description').textContent(), entryGreeting('en', hour).description);
+      assert.equal(await page.locator('#entry-intro').getAttribute('data-greeting'), entryGreeting('en', hour).period);
       assert.equal(state.below, true); assert.ok(state.center < 0.5);
       assert.equal(state.buttons, 0); assert.equal(state.overflow, false); assert.equal(state.locked, false); assert.equal(state.opacity, '1');
-      if (process.env.ENTRY_CAPTURE === '1') {
-        const name = `entry-${width}-${theme}.png`;
+      if (['1', 'greetings'].includes(process.env.ENTRY_CAPTURE)) {
+        const name = process.env.ENTRY_CAPTURE === 'greetings' ? `greeting-${entryGreeting('en', hour).period}-${width}-${theme}.png` : `entry-${width}-${theme}.png`;
         await page.screenshot({ path: new URL(name, output).pathname, animations: 'allow' });
         report.screenshots.push(name);
       }
@@ -413,14 +434,58 @@ try {
     assert.equal(await page.locator('.entry-artwork svg').count(), 0);
     await page.locator('#quiet-theme').click();
   });
-  for (const locale of Object.keys(COPY).filter(code => code !== 'en')) await scenario(`Localized welcome description without Skip: ${locale}`, {
+  for (const locale of Object.keys(COPY)) for (const [hour, clock] of [
+    [7, '2026-10-03T23:00:00Z'], [13, '2026-10-04T05:00:00Z'], [19, '2026-10-04T11:00:00Z'],
+  ]) await scenario(`Localized ${entryGreeting(locale, hour).period} welcome completes without Skip: ${locale}`, {
+    clock, timezoneId: 'Asia/Manila', viewport: { width: 320, height: 844 },
     setup: context => context.addInitScript(value => localStorage.setItem('rhine-lang', value), locale),
   }, async page => {
     await playing(page);
-    assert.equal(await page.locator('.entry-description').textContent(), COPY[locale].entryDescription);
+    assert.equal(await page.locator('.entry-description').textContent(), entryGreeting(locale, hour).description);
+    assert.equal(await page.locator('.entry-description').getAttribute('lang'), locale);
+    assert.equal(await page.locator('.entry-greeting').textContent(), entryGreeting(locale, hour).text);
     assert.equal(await page.locator('#entry-intro button, .entry-skip').count(), 0);
     assert.equal(await page.locator('.entry-greeting').getAttribute('lang'), 'fil');
-    await page.mouse.click(10, 10); await retired(page);
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+    await page.mouse.click(10, 10); await page.keyboard.press('Enter'); await retired(page);
+    assert.equal(await page.locator('#entry-intro').getAttribute('data-reason'), 'complete');
+  });
+  for (const [timezoneId, hour] of [['Asia/Tokyo', 15], ['Europe/Zurich', 8], ['America/New_York', 2]]) {
+    await scenario(`Same instant uses visitor-device time in ${timezoneId}, not server/Manila time`, {
+      timezoneId, clock: '2026-10-04T06:00:00Z',
+    }, async page => {
+      await playing(page);
+      assert.equal(await page.evaluate(() => new Date().getHours()), hour);
+      assert.equal(await page.locator('.entry-greeting').textContent(), entryGreeting('en', hour).text);
+      await retired(page);
+      assert.equal(await page.locator('#entry-intro').getAttribute('data-reason'), 'complete');
+    });
+  }
+  for (const [clock, hour, period] of [
+    ['2026-10-03T20:59:59Z', 4, 'evening'], ['2026-10-03T21:00:00Z', 5, 'morning'],
+    ['2026-10-04T03:59:59Z', 11, 'morning'], ['2026-10-04T04:00:00Z', 12, 'afternoon'],
+    ['2026-10-04T09:59:59Z', 17, 'afternoon'], ['2026-10-04T10:00:00Z', 18, 'evening'],
+  ]) await scenario(`Exact local clock boundary ${clock} selects ${period}`, { clock, timezoneId: 'Asia/Manila' }, async page => {
+    await playing(page);
+    assert.equal(await page.evaluate(() => new Date().getHours()), hour);
+    assert.equal(await page.locator('#entry-intro').getAttribute('data-greeting'), period);
+    assert.equal(await page.locator('.entry-greeting').textContent(), entryGreeting('en', hour).text);
+    await page.emulateMedia({ reducedMotion: 'reduce' }); await retired(page);
+  });
+  await scenario('Crossing noon does not change a playing greeting; reload selects the new period', {
+    clock: '2026-10-04T03:59:59Z', timezoneId: 'Asia/Manila',
+  }, async page => {
+    await playing(page);
+    assert.equal(await page.locator('.entry-greeting').textContent(), 'Magandang umaga!');
+    await page.evaluate(() => window.__setGreetingTime('2026-10-04T04:00:00Z'));
+    assert.equal(await page.evaluate(() => new Date().getHours()), 12);
+    await retired(page);
+    assert.equal(await page.locator('.entry-greeting').textContent(), 'Magandang umaga!');
+    assert.equal(await page.locator('.entry-description').textContent(), COPY.en.entryMorning);
+    await page.reload(); await playing(page);
+    assert.equal(await page.locator('.entry-greeting').textContent(), 'Magandang hapon!');
+    assert.equal(await page.locator('.entry-description').textContent(), COPY.en.entryAfternoon);
+    await retired(page);
   });
 } finally {
   await browser.close();

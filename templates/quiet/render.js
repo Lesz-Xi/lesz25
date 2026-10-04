@@ -2,6 +2,7 @@ import { research, albums, socials, renderArchive } from '../../src/data.js';
 import { t } from '../../src/i18n.js';
 import { copyFor } from './copy.js';
 import { workFor } from './work.js';
+import { entryGreeting } from './entry-greeting.js';
 
 export const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (character) => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
@@ -14,8 +15,9 @@ const section = (id, heading, body) => `<section class="section-grid" id="${id}"
 
 export function renderEntryIntro(locale) {
   const c = copyFor(locale);
+  const greeting = entryGreeting(locale, NaN); // Deterministic static fallback, never the build machine's time.
   return `<div id="entry-intro" class="entry-intro" role="region" aria-label="${escapeHtml(c.entryWelcome)}" hidden data-state="idle">
-    <div class="entry-composition"><div class="entry-artwork" aria-hidden="true"></div><div class="entry-caption"><p class="entry-greeting" lang="fil">Magandang araw!</p><p class="entry-description" lang="${escapeHtml(locale)}">${escapeHtml(c.entryDescription)}</p></div></div>
+    <div class="entry-composition"><div class="entry-artwork" aria-hidden="true"></div><div class="entry-caption"><p class="entry-greeting" lang="fil">${escapeHtml(greeting.text)}</p><p class="entry-description" lang="${escapeHtml(locale)}">${escapeHtml(greeting.description)}</p></div></div>
   </div>`;
 }
 

@@ -1,5 +1,6 @@
 // One finite native SVG sequence. No frame loop, scroll owner or progress fiction.
 import { copyFor } from './copy.js';
+import { entryGreeting } from './entry-greeting.js';
 
 export const ENTRY_KEY = 'rhine-quiet-welcome-v1';
 export const ENTRY_EASE = 'cubic-bezier(0.215, 0.61, 0.355, 1)';
@@ -38,8 +39,11 @@ export function initEntryIntro({ locale = 'en' } = {}) {
   }
 
   const c = copyFor(locale);
+  const greeting = entryGreeting(locale); // Snapshot device-local time once, before playback.
+  cover.dataset.greeting = greeting.period;
   cover.setAttribute('aria-label', c.entryWelcome);
-  cover.querySelector('.entry-description').textContent = c.entryDescription;
+  cover.querySelector('.entry-greeting').textContent = greeting.text;
+  cover.querySelector('.entry-description').textContent = greeting.description;
   cover.querySelector('.entry-description').lang = locale;
   const host = cover.querySelector('.entry-artwork');
   const caption = cover.querySelector('.entry-caption');
