@@ -1,4 +1,5 @@
 // Shared static and enhanced chrome; the ocean entry never imports this module.
+import { LANGUAGES } from '../../src/i18n.js';
 import { copyFor } from './copy.js';
 import { escapeHtml } from './render.js';
 
@@ -8,7 +9,7 @@ const moon = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-h
 export function renderPreferences(locale, dev = false) {
   const c = copyFor(locale);
   return `<label class="language-control"><span class="sr-only" data-language-label>Language</span><select id="language" name="language" aria-label="Language">
-    <option value="en" lang="en">EN</option><option value="de" lang="de">DE</option><option value="fr" lang="fr">FR</option><option value="it" lang="it">IT</option><option value="zh" lang="zh">中文</option>
+    ${LANGUAGES.map(({ code, label, short }) => `<option value="${escapeHtml(code)}" lang="${escapeHtml(code)}">${escapeHtml(code === 'zh' || code === 'ja' ? label : short)}</option>`).join('')}
   </select></label>
 ${dev ? `<div class="mode-controls" role="group" aria-label="${escapeHtml(c.viewLabel)}"><button type="button" class="view-control" id="quiet-gui-control" aria-pressed="true" aria-controls="quiet-gui" aria-label="${escapeHtml(c.guiLabel)}">GUI</button><button type="button" class="view-control" id="quiet-mode" aria-pressed="false" aria-controls="quiet-dev" aria-label="${escapeHtml(c.devLabel)}">Dev Mode</button></div>` : ''}
   <button type="button" class="theme-control" id="quiet-theme" aria-pressed="false" aria-label="${escapeHtml(c.theme)}: ${escapeHtml(c.dark)}"><span class="theme-icon-light" aria-hidden="true">${sun}</span><span class="theme-icon-dark" aria-hidden="true">${moon}</span><span class="sr-only" data-theme-label>${escapeHtml(c.light)}</span></button>`;

@@ -1,4 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="126 128 752 752" style="width: 256px; height: 256px">
+  <style>@media (prefers-color-scheme: dark) { #_kuqd084 circle { fill: #ffffff; stroke: #ffffff; } }</style>
   <defs><pattern id="_kuqd080" x="1.05" y="3.95" width="37.9" height="35.5" patternUnits="userSpaceOnUse"><circle cx="18.95" cy="17.75" r="2.85" fill="#bdc6d2" opacity=".86"/></pattern><radialGradient id="_kuqd081" cx="40%" cy="35%" r="75%"><stop stop-color="#24303e" offset="0"/><stop stop-color="#1e2937" offset=".7"/><stop stop-color="#18222e" offset="1"/></radialGradient><radialGradient id="_kuqd082" cx="40%" cy="36%" r="76%"><stop stop-color="#ff801a" offset="0"/><stop stop-color="#ff7814" offset=".72"/><stop stop-color="#fa7010" offset="1"/></radialGradient></defs>
   <g id="_kuqd083">
     <path d="M0 0H1024V1024H0Z" fill="url(#_kuqd080)" />

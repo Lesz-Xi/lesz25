@@ -13,7 +13,7 @@ const browser = await chromium.launch({ headless: true });
 const report = { boundary: 'Existing live-Vite Chromium, including emulated mobile and injected failure cases; not production, physical-device, other-engine or independent review.', checks: [], screenshots: [], greetingHolds: [] };
 const pass = label => { report.checks.push(label); console.log(`PASS ${label}`); };
 async function scenario(label, options, exercise) {
-  const { setup, url = '/', ...contextOptions } = options;
+  const { setup, url = '/', enhanced = true, ...contextOptions } = options;
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, ...contextOptions });
   const errors = [];
   try {
@@ -34,7 +34,7 @@ async function scenario(label, options, exercise) {
     const page = await context.newPage();
     page.on('pageerror', error => errors.push(error.message));
     await page.goto(new URL(url, origin).href);
-    await page.locator('.preferences:not([hidden])').waitFor();
+    if (enhanced) await page.locator('.preferences:not([hidden])').waitFor();
     await exercise(page, context);
     assert.deepEqual(errors, []);
     pass(label);
@@ -49,6 +49,110 @@ const playing = async page => {
 };
 const retired = page => page.waitForFunction(() => document.querySelector('#entry-intro').hidden && document.querySelector('#entry-intro').dataset.state === 'done');
 try {
+  for (const width of [1440, 390]) for (const theme of ['light', 'dark']) {
+    await scenario(`Prepaint ground hides hero through delayed-module handoff at ${width}px/${theme}`, {
+      viewport: { width, height: width === 390 ? 844 : 900 }, colorScheme: theme,
+      setup: async context => {
+        await context.addInitScript(() => {
+          window.__entryFrames = [];
+          const sample = time => {
+            const root = document.documentElement;
+            const cover = document.querySelector('#entry-intro');
+            if (root && cover) {
+              const ground = getComputedStyle(root, '::before');
+              const covered = !cover.hidden && getComputedStyle(cover).visibility !== 'hidden';
+              const pending = ground.content !== 'none' && ground.visibility !== 'hidden' && ground.position === 'fixed';
+              window.__entryFrames.push({ time, boot: root.dataset.entryBoot, covered, pending });
+              if (covered || root.dataset.entryBoot === 'bypassed' || root.dataset.entryBoot === 'done') return;
+            }
+            if (time < 1800) requestAnimationFrame(sample);
+          };
+          requestAnimationFrame(sample);
+        });
+        await context.route('**/templates/quiet/entry-intro.js*', async route => {
+          await new Promise(resolve => setTimeout(resolve, 450)); await route.fallback().catch(() => {});
+        });
+      },
+    }, async page => {
+      await page.waitForFunction(() => document.documentElement.dataset.entryBoot === 'pending');
+      const early = await page.evaluate(() => {
+        const style = getComputedStyle(document.documentElement, '::before');
+        return { background: style.backgroundColor, position: style.position, top: style.top, left: style.left, right: style.right, bottom: style.bottom, visible: style.visibility, caption: document.querySelector('#entry-intro').hidden };
+      });
+      assert.equal(early.position, 'fixed'); assert.equal(early.visible, 'visible'); assert.equal(early.caption, true);
+      for (const edge of ['top', 'left', 'right', 'bottom']) assert.equal(early[edge], '0px');
+      assert.equal(early.background, theme === 'dark' ? 'rgb(33, 31, 28)' : 'rgb(244, 244, 245)');
+      if (process.env.ENTRY_CAPTURE === '1') {
+        const name = `prepaint-${width}-${theme}.png`; await page.screenshot({ path: new URL(name, output).pathname }); report.screenshots.push(name);
+      }
+      await playing(page);
+      await page.waitForFunction(() => window.__entryFrames.some(frame => frame.covered));
+      const frames = await page.evaluate(() => window.__entryFrames);
+      assert.ok(frames.some(frame => frame.pending && !frame.covered));
+      assert.ok(frames.every(frame => frame.covered || frame.pending), `Exposed hero before handoff: ${JSON.stringify(frames)}`);
+      assert.equal(await page.evaluate(() => document.documentElement.dataset.entryBoot), 'playing');
+      await retired(page);
+      assert.equal(await page.evaluate(() => document.documentElement.dataset.entryBoot), 'done');
+      await page.reload();
+      await playing(page);
+      await page.waitForFunction(() => window.__entryFrames.some(frame => frame.covered));
+      const reloadFrames = await page.evaluate(() => window.__entryFrames);
+      assert.ok(reloadFrames.some(frame => frame.pending && !frame.covered));
+      assert.ok(reloadFrames.every(frame => frame.covered || frame.pending), `Reload exposed hero before handoff: ${JSON.stringify(reloadFrames)}`);
+      await retired(page);
+    });
+  }
+  await scenario('Pending ground timeout prevents a late module from covering an already revealed page', {
+    setup: context => context.route('**/templates/quiet/entry-intro.js*', async route => {
+      await new Promise(resolve => setTimeout(resolve, 1450)); await route.fallback().catch(() => {});
+    }),
+  }, async page => {
+    await page.waitForFunction(() => document.documentElement.dataset.entryBoot === 'bypassed');
+    await page.waitForTimeout(400);
+    assert.equal(await page.locator('#entry-intro').isVisible(), false);
+    assert.equal(await page.evaluate(() => getComputedStyle(document.documentElement, '::before').content), 'none');
+    await page.locator('#quiet-theme').click();
+  });
+  await scenario('Critical CSS releases a pending ground even if the bootstrap timer fails', {
+    setup: async context => {
+      await context.addInitScript(() => {
+        const timeout = window.setTimeout.bind(window);
+        window.setTimeout = (callback, delay, ...args) => delay === 1200 ? 0 : timeout(callback, delay, ...args);
+      });
+      await context.route('**/templates/quiet/entry-intro.js*', async route => {
+        await new Promise(resolve => setTimeout(resolve, 1650)); await route.fallback().catch(() => {});
+      });
+    },
+  }, async page => {
+    await page.waitForFunction(() => document.documentElement.dataset.entryBoot === 'pending');
+    await page.waitForFunction(() => getComputedStyle(document.documentElement, '::before').visibility === 'hidden');
+    assert.equal(await page.evaluate(() => getComputedStyle(document.documentElement, '::before').pointerEvents), 'none');
+    await page.keyboard.press('Tab');
+    await page.waitForTimeout(500);
+    assert.equal(await page.locator('#entry-intro').isVisible(), false);
+  });
+  await scenario('Missing main module releases the ground and preserves static English navigation', {
+    enhanced: false,
+    setup: context => context.route('**/templates/quiet/main.js*', route => route.abort()),
+  }, async page => {
+    await page.waitForFunction(() => document.documentElement.dataset.entryBoot === 'bypassed');
+    assert.equal(await page.locator('#entry-intro').isVisible(), false);
+    await page.locator('.button[href="#work"]').click();
+    await page.waitForURL('**/#work');
+    assert.equal(await page.locator('#work').isVisible(), true);
+  });
+  await scenario('Input during module preparation removes the ground and prevents later welcome playback', {
+    setup: context => context.route('**/templates/quiet/entry-intro.js*', async route => {
+      await new Promise(resolve => setTimeout(resolve, 450)); await route.fallback().catch(() => {});
+    }),
+  }, async page => {
+    await page.waitForFunction(() => document.documentElement.dataset.entryBoot === 'pending');
+    await page.keyboard.press('Tab');
+    assert.equal(await page.evaluate(() => document.documentElement.dataset.entryBoot), 'bypassed');
+    await page.waitForTimeout(600);
+    assert.equal(await page.locator('#entry-intro').isVisible(), false);
+    assert.equal(await page.locator('.skip-link').evaluate(node => node === document.activeElement), true);
+  });
   for (const width of [1440, 390]) for (const theme of ['light', 'dark']) {
     await scenario(`Sequential SVG → sun → three stars → greeting → clean exit at ${width}px/${theme}`, {
       viewport: { width, height: width === 390 ? 844 : 900 }, colorScheme: theme,
@@ -252,7 +356,7 @@ try {
     assert.equal(await page.locator('.entry-artwork svg').count(), 0);
     await page.locator('#quiet-theme').click();
   });
-  for (const locale of ['de', 'fr', 'it', 'zh']) await scenario(`Localized welcome description without Skip: ${locale}`, {
+  for (const locale of Object.keys(COPY).filter(code => code !== 'en')) await scenario(`Localized welcome description without Skip: ${locale}`, {
     setup: context => context.addInitScript(value => localStorage.setItem('rhine-lang', value), locale),
   }, async page => {
     await playing(page);

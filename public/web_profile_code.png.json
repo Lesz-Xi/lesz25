@@ -1,7 +1,8 @@
 {
   "source": "web_profile_code.svg",
   "sourceSha256": "70b8b166510d77ee4831152c462cce392fdbb8ed8328a12056b5924e55ab9810",
-  "transformation": "32×32 PNG rasterized from the tightly framed SVG; artwork geometry and colours unchanged.",
+  "sourceRevision": "781e5ab63e1ff663eb96bdd45a4a80d4d65070d4",
+  "transformation": "Historical fixed light-mode 32×32 PNG rasterized from the tightly framed SVG at the recorded revision/hash; original geometry and colours retained. Not regenerated for the adaptive SVG v3.",
   "renderer": "Chromium Canvas 2D",
   "width": 32,
   "height": 32

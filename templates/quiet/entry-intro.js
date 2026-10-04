@@ -17,6 +17,7 @@ export function shouldPlayEntry({ hash = '', reduced = false, hidden = false, se
 }
 
 export function initEntryIntro({ locale = 'en' } = {}) {
+  const root = document.documentElement;
   const cover = document.querySelector('#entry-intro');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   let seen = true;
@@ -28,10 +29,13 @@ export function initEntryIntro({ locale = 'en' } = {}) {
   const navigation = performance.getEntriesByType('navigation')[0]?.type;
   const returning = navigation === 'back_forward';
   const reload = navigation === 'reload';
-  const allowed = cover && storageAvailable && performance.now() < 1200 && scrollY === 0 && scrollX === 0
+  const allowed = cover && root.dataset.entryBoot === 'pending' && storageAvailable && performance.now() < 1200 && scrollY === 0 && scrollX === 0
     && typeof Element.prototype.animate === 'function'
     && shouldPlayEntry({ hash: location.hash, reduced: reduced.matches, hidden: document.hidden, seen, returning, reload });
-  if (!allowed) return { dispose() {}, finished: Promise.resolve({ played: false, reason: 'bypassed' }) };
+  if (!allowed) {
+    if (root.dataset.entryBoot === 'pending') root.dataset.entryBoot = 'bypassed';
+    return { dispose() {}, finished: Promise.resolve({ played: false, reason: 'bypassed' }) };
+  }
 
   const c = copyFor(locale);
   cover.setAttribute('aria-label', c.entryWelcome);
@@ -78,6 +82,7 @@ export function initEntryIntro({ locale = 'en' } = {}) {
     removers.length = 0;
     const focusedInside = cover.contains(document.activeElement);
     cover.hidden = true;
+    root.dataset.entryBoot = 'done';
     host.replaceChildren(); // Retire disposable SVG nodes; do not rewrite their styles in the body.
     restore(caption);
     restore(cover);
@@ -124,7 +129,7 @@ export function initEntryIntro({ locale = 'en' } = {}) {
     if (source.localName !== 'svg' || source.namespaceURI !== 'http://www.w3.org/2000/svg'
       || [source, ...source.querySelectorAll('*')].some(node => !permitted.has(node.localName)
         || [...node.attributes].some(attr => /^on/i.test(attr.name) || attr.name === 'style' || (/href$/i.test(attr.name) && !attr.value.startsWith('#'))))) throw new Error('Unexpected SVG');
-    if (stopped || document.activeElement !== document.body || document.hidden || location.hash) return dispose('interrupted');
+    if (stopped || performance.now() >= 1200 || root.dataset.entryBoot !== 'pending' || document.activeElement !== document.body || document.hidden || location.hash) return dispose('interrupted');
     const svg = document.importNode(source, true);
     const steps = FLAG_STEPS.map(step => ({ ...step, element: svg.querySelector(step.selector) }));
     if (steps.some(step => !step.element)) throw new Error('Incomplete flag');
@@ -146,6 +151,7 @@ export function initEntryIntro({ locale = 'en' } = {}) {
     played = true;
     cover.dataset.state = 'playing';
     cover.hidden = false;
+    root.dataset.entryBoot = 'playing'; // Atomic handoff: the real cover is visible before the prepaint ground retires.
     for (const step of steps) {
       cover.dataset.phase = step.name;
       const motion = await animate(step.element, step.draw ? [

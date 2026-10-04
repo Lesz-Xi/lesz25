@@ -1,4 +1,4 @@
-// Unlike the English-authored essay, the existing approach has five source translations.
+// Unlike the English-authored essay, the approach uses the shared translations.
 import { getLang, onLangChange } from '../../src/i18n.js';
 import { copyFor } from './copy.js';
 import { renderApproach } from './render.js';

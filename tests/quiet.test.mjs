@@ -4,6 +4,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
+import { runInNewContext } from 'node:vm';
 import { COPY, copyFor } from '../templates/quiet/copy.js';
 import { albumFromHash, galleryImages, wrapIndex } from '../templates/quiet/gallery.js';
 
@@ -21,7 +22,7 @@ const { default: config } = await import('../vite.config.js');
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 
-test('all five locales have complete new copy and all current project descriptions', () => {
+test('all six locales have complete new copy and all current project descriptions', () => {
   const keys = Object.keys(COPY.en).sort();
   assert.deepEqual(Object.keys(COPY).sort(), LANGUAGES.map(({ code }) => code).sort());
   for (const [locale, copy] of Object.entries(COPY)) {
@@ -33,6 +34,61 @@ test('all five locales have complete new copy and all current project descriptio
     }
   }
   assert.equal(copyFor('unknown'), COPY.en);
+});
+
+test('Japanese covers the full shared table and all preference pickers without English fallback', () => {
+  const source = read('src/i18n.js');
+  // Inspect the leaf translation literal without exporting a test-only production API.
+  const literal = source.split('const STRINGS = ')[1].split('\n\nconst SUPPORTED')[0];
+  const tables = runInNewContext(`const table = ${literal}\n table;`, {}, { timeout: 1000 });
+  assert.deepEqual(Object.keys(tables.ja).sort(), Object.keys(tables.en).sort());
+  assert.deepEqual(LANGUAGES.find(({ code }) => code === 'ja'), { code: 'ja', label: '日本語', short: 'JA' });
+  setLang('ja');
+  for (const [key, value] of Object.entries(tables.ja)) {
+    assert.equal(typeof value, 'string', key);
+    assert.ok(value.length > 0, key);
+    assert.equal(t(key), value, key);
+    if (key !== 'hero') assert.notEqual(value, tables.en[key], key);
+  }
+  assert.equal(storage.get('rhine-lang'), 'ja');
+  for (const code of LANGUAGES.map(({ code }) => code)) {
+    const markup = renderPreferences(code);
+    assert.ok(markup.includes('<option value="ja" lang="ja">日本語</option>'));
+    assert.equal((markup.match(/<option /g) || []).length, LANGUAGES.length);
+  }
+  setLang('en');
+});
+
+test('Japanese browser language is detected, but an explicit saved choice wins', () => {
+  const moduleUrl = new URL('../src/i18n.js', import.meta.url).href;
+  for (const saved of [null, 'de']) {
+    const result = execFileSync(process.execPath, ['--input-type=module', '-e', `
+      Object.defineProperty(globalThis, 'navigator', { value: { languages: ['ja-JP', 'en-US'] }, configurable: true });
+      globalThis.localStorage = { getItem: () => ${JSON.stringify(saved)} };
+      const { getLang } = await import(${JSON.stringify(moduleUrl)});
+      console.log(getLang());
+    `], { encoding: 'utf8' }).trim();
+    assert.equal(result, saved || 'ja');
+  }
+});
+
+test('2041 uses companion-assisted wording in every Quiet locale and command catalog', () => {
+  const expected = {
+    en: 'A terminal workspace for companion-assisted software work.',
+    de: 'Ein Terminal-Arbeitsbereich für Softwareentwicklung mit Begleitagenten.',
+    fr: 'Un espace de travail en terminal pour le développement assisté par des agents compagnons.',
+    it: 'Uno spazio di lavoro nel terminale per lo sviluppo assistito da agenti compagni.',
+    zh: '由陪伴智能体辅助软件开发的终端工作空间。',
+    ja: 'コンパニオンとソフトウェア開発を行うためのターミナル型ワークスペース。',
+  };
+  for (const { code } of LANGUAGES) {
+    setLang(code);
+    assert.equal(COPY[code].projects[2], expected[code]);
+    assert.ok(renderSections(code).includes(escapeHtml(expected[code])));
+    const record = catalogFor(code).find(item => item.name === '2041');
+    assert.equal(record?.description, expected[code], 'Dev Mode reads the same description');
+  }
+  setLang('en');
 });
 
 test('localized renderers keep every source URL and in-development status', () => {
@@ -149,12 +205,14 @@ test('all portfolio entries use the supplied SVG icon and matching PNG fallback'
     const html = read(path);
     const icons = [...html.matchAll(/<link\b[^>]*\brel="icon"[^>]*>/g)].map(([tag]) => tag);
     assert.equal(icons.length, 2, path);
-    assert.ok(icons.some((tag) => tag.includes('type="image/svg+xml"') && tag.includes('sizes="any"') && tag.includes('href="/web_profile_code.svg?v=2"')), path);
+    assert.ok(icons.some((tag) => tag.includes('type="image/svg+xml"') && tag.includes('sizes="any"') && tag.includes('href="/web_profile_code.svg?v=3"')), path);
     assert.ok(icons.some((tag) => tag.includes('type="image/png"') && tag.includes('sizes="32x32"') && tag.includes('href="/web_profile_code.png?v=2"')), path);
     assert.ok(!icons.some((tag) => tag.includes('cartoon-power-up-star')), path);
   }
   const svg = read('public/web_profile_code.svg');
   assert.ok(svg.includes('viewBox="126 128 752 752"'));
+  assert.ok(svg.includes('@media (prefers-color-scheme: dark) { #_kuqd084 circle { fill: #ffffff; stroke: #ffffff; } }'));
+  assert.ok(svg.includes('stop-color="#24303e"') && svg.includes('stop-color="#ff801a"'), 'Light arrow and orange dots keep their original gradients');
   const png = readFileSync(new URL('../public/web_profile_code.png', import.meta.url));
   assert.equal(png.subarray(0, 8).toString('hex'), '89504e470d0a1a0a');
   assert.equal(png.readUInt32BE(16), 32);

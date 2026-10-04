@@ -3,7 +3,7 @@
   "title": "Design System: Rhine Tague — Quiet",
   "extensions": {
     "shadows": [],
-    "motion": [{ "name": "control-feedback", "value": "150ms ease", "purpose": "Colour/background and active-underline opacity feedback; reduced motion disables both, touch-only devices omit colour/background transitions." }, { "name": "svg-welcome", "value": "3350ms", "purpose": "Explicitly requested first-tab/explicit-reload native SVG sequence, cubic-out easing; full greeting holds 1500ms, with a 3700ms JS deadline and independent 4s CSS fail-open. Reload returns to the hero; normal deep links, reader returns and Back stay native. No visible Skip button; input still dismisses motion immediately. Reduced motion bypasses it; no loop, ticker, modal or scroll lock." }],
+    "motion": [{ "name": "control-feedback", "value": "150ms ease", "purpose": "Colour/background and active-underline opacity feedback; reduced motion disables both, touch-only devices omit colour/background transitions." }, { "name": "svg-welcome", "value": "3350ms", "purpose": "Explicitly requested first-tab/explicit-reload native SVG sequence, cubic-out easing; full greeting holds 1500ms, with a 3700ms JS deadline and independent 4s CSS fail-open. Reload returns to the hero; normal deep links, reader returns and Back stay native. No visible Skip button; input still dismisses motion immediately. Eligible first paint reserves the existing theme ground with a 1200ms JS/critical-CSS startup fail-open, then hands off atomically to the SVG cover; early input cancels pending playback. Reduced motion bypasses it; no loop, ticker, modal or scroll lock." }],
     "breakpoints": [{ "name": "compact-rail", "value": "1040px" }, { "name": "stacked", "value": "700px" }]
   },
   "components": [
@@ -40,7 +40,7 @@
       "name": "Language selector",
       "kind": "input",
       "description": "Native select with a compact visual footprint and 44px target.",
-      "html": "<select class=\"ds-language\" aria-label=\"Language\"><option>EN</option><option>DE</option><option>FR</option><option>IT</option><option>中文</option></select>",
+      "html": "<select class=\"ds-language\" aria-label=\"Language\"><option>EN</option><option>DE</option><option>FR</option><option>IT</option><option>中文</option><option>日本語</option></select>",
       "css": ".ds-language { font: 12px ui-monospace, monospace; color: var(--ink, #242424); background: transparent; border: 0; min-width: 52px; min-height: 44px; padding: 0 4px; cursor: pointer; } .ds-language:focus-visible { outline: 2px solid var(--accent, #b94708); outline-offset: 5px; }"
     },
     {

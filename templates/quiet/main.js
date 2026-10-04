@@ -188,5 +188,6 @@ import('./entry-intro.js').then(({ initEntryIntro }) => {
   if (document.readyState === 'complete') afterLoad();
   else window.addEventListener('load', afterLoad, { once: true });
 }).catch(() => {
-  // The static hidden cover stays hidden; normal portfolio controls still initialize.
+  // Optional module failure releases the early ground; normal controls still initialize.
+  if (document.documentElement.dataset.entryBoot === 'pending') document.documentElement.dataset.entryBoot = 'bypassed';
 });

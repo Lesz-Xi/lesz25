@@ -65,6 +65,38 @@ test('early reload policy clears only the fragment and suppresses restoration on
   }
 });
 
+test('prepaint reservation gates eligibility and releases on input or startup timeout', () => {
+  const html = readFileSync(new URL('../templates/quiet/index.html', import.meta.url), 'utf8');
+  const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)];
+  const bootstrap = scripts[1][1];
+  assert.ok(html.indexOf('html[data-entry-boot="pending"]::before') < html.indexOf('<body>'));
+  assert.ok(html.includes('entry-boot-fail-open 1200ms step-end forwards'));
+  for (const options of [{}, { reload: true, seen: true }, { seen: true }, { reduced: true }, { hidden: true }, { hash: '#work' }, { returning: true }, { denied: true, reload: true }]) {
+    const root = { dataset: {} };
+    const events = new Map();
+    const timers = [];
+    const media = { matches: Boolean(options.reduced), addEventListener: (name, handler) => events.set(`media:${name}`, handler) };
+    const add = (name, handler) => events.set(name, handler);
+    runInNewContext(bootstrap, {
+      document: { documentElement: root, hidden: Boolean(options.hidden), addEventListener: add },
+      window: { addEventListener: add }, location: { hash: options.hash || '' },
+      performance: { getEntriesByType: () => [{ type: options.returning ? 'back_forward' : options.reload ? 'reload' : 'navigate' }] },
+      Element: { prototype: { animate() {} } }, matchMedia: () => media,
+      sessionStorage: { getItem: () => { if (options.denied) throw new Error('Denied'); return options.seen ? 'seen' : null; } },
+      AbortController, MutationObserver: class { observe() {} disconnect() {} },
+      setTimeout: (handler, delay) => { timers.push({ handler, delay }); return 1; }, clearTimeout() {},
+    });
+    const allowed = !options.denied && !options.reduced && !options.hidden && !options.hash && !options.returning && (!options.seen || options.reload);
+    assert.equal(root.dataset.entryBoot, allowed ? 'pending' : 'bypassed');
+    if (allowed) {
+      assert.equal(timers[0].delay, 1200);
+      events.get('keydown')(); assert.equal(root.dataset.entryBoot, 'bypassed');
+      root.dataset.entryBoot = 'pending'; timers[0].handler(); assert.equal(root.dataset.entryBoot, 'bypassed');
+      root.dataset.entryBoot = 'playing'; timers[0].handler(); assert.equal(root.dataset.entryBoot, 'playing', 'Startup timeout must not cut the real greeting hold short');
+    }
+  }
+});
+
 test('no-script and CSS failure paths preserve page input without a modal or inert trap', () => {
   const css = readFileSync(new URL('../templates/quiet/styles.css', import.meta.url), 'utf8');
   const main = readFileSync(new URL('../templates/quiet/main.js', import.meta.url), 'utf8');

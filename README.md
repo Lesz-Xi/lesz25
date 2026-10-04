@@ -18,13 +18,22 @@ fragment but preserving the route and query; ordinary deep links, reader returns
 and Back keep their native destinations. There is no “Skip introduction” button;
 keyboard, click, touch and wheel input still dismiss it immediately. Reduced
 motion and failures keep the page usable. This is not a loading-progress indicator,
-and the country label itself remains text-only.
+and the country label itself remains text-only. Eligible welcomes reserve the
+existing theme background before first paint, handing off to the SVG cover without
+flashing the hero. A 1.2-second startup timeout (with independent critical CSS
+fallback) releases the page if preparation fails; input cancels pending playback.
 
 Page order: About → Selected Work → Photography → Research → Notes → Contact.
 
 Selected projects and papers keep their source links and development status.
 Notes and Approach are dedicated reading pages. The authored essay stays in English;
-the portfolio and interface support English, German, French, Italian, and Chinese.
+the portfolio and interface support English, German, French, Italian, Chinese, and Japanese.
+The Approach page is translated; the essay keeps its original English text.
+
+The SVG favicon follows the browser/system colour preference: its chevron turns white
+in dark appearance, while the orange dots and light appearance stay unchanged. The
+fixed PNG fallback remains unchanged. 2041 is described as a terminal workspace for
+companion-assisted software work.
 
 GUI is the default view. Dev Mode offers a small set of commands for finding and
 opening the same work—it is a browser interface, not a shell.

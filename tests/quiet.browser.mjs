@@ -171,7 +171,7 @@ try {
 
   for (const width of [320, 390, 768, 1440]) {
     await page.setViewportSize({ width, height: 900 });
-    for (const lang of ['en', 'de', 'fr', 'it', 'zh']) {
+    for (const { code: lang } of LANGUAGES) {
       await page.selectOption('#language', lang);
       assert.equal(await page.locator('html').getAttribute('lang'), lang);
       for (const theme of ['light', 'dark']) {
@@ -209,7 +209,7 @@ try {
       }
     }
   }
-  check('All five languages at 320/390/768/1440px, both themes: no horizontal overflow or missing rows');
+  check('All six languages at 320/390/768/1440px, both themes: no horizontal overflow or missing rows');
   await page.selectOption('#language', 'de');
   await page.reload();
   assert.equal(await page.locator('html').getAttribute('lang'), 'de');
@@ -406,7 +406,7 @@ try {
   assert.equal(sourceLinks.length, 7);
   for (const width of [320, 390, 768, 1440]) {
     await page.setViewportSize({ width, height: 900 });
-    for (const lang of ['en', 'de', 'fr', 'it', 'zh']) {
+    for (const { code: lang } of LANGUAGES) {
       await page.selectOption('#language', lang);
       for (const theme of ['light', 'dark']) {
         if (await page.locator('html').getAttribute('data-theme') !== theme) await page.locator('#quiet-theme').click();
@@ -525,7 +525,7 @@ try {
   assert.equal(await page.locator('.dev-records a[href="https://zenodo.org/records/22260729"]').count(), 1);
   for (const width of [320, 390, 768, 1440]) {
     await page.setViewportSize({ width, height: width < 700 ? 844 : 900 });
-    for (const lang of ['en', 'de', 'fr', 'it', 'zh']) {
+    for (const { code: lang } of LANGUAGES) {
       await page.selectOption('#language', lang);
       for (const theme of ['light', 'dark']) {
         if (await page.locator('html').getAttribute('data-theme') !== theme) await page.locator('#quiet-theme').click();
@@ -536,7 +536,7 @@ try {
       }
     }
   }
-  check('Minimal view/theme controls and Dev Mode work in all five languages at 320/390/768/1440px without overflow or album resets');
+  check('Minimal view/theme controls and Dev Mode work in all six languages at 320/390/768/1440px without overflow or album resets');
   await page.selectOption('#language', 'en');
   await command('clear');
   await command('help');
@@ -590,7 +590,7 @@ try {
   assert.equal(await page.locator('#quiet-mode').count(), 0);
   for (const width of [320, 390, 768, 1440]) {
     await page.setViewportSize({ width, height: 900 });
-    for (const lang of ['en', 'de', 'fr', 'it', 'zh']) {
+    for (const { code: lang } of LANGUAGES) {
       await page.selectOption('#language', lang);
       for (const theme of ['light', 'dark']) {
         if (await page.locator('html').getAttribute('data-theme') !== theme) await page.locator('#quiet-theme').click();
@@ -839,7 +839,7 @@ try {
       }
     }
   }
-  check('Preview previous/next stay centered with 44px localized targets across five languages, four widths and both themes');
+  check('Preview previous/next stay centered with 44px localized targets across six languages, four widths and both themes');
   await navigationPage.selectOption('#language', 'en');
   await waitImage(navigationPage, '#album-image');
   await navigationPage.setViewportSize({ width: 390, height: 844 });
