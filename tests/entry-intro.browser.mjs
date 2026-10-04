@@ -141,17 +141,26 @@ try {
     await page.waitForURL('**/#work');
     assert.equal(await page.locator('#work').isVisible(), true);
   });
-  await scenario('Input during module preparation removes the ground and prevents later welcome playback', {
+  await scenario('Keys, pointer, touch, wheel and focused activation during preparation do not skip or navigate', {
     setup: context => context.route('**/templates/quiet/entry-intro.js*', async route => {
-      await new Promise(resolve => setTimeout(resolve, 450)); await route.fallback().catch(() => {});
+      await new Promise(resolve => setTimeout(resolve, 800)); await route.fallback().catch(() => {});
     }),
   }, async page => {
     await page.waitForFunction(() => document.documentElement.dataset.entryBoot === 'pending');
     await page.keyboard.press('Tab');
-    assert.equal(await page.evaluate(() => document.documentElement.dataset.entryBoot), 'bypassed');
-    await page.waitForTimeout(600);
-    assert.equal(await page.locator('#entry-intro').isVisible(), false);
-    assert.equal(await page.locator('.skip-link').evaluate(node => node === document.activeElement), true);
+    await page.mouse.click(10, 10);
+    await page.mouse.wheel(0, 200);
+    await page.locator('body').dispatchEvent('touchstart');
+    await page.locator('body').dispatchEvent('touchmove');
+    await page.locator('.hero-work-link').focus();
+    await page.keyboard.press('Enter');
+    await page.locator('.hero-work-link').dispatchEvent('click');
+    assert.equal(await page.evaluate(() => document.documentElement.dataset.entryBoot), 'pending');
+    assert.equal(await page.evaluate(() => location.hash), '');
+    assert.equal(await page.evaluate(() => scrollY), 0);
+    await playing(page);
+    await retired(page);
+    assert.equal(await page.locator('#entry-intro').getAttribute('data-reason'), 'complete');
   });
   for (const width of [1440, 390]) for (const theme of ['light', 'dark']) {
     await scenario(`Sequential SVG → sun → three stars → greeting → clean exit at ${width}px/${theme}`, {
@@ -207,14 +216,23 @@ try {
       assert.equal(await page.locator('#entry-intro').getAttribute('data-reason'), 'complete');
     });
   }
-  await scenario('No Skip button; Tab dismisses the welcome and follows native page focus', {}, async page => {
+  await scenario('Tab, typing, activation and scroll keys preserve the full welcome; controls resume after completion', {}, async page => {
     await playing(page);
     assert.equal(await page.locator('#entry-intro button, .entry-skip').count(), 0);
-    await page.keyboard.press('Tab');
-    await retired(page);
-    assert.equal(await page.locator('#entry-intro').getAttribute('data-reason'), 'input');
-    assert.equal(await page.locator('.skip-link').evaluate(element => element === document.activeElement), true);
+    for (const key of ['Tab', 'Shift+Tab', 'Enter', 'Space', 'a', 'Escape', 'ArrowDown', 'PageDown']) await page.keyboard.press(key);
+    assert.equal(await page.locator('#entry-intro').isVisible(), true);
+    assert.equal(await page.evaluate(() => document.activeElement === document.body), true);
+    await page.locator('.hero-work-link').focus(); // AT/programmatic focus must not shorten the sequence.
+    await page.keyboard.press('Enter');
+    await page.locator('.hero-work-link').dispatchEvent('click');
+    await page.locator('.hero-work-link').evaluate(element => element.blur());
+    assert.equal(await page.evaluate(() => location.hash), '');
     assert.equal(await page.evaluate(() => scrollY), 0);
+    await retired(page);
+    assert.equal(await page.locator('#entry-intro').getAttribute('data-reason'), 'complete');
+    assert.deepEqual(await page.evaluate(() => window.__entryPhases), [...FLAG_STEPS.map(step => step.name), 'greeting', 'complete', 'exit']);
+    await page.keyboard.press('Tab');
+    assert.equal(await page.locator('.cinematic [data-album]').evaluate(element => element === document.activeElement), true, 'Native Tab continues after the programmatically focused hero link');
     await page.locator('#quiet-theme').click();
     assert.equal(await page.locator('html').getAttribute('data-theme'), 'dark');
     await page.locator('.hero-work-link[href="#work"]').click();
@@ -276,15 +294,31 @@ try {
     assert.equal(await page.locator('#entry-intro').isVisible(), false);
     await page.locator('#quiet-theme').click();
   });
-  for (const input of ['click', 'wheel', 'touch']) await scenario(`${input} input dismisses the welcome without a Skip button`, {
+  for (const input of ['click', 'wheel', 'touch']) await scenario(`${input} input does not skip the welcome; complete artwork and greeting hold survive`, {
     hasTouch: input === 'touch',
   }, async page => {
     await playing(page);
-    if (input === 'click') await page.locator('#entry-intro').dispatchEvent('click');
-    else if (input === 'wheel') await page.mouse.wheel(0, 200);
-    else await page.touchscreen.tap(10, 10);
+    if (input === 'click') {
+      await page.mouse.click(10, 10);
+      await page.locator('.hero-work-link').dispatchEvent('click'); // Covered AT activation cannot navigate.
+    } else if (input === 'wheel') await page.mouse.wheel(0, 200);
+    else {
+      await page.touchscreen.tap(10, 10);
+      await page.locator('#entry-intro').dispatchEvent('touchmove');
+    }
+    assert.equal(await page.locator('#entry-intro').isVisible(), true);
+    assert.equal(await page.evaluate(() => scrollY), 0);
+    assert.equal(await page.evaluate(() => location.hash), '');
+    await page.waitForFunction(() => document.querySelector('#entry-intro').dataset.phase === 'complete');
+    // Interaction during the fully visible hold must not shorten it either.
+    await page.mouse.click(10, 10);
+    await page.keyboard.press('Enter');
     await retired(page);
-    assert.equal(await page.locator('#entry-intro').getAttribute('data-reason'), 'input');
+    assert.equal(await page.locator('#entry-intro').getAttribute('data-reason'), 'complete');
+    assert.deepEqual(await page.evaluate(() => window.__entryPhases), [...FLAG_STEPS.map(step => step.name), 'greeting', 'complete', 'exit']);
+    const held = await page.evaluate(() => window.__entryPhaseTimes.find(item => item.phase === 'exit').time - window.__entryPhaseTimes.find(item => item.phase === 'complete').time);
+    assert.ok(held >= ENTRY_HOLD - 20, `${input} shortened the greeting hold to ${held}ms`);
+    await page.locator('#quiet-theme').click(); // Input listeners must be gone after completion.
   });
   await scenario('Denied session-storage writes bypass entry rather than replaying on every arrival', {
     setup: context => context.addInitScript(() => {
@@ -329,6 +363,29 @@ try {
   });
   await scenario('Thrown animation failure releases cover without uncaught errors', { setup: context => context.addInitScript(() => { Element.prototype.animate = () => { throw new Error('Injected animation failure'); }; }) }, async page => {
     await retired(page); assert.equal(await page.locator('#entry-intro').getAttribute('data-reason'), 'failure');
+    await page.locator('#quiet-theme').click();
+  });
+  await scenario('JS watchdog retires stalled motion and restores keyboard/pointer input', {
+    setup: context => context.addInitScript(() => { Element.prototype.animate = () => ({ finished: new Promise(() => {}), cancel() {} }); }),
+  }, async page => {
+    await playing(page);
+    await page.keyboard.press('Tab');
+    await page.mouse.click(10, 10);
+    assert.equal(await page.locator('#entry-intro').isVisible(), true);
+    await retired(page);
+    assert.equal(await page.locator('#entry-intro').getAttribute('data-reason'), 'safety-timeout');
+    await page.keyboard.press('Tab');
+    assert.equal(await page.locator('.skip-link').evaluate(element => element === document.activeElement), true);
+    await page.locator('#quiet-theme').click();
+  });
+  await scenario('Hidden-page interruption still releases the cover and input listeners', {}, async page => {
+    await playing(page);
+    await page.evaluate(() => {
+      Object.defineProperty(document, 'hidden', { configurable: true, get: () => true });
+      document.dispatchEvent(new Event('visibilitychange'));
+    });
+    await retired(page);
+    assert.equal(await page.locator('#entry-intro').getAttribute('data-reason'), 'hidden');
     await page.locator('#quiet-theme').click();
   });
   await scenario('CSS independently removes a stalled cover even if the JS watchdog fails', { setup: context => context.addInitScript(safety => {

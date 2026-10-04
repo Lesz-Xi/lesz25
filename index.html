@@ -64,8 +64,15 @@
       const controller = new AbortController();
       const stop = () => { if (root.dataset.entryBoot === 'pending') root.dataset.entryBoot = 'bypassed'; };
       const deadline = setTimeout(stop, 1200);
-      for (const event of ['keydown', 'pointerdown', 'click', 'touchstart', 'wheel', 'focusin']) {
-        document.addEventListener(event, stop, { capture: true, passive: true, signal: controller.signal });
+      const guardInput = event => {
+        // A late/missing module must never leave input blocked after the CSS ground releases.
+        if (performance.now() >= 1200) { stop(); return; }
+        if (event.type === 'keydown' && (event.metaKey || event.ctrlKey || event.altKey || /^F(?:[1-9]|1[0-2])$/.test(event.key))) return;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+      };
+      for (const event of ['keydown', 'pointerdown', 'click', 'touchstart', 'touchmove', 'wheel']) {
+        document.addEventListener(event, guardInput, { capture: true, passive: false, signal: controller.signal });
       }
       for (const event of ['hashchange', 'popstate', 'pagehide']) window.addEventListener(event, stop, { signal: controller.signal });
       document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); }, { signal: controller.signal });
@@ -84,7 +91,7 @@
   OWN-WORLD: Ellipsis label/content grid, 1px rules, mono typography, slate-to-orange controls; Conductor-informed neutral themes.
   STORY: Meet Rhine, inspect the work, explore the photographs, examine the papers, read the notes, then make contact.
   FIRST VIEWPORT: 1200px shell, 180px identity rail, 32px introduction, and one 2:1 photograph; action beside the introduction.
-  FORM: User-approved synthesis overrides seed 9df07a23. Readman supplies the wide framed image, not its toolbar. Native scroll; one explicitly requested, skippable SVG welcome sequence; no section reveals or loops.
+  FORM: User-approved synthesis overrides seed 9df07a23. Readman supplies the wide framed image, not its toolbar. Native scroll after one explicitly requested, finite SVG welcome sequence; ordinary input does not skip it; no section reveals or loops.
   FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
   -->
   <!-- quiet:entry:start -->

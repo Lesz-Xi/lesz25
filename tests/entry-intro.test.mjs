@@ -65,7 +65,7 @@ test('early reload policy clears only the fragment and suppresses restoration on
   }
 });
 
-test('prepaint reservation gates eligibility and releases on input or startup timeout', () => {
+test('prepaint guards ordinary input without skipping; browser shortcuts and fail-open remain native', () => {
   const html = readFileSync(new URL('../templates/quiet/index.html', import.meta.url), 'utf8');
   const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)];
   const bootstrap = scripts[1][1];
@@ -75,24 +75,43 @@ test('prepaint reservation gates eligibility and releases on input or startup ti
     const root = { dataset: {} };
     const events = new Map();
     const timers = [];
+    const listenerOptions = new Map();
+    let now = 100;
+    let observerCallback;
+    let disconnected = false;
     const media = { matches: Boolean(options.reduced), addEventListener: (name, handler) => events.set(`media:${name}`, handler) };
-    const add = (name, handler) => events.set(name, handler);
+    const add = (name, handler, config) => { events.set(name, handler); listenerOptions.set(name, config); };
     runInNewContext(bootstrap, {
       document: { documentElement: root, hidden: Boolean(options.hidden), addEventListener: add },
       window: { addEventListener: add }, location: { hash: options.hash || '' },
-      performance: { getEntriesByType: () => [{ type: options.returning ? 'back_forward' : options.reload ? 'reload' : 'navigate' }] },
+      performance: { now: () => now, getEntriesByType: () => [{ type: options.returning ? 'back_forward' : options.reload ? 'reload' : 'navigate' }] },
       Element: { prototype: { animate() {} } }, matchMedia: () => media,
       sessionStorage: { getItem: () => { if (options.denied) throw new Error('Denied'); return options.seen ? 'seen' : null; } },
-      AbortController, MutationObserver: class { observe() {} disconnect() {} },
+      AbortController, MutationObserver: class { constructor(callback) { observerCallback = callback; } observe() {} disconnect() { disconnected = true; } },
       setTimeout: (handler, delay) => { timers.push({ handler, delay }); return 1; }, clearTimeout() {},
     });
     const allowed = !options.denied && !options.reduced && !options.hidden && !options.hash && !options.returning && (!options.seen || options.reload);
     assert.equal(root.dataset.entryBoot, allowed ? 'pending' : 'bypassed');
     if (allowed) {
       assert.equal(timers[0].delay, 1200);
-      events.get('keydown')(); assert.equal(root.dataset.entryBoot, 'bypassed');
+      for (const type of ['keydown', 'pointerdown', 'click', 'touchstart', 'touchmove', 'wheel']) {
+        let prevented = false; let stopped = false;
+        events.get(type)({ type, key: 'Tab', preventDefault() { prevented = true; }, stopImmediatePropagation() { stopped = true; } });
+        assert.equal(root.dataset.entryBoot, 'pending', `${type} must not skip preparation`);
+        assert.ok(prevented && stopped);
+        assert.equal(listenerOptions.get(type).passive, false);
+      }
+      assert.ok(!events.has('focusin'), 'Focus itself no longer dismisses the welcome');
+      for (const shortcut of [{ ctrlKey: true, key: 'r' }, { metaKey: true, key: 'l' }, { altKey: true, key: 'ArrowLeft' }, { key: 'F5' }]) {
+        events.get('keydown')({ type: 'keydown', ...shortcut, preventDefault() { assert.fail('Browser shortcut consumed'); }, stopImmediatePropagation() { assert.fail('Browser shortcut consumed'); } });
+      }
+      now = 1200;
+      events.get('keydown')({ type: 'keydown', key: 'Tab', preventDefault() { assert.fail('Late input consumed'); }, stopImmediatePropagation() { assert.fail('Late input consumed'); } });
+      assert.equal(root.dataset.entryBoot, 'bypassed');
       root.dataset.entryBoot = 'pending'; timers[0].handler(); assert.equal(root.dataset.entryBoot, 'bypassed');
       root.dataset.entryBoot = 'playing'; timers[0].handler(); assert.equal(root.dataset.entryBoot, 'playing', 'Startup timeout must not cut the real greeting hold short');
+      observerCallback();
+      assert.ok(listenerOptions.get('keydown').signal.aborted && disconnected, 'Bootstrap input listeners retire atomically at handoff');
     }
   }
 });

@@ -97,13 +97,20 @@ export function initEntryIntro({ locale = 'en' } = {}) {
     target.addEventListener(event, handler, options);
     removers.push(() => target.removeEventListener(event, handler, options));
   }
-  const interrupt = () => dispose('input');
-  listen(document, 'pointerdown', interrupt, { capture: true, passive: true });
-  listen(document, 'click', interrupt, true); // Includes assistive-technology activation.
-  listen(document, 'focusin', event => { if (!cover.contains(event.target)) dispose('focus'); });
-  listen(document, 'keydown', interrupt, true); // Tab dismisses before it can focus covered controls.
-  listen(document, 'wheel', interrupt, { capture: true, passive: true });
-  listen(document, 'touchstart', interrupt, { capture: true, passive: true });
+  const guardInput = event => {
+    // CSS can release a stalled cover independently of the JS watchdog.
+    // The first input then retires our listeners without consuming that input.
+    if (played && getComputedStyle(cover).visibility === 'hidden') { dispose('css-timeout'); return; }
+    if (!played && performance.now() >= 1200) { dispose('startup-timeout'); return; }
+    // Keep browser/OS shortcuts (reload, zoom, address bar, Back, devtools) native.
+    if (event.type === 'keydown' && (event.metaKey || event.ctrlKey || event.altKey || /^F(?:[1-9]|1[0-2])$/.test(event.key))) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+  };
+  // Absorb covered-page gestures, not the animation. No modal, inert state or scroll owner.
+  for (const event of ['keydown', 'pointerdown', 'click', 'touchstart', 'touchmove', 'wheel']) {
+    listen(document, event, guardInput, { capture: true, passive: false });
+  }
   listen(window, 'hashchange', () => dispose('route'));
   listen(window, 'popstate', () => dispose('route'));
   listen(window, 'pagehide', () => dispose('pagehide'));
@@ -129,7 +136,7 @@ export function initEntryIntro({ locale = 'en' } = {}) {
     if (source.localName !== 'svg' || source.namespaceURI !== 'http://www.w3.org/2000/svg'
       || [source, ...source.querySelectorAll('*')].some(node => !permitted.has(node.localName)
         || [...node.attributes].some(attr => /^on/i.test(attr.name) || attr.name === 'style' || (/href$/i.test(attr.name) && !attr.value.startsWith('#'))))) throw new Error('Unexpected SVG');
-    if (stopped || performance.now() >= 1200 || root.dataset.entryBoot !== 'pending' || document.activeElement !== document.body || document.hidden || location.hash) return dispose('interrupted');
+    if (stopped || performance.now() >= 1200 || root.dataset.entryBoot !== 'pending' || document.hidden || location.hash || reduced.matches) return dispose('interrupted');
     const svg = document.importNode(source, true);
     const steps = FLAG_STEPS.map(step => ({ ...step, element: svg.querySelector(step.selector) }));
     if (steps.some(step => !step.element)) throw new Error('Incomplete flag');

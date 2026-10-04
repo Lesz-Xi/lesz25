@@ -110,7 +110,7 @@ try {
   check('Portrait loads locally above the name, with a reserved square footprint and no added control');
   assert.equal(await page.locator('.location-flag').count(), 0);
   assert.equal(await page.locator('#entry-intro').count(), 1);
-  await page.waitForFunction(() => document.querySelector('#entry-intro').hidden);
+  await page.waitForFunction(() => ['done', 'bypassed'].includes(document.documentElement.dataset.entryBoot));
   check('Country has no inline flag; the separate bounded welcome releases the unchanged portfolio');
   if (profileCapture || heroCapture) {
     for (const width of [1440, 390]) {
@@ -270,6 +270,8 @@ try {
       }
     }
   }
+  // The persistence reload above replays the finite welcome. Wait before activating work.
+  await page.waitForFunction(() => ['done', 'bypassed'].includes(document.documentElement.dataset.entryBoot));
   // Native activation uses a bounded fixture; live Relics was inspected separately.
   // URL fragments are not sent in HTTP requests, so route the destination origin.
   await ctx.route('https://relics.quest/**', (route) => route.fulfill({ contentType: 'text/html', body: '<title>Relics destination</title>' }));
@@ -469,7 +471,7 @@ try {
       await page.waitForFunction(() => location.hash === '#work' && document.activeElement.id === 'work-heading');
       await page.goto(`${origin}/`);
       await page.locator('.preferences:not([hidden])').waitFor();
-      await page.waitForFunction(() => document.querySelector('#entry-intro').hidden);
+      await page.waitForFunction(() => ['done', 'bypassed'].includes(document.documentElement.dataset.entryBoot));
     }
   }
   check('Hero work link stays cardless across all six locales/four widths/both themes; desktop/mobile hover and visible keyboard focus retain native Work navigation');
@@ -817,6 +819,7 @@ try {
   const touchPage = await touch.newPage();
   await touchPage.goto(`${origin}/`);
   await touchPage.locator('.preferences:not([hidden])').waitFor();
+  await touchPage.waitForFunction(() => ['done', 'bypassed'].includes(document.documentElement.dataset.entryBoot));
   const touchSession = await touch.newCDPSession(touchPage);
   await touchSession.send('Input.synthesizeScrollGesture', { x: 195, y: 580, yDistance: -350, speed: 500, gestureSourceType: 'touch' });
   await touchPage.waitForFunction(() => scrollY > 0);
@@ -844,7 +847,7 @@ try {
   interactionPage.on('pageerror', error => interactionErrors.push(error.message));
   await interactionPage.goto(`${origin}/`);
   await interactionPage.locator('.preferences:not([hidden])').waitFor();
-  await interactionPage.waitForFunction(() => document.querySelector('#entry-intro').hidden);
+  await interactionPage.waitForFunction(() => ['done', 'bypassed'].includes(document.documentElement.dataset.entryBoot));
   assert.equal(await interactionPage.locator('#contact a[href="https://substack.com/@les1587833"]').count(), 1);
   const themeChanges = await interactionPage.evaluate(async () => {
     let body = 0; let content = 0;
