@@ -35,7 +35,8 @@ export function initDevMode({ navigate, beforeEnter, setTheme }) {
       window.scrollTo({ top: 0, behavior: 'instant' });
       input.focus({ preventScroll: true });
     } else if (restore) {
-      const target = guiFocus?.isConnected ? guiFocus : mode;
+      const target = guiFocus?.isConnected && guiFocus.getClientRects().length ? guiFocus
+        : mode.getClientRects().length ? mode : document.querySelector('#quiet-menu');
       target.focus({ preventScroll: true });
       window.scrollTo({ top: guiScroll, behavior: 'instant' });
     }
@@ -116,7 +117,7 @@ export function initDevMode({ navigate, beforeEnter, setTheme }) {
     input.scrollIntoView({ block: 'nearest', behavior: 'instant' });
   }
 
-  mode.addEventListener('click', () => setMode(true));
+  mode.addEventListener('click', () => { setMode(true); input.focus({ preventScroll: true }); });
   guiControl.addEventListener('click', () => {
     setMode(false);
     guiControl.focus({ preventScroll: true });

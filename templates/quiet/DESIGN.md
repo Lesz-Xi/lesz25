@@ -141,7 +141,7 @@ Titles precede supporting publication types and note introductions. Metadata mus
 
 ## Layout
 
-The body sequence after the unchanged hero photograph is **About → Selected Work → Photography → Research → Notes → Contact**. Header navigation and Dev Mode's section list follow the same order. It is encoded in the DOM/renderers rather than CSS visual order, keeping keyboard, screen-reader and no-JavaScript reading coherent. About is moved, not repeated; copy and spacing are unchanged. All six header links use the existing wrapping and touch-target rules. The hero's Explore the work action still bypasses the introduction when desired.
+The body sequence after the unchanged hero photograph is **About → Selected Work → Photography → Research → Notes → Contact**. Header navigation and Dev Mode's section list follow the same order. It is encoded in the DOM/renderers rather than CSS visual order, keeping keyboard, screen-reader and no-JavaScript reading coherent. About is moved, not repeated; copy and spacing are unchanged. All six header links retain 44px touch targets and desktop wrapping; the approved mobile disclosure supersedes uneven wrapped rows. The hero's Explore the work action still bypasses the introduction when desired.
 
 The shell is at most 1200px wide. Desktop uses a 180px label column and a 32px gutter. At 1040px and below, the label column becomes 140px with a 24px gutter. At 700px and below, sections stack and the shell has 20px side gutters.
 
@@ -156,6 +156,12 @@ There are no shadows or simulated physical materials. Tonal separation defines t
 Controls and content rows are square. The small identity portrait has subtly softened 4px corners; the signature photograph keeps its existing 12px corners. Its 2:1 frame is filled edge-to-edge, with no surround padding. The caption and link remain outside the image. Album previews fill their rectangular crops; original photographs in the viewer are never cropped.
 
 ## Components
+
+### Mobile navigation
+
+At <=700px, one compact Menu / language / theme row replaces the always-visible wrapped links. A 1.2px-stroke SVG accompanies the localized Menu/Close label; the button and other controls retain 44px targets. The non-modal disclosure opens in document flow with six left-aligned destinations and a thin-rule View group. Existing GUI/Dev buttons move into that group and return to the original preferences above the breakpoint, preserving identity, listeners and pressed-state underline. Desktop uses display: contents for the navigation wrapper and remains visually incumbent. No new card, blur, fullscreen overlay, fixed shell, scroll lock, focus trap, animation or dependency.
+
+Language and theme stay available while closed or open; translation/theme changes preserve open state. Selection, Escape, outside activation, route/Back and breakpoint changes close coherently, preserving a visible focus destination and Dev transcript/GUI state. Plain native links remain visible with no JavaScript or missing enhancement; only the usable enhancement exposes Menu. Cut: scattered mobile rows and GUI/Dev competing in the opening bar. Tradeoff: a disclosure tap and in-flow expansion; the hero's direct work link remains outside it.
 
 ### Page footer
 

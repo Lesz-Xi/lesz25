@@ -39,6 +39,10 @@ const browser = await chromium.launch({ headless: true, ...(process.env.BROWSER_
 const report = { boundary: built ? 'Chromium on compiled dist assets via local request interception; not hosted deployment verification.' : live ? `Chromium on existing live Vite server ${origin}; not a production build/deployment test.` : 'Chromium source-level browser tests via local request interception; not a Vite build/deployment test.', checks: [], screenshots: [] };
 const mime = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.webp': 'image/webp', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.svg': 'image/svg+xml' };
 
+async function revealMobileNavigation(page) {
+  if (await page.locator('#quiet-menu').isVisible() && await page.locator('#quiet-menu').getAttribute('aria-expanded') === 'false') await page.locator('#quiet-menu').click();
+}
+
 async function context(options = {}) {
   const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, locale: 'en-US', ...options });
   if (live) return ctx;
@@ -207,6 +211,7 @@ try {
         assert.ok(heroLink.height >= 44, `${lang} ${width} ${theme}: hero link target`);
         assert.deepEqual(await page.locator('#quiet-sections > section').evaluateAll(nodes => nodes.map(node => node.id)), ['about', 'work', 'photography', 'research', 'notes', 'contact']);
         assert.deepEqual(await page.locator('.section-nav a').evaluateAll(nodes => nodes.map(node => node.getAttribute('href'))), ['#about', '#work', '#photography', '#research', '#notes', '#contact']);
+        await revealMobileNavigation(page);
         // Theme changes retain the existing 150ms color transition; inspect its settled state.
         await page.waitForTimeout(180);
         assert.equal(await page.locator('.section-nav a').evaluateAll((nodes, muted) => nodes.every(node => {
@@ -463,11 +468,13 @@ try {
     await page.setViewportSize({ width, height: width === 390 ? 844 : 900 });
     for (const theme of ['light', 'dark']) {
       if (await page.locator('html').getAttribute('data-theme') !== theme) await page.locator('#quiet-theme').click();
+      await revealMobileNavigation(page);
       await page.locator('#quiet-mode').hover();
       await page.waitForTimeout(180);
       const accent = await page.locator('#quiet-mode').evaluate(el => getComputedStyle(el).color);
       assert.equal(accent, theme === 'dark' ? 'rgb(251, 146, 60)' : 'rgb(185, 71, 8)');
       for (const id of ['about', 'work', 'photography', 'research', 'notes', 'contact']) {
+        await revealMobileNavigation(page);
         const link = page.locator(`.section-nav a[href="#${id}"]`);
         await link.hover();
         await page.waitForTimeout(180);

@@ -82,6 +82,11 @@ section, #album-heading { scroll-margin-top: 32px; }
 @media (prefers-reduced-motion: reduce) { .entry-intro { display: none !important; } }
 .page-shell { width: min(1200px, calc(100% - 80px)); margin-inline: auto; }
 .topbar { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 100px; padding-left: calc(var(--rail) + var(--gutter)); border-bottom: 1px solid var(--rule); }
+.navigation-panel { display: contents; }
+.menu-control { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0; background: transparent; color: var(--ink); font-size: 12px; }
+.menu-control:hover { color: var(--accent); }
+.menu-close-icon, .menu-control[aria-expanded='true'] .menu-icon { display: none; }
+.menu-control[aria-expanded='true'] .menu-close-icon { display: block; }
 .section-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 28px; }
 .section-nav a { font-size: 12px; color: var(--muted); text-decoration: none; display: inline-flex; align-items: center; min-height: 44px; }
 .section-nav a:hover, .section-nav a:focus-visible { color: var(--accent); text-decoration: underline; }
@@ -264,7 +269,12 @@ h3 { font-size: 15px; line-height: 1.5; }
   .page-shell { width: calc(100% - 40px); }
   .topbar { padding: 16px 0; min-height: 0; flex-wrap: wrap-reverse; gap: 4px 16px; }
   .preferences { margin-left: auto; gap: 8px; }
-  .section-nav { flex: 1 1 100%; justify-content: space-between; gap: 0 12px; }
+  .section-nav { flex: 1 1 100%; flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 0; }
+  .topbar.menu-ready { flex-wrap: wrap; gap: 12px 16px; }
+  .topbar.menu-ready .preferences { order: 1; }
+  .topbar.menu-ready .navigation-panel { order: 2; display: flex; flex-direction: column; flex: 0 0 100%; gap: 12px; padding-top: 12px; border-top: 1px solid var(--rule); }
+  .topbar.menu-ready .section-nav { flex: none; }
+  .mobile-view { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 12px; border-top: 1px solid var(--rule); font-size: 12px; color: var(--muted); }
   .section-grid { grid-template-columns: minmax(0, 1fr); gap: 28px; padding-block: 40px; }
   .hero { padding-block: 28px 32px; gap: 24px; }
   .identity { padding: 0; gap: 4px; }

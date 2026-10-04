@@ -6,6 +6,7 @@ import { albumFromHash, galleryImages, wrapIndex } from './gallery.js';
 import { initPreferences } from './preferences.js';
 import { initPhotoPreview } from './lightbox.js';
 import { initDevMode } from './dev-mode.js';
+import { initMobileMenu } from './mobile-menu.js';
 import { createPhotoLoader } from './photo-loader.js';
 
 const { refresh: refreshPreferences, setTheme } = initPreferences();
@@ -14,6 +15,7 @@ let activeAlbum = null;
 let photoIndex = 0;
 let lastAlbumTrigger = null;
 let devMode = null;
+initMobileMenu({ beforeNavigate: () => devMode?.exit({ restore: false }) });
 let heroReveal = null;
 let photoRequest = 0;
 const photoLoader = createPhotoLoader();

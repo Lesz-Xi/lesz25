@@ -4,6 +4,7 @@
 // Research descriptions describe proposals, not independently verified outcomes.
 export const COPY = {
   en: {
+    menu: 'Menu', menuClose: 'Close', menuView: 'View',
     title: 'I build to understand.',
     intro: 'I build software, study how systems reason, and make photographs.',
     role: 'Designer, photographer, researcher.',
@@ -51,6 +52,7 @@ export const COPY = {
     claim: 'Keep evidence, uncertainty, and limits visible.',
   },
   de: {
+    menu: 'Menü', menuClose: 'Schließen', menuView: 'Ansicht',
     title: 'Ich baue, um zu verstehen.',
     intro: 'Ich entwickle Software, untersuche, wie Systeme schlussfolgern, und fotografiere.',
     role: 'Designer, Fotograf, Forscher.',
@@ -98,6 +100,7 @@ export const COPY = {
     claim: 'Belege, Unsicherheit und Grenzen sichtbar halten.',
   },
   fr: {
+    menu: 'Menu', menuClose: 'Fermer', menuView: 'Affichage',
     title: 'Je construis pour comprendre.',
     intro: 'Je développe des logiciels, étudie le raisonnement des systèmes et fais des photographies.',
     role: 'Designer, photographe, chercheur.',
@@ -145,6 +148,7 @@ export const COPY = {
     claim: 'Garder les preuves, l’incertitude et les limites visibles.',
   },
   it: {
+    menu: 'Menu', menuClose: 'Chiudi', menuView: 'Vista',
     title: 'Costruisco per capire.',
     intro: 'Sviluppo software, studio come ragionano i sistemi e fotografo.',
     role: 'Designer, fotografo, ricercatore.',
@@ -192,6 +196,7 @@ export const COPY = {
     claim: 'Mantenere visibili prove, incertezza e limiti.',
   },
   zh: {
+    menu: '菜单', menuClose: '关闭', menuView: '视图',
     title: '在构建中理解。',
     intro: '我开发软件，研究系统如何推理，也拍摄照片。',
     role: '设计师、摄影师、研究者。',
@@ -239,6 +244,7 @@ export const COPY = {
     claim: '让依据、不确定性与局限保持可见。',
   },
   ja: {
+    menu: 'メニュー', menuClose: '閉じる', menuView: '表示',
     title: '作りながら、理解する。',
     intro: 'ソフトウェアを作り、システムがどう推論するかを研究し、写真を撮っています。',
     role: 'デザイナー、写真家、研究者。',

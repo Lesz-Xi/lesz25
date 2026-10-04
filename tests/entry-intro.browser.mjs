@@ -285,6 +285,7 @@ try {
         assert.equal(await page.evaluate(() => history.scrollRestoration), 'auto');
         assert.equal(await page.locator('#quiet-hero').isVisible(), true);
       }
+      if (await page.locator('#quiet-menu').isVisible()) await page.locator('#quiet-menu').click();
       await page.locator('.section-nav a[href="#contact"]').click();
       await page.waitForFunction(() => scrollY > 200);
       const before = await page.evaluate(() => scrollY);

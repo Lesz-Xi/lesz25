@@ -16,7 +16,7 @@ globalThis.document = { documentElement: {}, querySelector: () => null, querySel
 const { projects, research, albums, socials, renderArchive, renderPurpose, renderContact } = await import('../src/data.js');
 const { catalogFor, runCommand } = await import('../templates/quiet/commands.js');
 const { workFor } = await import('../templates/quiet/work.js');
-const { renderPreferences, renderDevMode } = await import('../templates/quiet/controls.js');
+const { renderPreferences, renderDevMode, renderNavigation } = await import('../templates/quiet/controls.js');
 const { LANGUAGES, setLang, t } = await import('../src/i18n.js');
 const { renderHero, renderSections, renderNote, renderLightbox, renderApproach, renderEntryIntro, escapeHtml, ARROW } = await import('../templates/quiet/render.js');
 const { default: config } = await import('../vite.config.js');
@@ -517,6 +517,21 @@ test('section navigation shares the existing accent on hover and keyboard focus'
   assert.ok(feedback?.includes('color: var(--accent)'));
   assert.ok(feedback?.includes('text-decoration: underline'));
   assert.ok(css.includes(':focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }'));
+});
+
+test('mobile disclosure preserves one native section index and localized controls with a visible static fallback', () => {
+  for (const { code } of LANGUAGES) {
+    const html = renderNavigation(code);
+    assert.ok(html.includes('aria-expanded="false" aria-controls="quiet-navigation" hidden'));
+    assert.ok(html.includes(`<span data-menu-label>${COPY[code].menu}</span>`));
+    assert.ok(COPY[code].menuClose && COPY[code].menuView);
+    assert.deepEqual([...html.matchAll(/href="(#[^"]+)"/g)].map(match => match[1]), ['#about', '#work', '#photography', '#research', '#notes', '#contact']);
+    assert.ok(html.includes('id="quiet-navigation" class="navigation-panel">'));
+    assert.ok(!html.includes('role="menu"') && !html.includes('role="dialog"'));
+  }
+  const css = read('templates/quiet/styles.css');
+  assert.ok(css.includes('.navigation-panel { display: contents; }'));
+  assert.ok(css.includes('.topbar.menu-ready .navigation-panel'));
 });
 
 test('Dev command focus is a tight hairline without changing the global focus indicator', () => {
