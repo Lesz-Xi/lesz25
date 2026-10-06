@@ -38,6 +38,32 @@ test('all six locales have complete new copy and all current project description
   assert.equal(copyFor('unknown'), COPY.en);
 });
 
+test('hero preserves the original statement and adds one localized curiosity line inside one heading', () => {
+  const expected = {
+    en: ['I build to understand.', 'I’m curious by nature.'],
+    de: ['Ich baue, um zu verstehen.', 'Ich bin von Natur aus neugierig.'],
+    fr: ['Je construis pour comprendre.', 'Je suis curieux de nature.'],
+    it: ['Costruisco per capire.', 'Sono curioso per natura.'],
+    zh: ['在构建中理解。', '我生性好奇。'],
+    ja: ['作りながら、理解する。', '生来、好奇心旺盛です。'],
+  };
+  for (const { code } of LANGUAGES) {
+    setLang(code);
+    const [title, curiosity] = expected[code];
+    assert.equal(COPY[code].title, title);
+    assert.equal(COPY[code].curiosity, curiosity);
+    const hero = renderHero(code);
+    assert.equal((hero.match(/<h1\b/g) || []).length, 1);
+    assert.ok(hero.includes(`<h1 id="intro-heading"><span class="hero-title-line">${escapeHtml(title)}</span> <span class="hero-title-line">${escapeHtml(curiosity)}</span></h1>`));
+    assert.ok(hero.includes(`<p>${escapeHtml(COPY[code].intro)}</p>`));
+  }
+  assert.ok(read('templates/quiet/styles.css').includes('.hero-title-line { display: block; }'));
+  for (const path of ['index.html', 'templates/quiet/index.html']) {
+    assert.ok(read(path).includes('<span class="hero-title-line">I build to understand.</span> <span class="hero-title-line">I’m curious by nature.</span>'), path);
+  }
+  setLang('en');
+});
+
 test('Japanese covers the full shared table and all preference pickers without English fallback', () => {
   const source = read('src/i18n.js');
   // Inspect the leaf translation literal without exporting a test-only production API.

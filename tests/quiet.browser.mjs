@@ -27,6 +27,7 @@ const controlsCapture = ['controls', 'dev'].includes(process.env.QUIET_CAPTURE);
 const devOnlyCapture = process.env.QUIET_CAPTURE === 'dev';
 const profileCapture = process.env.QUIET_CAPTURE === 'profile';
 const heroCapture = process.env.QUIET_CAPTURE === 'hero';
+const curiosityCapture = process.env.QUIET_CAPTURE === 'curiosity';
 const aboutCapture = process.env.QUIET_CAPTURE === 'about';
 const navCapture = process.env.QUIET_CAPTURE === 'nav';
 const relicsCapture = ['relics', 'relics-copy'].includes(process.env.QUIET_CAPTURE);
@@ -42,6 +43,12 @@ const report = { boundary: built ? 'Chromium on compiled dist assets via local r
 const mime = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.webp': 'image/webp', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.svg': 'image/svg+xml' };
 
 async function revealMobileNavigation(page) {
+  // setViewportSize resolves before the matchMedia change handler necessarily paints.
+  // Wait for the existing responsive owner before deciding whether Menu is needed.
+  await page.waitForFunction(() => {
+    const toggle = document.querySelector('#quiet-menu');
+    return document.querySelector('.topbar')?.classList.contains('menu-ready') && toggle?.hidden === !matchMedia('(max-width: 700px)').matches;
+  });
   if (await page.locator('#quiet-menu').isVisible() && await page.locator('#quiet-menu').getAttribute('aria-expanded') === 'false') await page.locator('#quiet-menu').click();
 }
 
@@ -86,7 +93,7 @@ const screenshot = async (page, name, fullPage = true) => {
 };
 
 try {
-  if (previewCapture || controlsCapture || profileCapture || heroCapture || aboutCapture || relicsCapture || thesislensCapture || navCapture) await mkdir(output, { recursive: true });
+  if (previewCapture || controlsCapture || profileCapture || heroCapture || curiosityCapture || aboutCapture || relicsCapture || thesislensCapture || navCapture) await mkdir(output, { recursive: true });
   const ctx = await context({ colorScheme: 'light' });
   const page = await ctx.newPage();
   const errors = [];
@@ -96,7 +103,7 @@ try {
   await page.goto(`${origin}/`);
   await page.locator('.preferences:not([hidden])').waitFor();
   await waitImage(page, '.cinematic img');
-  assert.equal(await page.locator('#intro-heading').textContent(), 'I build to understand.');
+  assert.equal(await page.locator('#intro-heading').textContent(), `${COPY.en.title} ${COPY.en.curiosity}`);
   assert.equal(await page.locator('canvas').count(), 0);
   assert.ok(!requests.some((url) => /\/(ocean|overlays|nav-popover)\.js|\/src\/styles\.css/.test(url)));
   assert.ok(requests.every((url) => url.startsWith(origin)));
@@ -119,14 +126,14 @@ try {
   assert.equal(await page.locator('#entry-intro').count(), 1);
   await page.waitForFunction(() => ['done', 'bypassed'].includes(document.documentElement.dataset.entryBoot));
   check('Country has no inline flag; the separate bounded welcome releases the unchanged portfolio');
-  if (profileCapture || heroCapture) {
+  if (profileCapture || heroCapture || curiosityCapture) {
     for (const width of [1440, 390]) {
       await page.setViewportSize({ width, height: width === 390 ? 844 : 900 });
       for (const theme of ['light', 'dark']) {
         if (await page.locator('html').getAttribute('data-theme') !== theme) await page.locator('#quiet-theme').click();
         await page.evaluate(() => scrollTo(0, 0));
         await page.mouse.move(0, 0);
-        await screenshot(page, `${heroCapture ? 'hero-link' : 'profile'}-${width}-${theme}.png`, false);
+        await screenshot(page, `${curiosityCapture ? 'hero-curiosity' : heroCapture ? 'hero-link' : 'profile'}-${width}-${theme}.png`, false);
       }
     }
     await page.setViewportSize({ width: 1440, height: 900 });
@@ -260,6 +267,16 @@ try {
         if (await page.locator('html').getAttribute('data-theme') !== theme) await page.locator('#quiet-theme').click();
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, `${lang} ${width} ${theme} overflow`);
         assert.ok(!(await page.locator('body').textContent()).includes('undefined'));
+        const expectedHeading = `${COPY[lang].title} ${COPY[lang].curiosity}`;
+        const heroHeading = page.locator('#intro-heading');
+        assert.equal(await heroHeading.textContent(), expectedHeading);
+        assert.deepEqual(await heroHeading.locator('.hero-title-line').allTextContents(), [COPY[lang].title, COPY[lang].curiosity]);
+        assert.equal(await page.getByRole('heading', { level: 1, name: expectedHeading, exact: true }).count(), 1);
+        const lines = await heroHeading.locator('.hero-title-line').evaluateAll(nodes => nodes.map(node => ({ top: node.getBoundingClientRect().top, bottom: node.getBoundingClientRect().bottom, display: getComputedStyle(node).display, font: getComputedStyle(node).fontSize, colour: getComputedStyle(node).color })));
+        assert.ok(lines.every(line => line.display === 'block'));
+        assert.ok(lines[1].top >= lines[0].bottom - 1, `${lang}/${width}/${theme}: separate nonoverlapping line groups`);
+        assert.equal(lines[0].font, lines[1].font);
+        assert.equal(lines[0].colour, lines[1].colour);
         const heroLink = await page.locator('.hero-work-link').evaluate(element => {
           const style = getComputedStyle(element);
           const rect = element.getBoundingClientRect();
@@ -368,7 +385,8 @@ try {
   await page.locator('.relics-link').focus();
   await page.keyboard.press('Enter');
   const relicsPage = await relicsPopup;
-  await relicsPage.waitForLoadState('domcontentloaded');
+  await relicsPage.waitForURL(relicsUrl, { waitUntil: 'domcontentloaded' });
+  assert.equal(await relicsPage.title(), 'Relics destination');
   assert.equal(relicsPage.url(), relicsUrl);
   await relicsPage.close();
   await page.locator('.relics-link').hover();
@@ -385,7 +403,8 @@ try {
   assert.equal(await thesisLink.evaluate(e => e.matches(':focus-visible') && getComputedStyle(e).outlineStyle === 'solid'), true);
   await page.keyboard.press('Enter');
   const thesisPage = await thesisPopup;
-  await thesisPage.waitForLoadState('domcontentloaded');
+  await thesisPage.waitForURL('https://thesislens.space/', { waitUntil: 'domcontentloaded' });
+  assert.equal(await thesisPage.title(), 'ThesisLens destination fixture');
   assert.equal(thesisPage.url(), 'https://thesislens.space/');
   assert.equal(await thesisPage.evaluate(() => window.opener), null);
   await thesisPage.close();
@@ -1045,7 +1064,7 @@ try {
   const nojs = await context({ javaScriptEnabled: false, colorScheme: 'dark' });
   const nojsPage = await nojs.newPage();
   await nojsPage.goto(`${origin}/`);
-  assert.equal(await nojsPage.locator('#intro-heading').textContent(), 'I build to understand.');
+  assert.equal(await nojsPage.locator('#intro-heading').textContent(), `${COPY.en.title} ${COPY.en.curiosity}`);
   assert.equal(await nojsPage.locator('.work-row').count(), 7);
   assert.equal(await nojsPage.locator('[data-work-id="thesislens"] > p').textContent(), COPY.en.thesislensBody);
   assert.equal(await nojsPage.locator('[data-work-id="thesislens"] a').getAttribute('href'), 'https://thesislens.space/');
@@ -1284,7 +1303,7 @@ try {
   const aliasPage = await alias.newPage();
   await aliasPage.goto(`${origin}/templates/quiet/`);
   await aliasPage.locator('.preferences:not([hidden])').waitFor();
-  assert.equal(await aliasPage.locator('#intro-heading').textContent(), 'I build to understand.');
+  assert.equal(await aliasPage.locator('#intro-heading').textContent(), `${COPY.en.title} ${COPY.en.curiosity}`);
   await aliasPage.locator('.identity .name').click();
   await aliasPage.waitForURL(`${origin}/`);
   await aliasPage.locator('.preferences:not([hidden])').waitFor();
@@ -1310,5 +1329,5 @@ try {
 } finally {
   await browser.close();
   await mkdir(output, { recursive: true });
-  await writeFile(resolve(output, 'browser-checks.json'), JSON.stringify(report, null, 2));
+  await writeFile(resolve(output, ['curiosity', 'curiosity-check'].includes(process.env.QUIET_CAPTURE) ? 'hero-curiosity-browser-checks.json' : 'browser-checks.json'), JSON.stringify(report, null, 2));
 }

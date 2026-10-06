@@ -6,6 +6,7 @@ export const COPY = {
   en: {
     menu: 'Menu', menuClose: 'Close', menuView: 'View',
     title: 'I build to understand.',
+    curiosity: 'I’m curious by nature.',
     intro: 'I build software, study how systems reason, and make photographs.',
     role: 'Designer, photographer, researcher.',
     entryWelcome: 'Welcome', entryDescription: 'Good day. Welcome.',
@@ -56,6 +57,7 @@ export const COPY = {
   de: {
     menu: 'Menü', menuClose: 'Schließen', menuView: 'Ansicht',
     title: 'Ich baue, um zu verstehen.',
+    curiosity: 'Ich bin von Natur aus neugierig.',
     intro: 'Ich entwickle Software, untersuche, wie Systeme schlussfolgern, und fotografiere.',
     role: 'Designer, Fotograf, Forscher.',
     entryWelcome: 'Willkommen', entryDescription: 'Guten Tag. Willkommen.',
@@ -106,6 +108,7 @@ export const COPY = {
   fr: {
     menu: 'Menu', menuClose: 'Fermer', menuView: 'Affichage',
     title: 'Je construis pour comprendre.',
+    curiosity: 'Je suis curieux de nature.',
     intro: 'Je développe des logiciels, étudie le raisonnement des systèmes et fais des photographies.',
     role: 'Designer, photographe, chercheur.',
     entryWelcome: 'Bienvenue', entryDescription: 'Bonjour. Bienvenue.',
@@ -156,6 +159,7 @@ export const COPY = {
   it: {
     menu: 'Menu', menuClose: 'Chiudi', menuView: 'Vista',
     title: 'Costruisco per capire.',
+    curiosity: 'Sono curioso per natura.',
     intro: 'Sviluppo software, studio come ragionano i sistemi e fotografo.',
     role: 'Designer, fotografo, ricercatore.',
     entryWelcome: 'Benvenuto', entryDescription: 'Buona giornata. Benvenuto.',
@@ -206,6 +210,7 @@ export const COPY = {
   zh: {
     menu: '菜单', menuClose: '关闭', menuView: '视图',
     title: '在构建中理解。',
+    curiosity: '我生性好奇。',
     intro: '我开发软件，研究系统如何推理，也拍摄照片。',
     role: '设计师、摄影师、研究者。',
     entryWelcome: '欢迎', entryDescription: '你好，欢迎。',
@@ -256,6 +261,7 @@ export const COPY = {
   ja: {
     menu: 'メニュー', menuClose: '閉じる', menuView: '表示',
     title: '作りながら、理解する。',
+    curiosity: '生来、好奇心旺盛です。',
     intro: 'ソフトウェアを作り、システムがどう推論するかを研究し、写真を撮っています。',
     role: 'デザイナー、写真家、研究者。',
     entryWelcome: 'ようこそ', entryDescription: 'こんにちは。ようこそ。',

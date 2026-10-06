@@ -84,6 +84,10 @@ Primary mode: Experience, with a bounded Read function. Visitors can inspect sof
 
 Latest reader polish removes duplicate page-footer return links from both Notes and Approach. Each keeps one native “Back to portfolio” action immediately after its content; the separate page footer is author-only. Existing Notes/About rail navigation and portfolio Back to top remain unchanged. The cut removes a repeated action without changing its destination or no-JavaScript access.
 
+### Approved hero curiosity companion line — 2026-10-05
+
+Chief approved the two-line personal statement: “I build to understand.” / “I’m curious by nature.” Preserve the original title and add one localized `curiosity` field across EN/DE/FR/IT/ZH/JA. Both statements are block line groups inside the same semantic h1, separated by a real text space; each may wrap naturally on narrow screens. Keep incumbent size, weight, ink, body introduction, action, identity rail, photograph and existing heading-level reveal. No new animation, styling register or change to Ocean/reader content. Root and Quiet alias use the same generated English fallback. Cut: the single-statement-only hero, not its original wording. Tradeoff: a taller heading/hero, especially in expanded translations; do not shrink type or force nowrap to hide that cost. Integration is authorized; commit/push and deployment remain separate.
+
 ## Copy boundary
 
 `copy.js` owns the new wording in EN/DE/FR/IT/ZH/JA. Existing project names, links, status, paper types, album titles/years, and contacts are reused from the original data/translation modules. The new copy is derived from the existing portfolio, authored note, Chief's supplied LinkedIn About, and his stated principles, not invented experiences. Research descriptions remain proposal/model language. The original essay and narrative copy are untouched; shared contact changes are limited to the explicitly requested X URL/handle and Substack addition.
