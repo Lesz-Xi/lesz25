@@ -38,28 +38,32 @@ test('all six locales have complete new copy and all current project description
   assert.equal(copyFor('unknown'), COPY.en);
 });
 
-test('hero preserves the original statement and adds one localized curiosity line inside one heading', () => {
+test('hero renders the approved making, curiosity and concurrence statements inside one heading', () => {
   const expected = {
-    en: ['I build to understand.', 'I’m curious by nature.'],
-    de: ['Ich baue, um zu verstehen.', 'Ich bin von Natur aus neugierig.'],
-    fr: ['Je construis pour comprendre.', 'Je suis curieux de nature.'],
-    it: ['Costruisco per capire.', 'Sono curioso per natura.'],
-    zh: ['在构建中理解。', '我生性好奇。'],
-    ja: ['作りながら、理解する。', '生来、好奇心旺盛です。'],
+    en: ['I learn through making.', 'I let curiosity lead.', 'I live to concur.'],
+    de: ['Ich lerne durch Gestalten.', 'Ich lasse mich von Neugier leiten.', 'Ich lebe, um Übereinstimmung zu finden.'],
+    fr: ['J’apprends en créant.', 'Je me laisse guider par la curiosité.', 'Je vis pour être en accord.'],
+    it: ['Imparo creando.', 'Mi lascio guidare dalla curiosità.', 'Vivo per essere in accordo.'],
+    zh: ['我在创造中学习。', '我让好奇心引路。', '我为达成共识而活。'],
+    ja: ['作ることで学ぶ。', '好奇心に導かれる。', '共に理解を分かち合うために生きる。'],
   };
   for (const { code } of LANGUAGES) {
     setLang(code);
-    const [title, curiosity] = expected[code];
+    const [title, curiosity, concurrence] = expected[code];
     assert.equal(COPY[code].title, title);
     assert.equal(COPY[code].curiosity, curiosity);
+    assert.equal(COPY[code].concurrence, concurrence);
     const hero = renderHero(code);
     assert.equal((hero.match(/<h1\b/g) || []).length, 1);
-    assert.ok(hero.includes(`<h1 id="intro-heading"><span class="hero-title-line">${escapeHtml(title)}</span> <span class="hero-title-line">${escapeHtml(curiosity)}</span></h1>`));
+    assert.equal((hero.match(/class="hero-title-line"/g) || []).length, 3);
+    assert.ok(hero.includes(`<h1 id="intro-heading"><span class="hero-title-line">${escapeHtml(title)}</span> <span class="hero-title-line">${escapeHtml(curiosity)}</span> <span class="hero-title-line">${escapeHtml(concurrence)}</span></h1>`));
     assert.ok(hero.includes(`<p>${escapeHtml(COPY[code].intro)}</p>`));
   }
   assert.ok(read('templates/quiet/styles.css').includes('.hero-title-line { display: block; }'));
   for (const path of ['index.html', 'templates/quiet/index.html']) {
-    assert.ok(read(path).includes('<span class="hero-title-line">I build to understand.</span> <span class="hero-title-line">I’m curious by nature.</span>'), path);
+    const html = read(path);
+    assert.ok(html.includes('<span class="hero-title-line">I learn through making.</span> <span class="hero-title-line">I let curiosity lead.</span> <span class="hero-title-line">I live to concur.</span>'), path);
+    assert.ok(html.includes('property="og:title" content="Rhine Tague — I learn through making."'), path);
   }
   setLang('en');
 });

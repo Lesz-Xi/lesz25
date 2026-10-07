@@ -103,7 +103,7 @@ try {
   await page.goto(`${origin}/`);
   await page.locator('.preferences:not([hidden])').waitFor();
   await waitImage(page, '.cinematic img');
-  assert.equal(await page.locator('#intro-heading').textContent(), `${COPY.en.title} ${COPY.en.curiosity}`);
+  assert.equal(await page.locator('#intro-heading').textContent(), `${COPY.en.title} ${COPY.en.curiosity} ${COPY.en.concurrence}`);
   assert.equal(await page.locator('canvas').count(), 0);
   assert.ok(!requests.some((url) => /\/(ocean|overlays|nav-popover)\.js|\/src\/styles\.css/.test(url)));
   assert.ok(requests.every((url) => url.startsWith(origin)));
@@ -267,16 +267,18 @@ try {
         if (await page.locator('html').getAttribute('data-theme') !== theme) await page.locator('#quiet-theme').click();
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, `${lang} ${width} ${theme} overflow`);
         assert.ok(!(await page.locator('body').textContent()).includes('undefined'));
-        const expectedHeading = `${COPY[lang].title} ${COPY[lang].curiosity}`;
+        const expectedHeading = `${COPY[lang].title} ${COPY[lang].curiosity} ${COPY[lang].concurrence}`;
         const heroHeading = page.locator('#intro-heading');
         assert.equal(await heroHeading.textContent(), expectedHeading);
-        assert.deepEqual(await heroHeading.locator('.hero-title-line').allTextContents(), [COPY[lang].title, COPY[lang].curiosity]);
+        assert.deepEqual(await heroHeading.locator('.hero-title-line').allTextContents(), [COPY[lang].title, COPY[lang].curiosity, COPY[lang].concurrence]);
         assert.equal(await page.getByRole('heading', { level: 1, name: expectedHeading, exact: true }).count(), 1);
         const lines = await heroHeading.locator('.hero-title-line').evaluateAll(nodes => nodes.map(node => ({ top: node.getBoundingClientRect().top, bottom: node.getBoundingClientRect().bottom, display: getComputedStyle(node).display, font: getComputedStyle(node).fontSize, colour: getComputedStyle(node).color })));
         assert.ok(lines.every(line => line.display === 'block'));
-        assert.ok(lines[1].top >= lines[0].bottom - 1, `${lang}/${width}/${theme}: separate nonoverlapping line groups`);
-        assert.equal(lines[0].font, lines[1].font);
-        assert.equal(lines[0].colour, lines[1].colour);
+        for (let index = 1; index < lines.length; index += 1) {
+          assert.ok(lines[index].top >= lines[index - 1].bottom - 1, `${lang}/${width}/${theme}: separate nonoverlapping line groups`);
+          assert.equal(lines[0].font, lines[index].font);
+          assert.equal(lines[0].colour, lines[index].colour);
+        }
         const heroLink = await page.locator('.hero-work-link').evaluate(element => {
           const style = getComputedStyle(element);
           const rect = element.getBoundingClientRect();
@@ -1064,7 +1066,7 @@ try {
   const nojs = await context({ javaScriptEnabled: false, colorScheme: 'dark' });
   const nojsPage = await nojs.newPage();
   await nojsPage.goto(`${origin}/`);
-  assert.equal(await nojsPage.locator('#intro-heading').textContent(), `${COPY.en.title} ${COPY.en.curiosity}`);
+  assert.equal(await nojsPage.locator('#intro-heading').textContent(), `${COPY.en.title} ${COPY.en.curiosity} ${COPY.en.concurrence}`);
   assert.equal(await nojsPage.locator('.work-row').count(), 7);
   assert.equal(await nojsPage.locator('[data-work-id="thesislens"] > p').textContent(), COPY.en.thesislensBody);
   assert.equal(await nojsPage.locator('[data-work-id="thesislens"] a').getAttribute('href'), 'https://thesislens.space/');
@@ -1303,7 +1305,7 @@ try {
   const aliasPage = await alias.newPage();
   await aliasPage.goto(`${origin}/templates/quiet/`);
   await aliasPage.locator('.preferences:not([hidden])').waitFor();
-  assert.equal(await aliasPage.locator('#intro-heading').textContent(), `${COPY.en.title} ${COPY.en.curiosity}`);
+  assert.equal(await aliasPage.locator('#intro-heading').textContent(), `${COPY.en.title} ${COPY.en.curiosity} ${COPY.en.concurrence}`);
   await aliasPage.locator('.identity .name').click();
   await aliasPage.waitForURL(`${origin}/`);
   await aliasPage.locator('.preferences:not([hidden])').waitFor();

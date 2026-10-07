@@ -1,6 +1,8 @@
 # Rhine Tague
 
-I build to understand.
+I learn through making.<br>
+I let curiosity lead.<br>
+I live to concur.
 
 A minimal portfolio of software, research, and photography.
 
