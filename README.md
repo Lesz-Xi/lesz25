@@ -1,8 +1,6 @@
 # Rhine Tague
 
-I learn through making.<br>
-I let curiosity lead.<br>
-I live to concur.
+I learn through making.
 
 A minimal portfolio of software, research, and photography.
 

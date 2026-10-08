@@ -25,7 +25,7 @@ export function renderHero(locale) {
   const c = copyFor(locale);
   return `<section class="hero section-grid" aria-labelledby="intro-heading">
     <div class="identity"><img class="identity-portrait" src="/quiet/xi-profile.webp" width="160" height="160" alt="" decoding="async"><a class="name" href="/">Rhine Tague</a><p>${escapeHtml(c.role)}</p><span>${escapeHtml(t('contact.locationVal'))}</span></div>
-    <div class="intro"><h1 id="intro-heading"><span class="hero-title-line">${escapeHtml(c.title)}</span> <span class="hero-title-line">${escapeHtml(c.curiosity)}</span> <span class="hero-title-line">${escapeHtml(c.concurrence)}</span></h1><p>${escapeHtml(c.intro)}</p><a class="text-link hero-work-link" href="#work">${escapeHtml(c.viewWork)}${ARROW}</a></div>
+    <div class="intro"><h1 id="intro-heading"><span class="hero-title-line">${escapeHtml(c.title)}</span></h1><p>${escapeHtml(c.intro)}</p><a class="text-link hero-work-link" href="#work">${escapeHtml(c.viewWork)}${ARROW}</a></div>
   </section>
   <figure class="cinematic">
     <div class="cinematic-frame"><img src="/quiet/switzerland-wide.webp" srcset="/quiet/switzerland-wide-small.webp 768w, /quiet/switzerland-wide.webp 1440w" sizes="(max-width: 700px) calc(100vw - 40px), (max-width: 1040px) calc(100vw - 212px), (max-width: 1280px) calc(100vw - 292px), 988px" width="1440" height="720" alt="${escapeHtml(c.heroAlt)}" fetchpriority="high" decoding="async"></div>
