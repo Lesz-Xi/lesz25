@@ -100,7 +100,8 @@ async function assertFooterLink(page, selector = '.page-shell > .footer') {
   const link = footer.getByRole('link', { name: 'Duçem-Ma', exact: true });
   assert.equal(await link.count(), 1);
   assert.equal(await link.getAttribute('href'), footerUrl);
-  assert.equal(await link.getAttribute('target'), null, 'Native same-tab navigation');
+  assert.equal(await link.getAttribute('target'), '_blank', 'Native separate-tab navigation');
+  assert.equal(await link.getAttribute('rel'), 'noopener noreferrer');
   const box = await link.boundingBox();
   assert.ok(box.height >= 44 && box.width >= 44, 'Footer link remains a usable pointer/touch target');
 }
@@ -1342,6 +1343,7 @@ try {
               await link.scrollIntoViewIfNeeded();
               await screenshot(footerPage, `ducem-footer-${width}-${theme}.png`, false);
             }
+            const destinationPromise = footerContext.waitForEvent('page');
             if (activation === 'keyboard') {
               await footerPage.keyboard.press('Tab');
               await link.focus();
@@ -1349,18 +1351,20 @@ try {
               await link.press('Enter');
             } else if (mobile) await link.tap();
             else await link.click();
-            await footerPage.waitForURL(footerUrl);
-            assert.equal(footerPage.url(), footerUrl);
-            assert.equal(footerContext.pages().length, 1, 'Footer navigation stays in the current tab');
-            await footerPage.goBack();
-            await footerPage.waitForURL(`${origin}${route}`);
+            const destination = await destinationPromise;
+            await destination.waitForURL(footerUrl);
+            assert.equal(destination.url(), footerUrl);
+            assert.equal(await destination.evaluate(() => window.opener), null, 'Destination cannot control the portfolio page');
+            assert.equal(footerPage.url(), `${origin}${route}`, 'Original portfolio/reader stays open');
+            assert.equal(footerContext.pages().length, 2, 'Exactly one separate destination page');
+            await destination.close();
             await assertFooterLink(footerPage);
           }
         }
       } finally { await footerContext.close(); }
     }
   }
-  check('Duçem-Ma footer has the exact supplied destination and native click/touch/Enter same-tab navigation plus Back across all four Quiet entries, with and without JavaScript');
+  check('Duçem-Ma footer opens the exact destination in one separate page with no opener, preserving the original route across click/touch/Enter and all four Quiet entries, with and without JavaScript');
 
   const old = await context();
   const oldPage = await old.newPage();

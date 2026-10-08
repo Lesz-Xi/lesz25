@@ -100,6 +100,10 @@ Chief subsequently requested only “I learn through making.”, explicitly remo
 
 Chief requested the existing Duçem-Ma footer label link to exactly `https://dunyadakitap.com/products/ducem-ma-cinius`. Use one native same-tab anchor with Quiet's existing `text-link` styling and 44px target in root/Quiet, Notes and Approach. Preserve the label, identity/header names, reading-return actions, original favicon and welcome. No JavaScript navigation, new icon, separate footer controller or destination-content claims. Cut: the inert footer span. Tradeoff: activation leaves the portfolio in the current tab; native Back remains available. Verify exact href, accessible name, keyboard/pointer/touch activation and no-JavaScript fallbacks using a bounded destination fixture, not a live-site availability claim. Commit/push and hosted deployment remain separate.
 
+### Duçem-Ma opens separately — 2026-10-07
+
+Chief explicitly corrected the footer's destination behavior: open the supplied book URL in a new tab/page, retaining the portfolio. Use native `target="_blank"` and `rel="noopener noreferrer"` across root/Quiet, Notes and Approach; label, style, exact URL and 44px target remain unchanged. This supersedes the same-tab behavior above. Verify pointer/touch/Enter and no-JavaScript activation create one separate page with no opener while the original page URL stays intact. Tradeoff: an additional browser tab instead of leaving the portfolio. No JavaScript popup handler or layout change. Commit/push remain separate.
+
 ## Copy boundary
 
 `copy.js` owns the new wording in EN/DE/FR/IT/ZH/JA. Existing project names, links, status, paper types, album titles/years, and contacts are reused from the original data/translation modules. The new copy is derived from the existing portfolio, authored note, Chief's supplied LinkedIn About, and his stated principles, not invented experiences. Research descriptions remain proposal/model language. The original essay and narrative copy are untouched; shared contact changes are limited to the explicitly requested X URL/handle and Substack addition.

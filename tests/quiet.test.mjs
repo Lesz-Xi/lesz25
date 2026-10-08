@@ -250,7 +250,7 @@ test('Paper pole flag is reserved for the hidden welcome sequence, never the cou
 test('Quiet footer links Duçem-Ma to the supplied URL without changing the identity', () => {
   for (const path of ['index.html', 'templates/quiet/index.html']) {
     const page = read(path);
-    assert.ok(page.includes('<footer class="footer"><a class="text-link" href="https://dunyadakitap.com/products/ducem-ma-cinius">Duçem-Ma</a></footer>'), path);
+    assert.ok(page.includes('<footer class="footer"><a class="text-link" href="https://dunyadakitap.com/products/ducem-ma-cinius" target="_blank" rel="noopener noreferrer">Duçem-Ma</a></footer>'), path);
     assert.ok(page.includes('<a class="name" href="/">Rhine Tague</a>'), path);
     assert.ok(!page.includes('data-copy="original"'), path);
     assert.ok(!page.includes('Original portfolio'), path);
@@ -262,7 +262,7 @@ test('readers keep one article-end return and the linked Duçem-Ma footer', () =
   for (const name of ['notes', 'approach']) {
     const page = read(`templates/quiet/${name}.html`);
     assert.equal((page.match(/>Back to portfolio<\/a>/g) || []).length, 1, name);
-    assert.ok(page.includes('<footer class="footer reader-footer"><a class="text-link" href="https://dunyadakitap.com/products/ducem-ma-cinius">Duçem-Ma</a></footer>'), name);
+    assert.ok(page.includes('<footer class="footer reader-footer"><a class="text-link" href="https://dunyadakitap.com/products/ducem-ma-cinius" target="_blank" rel="noopener noreferrer">Duçem-Ma</a></footer>'), name);
     assert.ok(page.includes('<a class="name" href="/">Rhine Tague</a>'), name);
     assert.equal((page.match(/class="reading-end"/g) || []).length, 1, name);
   }
