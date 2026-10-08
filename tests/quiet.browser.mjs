@@ -327,7 +327,8 @@ try {
         assert.equal(await page.locator('.paper-row').count(), 4);
         assert.equal(await page.locator('.album-card').count(), 6);
         assert.equal(await page.locator('.page-shell > .footer a').count(), 0);
-        assert.equal(await page.locator('.page-shell > .footer').textContent(), 'Rhine Tague');
+        assert.equal(await page.locator('.page-shell > .footer').textContent(), 'Duçem-Ma');
+        assert.equal(await page.locator('.identity .name').textContent(), 'Rhine Tague');
         assert.equal(await page.locator('[data-copy="original"]').count(), 0);
         await waitImage(page, '.identity-portrait');
         const portrait = await page.locator('.identity-portrait').evaluate((image) => {
@@ -669,6 +670,8 @@ try {
         assert.equal(await page.locator('.reading-article').getAttribute('lang'), 'en');
         assert.equal(await page.locator('.reading-end a').count(), 1);
         assert.equal(await page.locator('.reader-footer a').count(), 0);
+        assert.equal(await page.locator('.reader-footer').textContent(), 'Duçem-Ma');
+        assert.equal(await page.locator('.topbar .name').textContent(), 'Rhine Tague');
         assert.equal(await page.locator('[data-copy="backPortfolio"]').count(), 1);
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, `Notes ${lang} ${width} ${theme} overflow`);
       }
@@ -980,6 +983,8 @@ try {
         assert.equal(await page.locator('a[href="https://relics.quest/#top"]').count(), 0);
         assert.equal(await page.locator('.reading-end a').count(), 1);
         assert.equal(await page.locator('.reader-footer a').count(), 0);
+        assert.equal(await page.locator('.reader-footer').textContent(), 'Duçem-Ma');
+        assert.equal(await page.locator('.topbar .name').textContent(), 'Rhine Tague');
       }
     }
   }
@@ -1072,7 +1077,7 @@ try {
   assert.equal(await nojsPage.locator('.location-flag').count(), 0);
   assert.equal(await nojsPage.locator('#entry-intro').isVisible(), false);
   assert.equal(await nojsPage.locator('.page-shell > .footer a').count(), 0);
-  assert.equal(await nojsPage.locator('.page-shell > .footer').textContent(), 'Rhine Tague');
+  assert.equal(await nojsPage.locator('.page-shell > .footer').textContent(), 'Duçem-Ma');
   assert.equal(await nojsPage.locator('.preferences').isVisible(), false);
   assert.equal(await nojsPage.locator('body').evaluate((element) => getComputedStyle(element).backgroundColor), 'rgb(33, 31, 28)');
   assert.equal(await nojsPage.locator('.cinematic [data-album]').getAttribute('href'), '/#photography');
@@ -1082,6 +1087,7 @@ try {
   assert.equal(await nojsPage.locator('.preferences').isVisible(), false);
   assert.equal(await nojsPage.locator('body').evaluate((element) => getComputedStyle(element).backgroundColor), 'rgb(33, 31, 28)');
   assert.equal(await nojsPage.locator('.reader-footer a').count(), 0);
+  assert.equal(await nojsPage.locator('.reader-footer').textContent(), 'Duçem-Ma');
   assert.equal(await nojsPage.locator('.reading-end a').count(), 1);
   await nojsPage.locator('.reading-end .text-link').click();
   await nojsPage.waitForURL('**/#notes');
@@ -1094,6 +1100,7 @@ try {
   assert.equal(await nojsPage.locator('.preferences').isVisible(), false);
   assert.equal(await nojsPage.locator('body').evaluate((element) => getComputedStyle(element).backgroundColor), 'rgb(33, 31, 28)');
   assert.equal(await nojsPage.locator('.reader-footer a').count(), 0);
+  assert.equal(await nojsPage.locator('.reader-footer').textContent(), 'Duçem-Ma');
   assert.equal(await nojsPage.locator('.reading-end a').count(), 1);
   await nojsPage.locator('.reading-end a').click();
   await nojsPage.waitForURL('**/#about');
@@ -1300,6 +1307,7 @@ try {
   await aliasPage.goto(`${origin}/templates/quiet/`);
   await aliasPage.locator('.preferences:not([hidden])').waitFor();
   assert.equal(await aliasPage.locator('#intro-heading').textContent(), COPY.en.title);
+  assert.equal(await aliasPage.locator('.page-shell > .footer').textContent(), 'Duçem-Ma');
   await aliasPage.locator('.identity .name').click();
   await aliasPage.waitForURL(`${origin}/`);
   await aliasPage.locator('.preferences:not([hidden])').waitFor();
