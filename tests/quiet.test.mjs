@@ -268,26 +268,23 @@ test('readers have one article-end return and an author-only page footer', () =>
   }
 });
 
-test('all portfolio entries use the unchanged welcome flag SVG and a matching PNG fallback', () => {
+test('all portfolio entries use the supplied SVG icon and matching PNG fallback', () => {
   for (const path of ['index.html', 'templates/ocean/index.html', 'templates/quiet/index.html', 'templates/quiet/notes.html', 'templates/quiet/approach.html']) {
     const html = read(path);
     const icons = [...html.matchAll(/<link\b[^>]*\brel="icon"[^>]*>/g)].map(([tag]) => tag);
     assert.equal(icons.length, 2, path);
-    assert.ok(icons.some((tag) => tag.includes('type="image/svg+xml"') && tag.includes('sizes="any"') && tag.includes('href="/quiet/philippines-flag.svg?v=1"')), path);
-    assert.ok(icons.some((tag) => tag.includes('type="image/png"') && tag.includes('sizes="32x32"') && tag.includes('href="/quiet/philippines-flag-icon.png?v=1"')), path);
-    assert.ok(!icons.some((tag) => /web_profile_code|cartoon-power-up-star/.test(tag)), path);
+    assert.ok(icons.some((tag) => tag.includes('type="image/svg+xml"') && tag.includes('sizes="any"') && tag.includes('href="/web_profile_code.svg?v=3"')), path);
+    assert.ok(icons.some((tag) => tag.includes('type="image/png"') && tag.includes('sizes="32x32"') && tag.includes('href="/web_profile_code.png?v=2"')), path);
+    assert.ok(!icons.some((tag) => tag.includes('cartoon-power-up-star')), path);
   }
-  const svg = read('public/quiet/philippines-flag.svg');
-  assert.ok(svg.includes('viewBox="41 151 946 685"'));
-  assert.ok(!svg.includes('prefers-color-scheme'), 'The supplied flag colors do not change with browser appearance');
-  const png = readFileSync(new URL('../public/quiet/philippines-flag-icon.png', import.meta.url));
+  const svg = read('public/web_profile_code.svg');
+  assert.ok(svg.includes('viewBox="126 128 752 752"'));
+  assert.ok(svg.includes('@media (prefers-color-scheme: dark) { #_kuqd084 circle { fill: #ffffff; stroke: #ffffff; } }'));
+  assert.ok(svg.includes('stop-color="#24303e"') && svg.includes('stop-color="#ff801a"'), 'Light arrow and orange dots keep their original gradients');
+  const png = readFileSync(new URL('../public/web_profile_code.png', import.meta.url));
   assert.equal(png.subarray(0, 8).toString('hex'), '89504e470d0a1a0a');
   assert.equal(png.readUInt32BE(16), 32);
   assert.equal(png.readUInt32BE(20), 32);
-  const provenance = JSON.parse(read('public/quiet/philippines-flag-icon.png.json'));
-  assert.equal(provenance.source, 'public/quiet/philippines-flag.svg');
-  assert.equal(provenance.sourceSha256, createHash('sha256').update(svg).digest('hex'));
-  assert.equal(provenance.outputSha256, createHash('sha256').update(png).digest('hex'));
 });
 
 test('HTML escaping protects names, text, and attribute values', () => {
