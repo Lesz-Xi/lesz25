@@ -13,6 +13,7 @@ import { DEV_SHORTCUTS } from '../templates/quiet/dev-labels.js';
 const modulePath = process.env.PLAYWRIGHT_MODULE;
 const { chromium } = await import(modulePath ? pathToFileURL(modulePath).href : 'playwright');
 const root = fileURLToPath(new URL('../', import.meta.url));
+const footerUrl = 'https://dunyadakitap.com/products/ducem-ma-cinius';
 // Derive expected reader text in the harness, not by importing source URLs into
 // the page: deployed builds correctly omit /src/ modules.
 globalThis.document = { documentElement: {}, querySelector: () => null, querySelectorAll: () => [] };
@@ -91,6 +92,18 @@ const screenshot = async (page, name, fullPage = true) => {
   await page.screenshot({ path: resolve(output, name), fullPage, animations: 'disabled' });
   report.screenshots.push(name);
 };
+
+async function assertFooterLink(page, selector = '.page-shell > .footer') {
+  const footer = page.locator(selector);
+  assert.equal(await footer.textContent(), 'Duçem-Ma');
+  assert.equal(await footer.locator('a').count(), 1);
+  const link = footer.getByRole('link', { name: 'Duçem-Ma', exact: true });
+  assert.equal(await link.count(), 1);
+  assert.equal(await link.getAttribute('href'), footerUrl);
+  assert.equal(await link.getAttribute('target'), null, 'Native same-tab navigation');
+  const box = await link.boundingBox();
+  assert.ok(box.height >= 44 && box.width >= 44, 'Footer link remains a usable pointer/touch target');
+}
 
 try {
   if (previewCapture || controlsCapture || profileCapture || heroCapture || curiosityCapture || aboutCapture || relicsCapture || thesislensCapture || navCapture) await mkdir(output, { recursive: true });
@@ -326,8 +339,7 @@ try {
         assert.equal(await page.locator('.relics-link').evaluate(el => getComputedStyle(el).outlineStyle), 'solid');
         assert.equal(await page.locator('.paper-row').count(), 4);
         assert.equal(await page.locator('.album-card').count(), 6);
-        assert.equal(await page.locator('.page-shell > .footer a').count(), 0);
-        assert.equal(await page.locator('.page-shell > .footer').textContent(), 'Duçem-Ma');
+        await assertFooterLink(page);
         assert.equal(await page.locator('.identity .name').textContent(), 'Rhine Tague');
         assert.equal(await page.locator('[data-copy="original"]').count(), 0);
         await waitImage(page, '.identity-portrait');
@@ -669,8 +681,7 @@ try {
         assert.equal(await page.locator('.note-body').textContent(), essay);
         assert.equal(await page.locator('.reading-article').getAttribute('lang'), 'en');
         assert.equal(await page.locator('.reading-end a').count(), 1);
-        assert.equal(await page.locator('.reader-footer a').count(), 0);
-        assert.equal(await page.locator('.reader-footer').textContent(), 'Duçem-Ma');
+        await assertFooterLink(page, '.reader-footer');
         assert.equal(await page.locator('.topbar .name').textContent(), 'Rhine Tague');
         assert.equal(await page.locator('[data-copy="backPortfolio"]').count(), 1);
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, `Notes ${lang} ${width} ${theme} overflow`);
@@ -982,8 +993,7 @@ try {
         assert.equal(await page.locator('.approach-direction, .design-colophon').count(), 0);
         assert.equal(await page.locator('a[href="https://relics.quest/#top"]').count(), 0);
         assert.equal(await page.locator('.reading-end a').count(), 1);
-        assert.equal(await page.locator('.reader-footer a').count(), 0);
-        assert.equal(await page.locator('.reader-footer').textContent(), 'Duçem-Ma');
+        await assertFooterLink(page, '.reader-footer');
         assert.equal(await page.locator('.topbar .name').textContent(), 'Rhine Tague');
       }
     }
@@ -1076,8 +1086,7 @@ try {
   assert.equal(await nojsPage.locator('.identity-portrait').count(), 1);
   assert.equal(await nojsPage.locator('.location-flag').count(), 0);
   assert.equal(await nojsPage.locator('#entry-intro').isVisible(), false);
-  assert.equal(await nojsPage.locator('.page-shell > .footer a').count(), 0);
-  assert.equal(await nojsPage.locator('.page-shell > .footer').textContent(), 'Duçem-Ma');
+  await assertFooterLink(nojsPage);
   assert.equal(await nojsPage.locator('.preferences').isVisible(), false);
   assert.equal(await nojsPage.locator('body').evaluate((element) => getComputedStyle(element).backgroundColor), 'rgb(33, 31, 28)');
   assert.equal(await nojsPage.locator('.cinematic [data-album]').getAttribute('href'), '/#photography');
@@ -1086,8 +1095,7 @@ try {
   assert.equal(await nojsPage.locator('.note-body > p').count(), 18);
   assert.equal(await nojsPage.locator('.preferences').isVisible(), false);
   assert.equal(await nojsPage.locator('body').evaluate((element) => getComputedStyle(element).backgroundColor), 'rgb(33, 31, 28)');
-  assert.equal(await nojsPage.locator('.reader-footer a').count(), 0);
-  assert.equal(await nojsPage.locator('.reader-footer').textContent(), 'Duçem-Ma');
+  await assertFooterLink(nojsPage, '.reader-footer');
   assert.equal(await nojsPage.locator('.reading-end a').count(), 1);
   await nojsPage.locator('.reading-end .text-link').click();
   await nojsPage.waitForURL('**/#notes');
@@ -1099,8 +1107,7 @@ try {
   assert.equal(await nojsPage.locator('a[href="https://relics.quest/#top"]').count(), 0);
   assert.equal(await nojsPage.locator('.preferences').isVisible(), false);
   assert.equal(await nojsPage.locator('body').evaluate((element) => getComputedStyle(element).backgroundColor), 'rgb(33, 31, 28)');
-  assert.equal(await nojsPage.locator('.reader-footer a').count(), 0);
-  assert.equal(await nojsPage.locator('.reader-footer').textContent(), 'Duçem-Ma');
+  await assertFooterLink(nojsPage, '.reader-footer');
   assert.equal(await nojsPage.locator('.reading-end a').count(), 1);
   await nojsPage.locator('.reading-end a').click();
   await nojsPage.waitForURL('**/#about');
@@ -1307,13 +1314,53 @@ try {
   await aliasPage.goto(`${origin}/templates/quiet/`);
   await aliasPage.locator('.preferences:not([hidden])').waitFor();
   assert.equal(await aliasPage.locator('#intro-heading').textContent(), COPY.en.title);
-  assert.equal(await aliasPage.locator('.page-shell > .footer').textContent(), 'Duçem-Ma');
+  await assertFooterLink(aliasPage);
   await aliasPage.locator('.identity .name').click();
   await aliasPage.waitForURL(`${origin}/`);
   await aliasPage.locator('.preferences:not([hidden])').waitFor();
   assert.equal(await aliasPage.locator('canvas').count(), 0);
   check('Existing Quiet template URL remains usable; identity returns to the canonical root homepage');
   await alias.close();
+
+  // Exercise native navigation against a bounded fixture, never the live destination.
+  for (const width of [1440, 390]) {
+    for (const javaScriptEnabled of [true, false]) {
+      const mobile = width === 390;
+      const theme = mobile ? 'dark' : 'light';
+      const footerContext = await context({ javaScriptEnabled, colorScheme: theme, reducedMotion: 'reduce', viewport: { width, height: mobile ? 844 : 900 }, isMobile: mobile, hasTouch: mobile });
+      try {
+        await footerContext.route(footerUrl, route => route.fulfill({ contentType: 'text/html', body: '<!doctype html><title>Footer destination fixture</title>' }));
+        const footerPage = await footerContext.newPage();
+        for (const route of ['/', '/templates/quiet/', '/templates/quiet/notes.html', '/templates/quiet/approach.html']) {
+          for (const activation of ['pointer', 'keyboard']) {
+            await footerPage.goto(`${origin}${route}`);
+            if (javaScriptEnabled) await footerPage.locator('.preferences:not([hidden])').waitFor();
+            await assertFooterLink(footerPage);
+            const link = footerPage.locator('.page-shell > .footer').getByRole('link', { name: 'Duçem-Ma', exact: true });
+            if (process.env.QUIET_CAPTURE === 'footer' && javaScriptEnabled && route === '/' && activation === 'pointer') {
+              await mkdir(output, { recursive: true });
+              await link.scrollIntoViewIfNeeded();
+              await screenshot(footerPage, `ducem-footer-${width}-${theme}.png`, false);
+            }
+            if (activation === 'keyboard') {
+              await footerPage.keyboard.press('Tab');
+              await link.focus();
+              assert.equal(await link.evaluate(node => node === document.activeElement && getComputedStyle(node).outlineStyle === 'solid'), true, 'Visible native keyboard focus');
+              await link.press('Enter');
+            } else if (mobile) await link.tap();
+            else await link.click();
+            await footerPage.waitForURL(footerUrl);
+            assert.equal(footerPage.url(), footerUrl);
+            assert.equal(footerContext.pages().length, 1, 'Footer navigation stays in the current tab');
+            await footerPage.goBack();
+            await footerPage.waitForURL(`${origin}${route}`);
+            await assertFooterLink(footerPage);
+          }
+        }
+      } finally { await footerContext.close(); }
+    }
+  }
+  check('Duçem-Ma footer has the exact supplied destination and native click/touch/Enter same-tab navigation plus Back across all four Quiet entries, with and without JavaScript');
 
   const old = await context();
   const oldPage = await old.newPage();

@@ -247,10 +247,10 @@ test('Paper pole flag is reserved for the hidden welcome sequence, never the cou
   assert.ok(!read('templates/quiet/styles.css').includes('.location-flag'));
 });
 
-test('Quiet footer uses Duçem-Ma without changing the identity or adding links', () => {
+test('Quiet footer links Duçem-Ma to the supplied URL without changing the identity', () => {
   for (const path of ['index.html', 'templates/quiet/index.html']) {
     const page = read(path);
-    assert.ok(page.includes('<footer class="footer"><span>Duçem-Ma</span></footer>'), path);
+    assert.ok(page.includes('<footer class="footer"><a class="text-link" href="https://dunyadakitap.com/products/ducem-ma-cinius">Duçem-Ma</a></footer>'), path);
     assert.ok(page.includes('<a class="name" href="/">Rhine Tague</a>'), path);
     assert.ok(!page.includes('data-copy="original"'), path);
     assert.ok(!page.includes('Original portfolio'), path);
@@ -258,11 +258,11 @@ test('Quiet footer uses Duçem-Ma without changing the identity or adding links'
   for (const { code } of LANGUAGES) assert.ok(!Object.hasOwn(COPY[code], 'original'), code);
 });
 
-test('readers have one article-end return and an author-only page footer', () => {
+test('readers keep one article-end return and the linked Duçem-Ma footer', () => {
   for (const name of ['notes', 'approach']) {
     const page = read(`templates/quiet/${name}.html`);
     assert.equal((page.match(/>Back to portfolio<\/a>/g) || []).length, 1, name);
-    assert.ok(page.includes('<footer class="footer reader-footer"><span>Duçem-Ma</span></footer>'), name);
+    assert.ok(page.includes('<footer class="footer reader-footer"><a class="text-link" href="https://dunyadakitap.com/products/ducem-ma-cinius">Duçem-Ma</a></footer>'), name);
     assert.ok(page.includes('<a class="name" href="/">Rhine Tague</a>'), name);
     assert.equal((page.match(/class="reading-end"/g) || []).length, 1, name);
   }
