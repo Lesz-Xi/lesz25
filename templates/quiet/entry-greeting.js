@@ -13,7 +13,7 @@ const DESCRIPTION_KEYS = Object.freeze({
 
 export function entryPeriod(hour) {
   if (!Number.isInteger(hour) || hour < 0 || hour > 23) return 'day';
-  if (hour >= 5 && hour < 12) return 'morning';
+  if (hour < 12) return 'morning';
   if (hour >= 12 && hour < 18) return 'afternoon';
   return 'evening';
 }

@@ -108,6 +108,82 @@ async function assertFooterLink(page, selector = '.page-shell > .footer') {
 
 try {
   if (previewCapture || controlsCapture || profileCapture || heroCapture || curiosityCapture || aboutCapture || relicsCapture || thesislensCapture || navCapture) await mkdir(output, { recursive: true });
+  const greetingCases = [
+    ...[1440, 390].flatMap(width => ['light', 'dark'].map(theme => ({ width, theme, clock: '2026-10-08T20:51:00Z', hour: 4, minute: 51, period: 'morning', reported: true }))),
+    { clock: '2026-10-08T15:59:59Z', hour: 23, minute: 59, period: 'evening', crossMidnight: true },
+    { clock: '2026-10-08T16:00:00Z', hour: 0, minute: 0, period: 'morning' },
+    { clock: '2026-10-09T03:59:59Z', hour: 11, minute: 59, period: 'morning' },
+    { clock: '2026-10-09T04:00:00Z', hour: 12, minute: 0, period: 'afternoon' },
+    { clock: '2026-10-09T09:59:59Z', hour: 17, minute: 59, period: 'afternoon' },
+    { clock: '2026-10-09T10:00:00Z', hour: 18, minute: 0, period: 'evening' },
+    { clock: '2026-10-08T20:51:00Z', hour: 22, minute: 51, period: 'evening', timezoneId: 'Europe/Zurich' },
+    { clock: '2026-10-08T20:51:00Z', hour: 16, minute: 51, period: 'afternoon', timezoneId: 'America/New_York' },
+  ];
+  const greetingText = { morning: 'Magandang umaga!', afternoon: 'Magandang hapon!', evening: 'Magandang gabi!' };
+  const greetingDescription = { morning: COPY.en.entryMorning, afternoon: COPY.en.entryAfternoon, evening: COPY.en.entryEvening };
+  for (const sample of greetingCases) {
+    const width = sample.width || 1440;
+    const theme = sample.theme || 'light';
+    const clockContext = await context({ viewport: { width, height: width === 390 ? 844 : 900 }, colorScheme: theme, locale: 'en-US', timezoneId: sample.timezoneId || 'Asia/Manila' });
+    try {
+      await clockContext.addInitScript(instant => {
+        // Only Date is mocked; native animations, performance and watchdogs stay real.
+        const NativeDate = Date;
+        const key = 'quiet-test-morning-clock';
+        let fixed = NativeDate.parse(sessionStorage.getItem(key) || instant);
+        window.Date = new Proxy(NativeDate, {
+          construct(target, args) { return Reflect.construct(target, args.length ? args : [fixed]); },
+          apply() { return new NativeDate(fixed).toString(); },
+          get(target, property) { return property === 'now' ? () => fixed : Reflect.get(target, property); },
+        });
+        window.__setMorningClock = value => { fixed = NativeDate.parse(value); sessionStorage.setItem(key, value); };
+      }, sample.clock);
+      const clockPage = await clockContext.newPage();
+      const clockErrors = [];
+      clockPage.on('pageerror', error => clockErrors.push(error.message));
+      await clockPage.goto(`${origin}/`);
+      await clockPage.waitForFunction(() => document.querySelector('#entry-intro')?.dataset.state === 'playing');
+      assert.deepEqual(await clockPage.evaluate(() => [new Date().getHours(), new Date().getMinutes()]), [sample.hour, sample.minute]);
+      assert.equal(await clockPage.locator('#entry-intro').getAttribute('data-greeting'), sample.period);
+      assert.equal(await clockPage.locator('.entry-greeting').textContent(), greetingText[sample.period]);
+      assert.equal(await clockPage.locator('.entry-description').textContent(), greetingDescription[sample.period]);
+      if (sample.reported) {
+        await clockPage.waitForFunction(() => document.querySelector('#entry-intro').dataset.phase === 'complete');
+        if (process.env.QUIET_CAPTURE === 'greeting-time') {
+          await mkdir(output, { recursive: true });
+          const name = `greeting-0451-${width}-${theme}.png`;
+          // Disabling CSS animations fast-forwards the welcome's fail-open timer.
+          // Capture native playback instead, while its completed caption is visible.
+          assert.equal(await clockPage.locator('#entry-intro').isVisible(), true);
+          await clockPage.screenshot({ path: resolve(output, name), fullPage: false, animations: 'allow' });
+          report.screenshots.push(name);
+        }
+        await clockPage.waitForFunction(() => document.querySelector('#entry-intro').dataset.state === 'done');
+        assert.equal(await clockPage.locator('#entry-intro').getAttribute('data-reason'), 'complete');
+      } else {
+        if (sample.crossMidnight) {
+          await clockPage.evaluate(() => window.__setMorningClock('2026-10-08T16:00:00Z'));
+          assert.equal(await clockPage.evaluate(() => new Date().getHours()), 0);
+          assert.equal(await clockPage.locator('#entry-intro').getAttribute('data-greeting'), 'evening', 'Playing greeting remains a one-shot snapshot');
+        }
+        await clockPage.emulateMedia({ reducedMotion: 'reduce' });
+        await clockPage.waitForFunction(() => document.querySelector('#entry-intro').dataset.state === 'done');
+        if (sample.crossMidnight) {
+          await clockPage.emulateMedia({ reducedMotion: 'no-preference' });
+          await clockPage.reload();
+          await clockPage.waitForFunction(() => document.querySelector('#entry-intro').dataset.state === 'playing');
+          assert.equal(await clockPage.locator('#entry-intro').getAttribute('data-greeting'), 'morning', 'Reload samples the new local day');
+          assert.equal(await clockPage.locator('.entry-greeting').textContent(), 'Magandang umaga!');
+          assert.equal(await clockPage.locator('.entry-description').textContent(), COPY.en.entryMorning);
+          await clockPage.emulateMedia({ reducedMotion: 'reduce' });
+          await clockPage.waitForFunction(() => document.querySelector('#entry-intro').dataset.state === 'done');
+        }
+      }
+      assert.deepEqual(clockErrors, []);
+    } finally { await clockContext.close(); }
+  }
+  check('Reported 04:51 welcome is morning on desktop/mobile in both themes; midnight/noon/18:00 boundaries, device-local time zones, stable playing snapshot and reload resampling work');
+
   const ctx = await context({ colorScheme: 'light' });
   const page = await ctx.newPage();
   const errors = [];

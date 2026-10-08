@@ -463,7 +463,9 @@ try {
     });
   }
   for (const [clock, hour, period] of [
-    ['2026-10-03T20:59:59Z', 4, 'evening'], ['2026-10-03T21:00:00Z', 5, 'morning'],
+    ['2026-10-08T15:59:59Z', 23, 'evening'], ['2026-10-08T16:00:00Z', 0, 'morning'],
+    ['2026-10-08T20:51:00Z', 4, 'morning'],
+    ['2026-10-03T20:59:59Z', 4, 'morning'], ['2026-10-03T21:00:00Z', 5, 'morning'],
     ['2026-10-04T03:59:59Z', 11, 'morning'], ['2026-10-04T04:00:00Z', 12, 'afternoon'],
     ['2026-10-04T09:59:59Z', 17, 'afternoon'], ['2026-10-04T10:00:00Z', 18, 'evening'],
   ]) await scenario(`Exact local clock boundary ${clock} selects ${period}`, { clock, timezoneId: 'Asia/Manila' }, async page => {
