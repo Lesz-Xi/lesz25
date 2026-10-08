@@ -30,9 +30,10 @@ Notes and Approach are dedicated reading pages. The authored essay stays in Engl
 the portfolio and interface support English, German, French, Italian, Chinese, and Japanese.
 The Approach page is translated; the essay keeps its original English text.
 
-The SVG favicon follows the browser/system colour preference: its chevron turns white
-in dark appearance, while the orange dots and light appearance stay unchanged. The
-fixed PNG fallback remains unchanged. 2041 is described as a terminal workspace for
+All portfolio and reading pages use the supplied Philippine flag SVG as the favicon,
+with a matching transparent 32×32 PNG fallback. The complete flag and pole retain
+their original colors and geometry in both browser appearances; the welcome artwork
+and animation are unchanged. 2041 is described as a terminal workspace for
 companion-assisted software work.
 
 GUI is the default view. Dev Mode offers a small set of commands for finding and

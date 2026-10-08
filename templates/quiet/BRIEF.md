@@ -89,6 +89,10 @@ Chief approved “I learn through making.” / “I let curiosity lead.” and t
 
 Chief subsequently requested only “I learn through making.”, explicitly removing the curiosity and concurrence lines. This supersedes the three-line headline above. Keep the existing localized making statement in all six languages and remove the two unused copy fields. Preserve the semantic h1, incumbent typography, supporting introduction, action, photographs and reveal. Synchronize root/Quiet English fallbacks and README; the social-preview title already matches. Cut: the two additional headline statements and their unused fields. Tradeoff: less philosophy stated explicitly, in return for a shorter introduction. Chief authorized verification, commit and push; hosted deployment remains separately unverified.
 
+### Approved flag favicon replacement — 2026-10-07
+
+Chief requested the supplied SVG flag instead of the chevron/dots browser icon. Share the existing unchanged welcome SVG across root, Quiet alias, Notes, Approach and ocean, with a matching transparent 32×32 PNG fallback and new cache-busted URLs. Preserve full artwork/pole, colors, gradients, proportions and the existing welcome animation; no adaptive recoloring or redesign. Cut: active chevron/dots favicon references, not legacy files. Tradeoff: fine sun/star details diminish at native tab sizes. Verify declarations, source fidelity, PNG provenance, light/dark 16/32px rasterization and all route fallbacks. Commit/push and hosted deployment remain separate gates.
+
 ## Copy boundary
 
 `copy.js` owns the new wording in EN/DE/FR/IT/ZH/JA. Existing project names, links, status, paper types, album titles/years, and contacts are reused from the original data/translation modules. The new copy is derived from the existing portfolio, authored note, Chief's supplied LinkedIn About, and his stated principles, not invented experiences. Research descriptions remain proposal/model language. The original essay and narrative copy are untouched; shared contact changes are limited to the explicitly requested X URL/handle and Substack addition.

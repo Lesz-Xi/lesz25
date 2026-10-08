@@ -1,0 +1,10 @@
+{
+  "source": "public/quiet/philippines-flag.svg",
+  "sourceSha256": "d54d831a5496281a68f8a2e8d226d5b36d8529eec9d37d57988b7c94006df95c",
+  "outputSha256": "f8a6bd390739db39797fdab086e42ac0cc4b3ab55ddd1987b2ca1bed6ac9c146",
+  "sourceUrl": "https://app.paper.design/file/01M4274D1TARY1M71AG1RAGTE0/p-1-0/7M-0",
+  "transformation": "Centered contain-fit of the complete unchanged flag and pole onto a transparent 32×32 canvas. Preserved aspect ratio, paths, colors and gradients; no crop, recoloring, animation or redraw.",
+  "renderer": "Chromium Canvas 2D",
+  "width": 32,
+  "height": 32
+}
