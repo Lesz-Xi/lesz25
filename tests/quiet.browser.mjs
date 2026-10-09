@@ -13,7 +13,7 @@ import { DEV_SHORTCUTS } from '../templates/quiet/dev-labels.js';
 const modulePath = process.env.PLAYWRIGHT_MODULE;
 const { chromium } = await import(modulePath ? pathToFileURL(modulePath).href : 'playwright');
 const root = fileURLToPath(new URL('../', import.meta.url));
-const footerUrl = 'https://dunyadakitap.com/products/ducem-ma-cinius';
+const groundworkUrl = 'https://groundwork-six-ruddy.vercel.app/#top';
 // Derive expected reader text in the harness, not by importing source URLs into
 // the page: deployed builds correctly omit /src/ modules.
 globalThis.document = { documentElement: {}, querySelector: () => null, querySelectorAll: () => [] };
@@ -33,6 +33,7 @@ const aboutCapture = process.env.QUIET_CAPTURE === 'about';
 const navCapture = process.env.QUIET_CAPTURE === 'nav';
 const relicsCapture = ['relics', 'relics-copy'].includes(process.env.QUIET_CAPTURE);
 const thesislensCapture = process.env.QUIET_CAPTURE === 'thesislens';
+const groundworkCapture = process.env.QUIET_CAPTURE === 'groundwork';
 const relicsUrl = 'https://relics.quest/#top';
 const built = Boolean(process.env.QUIET_DIST);
 const assetRoot = built ? resolve(root, process.env.QUIET_DIST) : root;
@@ -95,19 +96,20 @@ const screenshot = async (page, name, fullPage = true) => {
 
 async function assertFooterLink(page, selector = '.page-shell > .footer') {
   const footer = page.locator(selector);
-  assert.equal(await footer.textContent(), 'Duçem-Ma');
+  assert.equal(await footer.textContent(), 'Rhine Tague');
   assert.equal(await footer.locator('a').count(), 1);
-  const link = footer.getByRole('link', { name: 'Duçem-Ma', exact: true });
+  const link = footer.getByRole('link', { name: 'Rhine Tague', exact: true });
   assert.equal(await link.count(), 1);
-  assert.equal(await link.getAttribute('href'), footerUrl);
-  assert.equal(await link.getAttribute('target'), '_blank', 'Native separate-tab navigation');
-  assert.equal(await link.getAttribute('rel'), 'noopener noreferrer');
+  const reader = await footer.evaluate(node => node.classList.contains('reader-footer'));
+  assert.equal(await link.getAttribute('href'), reader ? '/#quiet-hero' : '#quiet-hero');
+  assert.equal(await link.getAttribute('target'), null, 'Native same-tab hero return');
+  assert.equal(await link.getAttribute('rel'), null);
   const box = await link.boundingBox();
   assert.ok(box.height >= 44 && box.width >= 44, 'Footer link remains a usable pointer/touch target');
 }
 
 try {
-  if (previewCapture || controlsCapture || profileCapture || heroCapture || curiosityCapture || aboutCapture || relicsCapture || thesislensCapture || navCapture) await mkdir(output, { recursive: true });
+  if (previewCapture || controlsCapture || profileCapture || heroCapture || curiosityCapture || aboutCapture || relicsCapture || thesislensCapture || groundworkCapture || navCapture) await mkdir(output, { recursive: true });
   const greetingCases = [
     ...[1440, 390].flatMap(width => ['light', 'dark'].map(theme => ({ width, theme, clock: '2026-10-08T20:51:00Z', hour: 4, minute: 51, period: 'morning', reported: true }))),
     { clock: '2026-10-08T15:59:59Z', hour: 23, minute: 59, period: 'evening', crossMidnight: true },
@@ -393,8 +395,17 @@ try {
         })), [['rgba(0, 0, 0, 0)', '13px', 'underline', 'auto', '5px', '0px', '0px', '0px', 'none', true], ['rgba(0, 0, 0, 0)', '13px', 'underline', 'auto', '5px', '0px', '0px', '0px', 'none', true]], `${lang} ${width} ${theme}: email/read parity`);
         assert.deepEqual(await page.locator('#about .about-copy > p').allTextContents(), [c.aboutBody, c.designBody, c.purpose]);
         assert.equal(await page.locator('#about [data-read-approach]').getAttribute('href'), '/templates/quiet/approach.html');
-        assert.equal(await page.locator('.work-row').count(), 7);
-        assert.deepEqual(await page.locator('.work-row').evaluateAll(rows => rows.map(row => row.dataset.workId)), ['wuweism', 'twin-sparrow', '2041', 'relics', 'odysxi', 'tsra', 'thesislens']);
+        assert.equal(await page.locator('.work-row').count(), 8);
+        assert.deepEqual(await page.locator('.work-row').evaluateAll(rows => rows.map(row => row.dataset.workId)), ['wuweism', 'twin-sparrow', '2041', 'relics', 'odysxi', 'tsra', 'thesislens', 'groundwork']);
+        const groundworkRow = page.locator('[data-work-id="groundwork"]');
+        assert.equal(await groundworkRow.locator('h3').textContent(), 'Groundwork');
+        assert.equal(await groundworkRow.locator('p').textContent(), c.groundworkBody);
+        assert.equal(await groundworkRow.locator('.meta').textContent(), c.groundworkKind);
+        assert.equal(await groundworkRow.locator('a').getAttribute('href'), groundworkUrl);
+        assert.equal(await groundworkRow.locator('a').getAttribute('target'), '_blank');
+        assert.equal(await groundworkRow.locator('a').getAttribute('rel'), 'noopener noreferrer');
+        const groundworkTarget = await groundworkRow.locator('a').boundingBox();
+        assert.ok(groundworkTarget.height >= 44, `${lang} ${width} ${theme}: Groundwork target ${JSON.stringify(groundworkTarget)}; CSS minimum ${await groundworkRow.locator('a').evaluate(node => getComputedStyle(node).minHeight)}`);
         const thesisRow = page.locator('[data-work-id="thesislens"]');
         assert.equal(await thesisRow.locator('h3').textContent(), 'ThesisLens');
         assert.equal(await thesisRow.locator('p').textContent(), c.thesislensBody);
@@ -450,12 +461,12 @@ try {
   assert.equal(await page.evaluate(() => localStorage.getItem('rhine-theme-mode')), null);
   check('Language/theme persist; new theme never writes the ocean preference');
   await page.selectOption('#language', 'en');
-  if (relicsCapture || thesislensCapture) {
+  if (relicsCapture || thesislensCapture || groundworkCapture) {
     for (const width of [1440, 390]) {
       await page.setViewportSize({ width, height: width === 390 ? 844 : 900 });
       for (const theme of ['light', 'dark']) {
         if (await page.locator('html').getAttribute('data-theme') !== theme) await page.locator('#quiet-theme').click();
-        const captureName = thesislensCapture ? 'thesislens-work' : process.env.QUIET_CAPTURE === 'relics-copy' ? 'relics-copy' : 'relics-work';
+        const captureName = groundworkCapture ? 'groundwork-work' : thesislensCapture ? 'thesislens-work' : process.env.QUIET_CAPTURE === 'relics-copy' ? 'relics-copy' : 'relics-work';
         const name = `${captureName}-${width}-${theme}.png`;
         await page.locator('#work').screenshot({ path: resolve(output, name), animations: 'disabled' });
         report.screenshots.push(name);
@@ -495,6 +506,26 @@ try {
   assert.equal(await thesisPage.evaluate(() => window.opener), null);
   await thesisPage.close();
   check('ThesisLens appears once after TSRA across six locales/four widths/both themes; native keyboard Visit opens its exact URL safely in a new tab');
+  await ctx.route('https://groundwork-six-ruddy.vercel.app/**', route => route.fulfill({ contentType: 'text/html', body: '<title>Groundwork destination fixture</title>' }));
+  const groundworkLink = page.locator('[data-work-id="groundwork"] a');
+  const originalWorkUrl = page.url();
+  for (const activation of ['pointer', 'keyboard']) {
+    const popup = page.waitForEvent('popup');
+    if (activation === 'keyboard') {
+      await groundworkLink.focus();
+      await page.keyboard.press('Tab');
+      await page.keyboard.press('Shift+Tab');
+      assert.equal(await groundworkLink.evaluate(e => e.matches(':focus-visible') && getComputedStyle(e).outlineStyle === 'solid'), true);
+      await groundworkLink.press('Enter');
+    } else await groundworkLink.click();
+    const destination = await popup;
+    await destination.waitForURL(groundworkUrl, { waitUntil: 'domcontentloaded' });
+    assert.equal(await destination.title(), 'Groundwork destination fixture');
+    assert.equal(await destination.evaluate(() => window.opener), null);
+    assert.equal(page.url(), originalWorkUrl);
+    await destination.close();
+  }
+  check('Groundwork appears once after ThesisLens in six locales/four widths/both themes; pointer and keyboard Visit open the exact URL safely without replacing the portfolio');
   await page.selectOption('#language', 'en');
   await page.locator('.cinematic [data-album]').click();
   await page.waitForURL('**/#album-switzerland');
@@ -833,7 +864,7 @@ try {
   await page.waitForFunction(() => document.querySelector('#dev-output').scrollTop > 0);
   await command('clear');
   await command('ls work');
-  assert.equal(await page.locator('.dev-records > li').count(), 7);
+  assert.equal(await page.locator('.dev-records > li').count(), 8);
   assert.equal(await page.locator('.dev-records a[href="https://relics.quest/#top"]').count(), 1);
   assert.equal(await page.locator('.dev-records a[href=""]').count(), 0);
   assert.ok((await page.locator('.dev-records').textContent()).includes('In development'));
@@ -876,12 +907,12 @@ try {
         await page.locator('[data-command="ls work"]').click();
         assert.equal(await page.locator('.dev-command').last().textContent(), 'rhine / ls work');
         const rows = page.locator('.dev-entry').last().locator('.dev-records > li');
-        assert.equal(await rows.count(), 7);
+        assert.equal(await rows.count(), 8);
         const paths = await rows.evaluateAll(nodes => nodes.map(row => {
           const path = row.querySelector('.dev-path'), title = row.querySelector('.dev-record-name');
           return { label: path.textContent, href: path.getAttribute('href'), name: title.textContent, linked: path.tagName === 'A', target: path.getAttribute('target'), rel: path.getAttribute('rel'), underline: getComputedStyle(path).textDecorationLine, height: path.getBoundingClientRect().height, kind: path.dataset.portfolioTarget };
         }));
-        assert.deepEqual(paths.map(({ label }) => label), ['~/wuweism --open', '~/twin-sparrow', '~/2041', '~/relics --open', '~/odysxi --open', '~/tsra --open', '~/thesislens --open']);
+        assert.deepEqual(paths.map(({ label }) => label), ['~/wuweism --open', '~/twin-sparrow', '~/2041', '~/relics --open', '~/odysxi --open', '~/tsra --open', '~/thesislens --open', '~/groundwork --open']);
         for (const path of paths) {
           assert.equal(path.underline, 'none');
           if (path.linked) { assert.ok(path.height >= 44); assert.equal(path.kind, 'source'); assert.equal(path.target, '_blank'); assert.equal(path.rel, 'noopener noreferrer'); }
@@ -891,6 +922,8 @@ try {
         assert.equal(paths[3].href, relicsUrl);
         assert.equal(paths[6].name, 'ThesisLens');
         assert.equal(paths[6].href, 'https://thesislens.space/');
+        assert.equal(paths[7].name, 'Groundwork');
+        assert.equal(paths[7].href, groundworkUrl);
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
         if (process.env.DEV_PATH_CAPTURE === '1' && locale === 'en' && [1440, 390].includes(width)) {
           await mkdir(output, { recursive: true });
@@ -923,6 +956,19 @@ try {
   assert.equal(await thesisResult.locator('a').getAttribute('href'), 'https://thesislens.space/');
   assert.equal(await page.locator('#quiet-dev').isVisible(), true);
   check('Dev find/open ThesisLens use the shared work record and explicit native source link without automatic external navigation');
+  await command('clear');
+  await command('find groundwork');
+  assert.equal(await page.locator('.dev-records > li').count(), 1);
+  assert.equal(await page.locator('.dev-record-name').textContent(), 'Groundwork');
+  await command('open groundwork');
+  const groundworkResult = page.locator('.dev-entry').last();
+  assert.equal(await groundworkResult.locator('a').textContent(), '~/groundwork --open');
+  assert.equal(await groundworkResult.locator('a').getAttribute('href'), groundworkUrl);
+  assert.equal(await groundworkResult.locator('.dev-record-description').textContent(), COPY.en.groundworkBody);
+  assert.equal(await page.locator('#quiet-dev').isVisible(), true);
+  check('Dev find/open Groundwork use one shared localized work record and an explicit source link');
+  // Restore ThesisLens output for its optional legacy capture.
+  if (thesislensCapture) await command('open thesislens');
   if (thesislensCapture) {
     for (const width of [1440, 390]) {
       await page.setViewportSize({ width, height: 900 });
@@ -1153,7 +1199,9 @@ try {
   const nojsPage = await nojs.newPage();
   await nojsPage.goto(`${origin}/`);
   assert.equal(await nojsPage.locator('#intro-heading').textContent(), COPY.en.title);
-  assert.equal(await nojsPage.locator('.work-row').count(), 7);
+  assert.equal(await nojsPage.locator('.work-row').count(), 8);
+  assert.equal(await nojsPage.locator('[data-work-id="groundwork"] > p').textContent(), COPY.en.groundworkBody);
+  assert.equal(await nojsPage.locator('[data-work-id="groundwork"] a').getAttribute('href'), groundworkUrl);
   assert.equal(await nojsPage.locator('[data-work-id="thesislens"] > p').textContent(), COPY.en.thesislensBody);
   assert.equal(await nojsPage.locator('[data-work-id="thesislens"] a').getAttribute('href'), 'https://thesislens.space/');
   assert.equal(await nojsPage.locator('[data-work-id="relics"] > p').textContent(), COPY.en.relicsBody);
@@ -1399,27 +1447,27 @@ try {
   check('Existing Quiet template URL remains usable; identity returns to the canonical root homepage');
   await alias.close();
 
-  // Exercise native navigation against a bounded fixture, never the live destination.
+  // Real same-tab hero navigation, including the static no-JavaScript fallback.
   for (const width of [1440, 390]) {
     for (const javaScriptEnabled of [true, false]) {
       const mobile = width === 390;
       const theme = mobile ? 'dark' : 'light';
       const footerContext = await context({ javaScriptEnabled, colorScheme: theme, reducedMotion: 'reduce', viewport: { width, height: mobile ? 844 : 900 }, isMobile: mobile, hasTouch: mobile });
       try {
-        await footerContext.route(footerUrl, route => route.fulfill({ contentType: 'text/html', body: '<!doctype html><title>Footer destination fixture</title>' }));
         const footerPage = await footerContext.newPage();
         for (const route of ['/', '/templates/quiet/', '/templates/quiet/notes.html', '/templates/quiet/approach.html']) {
+          const reader = route.endsWith('.html');
+          const destination = `${origin}${reader ? '/' : route}#quiet-hero`;
           for (const activation of ['pointer', 'keyboard']) {
-            await footerPage.goto(`${origin}${route}`);
+            await footerPage.goto(`${origin}${route}${reader ? '' : '#contact'}`);
             if (javaScriptEnabled) await footerPage.locator('.preferences:not([hidden])').waitFor();
             await assertFooterLink(footerPage);
-            const link = footerPage.locator('.page-shell > .footer').getByRole('link', { name: 'Duçem-Ma', exact: true });
-            if (process.env.QUIET_CAPTURE === 'footer' && javaScriptEnabled && route === '/' && activation === 'pointer') {
+            const link = footerPage.locator('.page-shell > .footer').getByRole('link', { name: 'Rhine Tague', exact: true });
+            if ((groundworkCapture || process.env.QUIET_CAPTURE === 'footer') && javaScriptEnabled && route === '/' && activation === 'pointer') {
               await mkdir(output, { recursive: true });
               await link.scrollIntoViewIfNeeded();
-              await screenshot(footerPage, `ducem-footer-${width}-${theme}.png`, false);
+              await screenshot(footerPage, `rhine-footer-${width}-${theme}.png`, false);
             }
-            const destinationPromise = footerContext.waitForEvent('page');
             if (activation === 'keyboard') {
               await footerPage.keyboard.press('Tab');
               await link.focus();
@@ -1427,20 +1475,35 @@ try {
               await link.press('Enter');
             } else if (mobile) await link.tap();
             else await link.click();
-            const destination = await destinationPromise;
-            await destination.waitForURL(footerUrl);
-            assert.equal(destination.url(), footerUrl);
-            assert.equal(await destination.evaluate(() => window.opener), null, 'Destination cannot control the portfolio page');
-            assert.equal(footerPage.url(), `${origin}${route}`, 'Original portfolio/reader stays open');
-            assert.equal(footerContext.pages().length, 2, 'Exactly one separate destination page');
-            await destination.close();
+            await footerPage.waitForURL(destination);
+            await footerPage.waitForFunction(() => Math.abs(document.querySelector('#quiet-hero')?.getBoundingClientRect().top) <= 1);
+            assert.equal(await footerPage.locator('#quiet-hero').isVisible(), true);
+            assert.equal(footerContext.pages().length, 1, 'Hero return never opens another tab');
+            if (javaScriptEnabled && !reader) assert.equal(await footerPage.locator('#intro-heading').evaluate(node => node === document.activeElement), true);
             await assertFooterLink(footerPage);
+          }
+          if (javaScriptEnabled && !reader) {
+            // The hash is already the hero. Repeat clicks and Dev entry must still work.
+            for (const fromDev of [false, true, true]) {
+              if (fromDev) {
+                await revealMobileNavigation(footerPage);
+                await footerPage.locator('#quiet-mode').click();
+                assert.equal(await footerPage.locator('#quiet-dev').isVisible(), true);
+              }
+              await footerPage.locator('[data-hero-return]').click();
+              assert.equal(footerPage.url(), destination);
+              assert.equal(await footerPage.locator('#quiet-gui').isVisible(), true);
+              assert.equal(await footerPage.locator('#quiet-dev').isVisible(), false);
+              assert.equal(await footerPage.locator('#intro-heading').evaluate(node => node === document.activeElement), true);
+              assert.ok(Math.abs(await footerPage.locator('#quiet-hero').evaluate(node => node.getBoundingClientRect().top)) <= 1);
+              assert.equal(footerContext.pages().length, 1);
+            }
           }
         }
       } finally { await footerContext.close(); }
     }
   }
-  check('Duçem-Ma footer opens the exact destination in one separate page with no opener, preserving the original route across click/touch/Enter and all four Quiet entries, with and without JavaScript');
+  check('Rhine Tague footer returns to the hero in the same tab across click/touch/Enter and all four Quiet entries, with/without JavaScript; repeated same-fragment and Dev returns preserve visible hero focus');
 
   const old = await context();
   const oldPage = await old.newPage();

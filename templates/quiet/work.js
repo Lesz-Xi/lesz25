@@ -20,6 +20,11 @@ export function workFor(locale) {
     id: 'thesislens', name: 'ThesisLens', principle: c.thesislensKind, description: c.thesislensBody,
     url: 'https://thesislens.space/', statusKey: '',
   };
-  // Preserve existing order, including Relics after 2041; append the omitted project.
-  return [...original.slice(0, 3), relics, ...original.slice(3), thesislens];
+  const groundwork = {
+    // Public guide describes source-linked explanations, method distinctions and templates.
+    id: 'groundwork', name: 'Groundwork', principle: c.groundworkKind, description: c.groundworkBody,
+    url: 'https://groundwork-six-ruddy.vercel.app/#top', statusKey: '',
+  };
+  // Preserve existing order, including Relics after 2041; append new work.
+  return [...original.slice(0, 3), relics, ...original.slice(3), thesislens, groundwork];
 }

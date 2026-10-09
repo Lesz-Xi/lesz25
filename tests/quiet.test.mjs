@@ -247,10 +247,12 @@ test('Paper pole flag is reserved for the hidden welcome sequence, never the cou
   assert.ok(!read('templates/quiet/styles.css').includes('.location-flag'));
 });
 
-test('Quiet footer links Duçem-Ma to the supplied URL without changing the identity', () => {
+test('Quiet footer returns Rhine Tague to the existing hero without changing the identity', () => {
   for (const path of ['index.html', 'templates/quiet/index.html']) {
     const page = read(path);
-    assert.ok(page.includes('<footer class="footer"><a class="text-link" href="https://dunyadakitap.com/products/ducem-ma-cinius" target="_blank" rel="noopener noreferrer">Duçem-Ma</a></footer>'), path);
+    assert.ok(page.includes('<footer class="footer"><a class="text-link" href="#quiet-hero" data-hero-return>Rhine Tague</a></footer>'), path);
+    assert.ok(page.includes('id="quiet-hero"'), path);
+    assert.ok(!page.includes('dunyadakitap.com') && !page.includes('Duçem-Ma'), path);
     assert.ok(page.includes('<a class="name" href="/">Rhine Tague</a>'), path);
     assert.ok(!page.includes('data-copy="original"'), path);
     assert.ok(!page.includes('Original portfolio'), path);
@@ -258,11 +260,12 @@ test('Quiet footer links Duçem-Ma to the supplied URL without changing the iden
   for (const { code } of LANGUAGES) assert.ok(!Object.hasOwn(COPY[code], 'original'), code);
 });
 
-test('readers keep one article-end return and the linked Duçem-Ma footer', () => {
+test('readers keep one article-end return and the Rhine Tague hero-return footer', () => {
   for (const name of ['notes', 'approach']) {
     const page = read(`templates/quiet/${name}.html`);
     assert.equal((page.match(/>Back to portfolio<\/a>/g) || []).length, 1, name);
-    assert.ok(page.includes('<footer class="footer reader-footer"><a class="text-link" href="https://dunyadakitap.com/products/ducem-ma-cinius" target="_blank" rel="noopener noreferrer">Duçem-Ma</a></footer>'), name);
+    assert.ok(page.includes('<footer class="footer reader-footer"><a class="text-link" href="/#quiet-hero">Rhine Tague</a></footer>'), name);
+    assert.ok(!page.includes('dunyadakitap.com') && !page.includes('Duçem-Ma'), name);
     assert.ok(page.includes('<a class="name" href="/">Rhine Tague</a>'), name);
     assert.equal((page.match(/class="reading-end"/g) || []).length, 1, name);
   }
@@ -475,7 +478,7 @@ test('approach preserves all three original paragraphs and six localized princip
 
 test('Relics belongs once in Selected work and Dev Mode, never in Approach or ocean', () => {
   const href = 'https://relics.quest/#top';
-  const ids = ['wuweism', 'twin-sparrow', '2041', 'relics', 'odysxi', 'tsra', 'thesislens'];
+  const ids = ['wuweism', 'twin-sparrow', '2041', 'relics', 'odysxi', 'tsra', 'thesislens', 'groundwork'];
   for (const { code } of LANGUAGES) {
     setLang(code);
     const records = workFor(code);
@@ -516,8 +519,8 @@ test('ThesisLens is localized once in Selected work and shared Dev records witho
   for (const { code } of LANGUAGES) {
     setLang(code);
     const records = workFor(code);
-    assert.equal(records.length, 7);
-    assert.equal(records.at(-1).id, 'thesislens');
+    assert.equal(records.length, 8);
+    assert.equal(records.at(-2).id, 'thesislens');
     const project = records.find(({ id }) => id === 'thesislens');
     assert.equal(project.name, 'ThesisLens');
     assert.equal(project.url, href);
@@ -544,12 +547,44 @@ test('ThesisLens is localized once in Selected work and shared Dev records witho
   for (const path of ['templates/quiet/notes.html', 'templates/quiet/approach.html', 'templates/ocean/index.html']) assert.ok(!read(path).includes(href));
 });
 
+test('Groundwork is localized once in Selected work and the shared command catalog', () => {
+  const href = 'https://groundwork-six-ruddy.vercel.app/#top';
+  for (const { code } of LANGUAGES) {
+    setLang(code);
+    const records = workFor(code);
+    const project = records.at(-1);
+    assert.equal(project.id, 'groundwork');
+    assert.equal(project.name, 'Groundwork');
+    assert.equal(project.url, href);
+    assert.equal(project.principle, COPY[code].groundworkKind);
+    assert.equal(project.description, COPY[code].groundworkBody);
+    assert.equal(project.statusKey, '');
+    const markup = renderSections(code);
+    const row = markup.match(/<li class="work-row" data-work-id="groundwork">[\s\S]*?<\/li>/)?.[0];
+    assert.ok(row?.includes('<h3>Groundwork</h3>'));
+    assert.ok(row.includes(escapeHtml(project.description)));
+    assert.ok(row.includes(escapeHtml(project.principle)));
+    assert.ok(row.includes(`href="${href}" target="_blank" rel="noopener noreferrer"`));
+    assert.ok(row.includes(`${escapeHtml(t('ui.visit').replace(' →', ''))}${ARROW}</a>`));
+    assert.equal((markup.match(/data-work-id="groundwork"/g) || []).length, 1);
+    assert.equal(catalogFor(code).filter(({ id }) => id === 'groundwork').length, 1);
+    assert.equal(runCommand('find groundwork', code).records[0].href, href);
+    assert.equal(runCommand('open Groundwork', code).records[0].description, project.description);
+    assert.equal(runCommand('open groundwork', code).records[0].href, href);
+    assert.ok(!renderApproach(code).includes(href));
+  }
+  setLang('en');
+  assert.ok(!projects.some(({ url }) => url === href));
+  for (const path of ['index.html', 'templates/quiet/index.html']) assert.ok(read(path).includes('data-work-id="groundwork"'));
+  for (const path of ['templates/quiet/notes.html', 'templates/quiet/approach.html', 'templates/ocean/index.html']) assert.ok(!read(path).includes(href));
+});
+
 test('command catalog preserves source links, statuses, publication kinds and album destinations', () => {
   for (const { code } of LANGUAGES) {
     setLang(code);
     const records = catalogFor(code);
     assert.equal(new Set(records.map(({ id }) => id)).size, records.length);
-    assert.equal(records.filter(({ category }) => category === 'work').length, projects.length + 2);
+    assert.deepEqual(records.filter(({ category }) => category === 'work').map(({ id }) => id), workFor(code).map(({ id }) => id));
     for (const record of [...projects, ...research].filter(({ url }) => url)) assert.ok(records.some(({ href }) => href === record.url));
     for (const album of albums) assert.equal(records.find(({ id }) => id === album.id).href, `#album-${album.id}`);
     assert.equal(records.find(({ id }) => id === 'twin-sparrow').href, '');
@@ -581,7 +616,7 @@ test('Dev paths are display-only labels over the existing commands and record id
 
 test('finite command grammar navigates only known content and never interprets shell or URLs', () => {
   assert.equal(runCommand(' help ', 'en').kind, 'help');
-  assert.equal(runCommand('ls work', 'en').records.length, 7);
+  assert.equal(runCommand('ls work', 'en').records.length, 8);
   assert.equal(runCommand('ls albums', 'en').records.length, 6);
   assert.equal(runCommand('find Twin', 'en').records[0].id, 'twin-sparrow');
   assert.equal(runCommand('open twin-sparrow', 'en').records[0].href, '');

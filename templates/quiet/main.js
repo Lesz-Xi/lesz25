@@ -170,10 +170,22 @@ function navigatePortfolio(href) {
   if (!albumFromHash(href, albums)) {
     // A skip-link hash targets MAIN itself, not the first section inside it.
     const section = document.getElementById(href.slice(1));
-    const heading = section?.tagName === 'SECTION' ? section.querySelector('h2') : null;
-    if (heading) { heading.tabIndex = -1; heading.focus({ preventScroll: true }); heading.scrollIntoView({ block: 'start', behavior: 'instant' }); }
+    const heading = section?.tagName === 'SECTION' ? section.querySelector('h2')
+      : href === '#quiet-hero' ? section?.querySelector('h1') : null;
+    if (heading) {
+      heading.tabIndex = -1;
+      heading.focus({ preventScroll: true });
+      (href === '#quiet-hero' ? section : heading).scrollIntoView({ block: 'start', behavior: 'instant' });
+    }
   }
 }
+// Keep the native fragment fallback; repair same-fragment focus and hidden Dev state.
+document.querySelector('[data-hero-return]')?.addEventListener('click', (event) => {
+  if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+  event.preventDefault();
+  devMode?.exit({ restore: false });
+  navigatePortfolio('#quiet-hero');
+});
 window.addEventListener('hashchange', () => {
   devMode?.exit({ restore: false });
   if (location.hash) navigatePortfolio(location.hash);
