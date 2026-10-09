@@ -3,6 +3,11 @@ import { projects } from '../../src/data.js';
 import { copyFor } from './copy.js';
 
 const PROJECT_IDS = ['wuweism', 'twin-sparrow', '2041', 'odysxi', 'tsra'];
+// Chief's explicit portfolio order, not an inferred release-date ranking.
+const FEATURED_ORDER = Object.freeze([
+  'groundwork', 'odysxi', 'twin-sparrow', '2041', 'relics', 'wuweism', 'tsra', 'thesislens',
+]);
+const FEATURED_PRIORITY = new Map(FEATURED_ORDER.map((id, index) => [id, index]));
 
 export function workFor(locale) {
   const c = copyFor(locale);
@@ -25,6 +30,8 @@ export function workFor(locale) {
     id: 'groundwork', name: 'Groundwork', principle: c.groundworkKind, description: c.groundworkBody,
     url: 'https://groundwork-six-ruddy.vercel.app/#top', statusKey: '',
   };
-  // Preserve existing order, including Relics after 2041; append new work.
-  return [...original.slice(0, 3), relics, ...original.slice(3), thesislens, groundwork];
+  // Sort a new array, never the shared ocean records. Unranked future work stays present at the end.
+  return [...original, relics, thesislens, groundwork].sort((a, b) =>
+    (FEATURED_PRIORITY.get(a.id) ?? FEATURED_ORDER.length)
+      - (FEATURED_PRIORITY.get(b.id) ?? FEATURED_ORDER.length));
 }

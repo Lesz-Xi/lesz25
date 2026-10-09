@@ -476,9 +476,25 @@ test('approach preserves all three original paragraphs and six localized princip
   setLang('en');
 });
 
+test('Selected work follows Chief’s exact order across locales and static entries without changing source records', () => {
+  const ids = ['groundwork', 'odysxi', 'twin-sparrow', '2041', 'relics', 'wuweism', 'tsra', 'thesislens'];
+  const original = structuredClone(projects);
+  for (const { code } of LANGUAGES) {
+    setLang(code);
+    assert.deepEqual(workFor(code).map(({ id }) => id), ids);
+    assert.deepEqual(runCommand('ls work', code).records.map(({ id }) => id), ids);
+    assert.deepEqual([...renderSections(code).matchAll(/data-work-id="([^"]+)"/g)].map(([, id]) => id), ids);
+  }
+  setLang('en');
+  for (const path of ['index.html', 'templates/quiet/index.html']) {
+    assert.deepEqual([...read(path).matchAll(/data-work-id="([^"]+)"/g)].map(([, id]) => id), ids, path);
+  }
+  assert.deepEqual(projects, original, 'Curating Quiet must never mutate ocean/shared project data');
+});
+
 test('Relics belongs once in Selected work and Dev Mode, never in Approach or ocean', () => {
   const href = 'https://relics.quest/#top';
-  const ids = ['wuweism', 'twin-sparrow', '2041', 'relics', 'odysxi', 'tsra', 'thesislens', 'groundwork'];
+  const ids = ['groundwork', 'odysxi', 'twin-sparrow', '2041', 'relics', 'wuweism', 'tsra', 'thesislens'];
   for (const { code } of LANGUAGES) {
     setLang(code);
     const records = workFor(code);
@@ -520,7 +536,7 @@ test('ThesisLens is localized once in Selected work and shared Dev records witho
     setLang(code);
     const records = workFor(code);
     assert.equal(records.length, 8);
-    assert.equal(records.at(-2).id, 'thesislens');
+    assert.equal(records[7].id, 'thesislens');
     const project = records.find(({ id }) => id === 'thesislens');
     assert.equal(project.name, 'ThesisLens');
     assert.equal(project.url, href);
@@ -552,7 +568,7 @@ test('Groundwork is localized once in Selected work and the shared command catal
   for (const { code } of LANGUAGES) {
     setLang(code);
     const records = workFor(code);
-    const project = records.at(-1);
+    const project = records[0];
     assert.equal(project.id, 'groundwork');
     assert.equal(project.name, 'Groundwork');
     assert.equal(project.url, href);

@@ -396,7 +396,7 @@ try {
         assert.deepEqual(await page.locator('#about .about-copy > p').allTextContents(), [c.aboutBody, c.designBody, c.purpose]);
         assert.equal(await page.locator('#about [data-read-approach]').getAttribute('href'), '/templates/quiet/approach.html');
         assert.equal(await page.locator('.work-row').count(), 8);
-        assert.deepEqual(await page.locator('.work-row').evaluateAll(rows => rows.map(row => row.dataset.workId)), ['wuweism', 'twin-sparrow', '2041', 'relics', 'odysxi', 'tsra', 'thesislens', 'groundwork']);
+        assert.deepEqual(await page.locator('.work-row').evaluateAll(rows => rows.map(row => row.dataset.workId)), ['groundwork', 'odysxi', 'twin-sparrow', '2041', 'relics', 'wuweism', 'tsra', 'thesislens']);
         const groundworkRow = page.locator('[data-work-id="groundwork"]');
         assert.equal(await groundworkRow.locator('h3').textContent(), 'Groundwork');
         assert.equal(await groundworkRow.locator('p').textContent(), c.groundworkBody);
@@ -505,7 +505,7 @@ try {
   assert.equal(thesisPage.url(), 'https://thesislens.space/');
   assert.equal(await thesisPage.evaluate(() => window.opener), null);
   await thesisPage.close();
-  check('ThesisLens appears once after TSRA across six locales/four widths/both themes; native keyboard Visit opens its exact URL safely in a new tab');
+  check('ThesisLens appears last across six locales/four widths/both themes; native keyboard Visit opens its exact URL safely in a new tab');
   await ctx.route('https://groundwork-six-ruddy.vercel.app/**', route => route.fulfill({ contentType: 'text/html', body: '<title>Groundwork destination fixture</title>' }));
   const groundworkLink = page.locator('[data-work-id="groundwork"] a');
   const originalWorkUrl = page.url();
@@ -525,7 +525,7 @@ try {
     assert.equal(page.url(), originalWorkUrl);
     await destination.close();
   }
-  check('Groundwork appears once after ThesisLens in six locales/four widths/both themes; pointer and keyboard Visit open the exact URL safely without replacing the portfolio');
+  check('Groundwork leads Selected work in six locales/four widths/both themes; pointer and keyboard Visit open the exact URL safely without replacing the portfolio');
   await page.selectOption('#language', 'en');
   await page.locator('.cinematic [data-album]').click();
   await page.waitForURL('**/#album-switzerland');
@@ -912,18 +912,20 @@ try {
           const path = row.querySelector('.dev-path'), title = row.querySelector('.dev-record-name');
           return { label: path.textContent, href: path.getAttribute('href'), name: title.textContent, linked: path.tagName === 'A', target: path.getAttribute('target'), rel: path.getAttribute('rel'), underline: getComputedStyle(path).textDecorationLine, height: path.getBoundingClientRect().height, kind: path.dataset.portfolioTarget };
         }));
-        assert.deepEqual(paths.map(({ label }) => label), ['~/wuweism --open', '~/twin-sparrow', '~/2041', '~/relics --open', '~/odysxi --open', '~/tsra --open', '~/thesislens --open', '~/groundwork --open']);
+        assert.deepEqual(paths.map(({ label }) => label), ['~/groundwork --open', '~/odysxi --open', '~/twin-sparrow', '~/2041', '~/relics --open', '~/wuweism --open', '~/tsra --open', '~/thesislens --open']);
         for (const path of paths) {
           assert.equal(path.underline, 'none');
           if (path.linked) { assert.ok(path.height >= 44); assert.equal(path.kind, 'source'); assert.equal(path.target, '_blank'); assert.equal(path.rel, 'noopener noreferrer'); }
           else assert.equal(path.href, null);
         }
-        assert.equal(paths[3].name, 'Relics');
-        assert.equal(paths[3].href, relicsUrl);
-        assert.equal(paths[6].name, 'ThesisLens');
-        assert.equal(paths[6].href, 'https://thesislens.space/');
-        assert.equal(paths[7].name, 'Groundwork');
-        assert.equal(paths[7].href, groundworkUrl);
+        assert.equal(paths[4].name, 'Relics');
+        assert.equal(paths[4].href, relicsUrl);
+        assert.equal(paths[1].name, 'Odysxi');
+        assert.equal(paths[1].href, 'https://www.odysxi.com/');
+        assert.equal(paths[7].name, 'ThesisLens');
+        assert.equal(paths[7].href, 'https://thesislens.space/');
+        assert.equal(paths[0].name, 'Groundwork');
+        assert.equal(paths[0].href, groundworkUrl);
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
         if (process.env.DEV_PATH_CAPTURE === '1' && locale === 'en' && [1440, 390].includes(width)) {
           await mkdir(output, { recursive: true });
