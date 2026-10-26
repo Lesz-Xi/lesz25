@@ -196,7 +196,7 @@ test('hero work and email actions are cardless native links in every locale', ()
   const css = read('templates/quiet/styles.css');
   assert.ok(!css.includes('.intro .button'));
   assert.ok(css.includes('.intro .hero-work-link { margin-top: 8px; font-size: 12px; }'));
-  assert.ok(css.includes('.hero-work-link .link-label, .note-read-link .link-label, .email-link .link-label { background-image: linear-gradient(currentColor, currentColor), linear-gradient(var(--muted), var(--muted)); background-size: 0% 1px, 100% 1px; }'));
+  assert.ok(css.includes('.hero-work-link .link-label, .note-read-link .link-label, .email-link .link-label { background-image: linear-gradient(var(--hover-line), var(--hover-line)), linear-gradient(var(--muted), var(--muted)); background-size: 0% 2px, 100% 1px; }'));
 });
 
 test('Quiet portrait precedes the name in every locale and has local provenance', () => {
@@ -649,14 +649,18 @@ test('finite command grammar navigates only known content and never interprets s
   assert.equal(runCommand('exit', 'en').kind, 'exit');
 });
 
-test('section navigation shares the existing accent on hover and keyboard focus', () => {
+test('section navigation turns ink with the yellow hover line on hover and keyboard focus', () => {
   const css = read('templates/quiet/styles.css');
   const rest = css.match(/\.section-nav a \{([^}]+)\}/)?.[1];
   assert.ok(rest?.includes('color: var(--muted)'));
   assert.ok(rest?.includes('min-height: 44px'));
   const feedback = css.match(/\.section-nav a:hover, \.section-nav a:focus-visible \{([^}]+)\}/)?.[1];
-  assert.ok(feedback?.includes('color: var(--accent)'));
+  assert.ok(feedback?.includes('color: var(--ink)'));
   assert.ok(feedback?.includes('text-decoration: none'));
+  assert.ok(css.includes('--hover-line: #f5c857;'));
+  const hoverColours = [...css.matchAll(/([^{}\n]*:hover[^{}]*)\{([^}]*)\}/g)].filter(([, , body]) => /(^|[^-])color:/.test(body));
+  assert.ok(hoverColours.length > 0);
+  for (const [, selector, body] of hoverColours) assert.ok(!body.includes('var(--accent)'), `${selector.trim()} hover is no longer orange`);
   assert.ok(css.includes(':focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }'));
 });
 
@@ -669,9 +673,9 @@ test('navigation hairline and view brackets are label-bound, reversible, decorat
     assert.ok(nav.includes(`<span class="link-label" data-copy="work">${escapeHtml(COPY[code].work)}</span>`));
   }
   const css = read('templates/quiet/styles.css');
-  assert.ok(css.includes('.link-label, .note-title, .hairline-control { background-image: linear-gradient(currentColor, currentColor); background-repeat: no-repeat; background-position: 0 100%; background-size: 0% 1px; transition: background-size 160ms var(--label-ease); }'));
-  assert.ok(css.includes(':is(.section-nav a, .view-control, .text-link, .paper-link, .album-card):focus-visible .link-label, .note-title:focus-visible, .hairline-control:focus-visible { background-size: 100% 1px; transition-duration: 240ms; }'));
-  assert.ok(css.includes(':is(.section-nav a, .view-control, .text-link, .paper-link, .album-card):hover .link-label, .note-title:hover, .hairline-control:hover { background-size: 100% 1px; transition-duration: 240ms; }'));
+  assert.ok(css.includes('.link-label, .note-title, .hairline-control { background-image: linear-gradient(var(--hover-line), var(--hover-line)); background-repeat: no-repeat; background-position: 0 100%; background-size: 0% 2px; transition: background-size 160ms var(--label-ease); }'));
+  assert.ok(css.includes(':is(.section-nav a, .view-control, .text-link, .paper-link, .album-card):focus-visible .link-label, .note-title:focus-visible, .hairline-control:focus-visible { background-size: 100% 2px; transition-duration: 240ms; }'));
+  assert.ok(css.includes(':is(.section-nav a, .view-control, .text-link, .paper-link, .album-card):hover .link-label, .note-title:hover, .hairline-control:hover { background-size: 100% 2px; transition-duration: 240ms; }'));
   assert.ok(css.includes('.link-label, .note-title, .hairline-control { transition-duration: 0ms !important; }'));
   for (const rule of ['.text-link:hover', '.paper-link:hover', '.album-card:hover .album-name', '.note-title:hover, .note-title:focus-visible']) {
     assert.ok(!new RegExp(`${rule.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')} \\{[^}]*text-decoration: underline`).test(css), rule);
@@ -680,7 +684,7 @@ test('navigation hairline and view brackets are label-bound, reversible, decorat
   assert.ok(css.includes('--bracket-offset: 2px; --bracket-opacity: 0; --bracket-time: 160ms;'));
   assert.ok(css.includes('--bracket-offset: 0px; --bracket-opacity: 1; --bracket-time: 240ms;'));
   assert.ok(css.includes('--label-ease: cubic-bezier(0.215, 0.61, 0.355, 1)'));
-  assert.ok(css.includes("content: ''; position: absolute; top: calc(50% - 1px); width: 3px; height: 16px; box-sizing: border-box; color: var(--ink);"));
+  assert.ok(css.includes("content: ''; position: absolute; top: calc(50% - 1.5px); width: 3px; height: 16px; box-sizing: border-box; color: var(--ink);"));
   assert.ok(!css.includes('.view-control:hover .bracket-label') && !css.includes('.view-control:focus-visible .bracket-label'), 'Brackets mark selection only');
   assert.ok(css.includes('pointer-events: none'));
   assert.ok(css.includes('.view-control[aria-pressed=\'true\'] .bracket-label'));

@@ -27,7 +27,7 @@ const line = locator => locator.evaluate(el => {
   const style = getComputedStyle(label);
   const [width, thickness] = style.backgroundSize.split(',')[0].trim().split(' ');
   const box = label.getBoundingClientRect();
-  return { scale: parseFloat(width) / 100, thickness, layers: style.backgroundImage.split('linear-gradient').length - 1, origin: style.backgroundPosition.split(',')[0].trim(), duration: style.transitionDuration, ease: style.transitionTimingFunction, box: [box.x, box.y, box.width, box.height], hit: el.getBoundingClientRect().height, center: box.y + (box.height - parseFloat(style.paddingBottom)) / 2 - (el.getBoundingClientRect().y + el.getBoundingClientRect().height / 2), text: el.textContent, underline: getComputedStyle(el).textDecorationLine, color: getComputedStyle(el).color, noBrackets: el.querySelector('.bracket-label') === null };
+  return { scale: parseFloat(width) / 100, thickness, lineColor: style.backgroundImage.match(/rgb\([^)]+\)/)?.[0], layers: style.backgroundImage.split('linear-gradient').length - 1, origin: style.backgroundPosition.split(',')[0].trim(), duration: style.transitionDuration, ease: style.transitionTimingFunction, box: [box.x, box.y, box.width, box.height], hit: el.getBoundingClientRect().height, center: box.y + (box.height - parseFloat(style.paddingBottom)) / 2 - (el.getBoundingClientRect().y + el.getBoundingClientRect().height / 2), text: el.textContent, underline: getComputedStyle(el).textDecorationLine, color: getComputedStyle(el).color, noBrackets: el.querySelector('.bracket-label') === null };
 });
 const settled = locator => locator.evaluate(async el => {
   const animations = el.getAnimations({ subtree: true });
@@ -53,7 +53,8 @@ try {
         const rest = await line(link);
         assert.equal(rest.scale, 0);
         assert.equal(rest.noBrackets, true, 'Section links no longer carry brackets');
-        assert.equal(rest.thickness, '1px');
+        assert.equal(rest.thickness, '2px');
+        assert.equal(rest.lineColor, 'rgb(245, 200, 87)', 'Hover line uses the yellow token');
         assert.equal(parseFloat(rest.origin.split(' ')[0]), 0, 'Hairline draws and retracts at the label start');
         assert.equal(rest.text, COPY[locale].work);
         assert.ok(rest.hit >= 44 && rest.box[3] < rest.hit);
@@ -66,7 +67,7 @@ try {
         assert.deepEqual(hover.box, rest.box, 'Text and target do not move during hairline response');
         assert.equal(hover.duration, '0.24s');
         assert.equal(hover.ease, 'cubic-bezier(0.215, 0.61, 0.355, 1)');
-        assert.equal(hover.color, theme === 'dark' ? 'rgb(251, 146, 60)' : 'rgb(185, 71, 8)');
+        assert.equal(hover.color, theme === 'dark' ? 'rgb(244, 243, 240)' : 'rgb(36, 36, 36)', 'Hover text turns ink, not orange');
         await clearInput(page);
         await settled(link);
         const exit = await line(link);
@@ -81,7 +82,7 @@ try {
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
       }
     }
-    pass(`${width}px × six locales/two themes: 1px hairline spans the label, 240ms draw/160ms retract; view brackets keep selection; no text shift, selected-state loss or overflow`);
+    pass(`${width}px × six locales/two themes: 2px yellow hairline spans the label, ink hover text, 240ms draw/160ms retract; view brackets keep selection; no text shift, selected-state loss or overflow`);
   }
   await page.selectOption('#language', 'en');
   for (const width of [1440, 390]) {
@@ -154,12 +155,12 @@ try {
       const hovered = await state(control);
       assert.equal((await line(control)).scale, 1, `${id} hover draws the hairline`);
       assert.deepEqual(hovered.opacity, selected ? [1, 1] : [0, 0], `${id} hover does not add or remove brackets`);
-      assert.equal(hovered.color, theme === 'dark' ? 'rgb(251, 146, 60)' : 'rgb(185, 71, 8)');
+      assert.equal(hovered.color, theme === 'dark' ? 'rgb(244, 243, 240)' : 'rgb(36, 36, 36)');
       if (selected) assert.equal(hovered.bracketColor, inkRgb, 'Selected brackets stay neutral ink on hover');
     }
   }
   await clearInput(page);
-  pass('GUI/Dev hover draws the accent hairline; brackets neither appear on the unselected view nor recolour on the selected one, in both themes');
+  pass('GUI/Dev hover turns the label ink and draws the yellow hairline; brackets neither appear on the unselected view nor recolour on the selected one, in both themes');
   pass('Section actions (hero, work, papers, albums, about, note, email, socials) draw the same hairline at desktop/mobile; resting underlines stay muted beneath');
   pass('Measured intermediate hairline scale reverses from current progress under rapid pointer changes and retires at rest; no CSS animation remains');
   await page.locator('#quiet-mode').click();
