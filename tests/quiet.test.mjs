@@ -189,13 +189,14 @@ test('About carries the LinkedIn voice and design foundation as three localized 
 test('hero work and email actions are cardless native links in every locale', () => {
   for (const { code } of LANGUAGES) {
     const hero = renderHero(code);
-    assert.ok(hero.includes(`<a class="text-link hero-work-link" href="#work">${escapeHtml(COPY[code].viewWork)}${ARROW}</a>`), code);
+    assert.ok(hero.includes(`<a class="text-link hero-work-link" href="#work"><span class="link-label">${escapeHtml(COPY[code].viewWork)}</span>${ARROW}</a>`), code);
     assert.ok(!hero.includes('class="button"'), code);
-    assert.ok(renderSections(code).includes(`<a class="text-link email-link" href="${escapeHtml(socials[0].url)}">${escapeHtml(COPY[code].email)}${ARROW}</a>`), code);
+    assert.ok(renderSections(code).includes(`<a class="text-link email-link" href="${escapeHtml(socials[0].url)}"><span class="link-label">${escapeHtml(COPY[code].email)}</span>${ARROW}</a>`), code);
   }
   const css = read('templates/quiet/styles.css');
   assert.ok(!css.includes('.intro .button'));
-  assert.ok(css.includes('.intro .hero-work-link { margin-top: 8px; font-size: 12px; text-decoration: underline;'));
+  assert.ok(css.includes('.intro .hero-work-link { margin-top: 8px; font-size: 12px; }'));
+  assert.ok(css.includes('.hero-work-link .link-label, .note-read-link .link-label, .email-link .link-label { background-image: linear-gradient(currentColor, currentColor), linear-gradient(var(--muted), var(--muted)); background-size: 0% 1px, 100% 1px; }'));
 });
 
 test('Quiet portrait precedes the name in every locale and has local provenance', () => {
@@ -250,7 +251,7 @@ test('Paper pole flag is reserved for the hidden welcome sequence, never the cou
 test('Quiet footer returns Rhine Tague to the existing hero without changing the identity', () => {
   for (const path of ['index.html', 'templates/quiet/index.html']) {
     const page = read(path);
-    assert.ok(page.includes('<footer class="footer"><a class="text-link" href="#quiet-hero" data-hero-return>Rhine Tague</a></footer>'), path);
+    assert.ok(page.includes('<footer class="footer"><a class="text-link" href="#quiet-hero" data-hero-return><span class="link-label">Rhine Tague</span></a></footer>'), path);
     assert.ok(page.includes('id="quiet-hero"'), path);
     assert.ok(!page.includes('dunyadakitap.com') && !page.includes('Duçem-Ma'), path);
     assert.ok(page.includes('<a class="name" href="/">Rhine Tague</a>'), path);
@@ -263,8 +264,8 @@ test('Quiet footer returns Rhine Tague to the existing hero without changing the
 test('readers keep one article-end return and the Rhine Tague hero-return footer', () => {
   for (const name of ['notes', 'approach']) {
     const page = read(`templates/quiet/${name}.html`);
-    assert.equal((page.match(/>Back to portfolio<\/a>/g) || []).length, 1, name);
-    assert.ok(page.includes('<footer class="footer reader-footer"><a class="text-link" href="/#quiet-hero">Rhine Tague</a></footer>'), name);
+    assert.equal((page.match(/>Back to portfolio<\/span><\/a>/g) || []).length, 1, name);
+    assert.ok(page.includes('<footer class="footer reader-footer"><a class="text-link" href="/#quiet-hero"><span class="link-label">Rhine Tague</span></a></footer>'), name);
     assert.ok(!page.includes('dunyadakitap.com') && !page.includes('Duçem-Ma'), name);
     assert.ok(page.includes('<a class="name" href="/">Rhine Tague</a>'), name);
     assert.equal((page.match(/class="reading-end"/g) || []).length, 1, name);
@@ -512,7 +513,7 @@ test('Relics belongs once in Selected work and Dev Mode, never in Approach or oc
     assert.ok(row.includes(escapeHtml(COPY[code].relicsBody)));
     assert.ok(row.includes('<span class="meta">Ex-formation</span>'));
     assert.ok(row.includes(`href="${href}" target="_blank" rel="noopener noreferrer"`));
-    assert.ok(row.includes(`${escapeHtml(t('ui.visit').replace(' →', ''))}${ARROW}</a>`));
+    assert.ok(row.includes(`<span class="link-label">${escapeHtml(t('ui.visit').replace(' →', ''))}</span>${ARROW}</a>`));
     for (const name of ['Twin-Sparrow', '2041', 'Aurelian']) assert.ok(relics.description.includes(name));
     const catalog = catalogFor(code).filter(({ category }) => category === 'work');
     assert.deepEqual(catalog.map(({ id }) => id), ids);
@@ -549,7 +550,7 @@ test('ThesisLens is localized once in Selected work and shared Dev records witho
     assert.ok(row.includes(escapeHtml(project.description)));
     assert.ok(row.includes(escapeHtml(project.principle)));
     assert.ok(row.includes(`href="${href}" target="_blank" rel="noopener noreferrer"`));
-    assert.ok(row.includes(`${escapeHtml(t('ui.visit').replace(' →', ''))}${ARROW}</a>`));
+    assert.ok(row.includes(`<span class="link-label">${escapeHtml(t('ui.visit').replace(' →', ''))}</span>${ARROW}</a>`));
     assert.equal((markup.match(/data-work-id="thesislens"/g) || []).length, 1);
     assert.equal(catalogFor(code).filter(({ id }) => id === 'thesislens').length, 1);
     assert.equal(runCommand('find thesislens', code).records[0].href, href);
@@ -581,7 +582,7 @@ test('Groundwork is localized once in Selected work and the shared command catal
     assert.ok(row.includes(escapeHtml(project.description)));
     assert.ok(row.includes(escapeHtml(project.principle)));
     assert.ok(row.includes(`href="${href}" target="_blank" rel="noopener noreferrer"`));
-    assert.ok(row.includes(`${escapeHtml(t('ui.visit').replace(' →', ''))}${ARROW}</a>`));
+    assert.ok(row.includes(`<span class="link-label">${escapeHtml(t('ui.visit').replace(' →', ''))}</span>${ARROW}</a>`));
     assert.equal((markup.match(/data-work-id="groundwork"/g) || []).length, 1);
     assert.equal(catalogFor(code).filter(({ id }) => id === 'groundwork').length, 1);
     assert.equal(runCommand('find groundwork', code).records[0].href, href);
@@ -659,24 +660,33 @@ test('section navigation shares the existing accent on hover and keyboard focus'
   assert.ok(css.includes(':focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }'));
 });
 
-test('navigation/view bracket motion is label-bound, reversible, decorative and has reduced/touch fallbacks', () => {
+test('navigation hairline and view brackets are label-bound, reversible, decorative and have reduced/touch fallbacks', () => {
   for (const { code } of LANGUAGES) {
     const nav = renderNavigation(code);
-    assert.equal((nav.match(/class="bracket-label"/g) || []).length, 6);
+    assert.equal((nav.match(/class="link-label"/g) || []).length, 6);
+    assert.equal((nav.match(/class="bracket-label"/g) || []).length, 0);
     assert.equal((renderPreferences(code, true).match(/class="bracket-label"/g) || []).length, 2);
-    assert.ok(nav.includes(`<span class="bracket-label" data-copy="work">${escapeHtml(COPY[code].work)}</span>`));
+    assert.ok(nav.includes(`<span class="link-label" data-copy="work">${escapeHtml(COPY[code].work)}</span>`));
   }
   const css = read('templates/quiet/styles.css');
+  assert.ok(css.includes('.link-label, .note-title, .hairline-control { background-image: linear-gradient(currentColor, currentColor); background-repeat: no-repeat; background-position: 0 100%; background-size: 0% 1px; transition: background-size 160ms var(--label-ease); }'));
+  assert.ok(css.includes(':is(.section-nav a, .text-link, .paper-link, .album-card):focus-visible .link-label, .note-title:focus-visible, .hairline-control:focus-visible { background-size: 100% 1px; transition-duration: 240ms; }'));
+  assert.ok(css.includes(':is(.section-nav a, .text-link, .paper-link, .album-card):hover .link-label, .note-title:hover, .hairline-control:hover { background-size: 100% 1px; transition-duration: 240ms; }'));
+  assert.ok(css.includes('.link-label, .note-title, .hairline-control { transition-duration: 0ms !important; }'));
+  for (const rule of ['.text-link:hover', '.paper-link:hover', '.album-card:hover .album-name', '.note-title:hover, .note-title:focus-visible']) {
+    assert.ok(!new RegExp(`${rule.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')} \\{[^}]*text-decoration: underline`).test(css), rule);
+  }
+  assert.ok(!css.includes('.section-nav a:focus-visible .bracket-label') && !css.includes('.section-nav a:hover .bracket-label'));
   assert.ok(css.includes('--bracket-offset: 2px; --bracket-opacity: 0; --bracket-time: 160ms;'));
   assert.ok(css.includes('--bracket-offset: 0px; --bracket-opacity: 1; --bracket-time: 240ms;'));
-  assert.ok(css.includes('--bracket-ease: cubic-bezier(0.215, 0.61, 0.355, 1)'));
+  assert.ok(css.includes('--label-ease: cubic-bezier(0.215, 0.61, 0.355, 1)'));
   assert.ok(css.includes("content: ''; position: absolute; top: 50%; width: 3px; height: 16px;"));
   assert.ok(css.includes('pointer-events: none'));
   assert.ok(css.includes('.view-control[aria-pressed=\'true\'] .bracket-label'));
   assert.ok(!css.includes('.view-control::after'));
   assert.ok(css.includes('--bracket-time: 0ms !important'));
   assert.ok(css.includes('transition: none !important; animation: none !important'));
-  assert.ok(css.includes('.note-read-link, .email-link { font-size: 13px; text-decoration: underline;'));
+  assert.ok(css.includes('.note-read-link, .email-link { font-size: 13px; }'));
   assert.ok(!css.includes('.button {'));
 });
 

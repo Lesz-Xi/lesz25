@@ -368,9 +368,9 @@ try {
         const heroLink = await page.locator('.hero-work-link').evaluate(element => {
           const style = getComputedStyle(element);
           const rect = element.getBoundingClientRect();
-          return { fill: style.backgroundColor, border: style.borderWidth, shadow: style.boxShadow, padding: [style.paddingLeft, style.paddingRight], underline: style.textDecorationLine, height: rect.height, offset: rect.left - element.parentElement.querySelector('h1').getBoundingClientRect().left, href: element.getAttribute('href'), arrow: element.querySelector('svg')?.getAttribute('aria-hidden') };
+          return { fill: style.backgroundColor, border: style.borderWidth, shadow: style.boxShadow, padding: [style.paddingLeft, style.paddingRight], underline: style.textDecorationLine, line: getComputedStyle(element.querySelector('.link-label')).backgroundSize, height: rect.height, offset: rect.left - element.parentElement.querySelector('h1').getBoundingClientRect().left, href: element.getAttribute('href'), arrow: element.querySelector('svg')?.getAttribute('aria-hidden') };
         });
-        assert.deepEqual({ ...heroLink, height: 44 }, { fill: 'rgba(0, 0, 0, 0)', border: '0px', shadow: 'none', padding: ['0px', '0px'], underline: 'underline', height: 44, offset: 0, href: '#work', arrow: 'true' });
+        assert.deepEqual({ ...heroLink, height: 44 }, { fill: 'rgba(0, 0, 0, 0)', border: '0px', shadow: 'none', padding: ['0px', '0px'], underline: 'none', line: '0% 1px, 100% 1px', height: 44, offset: 0, href: '#work', arrow: 'true' });
         assert.ok(heroLink.height >= 44, `${lang} ${width} ${theme}: hero link target`);
         assert.deepEqual(await page.locator('#quiet-sections > section').evaluateAll(nodes => nodes.map(node => node.id)), ['about', 'work', 'photography', 'research', 'notes', 'contact']);
         assert.deepEqual(await page.locator('.section-nav a').evaluateAll(nodes => nodes.map(node => node.getAttribute('href'))), ['#about', '#work', '#photography', '#research', '#notes', '#contact']);
@@ -391,8 +391,8 @@ try {
         assert.equal(await page.locator('.email-link').getAttribute('href'), 'mailto:rhinelesther@gmail.com');
         assert.deepEqual(await page.locator('.email-link, .note-read-link').evaluateAll(nodes => nodes.map(node => {
           const style = getComputedStyle(node);
-          return [style.backgroundColor, style.fontSize, style.textDecorationLine, style.textDecorationThickness, style.textUnderlineOffset, style.paddingLeft, style.paddingRight, style.borderWidth, style.boxShadow, node.getBoundingClientRect().height >= 44];
-        })), [['rgba(0, 0, 0, 0)', '13px', 'underline', 'auto', '5px', '0px', '0px', '0px', 'none', true], ['rgba(0, 0, 0, 0)', '13px', 'underline', 'auto', '5px', '0px', '0px', '0px', 'none', true]], `${lang} ${width} ${theme}: email/read parity`);
+          return [style.backgroundColor, style.fontSize, getComputedStyle(node.querySelector('.link-label')).backgroundSize, style.textDecorationThickness, style.textUnderlineOffset, style.paddingLeft, style.paddingRight, style.borderWidth, style.boxShadow, node.getBoundingClientRect().height >= 44];
+        })), [['rgba(0, 0, 0, 0)', '13px', '0% 1px, 100% 1px', 'auto', '5px', '0px', '0px', '0px', 'none', true], ['rgba(0, 0, 0, 0)', '13px', '0% 1px, 100% 1px', 'auto', '5px', '0px', '0px', '0px', 'none', true]], `${lang} ${width} ${theme}: email/read parity`);
         assert.deepEqual(await page.locator('#about .about-copy > p').allTextContents(), [c.aboutBody, c.designBody, c.purpose]);
         assert.equal(await page.locator('#about [data-read-approach]').getAttribute('href'), '/templates/quiet/approach.html');
         assert.equal(await page.locator('.work-row').count(), 8);
@@ -487,8 +487,8 @@ try {
   assert.equal(relicsPage.url(), relicsUrl);
   await relicsPage.close();
   await page.locator('.relics-link').hover();
-  await page.waitForTimeout(180);
-  assert.equal(await page.locator('.relics-link').evaluate((element) => getComputedStyle(element).textDecorationLine), 'underline');
+  await page.waitForTimeout(280);
+  assert.equal(await page.locator('.relics-link').evaluate((element) => getComputedStyle(element.querySelector('.link-label')).backgroundSize), '100% 1px');
   assert.equal(await page.locator('.relics-link').evaluate((element) => getComputedStyle(element).color), 'rgb(251, 146, 60)');
   check('Relics appears once in Selected work across six locales/four widths/both themes; 44px target, visible focus and native external activation work');
   const thesisLink = page.locator('[data-work-id="thesislens"] a');
@@ -680,16 +680,16 @@ try {
     await page.waitForTimeout(180);
     const email = await page.locator('#contact .email-link').evaluate(element => {
       const style = getComputedStyle(element);
-      return { fill: style.backgroundColor, ink: style.color, underline: style.textDecorationLine, border: style.borderWidth, padding: [style.paddingLeft, style.paddingRight], size: style.fontSize, height: element.getBoundingClientRect().height, href: element.getAttribute('href'), arrow: element.querySelector('svg')?.getAttribute('aria-hidden') };
+      return { fill: style.backgroundColor, ink: style.color, underline: getComputedStyle(element.querySelector('.link-label')).backgroundSize, border: style.borderWidth, padding: [style.paddingLeft, style.paddingRight], size: style.fontSize, height: element.getBoundingClientRect().height, href: element.getAttribute('href'), arrow: element.querySelector('svg')?.getAttribute('aria-hidden') };
     });
-    assert.deepEqual({ ...email, height: 44 }, { fill: 'rgba(0, 0, 0, 0)', ink: theme === 'dark' ? 'rgb(244, 243, 240)' : 'rgb(36, 36, 36)', underline: 'underline', border: '0px', padding: ['0px', '0px'], size: '13px', height: 44, href: 'mailto:rhinelesther@gmail.com', arrow: 'true' });
+    assert.deepEqual({ ...email, height: 44 }, { fill: 'rgba(0, 0, 0, 0)', ink: theme === 'dark' ? 'rgb(244, 243, 240)' : 'rgb(36, 36, 36)', underline: '0% 1px, 100% 1px', border: '0px', padding: ['0px', '0px'], size: '13px', height: 44, href: 'mailto:rhinelesther@gmail.com', arrow: 'true' });
     assert.ok(email.height >= 44);
   }
   check('Email me matches the cardless underlined reading action in both themes, retaining its native mailto, arrow and 44px target');
   await page.locator('#contact .email-link').hover();
-  await page.waitForTimeout(180);
-  const hoverColors = await page.locator('#contact .email-link').evaluate(element => ({ fill: getComputedStyle(element).backgroundColor, ink: getComputedStyle(element).color, underline: getComputedStyle(element).textDecorationLine, line: getComputedStyle(element).textDecorationColor }));
-  assert.deepEqual(hoverColors, { fill: 'rgba(0, 0, 0, 0)', ink: 'rgb(251, 146, 60)', underline: 'underline', line: 'rgb(251, 146, 60)' });
+  await page.waitForTimeout(280);
+  const hoverColors = await page.locator('#contact .email-link').evaluate(element => ({ fill: getComputedStyle(element).backgroundColor, ink: getComputedStyle(element).color, underline: getComputedStyle(element.querySelector('.link-label')).backgroundSize, line: getComputedStyle(element.querySelector('.link-label')).color }));
+  assert.deepEqual(hoverColors, { fill: 'rgba(0, 0, 0, 0)', ink: 'rgb(251, 146, 60)', underline: '100% 1px, 100% 1px', line: 'rgb(251, 146, 60)' });
   check('Email hover accents text and underline without adding a filled button');
   for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: width === 390 ? 844 : 900 });
@@ -732,7 +732,7 @@ try {
       await page.waitForFunction(() => ['done', 'bypassed'].includes(document.documentElement.dataset.entryBoot));
     }
   }
-  check('All six nav links match Dev Mode accent on hover and keyboard focus, replace underline with brackets, preserve global focus and native Enter destinations');
+  check('All six nav links match Dev Mode accent on hover and keyboard focus, draw a label hairline instead of text underline, preserve global focus and native Enter destinations');
   for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: 900 });
     for (const theme of ['light', 'dark']) {
@@ -760,8 +760,8 @@ try {
   await page.mouse.move(0, 0);
   for (const theme of ['light', 'dark']) {
     if (await page.locator('html').getAttribute('data-theme') !== theme) await page.locator('#quiet-theme').click();
-    const linkStyle = await page.locator('[data-read-note]').evaluate((element) => ({ background: getComputedStyle(element).backgroundColor, underline: getComputedStyle(element).textDecorationLine, filled: element.classList.contains('button') }));
-    assert.deepEqual(linkStyle, { background: 'rgba(0, 0, 0, 0)', underline: 'underline', filled: false });
+    const linkStyle = await page.locator('[data-read-note]').evaluate((element) => ({ background: getComputedStyle(element).backgroundColor, underline: getComputedStyle(element.querySelector('.link-label')).backgroundSize, filled: element.classList.contains('button') }));
+    assert.deepEqual(linkStyle, { background: 'rgba(0, 0, 0, 0)', underline: '0% 1px, 100% 1px', filled: false });
     if (previewCapture) {
       const name = `notes-link-${theme}.png`;
       await page.locator('#notes').screenshot({ path: resolve(output, name), animations: 'disabled' });

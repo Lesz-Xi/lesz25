@@ -1,4 +1,4 @@
-// Bracket response/geometry on an existing preview. No install/build/server.
+// Nav hairline and view-bracket response/geometry on an existing preview. No install/build/server.
 import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
@@ -22,6 +22,13 @@ const state = locator => locator.evaluate(el => {
   const box = label.getBoundingClientRect();
   return { opacity: [before.opacity, after.opacity].map(Number), x: [before.transform, after.transform].map(value => new DOMMatrixReadOnly(value).m41), size: [before.width, before.height, after.width, after.height], strokes: [before.borderLeftWidth, before.borderTopWidth, before.borderBottomWidth, after.borderRightWidth, after.borderTopWidth, after.borderBottomWidth], position: [before.left, after.right], duration: before.transitionDuration, ease: before.transitionTimingFunction, decorative: before.content === '""' && after.content === '""' && before.pointerEvents === 'none' && after.pointerEvents === 'none', box: [box.x, box.y, box.width, box.height], hit: el.getBoundingClientRect().height, center: box.y + box.height / 2 - (el.getBoundingClientRect().y + el.getBoundingClientRect().height / 2), text: el.textContent, underline: getComputedStyle(el).textDecorationLine, color: getComputedStyle(el).color };
 });
+const line = locator => locator.evaluate(el => {
+  const label = el.matches('.link-label, .note-title, .hairline-control') ? el : el.querySelector('.link-label');
+  const style = getComputedStyle(label);
+  const [width, thickness] = style.backgroundSize.split(',')[0].trim().split(' ');
+  const box = label.getBoundingClientRect();
+  return { scale: parseFloat(width) / 100, thickness, layers: style.backgroundImage.split('linear-gradient').length - 1, origin: style.backgroundPosition.split(',')[0].trim(), duration: style.transitionDuration, ease: style.transitionTimingFunction, box: [box.x, box.y, box.width, box.height], hit: el.getBoundingClientRect().height, center: box.y + (box.height - parseFloat(style.paddingBottom)) / 2 - (el.getBoundingClientRect().y + el.getBoundingClientRect().height / 2), text: el.textContent, underline: getComputedStyle(el).textDecorationLine, color: getComputedStyle(el).color, noBrackets: el.querySelector('.bracket-label') === null };
+});
 const settled = locator => locator.evaluate(async el => {
   const animations = el.getAnimations({ subtree: true });
   await Promise.all(animations.map(animation => animation.finished.catch(() => {})));
@@ -43,32 +50,28 @@ try {
         if (await page.locator('html').getAttribute('data-theme') !== theme) await page.locator('#quiet-theme').click();
         await clearInput(page);
         const link = page.locator('.section-nav a[href="#work"]');
-        const rest = await state(link);
-        assert.deepEqual(rest.opacity, [0, 0]);
-        assert.deepEqual(rest.x, [-2, 2]);
-        assert.deepEqual(rest.size, ['3px', '16px', '3px', '16px']);
-        assert.deepEqual(rest.strokes, ['1px', '1px', '1px', '1px', '1px', '1px']);
-        assert.deepEqual(rest.position, ['-6px', '-6px']);
-        assert.equal(rest.decorative, true);
+        const rest = await line(link);
+        assert.equal(rest.scale, 0);
+        assert.equal(rest.noBrackets, true, 'Section links no longer carry brackets');
+        assert.equal(rest.thickness, '1px');
+        assert.equal(parseFloat(rest.origin.split(' ')[0]), 0, 'Hairline draws and retracts at the label start');
         assert.equal(rest.text, COPY[locale].work);
         assert.ok(rest.hit >= 44 && rest.box[3] < rest.hit);
         assert.ok(Math.abs(rest.center) < 0.05, 'Intrinsic label stays vertically centered in the original 44px target');
         assert.equal(rest.underline, 'none');
         await link.hover();
         await settled(link);
-        const hover = await state(link);
-        assert.deepEqual(hover.opacity, [1, 1]);
-        assert.deepEqual(hover.x, [0, 0]);
-        assert.deepEqual(hover.box, rest.box, 'Text and target do not move during bracket response');
-        assert.equal(hover.duration, '0.24s, 0.24s');
-        assert.equal(hover.ease, 'cubic-bezier(0.215, 0.61, 0.355, 1), cubic-bezier(0.215, 0.61, 0.355, 1)');
+        const hover = await line(link);
+        assert.equal(hover.scale, 1);
+        assert.deepEqual(hover.box, rest.box, 'Text and target do not move during hairline response');
+        assert.equal(hover.duration, '0.24s');
+        assert.equal(hover.ease, 'cubic-bezier(0.215, 0.61, 0.355, 1)');
         assert.equal(hover.color, theme === 'dark' ? 'rgb(251, 146, 60)' : 'rgb(185, 71, 8)');
         await clearInput(page);
         await settled(link);
-        const exit = await state(link);
-        assert.deepEqual(exit.opacity, [0, 0]);
-        assert.deepEqual(exit.x, [-2, 2]);
-        assert.equal(exit.duration, '0.16s, 0.16s');
+        const exit = await line(link);
+        assert.equal(exit.scale, 0);
+        assert.equal(exit.duration, '0.16s');
         const active = await state(page.locator('#quiet-gui-control'));
         const inactive = await state(page.locator('#quiet-mode'));
         assert.deepEqual(active.opacity, [1, 1]);
@@ -78,7 +81,7 @@ try {
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
       }
     }
-    pass(`${width}px × six locales/two themes: 1px square brackets hug the label, 240ms inward/160ms outward; no text shift, selected-state loss or overflow`);
+    pass(`${width}px × six locales/two themes: 1px hairline spans the label, 240ms draw/160ms retract; view brackets keep selection; no text shift, selected-state loss or overflow`);
   }
   await page.selectOption('#language', 'en');
   for (const width of [1440, 390]) {
@@ -93,28 +96,52 @@ try {
         await page.keyboard.press('Shift+Tab');
         await settled(control);
         assert.equal(await control.evaluate(el => el === document.activeElement && el.matches(':focus-visible') && getComputedStyle(el).outlineStyle === 'solid'), true, `${width}px keyboard ${await control.textContent()}`);
-        assert.deepEqual((await state(control)).opacity, [1, 1]);
+        if (selector === '.section-nav a') assert.equal((await line(control)).scale, 1);
+        else assert.deepEqual((await state(control)).opacity, [1, 1]);
       }
     }
   }
-  pass('All six links and both view buttons expose the same brackets on keyboard focus at desktop/mobile, retaining the global visible outline');
+  pass('All six links draw the hairline and both view buttons show brackets on keyboard focus at desktop/mobile, retaining the global visible outline');
   await page.setViewportSize({ width: 1440, height: 900 });
   await clearInput(page);
   const link = page.locator('.section-nav a[href="#research"]');
   await link.hover();
   await page.waitForTimeout(50);
-  const mid = await state(link);
-  assert.ok(mid.opacity[0] > 0 && mid.opacity[0] < 1 && mid.x[0] > -2 && mid.x[0] < 0);
+  const mid = await line(link);
+  assert.ok(mid.scale > 0 && mid.scale < 1);
   await page.mouse.move(1, 1);
-  const reversed = await state(link);
-  assert.ok(reversed.opacity[0] > 0 && reversed.opacity[0] < 1);
+  const reversed = await line(link);
+  assert.ok(reversed.scale > 0 && reversed.scale < 1 && Math.abs(reversed.scale - mid.scale) < 0.35, 'Reversal continues from current progress');
   await settled(link);
-  assert.deepEqual((await state(link)).opacity, [0, 0]);
+  assert.equal((await line(link)).scale, 0);
   for (let i = 0; i < 3; i++) { await link.hover(); await page.waitForTimeout(20); await page.mouse.move(1, 1); }
   await settled(link);
-  assert.deepEqual((await state(link)).x, [-2, 2]);
+  assert.equal((await line(link)).scale, 0);
   assert.equal(await link.evaluate(el => el.getAnimations({ subtree: true }).length), 0);
-  pass('Measured intermediate transforms/fade reverse from current progress under rapid pointer changes and retire at rest; no CSS animation remains');
+  const actions = ['.hero-work-link', '.work-row .text-link', '.paper-link', '.album-card', '.about-copy .text-link', '.note-title', '.note-read-link', '.email-link', '.social-links a'];
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: 900 });
+    for (const selector of actions) {
+      const action = page.locator(selector).first();
+      await action.scrollIntoViewIfNeeded();
+      await clearInput(page);
+      await settled(action);
+      const before = await line(action);
+      assert.equal(before.scale, 0, selector);
+      assert.equal(before.underline, 'none', `${selector} uses the hairline, not text-decoration`);
+      assert.equal(before.layers, ['.hero-work-link', '.note-read-link', '.email-link'].includes(selector) ? 2 : 1, `${selector} resting underline layer`);
+      await action.hover();
+      await settled(action);
+      const after = await line(action);
+      assert.equal(after.scale, 1, selector);
+      assert.deepEqual(after.box, before.box, `${selector} text does not move`);
+      assert.equal(after.duration, '0.24s', selector);
+    }
+  }
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.evaluate(() => scrollTo(0, 0));
+  pass('Section actions (hero, work, papers, albums, about, note, email, socials) draw the same hairline at desktop/mobile; resting underlines stay muted beneath');
+  pass('Measured intermediate hairline scale reverses from current progress under rapid pointer changes and retires at rest; no CSS animation remains');
   await page.locator('#quiet-mode').click();
   await clearInput(page);
   await settled(page.locator('#quiet-mode'));
@@ -130,9 +157,10 @@ try {
   await page.keyboard.press('Tab');
   await page.keyboard.press('Shift+Tab');
   assert.equal(await link.evaluate(el => el.matches(':focus-visible')), true);
-  assert.deepEqual((await state(link)).opacity, [1, 1]);
-  assert.equal(await link.evaluate(el => getComputedStyle(el.querySelector('.bracket-label'), '::before').transitionDuration), '0s');
-  pass('Live reduced motion retains focused/selected brackets with immediate response and no transition');
+  assert.equal((await line(link)).scale, 1);
+  assert.equal((await line(link)).duration, '0s');
+  assert.equal((await state(page.locator('#quiet-gui-control'))).duration, '0s');
+  pass('Live reduced motion keeps the focused hairline and selected brackets with immediate response and no transition');
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   if (process.env.BRACKET_CAPTURE === '1') {
     for (const width of [1440, 390]) {
@@ -145,7 +173,7 @@ try {
         await target.hover();
         await settled(target);
         await page.waitForTimeout(160);
-        const nav = `brackets-${width}-${theme}.png`;
+        const nav = `nav-hairline-${width}-${theme}.png`;
         await page.screenshot({ path: new URL(nav, output).pathname });
         report.screenshots.push(nav);
         await page.locator('#contact').scrollIntoViewIfNeeded();
