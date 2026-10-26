@@ -20,7 +20,7 @@ const state = locator => locator.evaluate(el => {
   const label = el.querySelector('.bracket-label');
   const before = getComputedStyle(label, '::before'), after = getComputedStyle(label, '::after');
   const box = label.getBoundingClientRect();
-  return { opacity: [before.opacity, after.opacity].map(Number), x: [before.transform, after.transform].map(value => new DOMMatrixReadOnly(value).m41), size: [before.width, before.height, after.width, after.height], strokes: [before.borderLeftWidth, before.borderTopWidth, before.borderBottomWidth, after.borderRightWidth, after.borderTopWidth, after.borderBottomWidth], position: [before.left, after.right], duration: before.transitionDuration, ease: before.transitionTimingFunction, decorative: before.content === '""' && after.content === '""' && before.pointerEvents === 'none' && after.pointerEvents === 'none', box: [box.x, box.y, box.width, box.height], hit: el.getBoundingClientRect().height, center: box.y + box.height / 2 - (el.getBoundingClientRect().y + el.getBoundingClientRect().height / 2), text: el.textContent, underline: getComputedStyle(el).textDecorationLine, color: getComputedStyle(el).color };
+  return { opacity: [before.opacity, after.opacity].map(Number), x: [before.transform, after.transform].map(value => new DOMMatrixReadOnly(value).m41), size: [before.width, before.height, after.width, after.height], strokes: [before.borderLeftWidth, before.borderTopWidth, before.borderBottomWidth, after.borderRightWidth, after.borderTopWidth, after.borderBottomWidth], position: [before.left, after.right], duration: before.transitionDuration, ease: before.transitionTimingFunction, bracketColor: before.borderTopColor, decorative: before.content === '""' && after.content === '""' && before.pointerEvents === 'none' && after.pointerEvents === 'none', box: [box.x, box.y, box.width, box.height], hit: el.getBoundingClientRect().height, center: box.y + box.height / 2 - (el.getBoundingClientRect().y + el.getBoundingClientRect().height / 2), text: el.textContent, underline: getComputedStyle(el).textDecorationLine, color: getComputedStyle(el).color };
 });
 const line = locator => locator.evaluate(el => {
   const label = el.matches('.link-label, .note-title, .hairline-control') ? el : el.querySelector('.link-label');
@@ -96,12 +96,12 @@ try {
         await page.keyboard.press('Shift+Tab');
         await settled(control);
         assert.equal(await control.evaluate(el => el === document.activeElement && el.matches(':focus-visible') && getComputedStyle(el).outlineStyle === 'solid'), true, `${width}px keyboard ${await control.textContent()}`);
-        if (selector === '.section-nav a') assert.equal((await line(control)).scale, 1);
-        else assert.deepEqual((await state(control)).opacity, [1, 1]);
+        assert.equal((await line(control)).scale, 1);
+        if (selector === '.view-control') assert.deepEqual((await state(control)).opacity, await control.getAttribute('aria-pressed') === 'true' ? [1, 1] : [0, 0], 'Focus never adds brackets to an unselected view');
       }
     }
   }
-  pass('All six links draw the hairline and both view buttons show brackets on keyboard focus at desktop/mobile, retaining the global visible outline');
+  pass('All six links and both view buttons draw the hairline on keyboard focus at desktop/mobile; brackets stay on the selected view only; global outline retained');
   await page.setViewportSize({ width: 1440, height: 900 });
   await clearInput(page);
   const link = page.locator('.section-nav a[href="#research"]');
@@ -140,6 +140,26 @@ try {
   }
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.evaluate(() => scrollTo(0, 0));
+  for (const theme of ['light', 'dark']) {
+    if (await page.locator('html').getAttribute('data-theme') !== theme) await page.locator('#quiet-theme').click();
+    const ink = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--ink').trim());
+    const inkRgb = await page.evaluate(value => { const probe = document.createElement('span'); probe.style.color = value; document.body.append(probe); const rgb = getComputedStyle(probe).color; probe.remove(); return rgb; }, ink);
+    for (const id of ['#quiet-mode', '#quiet-gui-control']) {
+      const control = page.locator(id);
+      await clearInput(page);
+      await settled(control);
+      const selected = await control.getAttribute('aria-pressed') === 'true';
+      await control.hover();
+      await settled(control);
+      const hovered = await state(control);
+      assert.equal((await line(control)).scale, 1, `${id} hover draws the hairline`);
+      assert.deepEqual(hovered.opacity, selected ? [1, 1] : [0, 0], `${id} hover does not add or remove brackets`);
+      assert.equal(hovered.color, theme === 'dark' ? 'rgb(251, 146, 60)' : 'rgb(185, 71, 8)');
+      if (selected) assert.equal(hovered.bracketColor, inkRgb, 'Selected brackets stay neutral ink on hover');
+    }
+  }
+  await clearInput(page);
+  pass('GUI/Dev hover draws the accent hairline; brackets neither appear on the unselected view nor recolour on the selected one, in both themes');
   pass('Section actions (hero, work, papers, albums, about, note, email, socials) draw the same hairline at desktop/mobile; resting underlines stay muted beneath');
   pass('Measured intermediate hairline scale reverses from current progress under rapid pointer changes and retires at rest; no CSS animation remains');
   await page.locator('#quiet-mode').click();

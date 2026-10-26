@@ -100,7 +100,7 @@ export function renderNote(locale) {
   return `<div class="reading-layout">
     <aside class="reading-rail"><a class="text-link" href="/#notes"><span class="link-label" data-copy="notesHeading">${escapeHtml(c.notesHeading)}</span></a></aside>
     <article class="reading-article" lang="en" aria-labelledby="note-title">
-      <header class="reading-header"><h1 id="note-title">${title}</h1><div class="reading-meta"><span>Rhine Tague</span><span>${date}</span><span data-copy="noteLanguage" lang="${escapeHtml(locale)}">${escapeHtml(c.noteLanguage)}</span></div></header>
+      <header class="reading-header"><h1 id="note-title">${title}</h1><div class="reading-meta"><span>Rhine Tague</span><span>${date}</span></div></header>
       <div class="note-body">${body}</div>
       <footer class="reading-end"><a class="text-link" href="/#notes" lang="${escapeHtml(locale)}"><span class="link-label" data-copy="backPortfolio">${escapeHtml(c.backPortfolio)}</span></a>${ARROW}</footer>
     </article>

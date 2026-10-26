@@ -100,16 +100,17 @@ section, #album-heading { scroll-margin-top: 32px; }
 .link-label, .note-title { padding-bottom: 2px; margin-bottom: -2px; }
 .hairline-control { background-origin: content-box; background-position: 0 calc(100% + 2px); }
 .hero-work-link .link-label, .note-read-link .link-label, .email-link .link-label { background-image: linear-gradient(currentColor, currentColor), linear-gradient(var(--muted), var(--muted)); background-size: 0% 1px, 100% 1px; }
-:is(.section-nav a, .text-link, .paper-link, .album-card):focus-visible .link-label, .note-title:focus-visible, .hairline-control:focus-visible { background-size: 100% 1px; transition-duration: 240ms; }
-/* Square brackets are reserved for explicit view selection. */
+:is(.section-nav a, .view-control, .text-link, .paper-link, .album-card):focus-visible .link-label, .note-title:focus-visible, .hairline-control:focus-visible { background-size: 100% 1px; transition-duration: 240ms; }
+/* Square brackets mean only the selected view: neutral ink at rest, unchanged by
+   hover or focus, which draw the shared hairline instead. The -1px recentres them
+   on the text above the label's 2px hairline paint padding. */
 .bracket-label { position: relative; display: inline-flex; --bracket-offset: 2px; --bracket-opacity: 0; --bracket-time: 160ms; }
-.bracket-label::before, .bracket-label::after { content: ''; position: absolute; top: 50%; width: 3px; height: 16px; box-sizing: border-box; border-block: 1px solid currentColor; opacity: var(--bracket-opacity); pointer-events: none; transition: transform var(--bracket-time) var(--label-ease), opacity var(--bracket-time) var(--label-ease); }
+.bracket-label::before, .bracket-label::after { content: ''; position: absolute; top: calc(50% - 1px); width: 3px; height: 16px; box-sizing: border-box; color: var(--ink); border-block: 1px solid currentColor; opacity: var(--bracket-opacity); pointer-events: none; transition: transform var(--bracket-time) var(--label-ease), opacity var(--bracket-time) var(--label-ease); }
 .bracket-label::before { left: -6px; border-left: 1px solid currentColor; transform: translate(calc(-1 * var(--bracket-offset)), -50%); }
 .bracket-label::after { right: -6px; border-right: 1px solid currentColor; transform: translate(var(--bracket-offset), -50%); }
-.view-control:focus-visible .bracket-label, .view-control[aria-pressed='true'] .bracket-label { --bracket-offset: 0px; --bracket-opacity: 1; --bracket-time: 240ms; }
+.view-control[aria-pressed='true'] .bracket-label { --bracket-offset: 0px; --bracket-opacity: 1; --bracket-time: 240ms; }
 @media (hover: hover) {
-  :is(.section-nav a, .text-link, .paper-link, .album-card):hover .link-label, .note-title:hover, .hairline-control:hover { background-size: 100% 1px; transition-duration: 240ms; }
-  .view-control:hover .bracket-label { --bracket-offset: 0px; --bracket-opacity: 1; --bracket-time: 240ms; }
+  :is(.section-nav a, .view-control, .text-link, .paper-link, .album-card):hover .link-label, .note-title:hover, .hairline-control:hover { background-size: 100% 1px; transition-duration: 240ms; }
 }
 @media (hover: none) {
   .bracket-label { --bracket-time: 0ms !important; }
