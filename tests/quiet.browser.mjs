@@ -234,8 +234,12 @@ try {
   assert.equal(await page.locator('.switch-track, .switch-thumb, [role="switch"]').count(), 0);
   assert.equal(await page.locator('#quiet-gui-control').getAttribute('aria-pressed'), 'true');
   assert.equal(await page.locator('#quiet-mode').getAttribute('aria-pressed'), 'false');
-  assert.equal(await page.locator('#quiet-theme .theme-icon-light').isVisible(), true);
-  assert.equal(await page.locator('#quiet-theme .theme-icon-dark').isVisible(), false);
+  const sunY = () => page.locator('#quiet-theme .theme-sun').evaluate(el => new DOMMatrixReadOnly(getComputedStyle(el).transform === 'none' ? undefined : getComputedStyle(el).transform).m42);
+  const raysOpacity = () => page.locator('#quiet-theme .theme-rays path').first().evaluate(el => Number(getComputedStyle(el).opacity));
+  const settleIcon = () => page.locator('#quiet-theme').evaluate(el => Promise.all(el.getAnimations({ subtree: true }).map(a => a.finished.catch(() => {}))));
+  assert.equal(await page.locator('#quiet-theme .theme-icon').isVisible(), true);
+  assert.equal(await sunY(), 0, 'Light theme: the sun is up');
+  assert.equal(await raysOpacity(), 1);
   for (const selector of ['#quiet-gui-control', '#quiet-mode', '#quiet-theme']) {
     const size = await page.locator(selector).boundingBox();
     assert.ok(size.width >= 44 && size.height >= 44, selector);
@@ -243,11 +247,12 @@ try {
   await page.locator('#quiet-theme').focus();
   await page.keyboard.press('Space');
   assert.equal(await page.locator('html').getAttribute('data-theme'), 'dark');
-  assert.equal(await page.locator('#quiet-theme .theme-icon-dark').isVisible(), true);
-  assert.equal(await page.locator('#quiet-theme .theme-icon-light').isVisible(), false);
+  await settleIcon();
+  assert.equal(await sunY(), 54, 'Dark theme: the sun has set behind the horizon');
+  assert.equal(await raysOpacity(), 0);
   await page.keyboard.press('Space');
   assert.equal(await page.locator('html').getAttribute('data-theme'), 'light');
-  check('Cardless GUI/Dev buttons expose selected state; one theme icon is visible; all controls retain 44px targets and Space-key operation');
+  check('Cardless GUI/Dev buttons expose selected state; the sun-horizon mark sets in dark and rises in light; all controls retain 44px targets and Space-key operation');
   // Native selects can match :focus-visible after a mouse choice. Do not
   // replace the native picker or blur it to hide the enclosing focus frame.
   const languageCue = async (targetPage) => targetPage.locator('#language').evaluate(element => {

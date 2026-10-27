@@ -454,8 +454,10 @@ test('cardless view buttons and single theme icon have native pressed-state sema
     assert.ok(controls.includes('role="group" aria-label="' + escapeHtml(COPY[code].viewLabel) + '"'));
     assert.ok(controls.includes('aria-label="' + escapeHtml(COPY[code].devLabel) + '"'));
     assert.ok(controls.includes('aria-controls="quiet-dev"'));
-    assert.ok(controls.includes('theme-icon-light'));
-    assert.ok(controls.includes('theme-icon-dark'));
+    assert.ok(controls.includes('<span class="theme-icon" aria-hidden="true">'));
+    assert.equal((controls.match(/class="theme-sun"/g) || []).length, 1);
+    assert.ok(controls.includes('<clipPath id="quiet-theme-sky"><rect width="256" height="156"/></clipPath>'));
+    assert.ok(!controls.includes('theme-icon-light') && !controls.includes('theme-icon-dark'));
     assert.ok(!renderPreferences(code).includes('id="quiet-mode"'));
     const mode = renderDevMode(code);
     assert.ok(mode.includes('role="log"'));

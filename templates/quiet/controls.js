@@ -4,8 +4,9 @@ import { copyFor } from './copy.js';
 import { escapeHtml } from './render.js';
 import { DEV_SHORTCUTS } from './dev-labels.js';
 
-const sun = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.4"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3M5 5l2 2m10 10 2 2M5 19l2-2M17 7l2-2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>';
-const moon = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true"><path d="M20 15.5A8.5 8.5 0 0 1 8.5 4 8.5 8.5 0 1 0 20 15.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>';
+// Phosphor Light "sun-horizon" (MIT, @phosphor-icons/core 2.1.1), redrawn in parts for
+// XI Pro Motion Lab so the sun can set: one sun group clipped at the horizon.
+const sunHorizon = '<svg viewBox="0 0 256 256" width="20" height="20" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" aria-hidden="true" focusable="false"><defs><clipPath id="quiet-theme-sky"><rect width="256" height="156"/></clipPath></defs><g clip-path="url(#quiet-theme-sky)"><g class="theme-sun"><circle cx="128" cy="144" r="64"/><g class="theme-rays"><path d="M80,40l8,16"/><path d="M24,96l16,8"/><path d="M232,96l-16,8"/><path d="M176,40l-8,16"/></g></g></g><path d="M16,160H240"/><path d="M48,200H208"/></svg>';
 
 export function renderNavigation(locale) {
   const c = copyFor(locale);
@@ -23,7 +24,7 @@ export function renderPreferences(locale, dev = false) {
     ${LANGUAGES.map(({ code, label, short }) => `<option value="${escapeHtml(code)}" lang="${escapeHtml(code)}">${escapeHtml(code === 'zh' || code === 'ja' ? label : short)}</option>`).join('')}
   </select></label>
 ${dev ? `<div class="mode-controls" role="group" aria-label="${escapeHtml(c.viewLabel)}"><button type="button" class="view-control" id="quiet-gui-control" aria-pressed="true" aria-controls="quiet-gui" aria-label="${escapeHtml(c.guiLabel)}"><span class="bracket-label link-label">GUI</span></button><button type="button" class="view-control" id="quiet-mode" aria-pressed="false" aria-controls="quiet-dev" aria-label="${escapeHtml(c.devLabel)}"><span class="bracket-label link-label">Dev Mode</span></button></div>` : ''}
-  <button type="button" class="theme-control" id="quiet-theme" aria-pressed="false" aria-label="${escapeHtml(c.theme)}: ${escapeHtml(c.dark)}"><span class="theme-icon-light" aria-hidden="true">${sun}</span><span class="theme-icon-dark" aria-hidden="true">${moon}</span><span class="sr-only" data-theme-label>${escapeHtml(c.light)}</span></button>`;
+  <button type="button" class="theme-control" id="quiet-theme" aria-pressed="false" aria-label="${escapeHtml(c.theme)}: ${escapeHtml(c.dark)}"><span class="theme-icon" aria-hidden="true">${sunHorizon}</span><span class="sr-only" data-theme-label>${escapeHtml(c.light)}</span></button>`;
 }
 
 export function renderDevMode(locale) {
