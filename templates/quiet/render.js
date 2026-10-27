@@ -29,7 +29,7 @@ export function renderHero(locale) {
   </section>
   <figure class="cinematic">
     <div class="cinematic-frame"><img src="/quiet/switzerland-wide.webp" srcset="/quiet/switzerland-wide-small.webp 768w, /quiet/switzerland-wide.webp 1440w" sizes="(max-width: 700px) calc(100vw - 40px), (max-width: 1040px) calc(100vw - 212px), (max-width: 1280px) calc(100vw - 292px), 988px" width="1440" height="720" alt="${escapeHtml(c.heroAlt)}" fetchpriority="high" decoding="async"></div>
-    <figcaption><span>${escapeHtml(t('album.switzerland.place'))}<span class="caption-separator" aria-hidden="true"> / </span>2022</span><a class="text-link" href="/#photography" data-album="switzerland"><span class="link-label">${escapeHtml(c.viewAlbum)}</span>${ARROW}</a></figcaption>
+    <figcaption><span>${escapeHtml(t('hero.place'))}<span class="caption-separator" aria-hidden="true"> / </span>2022</span><a class="text-link" href="/#photography" data-album="switzerland"><span class="link-label">${escapeHtml(c.viewAlbum)}</span>${ARROW}</a></figcaption>
   </figure>`;
 }
 

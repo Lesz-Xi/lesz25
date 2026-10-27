@@ -96,7 +96,8 @@ const STRINGS = {
     'career.10.note': 'Building, seeing, asking why',
 
     'album.switzerland.title': 'Alpine Serenity',
-    'album.switzerland.place': 'Zug, Switzerland',
+    'album.switzerland.place': 'Switzerland',
+    'hero.place': 'Oswalden, Switzerland',
     'album.paris.title': 'City of Light(s)',
     'album.paris.place': 'Paris',
     'album.nature.title': 'Nature',
@@ -194,7 +195,8 @@ const STRINGS = {
     'career.10.note': 'Bauen, sehen, nach dem Warum fragen',
 
     'album.switzerland.title': 'Alpine Stille',
-    'album.switzerland.place': 'Zug, Schweiz',
+    'album.switzerland.place': 'Schweiz',
+    'hero.place': 'Oswalden, Schweiz',
     'album.paris.title': 'Stadt des Lichts',
     'album.paris.place': 'Paris',
     'album.nature.title': 'Natur',
@@ -292,7 +294,8 @@ const STRINGS = {
     'career.10.note': 'Construire, voir, demander pourquoi',
 
     'album.switzerland.title': 'Sérénité alpine',
-    'album.switzerland.place': 'Zoug, Suisse',
+    'album.switzerland.place': 'Suisse',
+    'hero.place': 'Oswalden, Suisse',
     'album.paris.title': 'Ville Lumière',
     'album.paris.place': 'Paris',
     'album.nature.title': 'Nature',
@@ -390,7 +393,8 @@ const STRINGS = {
     'career.10.note': 'Costruire, vedere, chiedere perché',
 
     'album.switzerland.title': 'Serenità alpina',
-    'album.switzerland.place': 'Zugo, Svizzera',
+    'album.switzerland.place': 'Svizzera',
+    'hero.place': 'Oswalden, Svizzera',
     'album.paris.title': 'Città della luce',
     'album.paris.place': 'Parigi',
     'album.nature.title': 'Natura',
@@ -488,7 +492,8 @@ const STRINGS = {
     'career.10.note': '建造、观看、追问为何',
 
     'album.switzerland.title': '阿尔卑斯的宁静',
-    'album.switzerland.place': '瑞士，楚格',
+    'album.switzerland.place': '瑞士',
+    'hero.place': '瑞士，Oswalden',
     'album.paris.title': '光之城',
     'album.paris.place': '巴黎',
     'album.nature.title': '自然',
@@ -585,7 +590,8 @@ const STRINGS = {
     'career.10.note': '作る、見る、なぜを問う',
 
     'album.switzerland.title': 'アルプスの静けさ',
-    'album.switzerland.place': 'スイス、ツーク',
+    'album.switzerland.place': 'スイス',
+    'hero.place': 'スイス、Oswalden',
     'album.paris.title': '光の街',
     'album.paris.place': 'パリ',
     'album.nature.title': '自然',
