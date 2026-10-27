@@ -675,6 +675,13 @@ test('navigation hairline and view brackets are label-bound, reversible, decorat
   assert.ok(css.includes(':is(.section-nav a, .view-control, .text-link, .paper-link, .album-card):focus-visible .link-label, .note-title:focus-visible, .hairline-control:focus-visible { background-size: 100% 1px; transition-duration: 240ms; }'));
   assert.ok(css.includes(':is(.section-nav a, .view-control, .text-link, .paper-link, .album-card):hover .link-label, .note-title:hover, .hairline-control:hover { background-size: 100% 1px; transition-duration: 240ms; }'));
   assert.ok(css.includes('.link-label, .note-title, .hairline-control { transition-duration: 0ms !important; }'));
+  for (const { code } of LANGUAGES) {
+    const dev = renderDevMode(code);
+    assert.ok(dev.includes('<button type="button" class="text-control hairline-control" data-dev-exit data-copy="devBack">'), `${code}: Return to GUI draws the GUI hairline`);
+    assert.ok(!/class="[^"]*hairline-control[^"]*" data-copy="devRun"|data-copy="devRun"[^>]*hairline-control/.test(dev), `${code}: Run keeps the terminal's colour-only hover`);
+  }
+  const underlineOnHover = [...css.matchAll(/([^{}\n]*:hover[^{}]*)\{([^}]*)\}/g)].filter(([, , body]) => /text-decoration:\s*underline/.test(body)).map(([, selector]) => selector.trim());
+  assert.deepEqual(underlineOnHover, [], 'No hover rule snaps a plain text underline any more');
   for (const rule of ['.text-link:hover', '.paper-link:hover', '.album-card:hover .album-name', '.note-title:hover, .note-title:focus-visible']) {
     assert.ok(!new RegExp(`${rule.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')} \\{[^}]*text-decoration: underline`).test(css), rule);
   }

@@ -160,6 +160,22 @@ try {
   }
   await clearInput(page);
   pass('GUI/Dev hover draws the accent hairline; brackets neither appear on the unselected view nor recolour on the selected one, in both themes');
+  await page.locator('#quiet-mode').click();
+  await page.locator('#quiet-dev').waitFor();
+  for (const [selector, drawn] of [['[data-dev-exit]', true], ['#dev-form button[type="submit"]', false]]) {
+    const control = page.locator(selector);
+    await clearInput(page);
+    await control.hover();
+    await settled(control);
+    const hovered = await control.evaluate(el => { const style = getComputedStyle(el); return { size: style.backgroundSize.split(',')[0].trim(), image: style.backgroundImage, underline: style.textDecorationLine }; });
+    assert.equal(hovered.underline, 'none', `${selector} never snaps a text underline`);
+    if (drawn) assert.equal(hovered.size, '100% 1px', 'Return to GUI draws the GUI hairline');
+    else assert.equal(hovered.image, 'none', 'Run keeps the terminal colour-only hover');
+  }
+  await page.locator('[data-dev-exit]').click();
+  await page.locator('#quiet-dev').waitFor({ state: 'hidden' });
+  await clearInput(page);
+  pass('Dev Mode: Return to GUI draws the hairline; Run inside the terminal changes colour only; neither snaps a text underline');
   pass('Section actions (hero, work, papers, albums, about, note, email, socials) draw the same hairline at desktop/mobile; resting underlines stay muted beneath');
   pass('Measured intermediate hairline scale reverses from current progress under rapid pointer changes and retires at rest; no CSS animation remains');
   await page.locator('#quiet-mode').click();

@@ -30,7 +30,7 @@ ${dev ? `<div class="mode-controls" role="group" aria-label="${escapeHtml(c.view
 export function renderDevMode(locale) {
   const c = copyFor(locale);
   return `<section id="quiet-dev" class="dev-surface" aria-labelledby="dev-title" hidden>
-    <header class="dev-heading"><h1 id="dev-title">${escapeHtml(c.devTitle)}</h1><button type="button" class="text-control" data-dev-exit data-copy="devBack">${escapeHtml(c.devBack)}</button></header>
+    <header class="dev-heading"><h1 id="dev-title">${escapeHtml(c.devTitle)}</h1><button type="button" class="text-control hairline-control" data-dev-exit data-copy="devBack">${escapeHtml(c.devBack)}</button></header>
     <p class="dev-boundary" data-copy="devBoundary">${escapeHtml(c.devBoundary)}</p>
     <div class="dev-terminal">
       <p class="dev-intro" data-copy="devIntro">${escapeHtml(c.devIntro)}</p>
