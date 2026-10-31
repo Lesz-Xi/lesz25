@@ -40,6 +40,53 @@
         ? preference : matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     })();
   </script>
+  <!-- Only the hero owns an entrance. The rest of the page is never covered. -->
+  <style>
+    html[data-hero-boot] #quiet-hero .cinematic img { clip-path: inset(48% 44% 48% 44%); animation: hero-mask-fail-open 2200ms step-end forwards; }
+    html[data-hero-boot] #quiet-hero .intro h1 { transform: translateY(8px); animation: hero-text-fail-open 2200ms step-end forwards; }
+    html[data-hero-boot] #quiet-hero .intro > p { transform: translateY(4px); animation: hero-text-fail-open 2200ms step-end forwards; }
+    @keyframes hero-mask-fail-open { to { clip-path: none; } }
+    @keyframes hero-text-fail-open { to { transform: none; } }
+    @media (prefers-reduced-motion: reduce) {
+      html[data-hero-boot] #quiet-hero .cinematic img { clip-path: none; animation: none; }
+      html[data-hero-boot] #quiet-hero .intro h1, html[data-hero-boot] #quiet-hero .intro > p { transform: none; animation: none; }
+    }
+  </style>
+  <script>
+    (() => {
+      const root = document.documentElement;
+      const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+      if (location.hash || document.hidden || reduced.matches
+        || performance.getEntriesByType('navigation')[0]?.type === 'back_forward'
+        || typeof Element.prototype.animate !== 'function'
+        || !CSS.supports('clip-path', 'inset(48% 44% 48% 44%)')) return;
+      root.dataset.heroBoot = 'pending';
+      const controller = new AbortController();
+      const stop = () => {
+        if (root.dataset.heroBoot !== 'pending') return;
+        delete root.dataset.heroBoot;
+        root.dataset.heroReveal = 'bypassed';
+      };
+      // Slow/missing JS or image decode never causes a late re-collapse.
+      const deadline = setTimeout(stop, 900);
+      for (const event of ['keydown', 'pointerdown', 'click', 'wheel', 'touchstart', 'touchmove']) {
+        document.addEventListener(event, stop, { capture: true, passive: true, signal: controller.signal });
+      }
+      for (const event of ['scroll', 'resize', 'hashchange', 'popstate', 'pagehide']) {
+        window.addEventListener(event, stop, { passive: true, signal: controller.signal });
+      }
+      document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); }, { signal: controller.signal });
+      reduced.addEventListener('change', () => { if (reduced.matches) stop(); }, { signal: controller.signal });
+      const observer = new MutationObserver(() => {
+        if (root.dataset.heroBoot !== 'pending') {
+          clearTimeout(deadline);
+          controller.abort();
+          observer.disconnect();
+        }
+      });
+      observer.observe(root, { attributes: true, attributeFilter: ['data-hero-boot'] });
+    })();
+  </script>
   <link rel="stylesheet" href="/templates/quiet/styles.css">
 </head>
 <body>
@@ -48,7 +95,7 @@
   OWN-WORLD: Ellipsis label/content grid, 1px rules, mono typography, slate-to-orange controls; Conductor-informed neutral themes.
   STORY: Meet Rhine, inspect the work, explore the photographs, examine the papers, read the notes, then make contact.
   FIRST VIEWPORT: 1200px shell, 180px identity rail, 32px introduction, and one 2:1 photograph; action beside the introduction.
-  FORM: User-approved synthesis overrides seed 9df07a23. Readman supplies the wide framed image, not its toolbar. Native scroll from first paint; no welcome sequence, section reveals or loops.
+  FORM: User-approved synthesis overrides seed 9df07a23. Readman supplies the wide framed image, not its toolbar. Native scroll from first paint with one optional horizontal hero-photo reveal; no welcome sequence, section reveals or loops.
   FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
   -->
   <a class="skip-link" href="#main" data-copy="skip">Skip to content</a>

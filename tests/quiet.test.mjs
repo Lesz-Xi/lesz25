@@ -243,7 +243,8 @@ test('No welcome sequence or inline flag; the Paper flag asset keeps its provena
     assert.ok(!read(path).includes('data-entry-boot'));
   }
   assert.ok(!read('templates/quiet/styles.css').includes('.entry-intro'));
-  assert.ok(!read('templates/quiet/main.js').includes('entry-intro') && !read('templates/quiet/main.js').includes('hero-reveal'));
+  assert.ok(!read('templates/quiet/main.js').includes('entry-intro'));
+  assert.ok(read('templates/quiet/main.js').includes("import('./hero-reveal.js')"));
   assert.ok(!read('templates/quiet/styles.css').includes('.location-flag'));
 });
 

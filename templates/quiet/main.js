@@ -15,6 +15,7 @@ let activeAlbum = null;
 let photoIndex = 0;
 let lastAlbumTrigger = null;
 let devMode = null;
+let heroReveal = null;
 initMobileMenu({ beforeNavigate: () => devMode?.exit({ restore: false }) });
 let photoRequest = 0;
 const photoLoader = createPhotoLoader();
@@ -112,6 +113,7 @@ function closeAlbum() {
 }
 
 function paintPage() {
+  heroReveal?.dispose('language');
   const locale = getLang();
   const c = copyFor(locale);
   const oldAlbum = activeAlbum;
@@ -191,5 +193,20 @@ window.addEventListener('hashchange', () => {
 });
 onLangChange(paintPage);
 paintPage();
-devMode = initDevMode({ navigate: navigatePortfolio, setTheme, beforeEnter: () => { preview.close({ restoreFocus: false }); } });
+devMode = initDevMode({ navigate: navigatePortfolio, setTheme, beforeEnter: () => { heroReveal?.dispose('mode'); preview.close({ restoreFocus: false }); } });
 if (albumFromHash(location.hash, albums)) syncAlbum({ focus: true });
+// Optional enhancement: no flag, welcome cover, greeting or page-input gate.
+import('./hero-reveal.js').then(({ createHeroReveal }) => {
+  const root = document.documentElement;
+  if (root.dataset.heroBoot !== 'pending' || performance.now() >= 900) {
+    delete root.dataset.heroBoot;
+    return;
+  }
+  heroReveal = createHeroReveal();
+  heroReveal.ready.then(() => {
+    if (root.dataset.heroBoot !== 'pending' || performance.now() >= 900) { heroReveal.dispose('startup-expired'); return; }
+    if (heroReveal.prepare() && heroReveal.play()) root.dataset.heroBoot = 'playing';
+  }).catch(() => heroReveal.dispose('failure'));
+}).catch(() => {
+  delete document.documentElement.dataset.heroBoot;
+});
