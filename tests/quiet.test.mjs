@@ -19,7 +19,7 @@ const { catalogFor, runCommand } = await import('../templates/quiet/commands.js'
 const { workFor } = await import('../templates/quiet/work.js');
 const { renderPreferences, renderDevMode, renderNavigation } = await import('../templates/quiet/controls.js');
 const { LANGUAGES, setLang, t } = await import('../src/i18n.js');
-const { renderHero, renderSections, renderNote, renderLightbox, renderApproach, renderEntryIntro, escapeHtml, ARROW } = await import('../templates/quiet/render.js');
+const { renderHero, renderSections, renderNote, renderLightbox, renderApproach, escapeHtml, ARROW } = await import('../templates/quiet/render.js');
 const { default: config } = await import('../vite.config.js');
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
@@ -216,20 +216,14 @@ test('Quiet portrait precedes the name in every locale and has local provenance'
   assert.ok(!read('templates/ocean/index.html').includes('identity-portrait'));
 });
 
-test('Paper pole flag is reserved for the hidden welcome sequence, never the country label', () => {
+test('No welcome sequence or inline flag; the Paper flag asset keeps its provenance', () => {
   for (const { code } of LANGUAGES) {
     setLang(code);
     const hero = renderHero(code);
     assert.ok(hero.includes(`<span>${escapeHtml(t('contact.locationVal'))}</span>`));
     assert.ok(!hero.includes('location-flag'));
     assert.ok(!renderSections(code).includes('location-flag'));
-    const entry = renderEntryIntro(code);
-    assert.ok(entry.includes('hidden data-state="idle"'));
-    assert.ok(entry.includes('lang="fil">Magandang araw!</p>'));
-    assert.ok(entry.includes(escapeHtml(COPY[code].entryDescription)));
-    assert.ok(!entry.includes('entry-skip') && !entry.includes('<button'));
-    assert.ok(!Object.hasOwn(COPY[code], 'entrySkip'));
-    assert.ok(entry.includes('class="entry-artwork" aria-hidden="true"'));
+    assert.ok(!Object.keys(COPY[code]).some(key => key.startsWith('entry')));
   }
   setLang('en');
   const original = read('templates/quiet/assets/philippines-flag-source.svg');
@@ -244,7 +238,12 @@ test('Paper pole flag is reserved for the hidden welcome sequence, never the cou
   assert.equal(provenance.servedSha256, createHash('sha256').update(served).digest('hex'));
   assert.ok(provenance.sourceUrl.endsWith('/p-1-0/7M-0'));
   assert.ok(!served.includes('<script'));
-  for (const path of ['templates/ocean/index.html', 'templates/quiet/notes.html', 'templates/quiet/approach.html']) assert.ok(!read(path).includes('entry-intro'));
+  for (const path of ['index.html', 'templates/quiet/index.html', 'templates/ocean/index.html', 'templates/quiet/notes.html', 'templates/quiet/approach.html']) {
+    assert.ok(!read(path).includes('entry-intro'));
+    assert.ok(!read(path).includes('data-entry-boot'));
+  }
+  assert.ok(!read('templates/quiet/styles.css').includes('.entry-intro'));
+  assert.ok(!read('templates/quiet/main.js').includes('entry-intro') && !read('templates/quiet/main.js').includes('hero-reveal'));
   assert.ok(!read('templates/quiet/styles.css').includes('.location-flag'));
 });
 

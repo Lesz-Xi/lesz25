@@ -2,7 +2,6 @@ import { research, albums, socials, renderArchive } from '../../src/data.js';
 import { t } from '../../src/i18n.js';
 import { copyFor } from './copy.js';
 import { workFor } from './work.js';
-import { entryGreeting } from './entry-greeting.js';
 
 export const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (character) => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
@@ -12,14 +11,6 @@ export const ARROW = '<svg viewBox="0 0 16 16" width="16" height="16" fill="none
 const chevron = (previous) => `<svg viewBox="0 0 16 16" width="16" height="16" fill="none" aria-hidden="true"><path d="${previous ? 'M10 3 5 8l5 5' : 'm6 3 5 5-5 5'}" stroke="currentColor" stroke-width="1.2"/></svg>`;
 const external = (url, label, className = 'text-link') => `<a class="${className}" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer"><span class="link-label">${escapeHtml(label)}</span>${ARROW}</a>`;
 const section = (id, heading, body) => `<section class="section-grid" id="${id}" aria-labelledby="${id}-heading"><h2 id="${id}-heading" class="section-label">${escapeHtml(heading)}</h2><div class="section-content">${body}</div></section>`;
-
-export function renderEntryIntro(locale) {
-  const c = copyFor(locale);
-  const greeting = entryGreeting(locale, NaN); // Deterministic static fallback, never the build machine's time.
-  return `<div id="entry-intro" class="entry-intro" role="region" aria-label="${escapeHtml(c.entryWelcome)}" hidden data-state="idle">
-    <div class="entry-composition"><div class="entry-artwork" aria-hidden="true"></div><div class="entry-caption"><p class="entry-greeting" lang="fil">${escapeHtml(greeting.text)}</p><p class="entry-description" lang="${escapeHtml(locale)}">${escapeHtml(greeting.description)}</p></div></div>
-  </div>`;
-}
 
 export function renderHero(locale) {
   const c = copyFor(locale);

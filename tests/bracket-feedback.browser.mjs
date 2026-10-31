@@ -39,7 +39,6 @@ try {
   page.on('pageerror', error => errors.push(error.message));
   await page.goto(origin);
   await page.locator('.menu-ready').waitFor();
-  await page.waitForFunction(() => ['done', 'bypassed'].includes(document.documentElement.dataset.entryBoot));
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   for (const width of [320, 390, 768, 1440]) {
     await page.setViewportSize({ width, height: 900 });

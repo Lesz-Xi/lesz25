@@ -40,49 +40,6 @@
         ? preference : matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     })();
   </script>
-  <!-- Critical entry ground: reserve eligible welcomes before modules or artwork arrive. -->
-  <style>
-    html[data-entry-boot="pending"]::before { content: ""; position: fixed; inset: 0; z-index: 11; background: var(--page, #f4f4f5); animation: entry-boot-fail-open 1200ms step-end forwards; }
-    html[data-entry-boot="pending"][data-theme="dark"]::before { background: var(--page, #211f1c); }
-    @keyframes entry-boot-fail-open { to { visibility: hidden; pointer-events: none; } }
-    @media (prefers-reduced-motion: reduce) { html[data-entry-boot="pending"]::before { display: none; } }
-  </style>
-  <script>
-    (() => {
-      const root = document.documentElement;
-      const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-      const navigation = performance.getEntriesByType('navigation')[0]?.type;
-      let eligible = false;
-      try {
-        const seen = sessionStorage.getItem('rhine-quiet-welcome-v1') === 'seen';
-        eligible = !location.hash && !document.hidden && !reduced.matches
-          && navigation !== 'back_forward' && typeof Element.prototype.animate === 'function'
-          && (navigation === 'reload' || !seen);
-      } catch { eligible = false; }
-      if (!eligible) { root.dataset.entryBoot = 'bypassed'; return; }
-      root.dataset.entryBoot = 'pending';
-      const controller = new AbortController();
-      const stop = () => { if (root.dataset.entryBoot === 'pending') root.dataset.entryBoot = 'bypassed'; };
-      const deadline = setTimeout(stop, 1200);
-      const guardInput = event => {
-        // A late/missing module must never leave input blocked after the CSS ground releases.
-        if (performance.now() >= 1200) { stop(); return; }
-        if (event.type === 'keydown' && (event.metaKey || event.ctrlKey || event.altKey || /^F(?:[1-9]|1[0-2])$/.test(event.key))) return;
-        event.preventDefault();
-        event.stopImmediatePropagation();
-      };
-      for (const event of ['keydown', 'pointerdown', 'click', 'touchstart', 'touchmove', 'wheel']) {
-        document.addEventListener(event, guardInput, { capture: true, passive: false, signal: controller.signal });
-      }
-      for (const event of ['hashchange', 'popstate', 'pagehide']) window.addEventListener(event, stop, { signal: controller.signal });
-      document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); }, { signal: controller.signal });
-      reduced.addEventListener('change', () => { if (reduced.matches) stop(); }, { signal: controller.signal });
-      const observer = new MutationObserver(() => {
-        if (root.dataset.entryBoot !== 'pending') { clearTimeout(deadline); controller.abort(); observer.disconnect(); }
-      });
-      observer.observe(root, { attributes: true, attributeFilter: ['data-entry-boot'] });
-    })();
-  </script>
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
@@ -91,14 +48,9 @@
   OWN-WORLD: Ellipsis label/content grid, 1px rules, mono typography, slate-to-orange controls; Conductor-informed neutral themes.
   STORY: Meet Rhine, inspect the work, explore the photographs, examine the papers, read the notes, then make contact.
   FIRST VIEWPORT: 1200px shell, 180px identity rail, 32px introduction, and one 2:1 photograph; action beside the introduction.
-  FORM: User-approved synthesis overrides seed 9df07a23. Readman supplies the wide framed image, not its toolbar. Native scroll after one explicitly requested, finite SVG welcome sequence; ordinary input does not skip it; no section reveals or loops.
+  FORM: User-approved synthesis overrides seed 9df07a23. Readman supplies the wide framed image, not its toolbar. Native scroll from first paint; no welcome sequence, section reveals or loops.
   FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
   -->
-  <!-- quiet:entry:start -->
-<div id="entry-intro" class="entry-intro" role="region" aria-label="Welcome" hidden data-state="idle">
-    <div class="entry-composition"><div class="entry-artwork" aria-hidden="true"></div><div class="entry-caption"><p class="entry-greeting" lang="fil">Magandang araw!</p><p class="entry-description" lang="en">Good day. Welcome.</p></div></div>
-  </div>
-        <!-- quiet:entry:end -->
   <a class="skip-link" href="#main" data-copy="skip">Skip to content</a>
   <div class="page-shell">
     <header class="topbar">

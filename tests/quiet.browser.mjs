@@ -110,81 +110,6 @@ async function assertFooterLink(page, selector = '.page-shell > .footer') {
 
 try {
   if (previewCapture || controlsCapture || profileCapture || heroCapture || curiosityCapture || aboutCapture || relicsCapture || thesislensCapture || groundworkCapture || navCapture) await mkdir(output, { recursive: true });
-  const greetingCases = [
-    ...[1440, 390].flatMap(width => ['light', 'dark'].map(theme => ({ width, theme, clock: '2026-10-08T20:51:00Z', hour: 4, minute: 51, period: 'morning', reported: true }))),
-    { clock: '2026-10-08T15:59:59Z', hour: 23, minute: 59, period: 'evening', crossMidnight: true },
-    { clock: '2026-10-08T16:00:00Z', hour: 0, minute: 0, period: 'morning' },
-    { clock: '2026-10-09T03:59:59Z', hour: 11, minute: 59, period: 'morning' },
-    { clock: '2026-10-09T04:00:00Z', hour: 12, minute: 0, period: 'afternoon' },
-    { clock: '2026-10-09T09:59:59Z', hour: 17, minute: 59, period: 'afternoon' },
-    { clock: '2026-10-09T10:00:00Z', hour: 18, minute: 0, period: 'evening' },
-    { clock: '2026-10-08T20:51:00Z', hour: 22, minute: 51, period: 'evening', timezoneId: 'Europe/Zurich' },
-    { clock: '2026-10-08T20:51:00Z', hour: 16, minute: 51, period: 'afternoon', timezoneId: 'America/New_York' },
-  ];
-  const greetingText = { morning: 'Magandang umaga!', afternoon: 'Magandang hapon!', evening: 'Magandang gabi!' };
-  const greetingDescription = { morning: COPY.en.entryMorning, afternoon: COPY.en.entryAfternoon, evening: COPY.en.entryEvening };
-  for (const sample of greetingCases) {
-    const width = sample.width || 1440;
-    const theme = sample.theme || 'light';
-    const clockContext = await context({ viewport: { width, height: width === 390 ? 844 : 900 }, colorScheme: theme, locale: 'en-US', timezoneId: sample.timezoneId || 'Asia/Manila' });
-    try {
-      await clockContext.addInitScript(instant => {
-        // Only Date is mocked; native animations, performance and watchdogs stay real.
-        const NativeDate = Date;
-        const key = 'quiet-test-morning-clock';
-        let fixed = NativeDate.parse(sessionStorage.getItem(key) || instant);
-        window.Date = new Proxy(NativeDate, {
-          construct(target, args) { return Reflect.construct(target, args.length ? args : [fixed]); },
-          apply() { return new NativeDate(fixed).toString(); },
-          get(target, property) { return property === 'now' ? () => fixed : Reflect.get(target, property); },
-        });
-        window.__setMorningClock = value => { fixed = NativeDate.parse(value); sessionStorage.setItem(key, value); };
-      }, sample.clock);
-      const clockPage = await clockContext.newPage();
-      const clockErrors = [];
-      clockPage.on('pageerror', error => clockErrors.push(error.message));
-      await clockPage.goto(`${origin}/`);
-      await clockPage.waitForFunction(() => document.querySelector('#entry-intro')?.dataset.state === 'playing');
-      assert.deepEqual(await clockPage.evaluate(() => [new Date().getHours(), new Date().getMinutes()]), [sample.hour, sample.minute]);
-      assert.equal(await clockPage.locator('#entry-intro').getAttribute('data-greeting'), sample.period);
-      assert.equal(await clockPage.locator('.entry-greeting').textContent(), greetingText[sample.period]);
-      assert.equal(await clockPage.locator('.entry-description').textContent(), greetingDescription[sample.period]);
-      if (sample.reported) {
-        await clockPage.waitForFunction(() => document.querySelector('#entry-intro').dataset.phase === 'complete');
-        if (process.env.QUIET_CAPTURE === 'greeting-time') {
-          await mkdir(output, { recursive: true });
-          const name = `greeting-0451-${width}-${theme}.png`;
-          // Disabling CSS animations fast-forwards the welcome's fail-open timer.
-          // Capture native playback instead, while its completed caption is visible.
-          assert.equal(await clockPage.locator('#entry-intro').isVisible(), true);
-          await clockPage.screenshot({ path: resolve(output, name), fullPage: false, animations: 'allow' });
-          report.screenshots.push(name);
-        }
-        await clockPage.waitForFunction(() => document.querySelector('#entry-intro').dataset.state === 'done');
-        assert.equal(await clockPage.locator('#entry-intro').getAttribute('data-reason'), 'complete');
-      } else {
-        if (sample.crossMidnight) {
-          await clockPage.evaluate(() => window.__setMorningClock('2026-10-08T16:00:00Z'));
-          assert.equal(await clockPage.evaluate(() => new Date().getHours()), 0);
-          assert.equal(await clockPage.locator('#entry-intro').getAttribute('data-greeting'), 'evening', 'Playing greeting remains a one-shot snapshot');
-        }
-        await clockPage.emulateMedia({ reducedMotion: 'reduce' });
-        await clockPage.waitForFunction(() => document.querySelector('#entry-intro').dataset.state === 'done');
-        if (sample.crossMidnight) {
-          await clockPage.emulateMedia({ reducedMotion: 'no-preference' });
-          await clockPage.reload();
-          await clockPage.waitForFunction(() => document.querySelector('#entry-intro').dataset.state === 'playing');
-          assert.equal(await clockPage.locator('#entry-intro').getAttribute('data-greeting'), 'morning', 'Reload samples the new local day');
-          assert.equal(await clockPage.locator('.entry-greeting').textContent(), 'Magandang umaga!');
-          assert.equal(await clockPage.locator('.entry-description').textContent(), COPY.en.entryMorning);
-          await clockPage.emulateMedia({ reducedMotion: 'reduce' });
-          await clockPage.waitForFunction(() => document.querySelector('#entry-intro').dataset.state === 'done');
-        }
-      }
-      assert.deepEqual(clockErrors, []);
-    } finally { await clockContext.close(); }
-  }
-  check('Reported 04:51 welcome is morning on desktop/mobile in both themes; midnight/noon/18:00 boundaries, device-local time zones, stable playing snapshot and reload resampling work');
 
   const ctx = await context({ colorScheme: 'light' });
   const page = await ctx.newPage();
@@ -215,9 +140,9 @@ try {
   assert.deepEqual(portraitSource, { width: 160, height: 160 });
   check('Portrait loads locally above the name, with a reserved square footprint and no added control');
   assert.equal(await page.locator('.location-flag').count(), 0);
-  assert.equal(await page.locator('#entry-intro').count(), 1);
-  await page.waitForFunction(() => ['done', 'bypassed'].includes(document.documentElement.dataset.entryBoot));
-  check('Country has no inline flag; the separate bounded welcome releases the unchanged portfolio');
+  assert.equal(await page.locator('#entry-intro').count(), 0);
+  assert.equal(await page.evaluate(() => document.documentElement.dataset.entryBoot), undefined);
+  check('Country has no inline flag; the portfolio opens directly with no welcome cover');
   if (profileCapture || heroCapture || curiosityCapture) {
     for (const width of [1440, 390]) {
       await page.setViewportSize({ width, height: width === 390 ? 844 : 900 });
@@ -478,8 +403,6 @@ try {
       }
     }
   }
-  // The persistence reload above replays the finite welcome. Wait before activating work.
-  await page.waitForFunction(() => ['done', 'bypassed'].includes(document.documentElement.dataset.entryBoot));
   // Native activation uses a bounded fixture; live Relics was inspected separately.
   // URL fragments are not sent in HTTP requests, so route the destination origin.
   await ctx.route('https://relics.quest/**', (route) => route.fulfill({ contentType: 'text/html', body: '<title>Relics destination</title>' }));
@@ -734,7 +657,6 @@ try {
       }
       await page.goto(`${origin}/`);
       await page.locator('.preferences:not([hidden])').waitFor();
-      await page.waitForFunction(() => ['done', 'bypassed'].includes(document.documentElement.dataset.entryBoot));
     }
   }
   check('All six nav links match Dev Mode accent on hover and keyboard focus, draw a label hairline instead of text underline, preserve global focus and native Enter destinations');
@@ -757,7 +679,6 @@ try {
       await page.waitForFunction(() => location.hash === '#work' && document.activeElement.id === 'work-heading');
       await page.goto(`${origin}/`);
       await page.locator('.preferences:not([hidden])').waitFor();
-      await page.waitForFunction(() => ['done', 'bypassed'].includes(document.documentElement.dataset.entryBoot));
     }
   }
   check('Hero work link stays cardless across all six locales/four widths/both themes; desktop/mobile hover and visible keyboard focus retain native Work navigation');
@@ -1217,7 +1138,7 @@ try {
   assert.deepEqual(await nojsPage.locator('#quiet-sections > section').evaluateAll(nodes => nodes.map(node => node.id)), ['about', 'work', 'photography', 'research', 'notes', 'contact']);
   assert.equal(await nojsPage.locator('.identity-portrait').count(), 1);
   assert.equal(await nojsPage.locator('.location-flag').count(), 0);
-  assert.equal(await nojsPage.locator('#entry-intro').isVisible(), false);
+  assert.equal(await nojsPage.locator('#entry-intro').count(), 0);
   await assertFooterLink(nojsPage);
   assert.equal(await nojsPage.locator('.preferences').isVisible(), false);
   assert.equal(await nojsPage.locator('body').evaluate((element) => getComputedStyle(element).backgroundColor), 'rgb(33, 31, 28)');
@@ -1250,7 +1171,6 @@ try {
   const touchPage = await touch.newPage();
   await touchPage.goto(`${origin}/`);
   await touchPage.locator('.preferences:not([hidden])').waitFor();
-  await touchPage.waitForFunction(() => ['done', 'bypassed'].includes(document.documentElement.dataset.entryBoot));
   const touchSession = await touch.newCDPSession(touchPage);
   await touchSession.send('Input.synthesizeScrollGesture', { x: 195, y: 580, yDistance: -350, speed: 500, gestureSourceType: 'touch' });
   await touchPage.waitForFunction(() => scrollY > 0);
@@ -1278,7 +1198,6 @@ try {
   interactionPage.on('pageerror', error => interactionErrors.push(error.message));
   await interactionPage.goto(`${origin}/`);
   await interactionPage.locator('.preferences:not([hidden])').waitFor();
-  await interactionPage.waitForFunction(() => ['done', 'bypassed'].includes(document.documentElement.dataset.entryBoot));
   assert.equal(await interactionPage.locator('#contact a[href="https://substack.com/@les1587833"]').count(), 1);
   const themeChanges = await interactionPage.evaluate(async () => {
     let body = 0; let content = 0;

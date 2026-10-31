@@ -17,7 +17,6 @@ try {
   page.on('pageerror', error => errors.push(error.message));
   await page.goto(origin);
   await page.locator('.menu-ready').waitFor();
-  await page.waitForFunction(() => ['done', 'bypassed'].includes(document.documentElement.dataset.entryBoot));
   const menu = page.locator('#quiet-menu');
   const panel = page.locator('#quiet-navigation');
   const open = async () => { if (await menu.getAttribute('aria-expanded') === 'false') await menu.click(); };
